@@ -1,0 +1,3129 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026 삼성한우리합창단 총회 with ‘메리고잉 운영진’</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      word-break: keep-all;
+    }
+    mark.hl {
+      background-color: #fef08a;
+      color: #854d0e;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .projector-mode .proj-scale-title {
+      font-size: 1.75rem !important;
+      line-height: 2.25rem !important;
+    }
+    .projector-mode .proj-scale-text {
+      font-size: 1.15rem !important;
+      line-height: 1.85rem !important;
+    }
+    .projector-mode .proj-scale-num {
+      font-size: 2.25rem !important;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- Top Announcement & Session Header -->
+  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg border-b border-indigo-800/50 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+        <!-- Brand & Title -->
+        <div class="flex items-start sm:items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md shrink-0 mt-0.5 sm:mt-0">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-200 border border-indigo-400/30 whitespace-nowrap">
+                <span id="cloudSyncStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="cloudSyncStatusLabel">2026 정기총회 실시간 의결 시스템 (자동저장 ON)</span>
+              </span>
+              <span class="text-xs text-slate-300 hidden sm:inline">2026. 12. 18 (금) 19:00 · 삼성전자 한우리홀</span>
+            </div>
+            <h1 class="text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-white mt-0.5">
+              2026 삼성한우리합창단 총회 <span class="text-amber-300 font-bold">with ‘메리고잉 운영진’</span>
+            </h1>
+          </div>
+        </div>
+
+        <!-- Right Status Controls: Member Auth, Quorum Pill, Quick Drawer Search, Cloud Sync & Export -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Quorum Summary Pill -->
+          <div class="flex items-center gap-2 bg-slate-800/90 border border-slate-700 rounded-xl px-3 py-1.5 text-xs whitespace-nowrap">
+            <span class="text-slate-300">참석 전체</span>
+            <strong id="headerTotalAttendees" class="text-white font-bold text-sm">42명</strong>
+            <span class="text-slate-600">|</span>
+            <span class="text-amber-300 font-medium">과반 채택 기준</span>
+            <strong id="headerMajorityThreshold" class="text-amber-300 font-extrabold text-sm">22표↑</strong>
+          </div>
+
+          <!-- Current Logged-in Choir Member Badge & Switcher Button -->
+          <button id="btnOpenAuthModal" type="button" onclick="openAuthModal()" class="flex items-center gap-2 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-400/40 text-white rounded-xl px-3 py-1.5 text-xs font-medium transition whitespace-nowrap">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span id="currentVoterBadgeText">김하늘 (소프라노 · 4821)</span>
+            <span class="text-indigo-200 underline ml-0.5">단원 변경</span>
+          </button>
+
+          <!-- Instant Clause/Issue Drawer Trigger -->
+          <button id="btnOpenSearchDrawer" type="button" onclick="toggleSearchDrawer(true)" class="flex items-center gap-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold rounded-xl px-3 py-1.5 text-xs shadow-sm transition whitespace-nowrap">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z" />
+            </svg>
+            <span>조항·현안 즉석검색</span>
+          </button>
+
+          <!-- Cloud Sync & Deliverables Quick Modal Button -->
+          <button id="btnOpenCloudSyncModal" type="button" onclick="openCloudSyncModal()" class="flex items-center gap-1 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-400/40 text-emerald-100 rounded-xl px-2.5 py-1.5 text-xs font-bold transition whitespace-nowrap" title="실시간 DB 연동 및 산출물 저장">
+            <svg class="w-3.5 h-3.5 text-emerald-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            <span>실시간연동·산출물</span>
+          </button>
+
+          <!-- Share Link Copy Button -->
+          <button id="btnCopyShareLink" type="button" onclick="copyShareLink()" class="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-medium transition whitespace-nowrap" title="총회 접속 링크 복사">
+            <svg class="w-3.5 h-3.5 text-indigo-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+            </svg>
+            <span>접속링크</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Navigation Tabs (Separated Voting, Search, Year-End Events, Settlement, Admin) -->
+      <nav class="flex items-center justify-between gap-2 mt-3 pt-2.5 border-t border-slate-800/80 overflow-x-auto pb-1">
+        <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button id="tabBtn-voting" type="button" onclick="switchMainTab('voting')" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 bg-white text-slate-900 shadow-sm shrink-0">
+            <svg class="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>단칙 개정 찬반투표</span>
+            <span id="navBadgeAgendaProgress" class="ml-1 px-1.5 py-0.5 text-[11px] rounded-full bg-indigo-100 text-indigo-800 font-extrabold">2/6</span>
+          </button>
+
+          <button id="tabBtn-search" type="button" onclick="switchMainTab('search')" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/70 shrink-0">
+            <svg class="w-4 h-4 text-amber-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span>현안·단칙 조항 검색</span>
+            <span class="hidden md:inline-block px-1.5 py-0.5 text-[10px] rounded-full bg-amber-400/20 text-amber-200">제1조~제10조</span>
+          </button>
+
+          <button id="tabBtn-events" type="button" onclick="switchMainTab('events')" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/70 shrink-0">
+            <svg class="w-4 h-4 text-pink-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>2026 연말 행사 안내</span>
+          </button>
+
+          <button id="tabBtn-settlement" type="button" onclick="switchMainTab('settlement')" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/70 shrink-0">
+            <svg class="w-4 h-4 text-cyan-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>2026 결산 보고</span>
+          </button>
+
+          <button id="tabBtn-admin" type="button" onclick="switchMainTab('admin')" class="nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/70 shrink-0">
+            <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>메리고잉 운영진 제어</span>
+          </button>
+        </div>
+
+        <!-- Projector / Large Text Toggle -->
+        <button id="btnToggleProjector" type="button" onclick="toggleProjectorMode()" class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition whitespace-nowrap shrink-0" title="총회장 앞쪽 빔프로젝터 스크린에 화면을 띄울 때 글자와 숫자를 크게 확대합니다">
+          <svg class="w-3.5 h-3.5 text-indigo-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <span id="projectorToggleLabel">단상 스크린 확대모드 OFF</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: 단칙 개정 실시간 찬반투표 (VOTING)    -->
+    <!-- ========================================== -->
+    <section id="view-voting" class="space-y-6">
+
+      <!-- Sequential Agenda Stepper Bar -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 whitespace-nowrap shrink-0">안건 순차 상정 목록</span>
+            <p class="text-xs sm:text-sm text-slate-600">사전 등록된 단칙 개정안·신규안을 순서대로 상정하여 참석 전체 인원 과반 찬성 시 채택합니다.</p>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button id="btnPrevAgenda" type="button" onclick="stepAgenda(-1)" class="px-3 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition flex items-center gap-1 whitespace-nowrap">
+              <span>← 이전 안건</span>
+            </button>
+            <button id="btnNextAgenda" type="button" onclick="stepAgenda(1)" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-xs font-semibold text-white shadow-sm transition flex items-center gap-1 whitespace-nowrap">
+              <span>다음 안건 상정 →</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Agenda Pills Container -->
+        <div id="agendaStepperList" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2"></div>
+      </div>
+
+      <!-- Main Voting Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column (7 cols): Agenda Card & Related Issues -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- Active Agenda Detail Card -->
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <!-- Agenda Top Banner -->
+            <div class="bg-gradient-to-r from-slate-900 to-indigo-950 px-5 py-4 text-white flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="activeAgendaOrderBadge" class="px-2.5 py-1 rounded-lg bg-white/15 text-white font-extrabold text-xs whitespace-nowrap">제2호 안건</span>
+                <span id="activeAgendaTypeBadge" class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 font-extrabold text-xs whitespace-nowrap">단칙 개정안</span>
+                <button id="btnActiveAgendaClauseChip" type="button" onclick="openClauseInDrawerFromActive()" class="px-2.5 py-1 rounded-lg bg-indigo-500/30 hover:bg-indigo-500/50 border border-indigo-300/30 text-indigo-100 text-xs font-semibold transition flex items-center gap-1 whitespace-nowrap" title="클릭하여 해당 조항 원문 및 연관 현안 보기">
+                  <span id="activeAgendaTargetArticle">제4조 제1항</span>
+                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </button>
+                <button id="btnEditActiveAgendaText" type="button" onclick="openEditActiveAgendaModal()" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-amber-200 text-xs font-bold transition whitespace-nowrap">
+                  ✎ 안건 문구 수정
+                </button>
+              </div>
+              <div id="activeAgendaStatusBadge"></div>
+            </div>
+
+            <div class="p-5 sm:p-6 space-y-5">
+              <!-- Title & Proposal Reason -->
+              <div>
+                <h2 id="activeAgendaTitle" class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug proj-scale-title"></h2>
+                <div class="mt-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                  <div class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">메리고잉 운영진 제안 배경 및 사유</div>
+                  <p id="activeAgendaReason" class="text-sm text-slate-700 leading-relaxed proj-scale-text"></p>
+                </div>
+              </div>
+
+              <!-- Before vs After Comparison Table -->
+              <div>
+                <div class="flex items-center justify-between mb-2.5">
+                  <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    <span>현행 단칙 vs 상정 안건 신·구 조문 대비표</span>
+                  </h3>
+                  <span class="text-xs text-slate-500">채택 시 최종 단칙 파일에 자동 반영</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  <!-- Before Box -->
+                  <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 flex flex-col">
+                    <div class="flex items-center justify-between mb-2 pb-2 border-b border-slate-200">
+                      <span class="text-xs font-bold text-slate-600 px-2 py-0.5 rounded bg-slate-200/80">현행 단칙 원문</span>
+                      <span id="compareBeforeClauseLabel" class="text-xs font-semibold text-slate-500"></span>
+                    </div>
+                    <p id="activeAgendaBeforeText" class="text-sm text-slate-700 leading-relaxed flex-1 proj-scale-text"></p>
+                  </div>
+
+                  <!-- After Box -->
+                  <div class="rounded-2xl border-2 border-indigo-500/80 bg-indigo-50/40 p-4 flex flex-col relative">
+                    <div class="flex items-center justify-between mb-2 pb-2 border-b border-indigo-200/80">
+                      <span id="compareAfterBadge" class="text-xs font-bold text-white px-2.5 py-0.5 rounded bg-indigo-600">개정안 (상정 조문)</span>
+                      <span id="compareAfterClauseLabel" class="text-xs font-semibold text-indigo-700"></span>
+                    </div>
+                    <p id="activeAgendaAfterText" class="text-sm text-slate-900 font-medium leading-relaxed flex-1 proj-scale-text"></p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick Keywords & Clause Tags -->
+              <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                <div id="activeAgendaKeywordsList" class="flex flex-wrap items-center gap-1.5"></div>
+                <button type="button" onclick="toggleSearchDrawer(true)" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 whitespace-nowrap">
+                  <span>전체 단칙 조항 검색 열기</span>
+                  <span>→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related Issues & Mentioned agendas/clauses Card -->
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                  <h3 class="text-base font-extrabold text-slate-900">이 안건과 연관된 현안 및 함께 언급된 개정안·조항</h3>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">현재 안건과 동일한 조항·키워드를 공유하거나 총회에서 함께 논의되는 연관 현안입니다. 클릭하면 상세 조문을 즉시 비교합니다.</p>
+              </div>
+              <button type="button" onclick="openRelatedInFullSearch()" class="self-start sm:self-auto px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition shrink-0 whitespace-nowrap">
+                현안 검색 탭에서 전체 보기
+              </button>
+            </div>
+
+            <!-- Related Agendas & Issues Container -->
+            <div id="relatedIssuesAndAgendasContainer" class="space-y-3"></div>
+          </div>
+
+        </div>
+
+        <!-- Right Column (5 cols): Voting Action Panel + Live Quorum & Tally Board -->
+        <div class="lg:col-span-5 space-y-6">
+
+          <!-- Member 1-Person-1-Vote Box -->
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div>
+                <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">단원 1인 1표 의결권 행사</span>
+                <h3 class="text-lg font-extrabold text-slate-900 mt-0.5">찬반·기권 투표하기</h3>
+              </div>
+              <button type="button" onclick="openAuthModal()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100 whitespace-nowrap">
+                투표자 전환
+              </button>
+            </div>
+
+            <!-- Current Authenticated Voter Info Banner -->
+            <div class="p-3 rounded-xl bg-slate-900 text-white flex items-center justify-between gap-2 mb-4">
+              <div class="flex items-center gap-2.5">
+                <div id="voterAvatarCircle" class="w-9 h-9 rounded-xl bg-indigo-500 flex items-center justify-center font-extrabold text-sm text-white shrink-0">김</div>
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <span id="voterPanelName" class="text-sm font-bold">김하늘 단원</span>
+                    <span id="voterPanelPart" class="text-[11px] px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 font-semibold">소프라노</span>
+                  </div>
+                  <div id="voterPanelCode" class="text-xs text-slate-400">본인확인 코드: 4821 · 중복투표 방지 적용됨</div>
+                </div>
+              </div>
+              <div id="voterCurrentAgendaBadge"></div>
+            </div>
+
+            <!-- 3 Voting Action Buttons (찬성 / 반대 / 기권) -->
+            <div id="votingButtonsGrid" class="grid grid-cols-3 gap-3">
+              <button id="btnVoteApprove" type="button" onclick="castVote('approve')" class="group relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-emerald-200 bg-emerald-50/50 hover:bg-emerald-600 hover:border-emerald-600 text-emerald-900 hover:text-white transition shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-emerald-500/15 group-hover:bg-white/20 flex items-center justify-center mb-1.5">
+                  <svg class="w-6 h-6 text-emerald-600 group-hover:text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-base font-extrabold">찬성</span>
+                <span class="text-[11px] opacity-75 mt-0.5">안건 채택 동의</span>
+              </button>
+
+              <button id="btnVoteReject" type="button" onclick="castVote('reject')" class="group relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-rose-200 bg-rose-50/50 hover:bg-rose-600 hover:border-rose-600 text-rose-900 hover:text-white transition shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-rose-500/15 group-hover:bg-white/20 flex items-center justify-center mb-1.5">
+                  <svg class="w-6 h-6 text-rose-600 group-hover:text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <span class="text-base font-extrabold">반대</span>
+                <span class="text-[11px] opacity-75 mt-0.5">현행 유지/보류</span>
+              </button>
+
+              <button id="btnVoteAbstain" type="button" onclick="castVote('abstain')" class="group relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-slate-200 bg-slate-50 hover:bg-slate-700 hover:border-slate-700 text-slate-800 hover:text-white transition shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-slate-500/15 group-hover:bg-white/20 flex items-center justify-center mb-1.5">
+                  <svg class="w-6 h-6 text-slate-600 group-hover:text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                  </svg>
+                </div>
+                <span class="text-base font-extrabold">기권</span>
+                <span class="text-[11px] opacity-75 mt-0.5">의결권 유보</span>
+              </button>
+            </div>
+
+            <!-- Duplicate Vote Guard Message Box -->
+            <div id="voteLockNoticeBox" class="mt-3.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center justify-between gap-2">
+              <span id="voteLockNoticeText">현재 단원 명의로 이 안건에 1회 투표할 수 있습니다.</span>
+              <button id="btnQuickSwitchNextMember" type="button" onclick="switchNextUnvotedMember()" class="text-indigo-600 hover:text-indigo-800 font-bold underline shrink-0 whitespace-nowrap">
+                다른 미투표 단원으로 테스트 →
+              </button>
+            </div>
+          </div>
+
+          <!-- Real-Time Tally & Majority Adoption Decision Board -->
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 space-y-5">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">총회 참석 전체 인원 기준 과반 판정</span>
+                <h3 class="text-lg font-extrabold text-slate-900 mt-0.5">실시간 집계 및 채택 현황판</h3>
+              </div>
+              <div id="decisionVerdictPill"></div>
+            </div>
+
+            <!-- 4 Key Quorum Metrics -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
+                <div class="text-[11px] font-semibold text-slate-500">참석 전체 인원</div>
+                <div id="statTotalAttendees" class="text-xl font-extrabold text-slate-900 mt-0.5 proj-scale-num">42명</div>
+              </div>
+              <div class="p-3 rounded-xl bg-amber-50 border border-amber-200/80 text-center">
+                <div class="text-[11px] font-semibold text-amber-800">과반 채택 기준</div>
+                <div id="statMajorityRequired" class="text-xl font-extrabold text-amber-700 mt-0.5 proj-scale-num">22표↑</div>
+              </div>
+              <div class="p-3 rounded-xl bg-indigo-50 border border-indigo-200/80 text-center">
+                <div class="text-[11px] font-semibold text-indigo-700">투표 참여</div>
+                <div id="statVotedCount" class="text-xl font-extrabold text-indigo-700 mt-0.5 proj-scale-num">31명</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
+                <div class="text-[11px] font-semibold text-slate-500">미투표</div>
+                <div id="statRemainingCount" class="text-xl font-extrabold text-slate-600 mt-0.5 proj-scale-num">11명</div>
+              </div>
+            </div>
+
+            <!-- Majority Threshold Visual Gauge (Approval vs Total Attendees) -->
+            <div class="p-4 rounded-2xl bg-slate-900 text-white space-y-2.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-slate-300">참석 인원 대비 찬성률 (과반선: 50% 초과)</span>
+                <span id="majorityProgressSubtext" class="font-bold text-amber-300"></span>
+              </div>
+              <div class="relative h-5 w-full bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                <!-- 50% Majority Marker Line -->
+                <div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-amber-400 z-10" title="과반 기준선"></div>
+                <div id="majorityApprovalBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300 rounded-full" style="width: 50%;"></div>
+              </div>
+              <div class="flex items-center justify-between text-[11px] text-slate-400">
+                <span>0표 (0%)</span>
+                <span id="majorityMarkerLabel" class="text-amber-300 font-bold">▲ 과반 채택선 (22표)</span>
+                <span id="majorityMaxLabel">42표 (100%)</span>
+              </div>
+            </div>
+
+            <!-- Breakdown Bars: Approve / Reject / Abstain -->
+            <div class="space-y-3">
+              <!-- Approve Row -->
+              <div>
+                <div class="flex items-center justify-between text-xs sm:text-sm mb-1">
+                  <span class="font-bold text-emerald-700 flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>찬성 (채택 동의)
+                  </span>
+                  <span id="barLabelApprove" class="font-extrabold text-slate-900">0표 (0.0%)</span>
+                </div>
+                <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div id="barFillApprove" class="h-full bg-emerald-500 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <!-- Reject Row -->
+              <div>
+                <div class="flex items-center justify-between text-xs sm:text-sm mb-1">
+                  <span class="font-bold text-rose-700 flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>반대 (현행 유지)
+                  </span>
+                  <span id="barLabelReject" class="font-extrabold text-slate-900">0표 (0.0%)</span>
+                </div>
+                <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div id="barFillReject" class="h-full bg-rose-500 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <!-- Abstain Row -->
+              <div>
+                <div class="flex items-center justify-between text-xs sm:text-sm mb-1">
+                  <span class="font-bold text-slate-600 flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>기권 (참석 모수 포함)
+                  </span>
+                  <span id="barLabelAbstain" class="font-extrabold text-slate-900">0표 (0.0%)</span>
+                </div>
+                <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div id="barFillAbstain" class="h-full bg-slate-400 rounded-full transition-all duration-300" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Operator Action Bar inside Voting Card -->
+            <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+              <span class="text-xs text-slate-500 font-medium">메리고잉 운영진 빠른 진행 도구:</span>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button id="btnQuickFinalizeAgenda" type="button" onclick="finalizeActiveAgenda()" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition whitespace-nowrap">
+                  현재 안건 투표마감·결과확정
+                </button>
+                <button id="btnQuickReopenAgenda" type="button" onclick="reopenActiveAgenda()" class="px-2.5 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-semibold transition whitespace-nowrap">
+                  재개시
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: 현안 및 단칙 조항 실시간 검색 페이지  -->
+    <!-- ========================================== -->
+    <section id="view-search" class="hidden space-y-6">
+      <!-- Search Hero Box -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="max-w-3xl">
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900">현장 질의응답 · 단칙 원문 수정 및 최종본 Export</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">삼성한우리합창단 단칙 조항 실시간 검색 및 조문 편집</h2>
+            <p class="text-sm text-slate-600 mt-1">
+              조항 번호(예: <code class="px-1.5 py-0.5 bg-slate-100 rounded text-indigo-700">제3조</code>, <code class="px-1.5 py-0.5 bg-slate-100 rounded text-indigo-700">4조</code>)나 키워드로 조문을 즉시 검색하고, 각 조항의 <strong>[조문 직접 수정]</strong> 버튼으로 문구를 고치거나 채택된 안건이 반영된 <strong>최종 개정 단칙 파일</strong>을 원본 양식 그대로 내려받을 수 있습니다.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button type="button" onclick="applyAdoptedAgendasToBylaws()" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition whitespace-nowrap">
+              ✓ 채택 안건 단칙 원문에 일괄 반영
+            </button>
+            <button type="button" onclick="exportFinalBylawsMarkdown()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm transition whitespace-nowrap">
+              최종 개정 단칙 전문 다운로드 (.md)
+            </button>
+            <button type="button" onclick="exportFinalBylawsHTML()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition whitespace-nowrap">
+              단칙 전문 인쇄용 문서 (.html)
+            </button>
+          </div>
+        </div>
+
+        <!-- Instant Search Input -->
+        <div class="mt-4 relative">
+          <input
+            id="fullSearchInput"
+            type="text"
+            oninput="handleFullSearchInput(this.value)"
+            placeholder="조항 번호(예: 3조, 제4조, 6조) 또는 키워드(출석, 회비, 파트장, 전자악보, 인수인계)를 입력하세요..."
+            class="w-full pl-11 pr-24 py-3.5 rounded-2xl border-2 border-indigo-200 focus:border-indigo-600 focus:outline-none text-sm sm:text-base font-medium text-slate-900 shadow-sm"
+          />
+          <svg class="w-5 h-5 text-indigo-500 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z" />
+          </svg>
+          <button id="btnClearFullSearch" type="button" onclick="setFullSearchQuery('')" class="absolute right-3 top-1/2 -translate-y-1/2 px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 transition">
+            초기화
+          </button>
+        </div>
+
+        <!-- Quick Filter Chips -->
+        <div class="mt-3 flex flex-wrap items-center gap-1.5">
+          <span class="text-xs font-bold text-slate-500 mr-1">빠른 조항·키워드 선택:</span>
+          <button type="button" onclick="setFullSearchQuery('')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 transition">전체 보기</button>
+          <button type="button" onclick="setFullSearchQuery('제3조')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 transition">제3조 (출석·휴단)</button>
+          <button type="button" onclick="setFullSearchQuery('제4조')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 transition">제4조 (회비 납부)</button>
+          <button type="button" onclick="setFullSearchQuery('제6조')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 transition">제6조 (메리고잉 운영진)</button>
+          <button type="button" onclick="setFullSearchQuery('제7조')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 transition">제7조 (전자악보·저작권)</button>
+          <button type="button" onclick="setFullSearchQuery('제9조')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 border border-slate-200 transition">제9조 (포상·회비감면)</button>
+          <button type="button" onclick="setFullSearchQuery('출석률')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition">#출석률</button>
+          <button type="button" onclick="setFullSearchQuery('회비')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition">#회비</button>
+          <button type="button" onclick="setFullSearchQuery('파트장')" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition">#파트장</button>
+        </div>
+      </div>
+
+      <!-- Search Results -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 6 cols: Current Bylaw Clauses (제1조 ~ 제10조) -->
+        <div class="lg:col-span-6 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+              <h3 class="text-base font-extrabold text-slate-900">현행 삼성한우리합창단 단칙 원문 (즉석 편집 가능)</h3>
+            </div>
+            <span id="searchCountClauses" class="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700">10개 조항</span>
+          </div>
+          <div id="fullSearchClausesList" class="space-y-3"></div>
+        </div>
+
+        <!-- Right 6 cols: Agendas + Related Issues -->
+        <div class="lg:col-span-6 space-y-6">
+          <!-- Matched Agendas -->
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <h3 class="text-base font-extrabold text-slate-900">검색된 금번 총회 개정안·신규안</h3>
+              </div>
+              <span id="searchCountAgendas" class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">6건</span>
+            </div>
+            <div id="fullSearchAgendasList" class="space-y-3"></div>
+          </div>
+
+          <!-- Matched Club Issues & Discussion Context -->
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <h3 class="text-base font-extrabold text-slate-900">관련 현안 및 메리고잉 운영진 검토 배경</h3>
+              </div>
+              <span id="searchCountIssues" class="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-800">5건</span>
+            </div>
+            <div id="fullSearchIssuesList" class="space-y-3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 3: 2026 연말 행사 안내 (순수 행사·식순 전용) -->
+    <!-- ========================================== -->
+    <section id="view-events" class="hidden space-y-6">
+      <!-- Banner: Purely Annual Choir Activity & Events Overview -->
+      <div class="bg-gradient-to-r from-indigo-900 via-purple-900 to-slate-900 rounded-2xl p-6 text-white shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-pink-500/20 text-pink-200 border border-pink-400/30">
+              2026 CHOIR EVENTS & PROGRAM · 메리고잉 운영진 활동 안내
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">2026 삼성한우리합창단 연말 총회 식순 및 연간 행사 안내</h2>
+            <p class="text-sm text-indigo-100 mt-1">
+              오늘 정기총회 진행 순서와 올 한 해 ‘메리고잉 운영진’과 단원들이 함께 만들어 온 주요 행사 타임라인을 안내합니다. (회계 결산 내역은 별도의 <strong>2026 결산 보고</strong> 탭에서 확인하실 수 있습니다.)
+            </p>
+          </div>
+          <div class="grid grid-cols-3 gap-2.5 shrink-0">
+            <div class="bg-white/10 backdrop-blur rounded-xl p-3 text-center border border-white/15">
+              <div class="text-xs text-indigo-200 whitespace-nowrap">연간 정기연습</div>
+              <div class="text-xl font-extrabold text-white mt-0.5">46회</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-xl p-3 text-center border border-white/15">
+              <div class="text-xs text-indigo-200 whitespace-nowrap">공식 공연·행사</div>
+              <div class="text-xl font-extrabold text-amber-300 mt-0.5">6건</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-xl p-3 text-center border border-white/15">
+              <div class="text-xs text-indigo-200 whitespace-nowrap">활동 정단원</div>
+              <div class="text-xl font-extrabold text-emerald-300 mt-0.5">48명</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 4 cols: 1) 금일 정기총회 식순 안내 + 2) 메리고잉 운영진 소개 -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700">STEP 1 · TODAY PROGRAM</span>
+            <h3 class="text-base font-extrabold text-slate-900 mt-2">금일 2026 정기총회 진행 식순</h3>
+            <ol class="mt-4 space-y-3 text-xs sm:text-sm">
+              <li class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-white font-bold text-xs whitespace-nowrap">1부 · 19:00</span>
+                <div>
+                  <div class="font-bold text-slate-900">개회 선언 및 2026 연간 진행 행사 돌아보기</div>
+                  <div class="text-xs text-slate-500 mt-0.5">메리고잉 운영진 연간 공연·워크숍 활동 하이라이트 공유</div>
+                </div>
+              </li>
+              <li class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-white font-bold text-xs whitespace-nowrap">2부 · 19:25</span>
+                <div>
+                  <div class="font-bold text-slate-900">한우리 하모니상(개근상) 및 우수 파트 시상</div>
+                  <div class="text-xs text-slate-500 mt-0.5">제9조 포상 규정에 따른 연간 개근·우수 단원 시상식</div>
+                </div>
+              </li>
+              <li class="flex items-start gap-3 p-3 rounded-xl bg-indigo-50 border border-indigo-200">
+                <span class="px-2 py-0.5 rounded bg-indigo-600 text-white font-bold text-xs whitespace-nowrap">3부 · 19:45</span>
+                <div>
+                  <div class="font-bold text-indigo-950">2026 단칙 개정안·신규안 순차 찬반투표</div>
+                  <div class="text-xs text-indigo-700 mt-0.5">제1호~제6호 안건 상정 및 참석 전체 인원 과반 의결</div>
+                </div>
+              </li>
+              <li class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/70">
+                <span class="px-2 py-0.5 rounded bg-slate-800 text-white font-bold text-xs whitespace-nowrap">4부 · 20:30</span>
+                <div>
+                  <div class="font-bold text-slate-900">2026 회계 결산 보고 및 차기 운영진 인준·송년회</div>
+                  <div class="text-xs text-slate-500 mt-0.5">총무 결산 보고 후 파트별 송년 리셉션 진행</div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Merigoing Executive Team Card -->
+          <div class="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-2xl p-5 text-white">
+            <div class="text-xs font-bold text-amber-300 uppercase tracking-wider">2026 MERRY-GOING TEAM</div>
+            <h3 class="text-base font-extrabold mt-1">‘메리고잉 운영진’ 구성원 소개</h3>
+            <p class="text-xs text-slate-300 mt-1">올 한 해 삼성한우리합창단의 즐거운 하모니를 이끈 운영진입니다.</p>
+            <div class="mt-3.5 grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-xl bg-white/10">
+                <div class="text-indigo-200">단장 / 부단장</div>
+                <div class="font-bold mt-0.5">박성훈 · 이수민</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white/10">
+                <div class="text-indigo-200">총무 / 기획·홍보</div>
+                <div class="font-bold mt-0.5">정다은 · 최현우</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white/10">
+                <div class="text-indigo-200">악보장</div>
+                <div class="font-bold mt-0.5">한지윤 (알토)</div>
+              </div>
+              <div class="p-2.5 rounded-xl bg-white/10">
+                <div class="text-indigo-200">4개 파트장</div>
+                <div class="font-bold mt-0.5">김하늘 외 3명</div>
+              </div>
+            </div>
+            <button type="button" onclick="switchMainTab('settlement')" class="mt-4 w-full py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold text-amber-200 border border-white/20 transition">
+              2026 회계 결산 보고 탭 바로가기 →
+            </button>
+          </div>
+        </div>
+
+        <!-- Right 8 cols: 2026 Executed Events Timeline -->
+        <div class="lg:col-span-8 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-pink-50 text-pink-700">STEP 2 · ANNUAL TIMELINE</span>
+              <h3 class="text-lg font-extrabold text-slate-900 mt-1.5">2026년도 삼성한우리합창단 주요 진행 행사 타임라인</h3>
+              <p class="text-xs text-slate-500">올해 월별로 진행한 주요 행사 및 공연 활동 요약입니다.</p>
+            </div>
+            <button type="button" onclick="openAddEventModal()" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 transition whitespace-nowrap">
+              + 행사 내역 추가
+            </button>
+          </div>
+          <div id="clubEventsTimelineList" class="space-y-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 4: 2026 회계 결산 보고 (별도 분리)       -->
+    <!-- ========================================== -->
+    <section id="view-settlement" class="hidden space-y-6">
+      <div class="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 rounded-2xl p-6 text-white shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-teal-400/20 text-teal-200 border border-teal-400/30">
+              2026 FINANCIAL SETTLEMENT · 별도 회계 결산 보고
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold mt-2">2026 삼성한우리합창단 연간 회계 결산 보고서</h2>
+            <p class="text-sm text-slate-300 mt-1">
+              연말 행사 안내와 분리하여 2026년도 정기회비·찬조금 수입 및 정기연주회·연습실 대관·악보 구매 지출 결산 내역을 투명하게 보고합니다.
+            </p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 shrink-0">
+            <div class="bg-white/10 backdrop-blur rounded-xl p-3.5 text-center border border-white/15">
+              <div class="text-xs text-teal-200">2026 총 수입 합계</div>
+              <div class="text-lg sm:text-xl font-extrabold text-white mt-0.5">13,620,000원</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-xl p-3.5 text-center border border-white/15">
+              <div class="text-xs text-rose-200">2026 총 지출 합계</div>
+              <div class="text-lg sm:text-xl font-extrabold text-rose-300 mt-0.5">12,140,000원</div>
+            </div>
+            <div class="bg-white/10 backdrop-blur rounded-xl p-3.5 text-center border border-emerald-400/40">
+              <div class="text-xs text-emerald-200">차기(2027) 이월 잔액</div>
+              <div class="text-lg sm:text-xl font-extrabold text-emerald-300 mt-0.5">1,480,000원</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 7 cols: Annual Income & Expense Category Table -->
+        <div class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 overflow-x-auto">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-base sm:text-lg font-extrabold text-slate-900">2026 항목별 수입·지출 총괄 결산표</h3>
+              <p class="text-xs text-slate-500">제2호 안건(회비 조정) 및 제5호 안건(전자악보 도입)의 재정 근거 자료입니다.</p>
+            </div>
+            <button type="button" onclick="selectAgenda('ag-2'); switchMainTab('voting');" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 whitespace-nowrap">
+              제2호 회비 안건 보기 →
+            </button>
+          </div>
+
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+                <th class="py-2.5 px-3">구분</th>
+                <th class="py-2.5 px-3">세부 항목</th>
+                <th class="py-2.5 px-3 text-right">결산 금액</th>
+                <th class="py-2.5 px-3">비고 (관련 조항)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              <tr>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-teal-50 text-teal-800 font-bold text-xs">수입</span></td>
+                <td class="py-2.5 px-3 font-semibold text-slate-900">2025년 전기 이월금</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-900">1,820,000원</td>
+                <td class="py-2.5 px-3 text-xs text-slate-500">전년도 총회 확정 이월액</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-teal-50 text-teal-800 font-bold text-xs">수입</span></td>
+                <td class="py-2.5 px-3 font-semibold text-slate-900">2026 정단원 월 정기회비 (월 20,000원)</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-900">9,600,000원</td>
+                <td class="py-2.5 px-3 text-xs text-slate-500">제4조 · 정단원 납부 합계</td>
+              </tr>
+              <tr>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-teal-50 text-teal-800 font-bold text-xs">수입</span></td>
+                <td class="py-2.5 px-3 font-semibold text-slate-900">동호회 지원금 및 공연 찬조금</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-900">2,200,000원</td>
+                <td class="py-2.5 px-3 text-xs text-slate-500">정기연주회·음악캠프 찬조</td>
+              </tr>
+              <tr class="bg-rose-50/30">
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-xs">지출</span></td>
+                <td class="py-2.5 px-3 font-semibold text-slate-900">지휘자·반주자 정기연습 사례비 및 연습실 대관료</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-rose-700">-3,200,000원</td>
+                <td class="py-2.5 px-3 text-xs text-slate-500">제4조 · 대관 단가 상승 반영</td>
+              </tr>
+              <tr class="bg-rose-50/30">
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-xs">지출</span></td>
+                <td class="py-2.5 px-3 font-semibold text-slate-900">정품 합창 악보 구입 및 제본비</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-rose-700">-1,180,000원</td>
+                <td class="py-2.5 px-3 text-xs text-slate-500">제7조 · 전자악보 병행 추진</td>
+              </tr>
+              <tr class="bg-rose-50/30">
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold text-xs">지출</span></td>
+                <td class="py-2.5 px-3 font-semibold text-slate-900">제18회 정기연주회 및 연간 주요 행사 집행비</td>
+                <td class="py-2.5 px-3 text-right font-mono font-bold text-rose-700">-7,760,000원</td>
+                <td class="py-2.5 px-3 text-xs text-slate-500">제8조 · 우측 행사별 정산 참조</td>
+              </tr>
+              <tr class="bg-emerald-50 font-extrabold">
+                <td class="py-3 px-3 text-emerald-900" colspan="2">2026 연말 결산 최종 잔액 (2027년 차기 이월금)</td>
+                <td class="py-3 px-3 text-right font-mono text-emerald-800">1,480,000원</td>
+                <td class="py-3 px-3 text-xs text-emerald-700">감사 검수 완료</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Right 5 cols: Event-by-Event Settlement List -->
+        <div class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900 mb-1">주요 행사별 세부 정산 내역</h3>
+          <p class="text-xs text-slate-500 mb-4">각 연간 행사에서 집행된 수입·지출 결산 요약입니다.</p>
+          <div id="settlementEventsList" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 5: 메리고잉 운영진(관리자) 제어 화면      -->
+    <!-- ========================================== -->
+    <section id="view-admin" class="hidden space-y-6">
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900">MERRY-GOING ADMIN CONSOLE & EXPORT CENTER</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">총회 진행자(메리고잉 운영진) 통합 제어 및 산출물 센터</h2>
+            <p class="text-sm text-slate-600 mt-0.5">참석 인원($T$) 설정, 안건 순차 상정·마감, <strong>채택 안건이 반영된 최종 단칙 파일 Export</strong>, <strong>찬반투표 의결 산출물 보고서 저장</strong>을 지원합니다.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="openAddAgendaModal()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-sm transition whitespace-nowrap">
+              + 새 단칙 개정안/신규안 등록
+            </button>
+            <button type="button" onclick="exportAssemblyResultsCSV()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-bold shadow-sm transition whitespace-nowrap">
+              의결 결과 CSV 내려받기
+            </button>
+            <button type="button" onclick="copyMinutesSummaryText()" class="px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold transition whitespace-nowrap">
+              회의록 요약 텍스트 복사
+            </button>
+          </div>
+        </div>
+
+        <!-- Official Deliverables Export Center (단칙 원본 형태 Export + 투표 결과 산출물 Export + JSON 백업) -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Box 1: 최종 개정 단칙 파일 Export (원본 형태 유지) -->
+          <div class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-200 flex flex-col justify-between gap-3">
+            <div>
+              <span class="px-2 py-0.5 rounded bg-indigo-600 text-white text-[11px] font-extrabold">산출물 1 · 최종 개정 단칙 전문</span>
+              <h3 class="text-sm font-extrabold text-slate-900 mt-1.5">채택 안건 반영 단칙 원본 형태 Export</h3>
+              <p class="text-xs text-slate-600 mt-1">과반 찬성으로 채택된 개정안·신규안을 제1조~제10조 단칙 원문에 자동 반영하여 원본 양식 그대로 파일로 저장합니다.</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="applyAdoptedAgendasToBylaws()" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-indigo-100 text-indigo-800 border border-indigo-300 text-xs font-bold">
+                1. 채택안 원문반영
+              </button>
+              <button type="button" onclick="exportFinalBylawsMarkdown()" class="px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">
+                단칙 전문 (.md/.txt)
+              </button>
+              <button type="button" onclick="exportFinalBylawsHTML()" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
+                인쇄용 단칙 (.html)
+              </button>
+            </div>
+          </div>
+
+          <!-- Box 2: 찬반투표 결과 공식 산출물 Export -->
+          <div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex flex-col justify-between gap-3">
+            <div>
+              <span class="px-2 py-0.5 rounded bg-emerald-600 text-white text-[11px] font-extrabold">산출물 2 · 찬반투표 의결 보고서</span>
+              <h3 class="text-sm font-extrabold text-slate-900 mt-1.5">찬반·기권 집계 및 신·구대비표 산출물</h3>
+              <p class="text-xs text-slate-600 mt-1">안건별 찬성·반대·기권 득표수, 과반 채택 판정, 신·구 조문 대비표, 서명란이 포함된 총회 공식 결과보고서를 내려받습니다.</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="exportOfficialMinutesHTML()" class="px-2.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">
+                공식 의결보고서 (.html)
+              </button>
+              <button type="button" onclick="exportAssemblyResultsCSV()" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold">
+                엑셀 집계표 (.csv)
+              </button>
+            </div>
+          </div>
+
+          <!-- Box 3: 전체 상태 JSON 파일 저장·불러오기 & 실시간 클라우드 DB 연동 -->
+          <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 flex flex-col justify-between gap-3">
+            <div>
+              <span class="px-2 py-0.5 rounded bg-amber-500 text-white text-[11px] font-extrabold">산출물 3 · 백업 및 실시간 DB 연동</span>
+              <h3 class="text-sm font-extrabold text-slate-900 mt-1.5">작업 상태 파일 백업 & 다중 폰 실시간 연동</h3>
+              <p class="text-xs text-slate-600 mt-1">수정한 단칙과 투표 내역 전체를 JSON 파일로 백업·복원하거나, GitHub Pages 배포용 Firebase 실시간 DB를 연결합니다.</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+              <button type="button" onclick="exportFullStateJSON()" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold">
+                전체 백업 (.json)
+              </button>
+              <button type="button" onclick="triggerImportJSON()" class="px-2.5 py-1.5 rounded-xl bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold">
+                백업 불러오기
+              </button>
+              <button type="button" onclick="openCloudSyncModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
+                실시간 DB 설정
+              </button>
+              <input id="hiddenJsonFileInput" type="file" accept=".json" onchange="handleImportJSONFile(this)" class="hidden" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Quorum / Total Attendees Controller -->
+        <div class="mt-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div class="text-sm font-extrabold text-slate-900">총회 참석 전체 인원 ($T$) 및 과반 채택 기준선 ($\lfloor T/2 \rfloor + 1$) 설정</div>
+            <p class="text-xs text-slate-600 mt-0.5">현장 총 참석 인원을 변경하면 모든 안건의 과반수 채택 기준이 실시간으로 재계산됩니다.</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" onclick="adjustTotalAttendees(-1)" class="w-9 h-9 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 font-extrabold text-slate-700">-1</button>
+            <input id="adminInputTotalAttendees" type="number" min="1" max="500" value="42" onchange="setTotalAttendeesDirect(this.value)" class="w-20 text-center py-1.5 rounded-xl border border-slate-300 font-extrabold text-base text-slate-900" />
+            <button type="button" onclick="adjustTotalAttendees(1)" class="w-9 h-9 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 font-extrabold text-slate-700">+1</button>
+            <span id="adminQuorumPreviewBadge" class="ml-2 px-3 py-1.5 rounded-xl bg-amber-100 text-amber-900 text-xs font-extrabold whitespace-nowrap">과반 기준: 22표 이상 찬성</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Sequential Agenda Control & Simulation Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6 overflow-x-auto">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-extrabold text-slate-900">전체 안건 의결 현황 및 운영진 제어 테이블</h3>
+          <span class="text-xs text-slate-500">현장 시연용으로 각 안건의 득표 시뮬레이션(+찬성/+반대/+기권) 및 상태 전환이 가능합니다.</span>
+        </div>
+        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50 text-slate-600 font-bold">
+              <th class="py-3 px-3">순서</th>
+              <th class="py-3 px-3">구분 / 조항</th>
+              <th class="py-3 px-3">안건명</th>
+              <th class="py-3 px-3 text-right">찬성 / 반대 / 기권</th>
+              <th class="py-3 px-3 text-center">과반 달성</th>
+              <th class="py-3 px-3 text-center">현재 상태</th>
+              <th class="py-3 px-3 text-right">운영진 제어 / 현장 시뮬레이션</th>
+            </tr>
+          </thead>
+          <tbody id="adminAgendasTableBody" class="divide-y divide-slate-200"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================= -->
+  <!-- SLIDE-OVER DRAWER: 조항 번호 · 키워드 즉석 검색 패널       -->
+  <!-- ========================================================= -->
+  <div id="searchDrawerBackdrop" onclick="toggleSearchDrawer(false)" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-40 hidden transition-opacity"></div>
+  <aside id="searchDrawerPanel" class="fixed top-0 right-0 bottom-0 w-full max-w-xl bg-white shadow-2xl border-l border-slate-200 z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 sm:p-5 bg-slate-900 text-white flex items-center justify-between">
+      <div>
+        <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">INSTANT BYLAW & ISSUE FINDER</span>
+        <h3 class="text-base sm:text-lg font-extrabold">단칙 조항·연관 현안 즉석 검색창</h3>
+      </div>
+      <button type="button" onclick="toggleSearchDrawer(false)" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="p-4 border-b border-slate-200 bg-slate-50 space-y-2.5">
+      <div class="relative">
+        <input
+          id="drawerSearchInput"
+          type="text"
+          oninput="handleDrawerSearchInput(this.value)"
+          placeholder="예: 3조, 제4조, 회비, 출석률, 파트장, 전자악보..."
+          class="w-full pl-10 pr-20 py-2.5 rounded-xl border-2 border-indigo-200 focus:border-indigo-600 focus:outline-none text-sm font-medium text-slate-900 bg-white"
+        />
+        <svg class="w-4 h-4 text-indigo-500 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z" />
+        </svg>
+        <button type="button" onclick="setDrawerSearchQuery('')" class="absolute right-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600">
+          전체
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-1.5">
+        <button type="button" onclick="setDrawerSearchQuery('제3조')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:border-indigo-400">제3조(출석)</button>
+        <button type="button" onclick="setDrawerSearchQuery('제4조')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:border-indigo-400">제4조(회비)</button>
+        <button type="button" onclick="setDrawerSearchQuery('제6조')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:border-indigo-400">제6조(운영진)</button>
+        <button type="button" onclick="setDrawerSearchQuery('제7조')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:border-indigo-400">제7조(악보)</button>
+        <button type="button" onclick="setDrawerSearchQuery('제9조')" class="px-2 py-0.5 rounded bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:border-indigo-400">제9조(감면)</button>
+      </div>
+    </div>
+
+    <div id="drawerSearchResultsContainer" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+  </aside>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 1: 단원 링크 접속 본인 확인 및 투표자 전환 모달        -->
+  <!-- ========================================================= -->
+  <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold text-indigo-300 uppercase tracking-wider">LINK ACCESS & DUPLICATE VOTE GUARD</span>
+          <h3 class="text-lg font-extrabold mt-0.5">총회 참석 단원 본인 확인 (1인 1표 인증)</h3>
+        </div>
+        <button type="button" onclick="closeAuthModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">✕</button>
+      </div>
+
+      <div class="p-5 space-y-5 max-h-[80vh] overflow-y-auto">
+        <p class="text-xs text-slate-600 leading-relaxed">
+          공유 링크로 접속한 단원은 <strong>이름 + 연락처 뒷 4자리(입장 코드)</strong>로 본인 확인을 거치며, 안건당 1회만 투표할 수 있습니다. 아래 명단에서 단원을 선택하거나 신규 단원 정보를 입력해 테스트해 보세요.
+        </p>
+
+        <div>
+          <div class="text-xs font-bold text-slate-700 mb-2">참석 체크된 단원 빠른 선택 (안건별 투표 여부 표시)</div>
+          <div id="authMemberListGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200">
+          <div class="text-xs font-bold text-slate-700 mb-2.5">직접 본인 확인 정보 입력하여 접속</div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <input id="inputNewVoterName" type="text" placeholder="이름 (예: 홍길동)" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium" />
+            <select id="inputNewVoterPart" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium bg-white">
+              <option value="소프라노">소프라노</option>
+              <option value="알토">알토</option>
+              <option value="테너">테너</option>
+              <option value="베이스">베이스</option>
+            </select>
+            <input id="inputNewVoterCode" type="text" maxlength="4" placeholder="뒷 4자리 (예: 9012)" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium" />
+          </div>
+          <button type="button" onclick="registerAndSwitchVoter()" class="mt-2.5 w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition">
+            입력한 단원 정보로 본인 확인 및 접속
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 2: 신규 단칙 개정안/신규안 추가 모달                  -->
+  <!-- ========================================================= -->
+  <div id="addAgendaModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">NEW AGENDA REGISTRATION</span>
+          <h3 class="text-lg font-extrabold mt-0.5">단칙 개정안 · 신규안 추가 등록</h3>
+        </div>
+        <button type="button" onclick="closeAddAgendaModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">✕</button>
+      </div>
+      <div class="p-5 space-y-3.5 max-h-[80vh] overflow-y-auto text-xs sm:text-sm">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">안건 구분</label>
+            <select id="newAgendaType" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white">
+              <option value="개정안">단칙 개정안</option>
+              <option value="신규안">신규 제정안</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">대상 조항 번호</label>
+            <input id="newAgendaArticle" type="text" placeholder="예: 제8조 제2항" class="w-full px-3 py-2 rounded-xl border border-slate-300" />
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">안건 제목</label>
+          <input id="newAgendaTitle" type="text" placeholder="예: 정기연주회 협연자 초빙 기준 신설안" class="w-full px-3 py-2 rounded-xl border border-slate-300" />
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">현행 단칙 문구 (신규안은 '신설 조항' 입력)</label>
+          <textarea id="newAgendaBefore" rows="2" placeholder="현행 조문 내용을 입력하세요." class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">개정안 / 신설 조문 문구</label>
+          <textarea id="newAgendaAfter" rows="2" placeholder="개정 또는 신설할 조문 내용을 입력하세요." class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">제안 배경 및 연관 키워드 (쉼표 구분)</label>
+          <input id="newAgendaReason" type="text" placeholder="제안 사유를 입력하세요." class="w-full px-3 py-2 rounded-xl border border-slate-300 mb-2" />
+          <input id="newAgendaKeywords" type="text" placeholder="연관 키워드 (예: 제8조, 정기연주회, 예산)" class="w-full px-3 py-2 rounded-xl border border-slate-300" />
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAddAgendaModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-bold">취소</button>
+          <button type="button" onclick="submitNewAgenda()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">안건 등록 및 상정 목록 추가</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 3: 연말 행사 내역 추가 모달                           -->
+  <!-- ========================================================= -->
+  <div id="addEventModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="text-base font-extrabold">2026 진행 행사 내역 추가</h3>
+        <button type="button" onclick="closeAddEventModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">✕</button>
+      </div>
+      <div class="p-5 space-y-3 text-xs sm:text-sm">
+        <div class="grid grid-cols-2 gap-2.5">
+          <input id="newEventDate" type="text" placeholder="일자 (예: 2026. 11. 20)" class="px-3 py-2 rounded-xl border border-slate-300" />
+          <input id="newEventCategory" type="text" placeholder="구분 (예: 특별공연)" class="px-3 py-2 rounded-xl border border-slate-300" />
+        </div>
+        <input id="newEventTitle" type="text" placeholder="행사명 (예: 송년 로비 음악회)" class="w-full px-3 py-2 rounded-xl border border-slate-300" />
+        <div class="grid grid-cols-2 gap-2.5">
+          <input id="newEventCount" type="number" placeholder="참석 인원 (예: 38)" class="px-3 py-2 rounded-xl border border-slate-300" />
+          <input id="newEventBudget" type="text" placeholder="결산 내역 (예: 지출 450,000원)" class="px-3 py-2 rounded-xl border border-slate-300" />
+        </div>
+        <textarea id="newEventSummary" rows="2" placeholder="주요 성과 및 행사 요약" class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeAddEventModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-bold">취소</button>
+          <button type="button" onclick="submitNewEvent()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">행사 등록</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 4: 단칙 조항 / 상정 안건 즉석 문구 수정 모달          -->
+  <!-- ========================================================= -->
+  <div id="editClauseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold text-amber-300 uppercase tracking-wider">LIVE CLAUSE & AGENDA EDITOR</span>
+          <h3 id="editModalHeaderTitle" class="text-lg font-extrabold mt-0.5">단칙 조문 / 안건 문구 직접 수정</h3>
+        </div>
+        <button type="button" onclick="closeEditClauseModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">✕</button>
+      </div>
+      <div class="p-5 space-y-3.5 text-xs sm:text-sm">
+        <input id="editTargetMode" type="hidden" value="clause" />
+        <input id="editTargetId" type="hidden" value="" />
+        <div>
+          <label id="editLabelTitle" class="block font-bold text-slate-700 mb-1">조항 제목 / 안건 제목</label>
+          <input id="editInputTitle" type="text" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-semibold" />
+        </div>
+        <div>
+          <label id="editLabelContent" class="block font-bold text-slate-700 mb-1">조문 본문 / 개정안 상정 문구</label>
+          <textarea id="editInputContent" rows="4" class="w-full px-3 py-2 rounded-xl border border-slate-300 leading-relaxed"></textarea>
+        </div>
+        <div id="editExtraBeforeWrap" class="hidden">
+          <label class="block font-bold text-slate-700 mb-1">현행 단칙 문구 (대비표 좌측)</label>
+          <textarea id="editInputBefore" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-300"></textarea>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" onclick="closeEditClauseModal()" class="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 font-bold">취소</button>
+          <button type="button" onclick="saveEditedClauseOrAgenda()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold">수정 내용 즉시 반영 및 저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- MODAL 5: GitHub Pages + 실시간 클라우드 DB 연동 & 산출물 센터 -->
+  <!-- ========================================================= -->
+  <div id="cloudSyncModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">GITHUB PAGES + FIREBASE REALTIME SYNC & DELIVERABLES</span>
+          <h3 class="text-lg font-extrabold mt-0.5">다중 스마트폰 실시간 투표 연동 및 총회 산출물 내보내기</h3>
+        </div>
+        <button type="button" onclick="closeCloudSyncModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300">✕</button>
+      </div>
+
+      <div class="p-5 space-y-5 max-h-[82vh] overflow-y-auto text-xs sm:text-sm">
+        <!-- Section A: Realtime DB URL -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="font-extrabold text-slate-900">1. 여러 단원 스마트폰 실시간 찬반투표 동기화 (Firebase Realtime DB)</span>
+            <span id="modalSyncBadge" class="px-2 py-0.5 rounded bg-slate-200 text-slate-700 text-xs font-bold">로컬 저장 모드</span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            GitHub Pages에 이 HTML 파일을 올린 뒤, 무료 Firebase Realtime Database 주소(예: <code class="bg-white px-1.5 py-0.5 rounded border">https://프로젝트명-default-rtdb.firebaseio.com</code>)를 아래에 입력하면 모든 단원의 스마트폰 투표와 안건 전환이 2초 주기로 실시간 동기화됩니다.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="inputFirebaseDbUrl" type="text" placeholder="https://your-project-default-rtdb.firebaseio.com" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" />
+            <button type="button" onclick="connectRealtimeDb()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold whitespace-nowrap">
+              실시간 DB 연결·동기화
+            </button>
+            <button type="button" onclick="disconnectRealtimeDb()" class="px-3 py-2 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold whitespace-nowrap">
+              연결 해제
+            </button>
+          </div>
+        </div>
+
+        <!-- Section B: Deliverables Export Buttons -->
+        <div class="space-y-2.5">
+          <div class="font-extrabold text-slate-900">2. 총회 종료 후 필수 산출물 파일 내보내기 (단칙 원본 양식 & 투표 결과보고서)</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <button type="button" onclick="applyAdoptedAgendasToBylaws(); exportFinalBylawsMarkdown();" class="p-3.5 rounded-xl border-2 border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100 text-left transition">
+              <div class="font-extrabold text-indigo-950">📄 최종 개정 단칙 전문 (.md / 텍스트)</div>
+              <div class="text-xs text-indigo-700 mt-0.5">채택된 안건을 제1조~제10조 원문에 자동 반영하여 원본 구조 그대로 저장</div>
+            </button>
+            <button type="button" onclick="applyAdoptedAgendasToBylaws(); exportFinalBylawsHTML();" class="p-3.5 rounded-xl border-2 border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100 text-left transition">
+              <div class="font-extrabold text-indigo-950">🖨️ 최종 개정 단칙 인쇄·PDF용 (.html)</div>
+              <div class="text-xs text-indigo-700 mt-0.5">장·조·항 및 개정 부칙이 정리된 공식 회칙 문서 파일 저장</div>
+            </button>
+            <button type="button" onclick="exportOfficialMinutesHTML()" class="p-3.5 rounded-xl border-2 border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100 text-left transition">
+              <div class="font-extrabold text-emerald-950">📊 찬반투표 공식 의결 결과보고서 (.html)</div>
+              <div class="text-xs text-emerald-800 mt-0.5">안건별 신·구 대비표, 찬성/반대/기권 득표수, 과반 채택 결과 및 서명란 포함</div>
+            </button>
+            <button type="button" onclick="exportAssemblyResultsCSV()" class="p-3.5 rounded-xl border-2 border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100 text-left transition">
+              <div class="font-extrabold text-emerald-950">📈 찬반투표 상세 집계표 (.csv 엑셀용)</div>
+              <div class="text-xs text-emerald-800 mt-0.5">엑셀에서 바로 열어보는 안건별 득표수·득표율·의결상태 표</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section C: LocalStorage Reset -->
+        <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+          <span class="text-xs text-slate-500">브라우저 자동 저장소가 활성화되어 새로고침해도 수정한 단칙과 투표 내역이 유지됩니다.</span>
+          <button type="button" onclick="resetToDefaultInitialData()" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold">
+            초기 샘플 데이터로 초기화
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toastBanner" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 hidden items-center gap-2.5 px-4 py-3 rounded-2xl bg-slate-900 text-white text-xs sm:text-sm font-semibold shadow-xl border border-slate-700">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toastMessageText">처리되었습니다.</span>
+  </div>
+
+  <!-- Application Script -->
+  <script>
+    // =========================================================================
+    // 1. INITIAL DATA: 2026 삼성한우리합창단 총회 with '메리고잉 운영진'
+    // =========================================================================
+    const STORAGE_KEY = "hanuri_choir_assembly_2026_state_v2";
+    let cloudSyncUrl = "";
+    let cloudSyncTimer = null;
+
+    function getDefaultState() {
+      return {
+        sessionTitle: "2026 삼성한우리합창단 총회 with ‘메리고잉 운영진’",
+        totalAttendees: 42,
+        activeTab: "voting",
+        activeAgendaId: "ag-2",
+        projectorMode: false,
+        fullSearchQuery: "",
+        drawerSearchQuery: "",
+        currentVoterId: "mem-1",
+
+        members: [
+          { id: "mem-1", name: "김하늘", part: "소프라노", code: "4821" },
+          { id: "mem-2", name: "이준호", part: "테너", code: "7390" },
+          { id: "mem-3", name: "박서연", part: "알토", code: "1542" },
+          { id: "mem-4", name: "최성민", part: "베이스", code: "8814" },
+          { id: "mem-5", name: "정다은", part: "소프라노", code: "3095" },
+          { id: "mem-6", name: "한지윤", part: "알토", code: "6621" }
+        ],
+
+        bylaws: [
+          {
+            id: "cl-1",
+            chapter: "제1장 총칙",
+            articleNo: "제1조",
+            title: "명칭 및 목적",
+            content: "본 합창단은 ‘삼성한우리합창단’(이하 ‘합창단’)이라 칭하며, 합창 음악을 통한 임직원 간 화합과 정서 함양, 사내·외 문화 나눔 실천을 목적으로 한다.",
+            keywords: ["명칭", "목적", "한우리합창단", "화합"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-2",
+            chapter: "제1장 총칙",
+            articleNo: "제2조",
+            title: "단원의 자격 및 파트 구분",
+            content: "단원은 정단원, 휴단원, 명예단원으로 구분하며, 입단 오디션 및 신입 기초과정을 이수한 임직원을 정단원으로 한다. 파트는 소프라노, 알토, 테너, 베이스 4개 파트로 구성한다.",
+            keywords: ["단원", "자격", "정단원", "휴단원", "신입단원", "오디션", "파트"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-3",
+            chapter: "제2장 연습 및 출석",
+            articleNo: "제3조",
+            title: "정기연습 출석 및 휴단",
+            content: "① 정기연습은 매주 수요일 저녁에 진행하며, 분기별 정기연습 출석률 70% 이상을 유지해야 정기연주회 무대 출연 자격을 부여한다. ② 업무상 파견·출장·육아휴직 시 최대 1년간 공식 휴단을 신청할 수 있다.",
+            keywords: ["정기연습", "출석", "출석률", "70%", "정기연주회", "휴단", "출장", "보충연습"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-4",
+            chapter: "제3장 재정 및 회비",
+            articleNo: "제4조",
+            title: "회비 납부 및 재정 운영",
+            content: "① 정단원은 매월 정기 회비 20,000원을 납부하며, 공식 휴단 기간 중인 휴단원의 회비는 면제한다. ② 납부된 회비는 지휘자·반주자 사례비, 정품 악보 구입비, 정기연주회 대관료 및 단원 복지에 사용한다.",
+            keywords: ["회비", "20,000원", "재정", "대관료", "악보", "면제", "신입단원"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-5",
+            chapter: "제4장 총회 및 의결",
+            articleNo: "제5조",
+            title: "정기총회 및 과반 의결 기준",
+            content: "① 정기총회는 매년 말 개최하며, 연간 행사·결산 보고와 단칙 개정을 심의한다. ② 단칙 개정안 및 신규안은 총회 참석 전체 인원의 과반수 찬성으로 채택(가결)하며, 단원은 안건당 찬성·반대·기권 중 1표를 행사한다.",
+            keywords: ["총회", "정기총회", "과반수", "찬반투표", "기권", "의결", "참석 전체 인원"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-6",
+            chapter: "제5장 운영진",
+            articleNo: "제6조",
+            title: "운영진 구성 및 임기 (메리고잉 운영진)",
+            content: "① 합창단 실무를 총괄하는 운영진(단장, 부단장, 총무, 기획, 홍보, 악보장, 4개 파트장)을 두며, 2026년 운영기수는 ‘메리고잉 운영진’으로 활동한다. ② 운영진 임기는 1년으로 하며, 차기 운영진은 매년 12월 말 정기총회 당일 선출하여 익년 1월 1일부터 임기를 개시한다.",
+            keywords: ["운영진", "메리고잉", "단장", "총무", "악보장", "파트장", "임기", "인수인계", "선출"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-7",
+            chapter: "제6장 악보 및 저작권",
+            articleNo: "제7조",
+            title: "악보 및 연습 음원 저작권 관리",
+            content: "① 합창단에서 배부하는 모든 정품 종이 악보 및 파트별 연습 음원은 단원 외 외부 유출을 엄격히 금지하며, 정기연주회 종료 후 공용 악보는 악보장에게 반납한다.",
+            keywords: ["악보", "전자악보", "태블릿", "PDF", "저작권", "음원", "악보장"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-8",
+            chapter: "제7장 공연 활동",
+            articleNo: "제8조",
+            title: "정기연주회 및 대외 공연",
+            content: "합창단은 매년 하반기 중 연 1회 정기연주회를 개최하는 것을 원칙으로 하며, 사내 런치콘서트 및 지역사회 자선 합창제 등 특별 공연은 운영진 의결로 추진한다.",
+            keywords: ["정기연주회", "런치콘서트", "자선 합창제", "공연"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-9",
+            chapter: "제8장 포상 및 복지",
+            articleNo: "제9조",
+            title: "단원 포상 및 운영진 회비 감면 특례",
+            content: "① 연간 정기연습 개근 단원에게는 연말 총회에서 ‘한우리 하모니상’을 수여한다. ② 파트장 및 실무 운영진에게는 임기 중 회비 감면 혜택을 부여할 수 있다.",
+            keywords: ["포상", "하모니상", "개근", "회비 감면", "감면", "운영진", "파트장"],
+            lastAmended: ""
+          },
+          {
+            id: "cl-10",
+            chapter: "제9장 자격 제한",
+            articleNo: "제10조",
+            title: "자격 정지 및 해촉",
+            content: "사전 사유 없이 정기연습 무단결석 연속 8주 이상이거나 합창단의 화합을 심각하게 저해한 경우 운영진 심의를 거쳐 정단원 자격을 제한할 수 있다.",
+            keywords: ["무단결석", "자격", "징계"],
+            lastAmended: ""
+          }
+        ],
+
+        agendas: [
+          {
+            id: "ag-1",
+            orderNo: 1,
+            type: "개정안",
+            targetArticle: "제3조 제1항",
+            relatedClauses: ["제3조", "제6조", "제8조"],
+            title: "정기연주회 출연 출석률 기준 완화(70%→65%) 및 파트 보충연습 출석 인정안",
+            beforeText: "제3조 제1항: 정기연습은 매주 수요일 저녁에 진행하며, 분기별 정기연습 출석률 70% 이상을 유지해야 정기연주회 무대 출연 자격을 부여한다.",
+            afterText: "제3조 제1항(개정): 분기별 정기연습 출석률 65% 이상을 유지해야 정기연주회 무대 출연 자격을 부여하며, 파트장이 주관하는 공식 파트 보충연습(월 최대 2회) 참여 시 정기연습 출석으로 합산 인정한다.",
+            reason: "하반기 프로젝트 집중 기간 및 교대근무 단원의 무대 참여 기회를 보호하고, 파트장 중심의 소규모 자율 파트 연습을 활성화하기 위해 출석 인정 폭을 넓힘.",
+            keywords: ["제3조", "출석률", "보충연습", "정기연주회", "파트장"],
+            status: "adopted",
+            baseApprove: 27,
+            baseReject: 8,
+            baseAbstain: 4,
+            memberVotes: {
+              "mem-1": "approve",
+              "mem-2": "approve",
+              "mem-3": "reject"
+            }
+          },
+          {
+            id: "ag-2",
+            orderNo: 2,
+            type: "개정안",
+            targetArticle: "제4조 제1항",
+            relatedClauses: ["제4조", "제2조", "제9조"],
+            title: "2027년도 월 정기회비 현실화(20,000원→25,000원) 및 신입단원 첫 달 회비 면제안",
+            beforeText: "제4조 제1항: 정단원은 매월 정기 회비 20,000원을 납부하며, 공식 휴단 기간 중인 휴단원의 회비는 면제한다.",
+            afterText: "제4조 제1항(개정): 정단원은 매월 정기 회비 25,000원을 납부하며, 휴단 기간 중인 휴단원의 회비는 면제한다. 단, 신규 입단한 정단원의 입단 당월(첫 달) 회비는 전액 면제한다.",
+            reason: "연습실 대관료 및 정품 합창 악보 구매 단가 상승분을 반영하여 2027년 재정 건전성을 확보하고, 신입단원의 입단 첫 달 회비를 면제해 신규 단원 유입 장벽을 낮추고자 함.",
+            keywords: ["제4조", "회비", "25,000원", "신입단원", "면제", "대관료"],
+            status: "active",
+            baseApprove: 21,
+            baseReject: 7,
+            baseAbstain: 3,
+            memberVotes: {}
+          },
+          {
+            id: "ag-3",
+            orderNo: 3,
+            type: "개정안",
+            targetArticle: "제9조 제2항",
+            relatedClauses: ["제9조", "제4조", "제6조"],
+            title: "메리고잉 운영진 및 4개 파트장 회비 감면 비율 명문화안 (운영진 100%·파트장 50%)",
+            beforeText: "제9조 제2항: 파트장 및 실무 운영진에게는 임기 중 회비 감면 혜택을 부여할 수 있다.",
+            afterText: "제9조 제2항(개정): 실무 운영진(단장·부단장·총무·기획·홍보·악보장)은 임기 중 월 회비의 100%를 면제하고, 4개 파트(소프라노·알토·테너·베이스) 파트장은 월 회비의 50%를 감면한다.",
+            reason: "기존 조항에 구체적 수치 없이 포괄적으로 적혀 있던 운영진·파트장 회비 감면 기준을 명확한 비율로 명문화하여 회계 투명성을 확립함.",
+            keywords: ["제9조", "회비 감면", "감면", "운영진", "파트장", "회비"],
+            status: "pending",
+            baseApprove: 19,
+            baseReject: 5,
+            baseAbstain: 2,
+            memberVotes: {}
+          },
+          {
+            id: "ag-4",
+            orderNo: 4,
+            type: "신규안",
+            targetArticle: "제3조 제3항 (신설)",
+            relatedClauses: ["제3조", "제7조", "제8조"],
+            title: "장기 출장·파견 단원 파트 연습 녹음본 제출 시 비대면 출석 대체 인정 신설안",
+            beforeText: "현행 단칙 내 비대면·음원 제출을 통한 출석 대체 인정 규정 없음 (신설 조항)",
+            afterText: "제3조 제3항(신설): 해외·지방 장기 출장 등으로 수요 정기연습 현장 참석이 불가한 단원이 주간 연습곡 파트 가창 녹음본을 파트장 및 악보장에게 제출할 경우, 분기당 최대 3회까지 정기연습 출석으로 대체 인정한다.",
+            reason: "출장이 잦은 부서 단원이 휴단하지 않고도 연습 진도를 따라가며 정기연주회에 함께 설 수 있도록 비대면 출석 보완 제도를 신설함.",
+            keywords: ["제3조", "출장", "출석", "비대면", "녹음본", "출석률"],
+            status: "pending",
+            baseApprove: 20,
+            baseReject: 6,
+            baseAbstain: 3,
+            memberVotes: {}
+          },
+          {
+            id: "ag-5",
+            orderNo: 5,
+            type: "신규안",
+            targetArticle: "제7조 제2항 (신설)",
+            relatedClauses: ["제7조", "제4조"],
+            title: "태블릿 디지털 전자악보(PDF) 공식 배포 및 저작권 보호 서약 의무화 신설안",
+            beforeText: "현행 제7조 제1항은 종이 정품 악보 배부 및 연주회 후 반납만 규정함 (신설 조항)",
+            afterText: "제7조 제2항(신설): 태블릿 PC를 활용하는 단원에게는 단원 고유 워터마크가 삽입된 공식 전자악보(PDF)를 배포할 수 있으며, 수령 단원은 연 1회 전자악보 저작권 보호 서약을 완료해야 한다.",
+            reason: "태블릿으로 연습에 참여하는 단원 비중이 65%를 넘어섬에 따라 종이 제본 비용을 절감하고 디지털 악보의 외부 유출 방지 절차를 명문화함.",
+            keywords: ["제7조", "전자악보", "태블릿", "PDF", "저작권", "악보"],
+            status: "pending",
+            baseApprove: 24,
+            baseReject: 2,
+            baseAbstain: 2,
+            memberVotes: {}
+          },
+          {
+            id: "ag-6",
+            orderNo: 6,
+            type: "개정안",
+            targetArticle: "제6조 제2항",
+            relatedClauses: ["제6조", "제5조"],
+            title: "차기 운영진 선출 시기 조기화 및 현 ‘메리고잉 운영진’과의 1개월 공식 인수인계제 도입안",
+            beforeText: "제6조 제2항: 차기 운영진은 매년 12월 말 정기총회 당일 선출하여 익년 1월 1일부터 임기를 개시한다.",
+            afterText: "제6조 제2항(개정): 차기 운영진은 매년 11월 말까지 후보 추천을 받아 12월 정기총회에서 인준하며, 12월 한 달간 현 운영진과 공동 인수인계 기간을 거친 후 익년 1월 1일부터 임기를 개시한다.",
+            reason: "연말 총회 당일 선출 직후 신년 연습곡 선정 및 상반기 신입단원 모집 일정이 촉박했던 현안을 해소하기 위해 1개월간의 공동 인수인계 기간을 제도화함.",
+            keywords: ["제6조", "운영진", "메리고잉", "인수인계", "선출", "총회"],
+            status: "pending",
+            baseApprove: 23,
+            baseReject: 3,
+            baseAbstain: 2,
+            memberVotes: {}
+          }
+        ],
+
+        issues: [
+          {
+            id: "iss-1",
+            code: "현안 #1",
+            title: "하반기 야근·장기출장 단원 정기연주회 출연 자격 구제 건의",
+            relatedClauses: ["제3조", "제8조"],
+            relatedAgendas: ["ag-1", "ag-4"],
+            summary: "올해 제18회 정기연주회 준비 기간 중 출석률 68%로 아쉽게 무대에 서지 못한 단원이 4명 발생함. 파트별 보충연습 합산(제1호 안건) 및 출장자 녹음본 대체 출석(제4호 안건)이 함께 연동되어 발의됨.",
+            keywords: ["제3조", "출석률", "출장", "보충연습", "정기연주회"]
+          },
+          {
+            id: "iss-2",
+            code: "현안 #2",
+            title: "2026년 합창단 결산 기준 연습실 대관료·악보 구매비 18% 상승 현안",
+            relatedClauses: ["제4조", "제7조", "제9조"],
+            relatedAgendas: ["ag-2", "ag-3", "ag-5"],
+            summary: "외부 합창 연습실 시간당 대관료 및 해외 라이선스 정품 악보 비용 상승으로 월 20,000원 회비로는 연간 적자 폭이 커짐. 회비 25,000원 현실화(제2호), 운영진·파트장 감면 기준 명문화(제3호), 전자악보 도입을 통한 인쇄비 절감(제5호)이 패키지로 연결된 핵심 재정 현안임.",
+            keywords: ["제4조", "회비", "대관료", "악보", "회비 감면", "전자악보"]
+          },
+          {
+            id: "iss-3",
+            code: "현안 #3",
+            title: "메리고잉 운영진 및 4개 파트장 봉사 인센티브 투명화 요청",
+            relatedClauses: ["제6조", "제9조", "제4조"],
+            relatedAgendas: ["ag-3", "ag-2"],
+            summary: "매주 파트 연습 지도와 출석·회계를 담당하는 실무 운영진 및 파트장의 회비 감면 규정이 기존 제9조에 ‘부여할 수 있다’로만 되어 있어 매년 기준을 다시 정해야 했던 불편을 해소함.",
+            keywords: ["제9조", "제6조", "파트장", "운영진", "메리고잉", "회비 감면"]
+          },
+          {
+            id: "iss-4",
+            code: "현안 #4",
+            title: "태블릿 아이패드/갤럭시탭 악보 사용 단원 증가(65%) 및 저작권 준수 현안",
+            relatedClauses: ["제7조", "제4조"],
+            relatedAgendas: ["ag-5", "ag-2"],
+            summary: "단원 설문 결과 42명 중 28명이 태블릿 PDF 악보를 선호함. 정품 악보 구매 후 공식 스캔 워터마크 본을 배포하고 서약서를 받는 제7조 제2항 신설(제5호 안건)과 직결됨.",
+            keywords: ["제7조", "전자악보", "태블릿", "PDF", "저작권"]
+          },
+          {
+            id: "iss-5",
+            code: "현안 #5",
+            title: "연말 정기총회 직후 1월 신년 시즌 운영 공백 방지 및 인수인계 체계화",
+            relatedClauses: ["제6조", "제5조"],
+            relatedAgendas: ["ag-6"],
+            summary: "2026년 ‘메리고잉 운영진’이 12월 한 달간 차기 운영진과 회계·악보·연간 대관 일정을 함께 인수인계할 수 있도록 선출 일정을 앞당기는 제6호 안건의 배경 현안임.",
+            keywords: ["제6조", "운영진", "메리고잉", "인수인계", "총회"]
+          }
+        ],
+
+        events: [
+          {
+            id: "ev-1",
+            date: "2026. 02. 25",
+            category: "신입모집·OT",
+            title: "2026 상반기 신입단원 오디션 및 메리고잉 웰컴 하모니 데이",
+            participantsCount: 45,
+            budgetNote: "수입 900,000원 / 지출 620,000원 (다과·웰컴키트)",
+            summary: "소프라노 4명, 알토 3명, 테너 4명, 베이스 3명 총 14명의 신입단원 선발 및 파트 상견례 진행."
+          },
+          {
+            id: "ev-2",
+            date: "2026. 05. 15 ~ 05. 16",
+            category: "음악캠프",
+            title: "2026 봄 하모니 합창 워크숍 & 파트별 앙상블 캠프 (양평)",
+            participantsCount: 39,
+            budgetNote: "회비 집행 1,800,000원 / 찬조금 500,000원",
+            summary: "정기연주회 메인 레퍼토리 6곡 집중 파트 연습 및 발성 클리닉, 메리고잉 레크리에이션 진행."
+          },
+          {
+            id: "ev-3",
+            date: "2026. 07. 22",
+            category: "사내공연",
+            title: "삼성 임직원 힐링 런치콘서트 ‘한여름의 세레나데’",
+            participantsCount: 41,
+            budgetNote: "사내 문화행사 지원금 전액 충당 (단비 지출 0원)",
+            summary: "사내 로비 특설무대에서 임직원 350여 명 관람, 합창곡 4곡 및 중창 무대 성황리 완료."
+          },
+          {
+            id: "ev-4",
+            date: "2026. 10. 24",
+            category: "정기연주회",
+            title: "제18회 삼성한우리합창단 정기연주회 ‘가을, 우리들의 하모니’",
+            participantsCount: 44,
+            budgetNote: "총 지출 5,020,000원 (공연장 대관·세션·팸플릿·다과)",
+            summary: "전석 매진(관객 480명), 혼성 4부 합창 9곡 및 특별 게스트 협연 무대 성공적 개최."
+          },
+          {
+            id: "ev-5",
+            date: "2026. 11. 28",
+            category: "사회공헌",
+            title: "지역사회 나눔 자선 합창제 초청 공연",
+            participantsCount: 36,
+            budgetNote: "지출 320,000원 (단원 이동 간식 및 기념 꽃다발)",
+            summary: "구리·경기 지역 복지관 초청 연말 나눔 무대 참여 및 합창단 명의 기부금 전달."
+          },
+          {
+            id: "ev-6",
+            date: "2026. 12. 18 (오늘)",
+            category: "정기총회",
+            title: "2026 삼성한우리합창단 총회 with ‘메리고잉 운영진’",
+            participantsCount: 42,
+            budgetNote: "연말 결산 잔액 1,480,000원 차기(2027) 기수 이월",
+            summary: "2026 연간 활동 돌아보기, 한우리 하모니상 시상, 단칙 개정안·신규안 6건 실시간 찬반투표 의결."
+          }
+        ]
+      };
+    }
+
+    let appState = getDefaultState();
+
+    // Persistence & Cloud Sync Helpers
+    function saveStateToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          totalAttendees: appState.totalAttendees,
+          activeAgendaId: appState.activeAgendaId,
+          members: appState.members,
+          bylaws: appState.bylaws,
+          agendas: appState.agendas,
+          issues: appState.issues,
+          events: appState.events
+        }));
+      } catch (e) {
+        // Ignore storage quota errors in sandboxed iframes
+      }
+      pushStateToCloudIfConnected();
+    }
+
+    function loadStateFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.agendas) && Array.isArray(parsed.bylaws)) {
+            appState.totalAttendees = parsed.totalAttendees || 42;
+            appState.activeAgendaId = parsed.activeAgendaId || "ag-2";
+            appState.members = parsed.members || appState.members;
+            appState.bylaws = parsed.bylaws;
+            appState.agendas = parsed.agendas;
+            appState.issues = parsed.issues || appState.issues;
+            appState.events = parsed.events || appState.events;
+          }
+        }
+        const savedUrl = localStorage.getItem(STORAGE_KEY + "_db_url");
+        if (savedUrl) {
+          cloudSyncUrl = savedUrl;
+          const inp = document.getElementById("inputFirebaseDbUrl");
+          if (inp) inp.value = savedUrl;
+          startCloudSyncPolling();
+        }
+      } catch (e) {
+        // Fallback to default state
+      }
+    }
+
+    function resetToDefaultInitialData() {
+      appState = getDefaultState();
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (e) {}
+      renderAll();
+      closeCloudSyncModal();
+      showToast("초기 기본 데이터로 초기화되었습니다.");
+    }
+
+    // =========================================================================
+    // 2. CORE HELPER FUNCTIONS
+    // =========================================================================
+
+    function getMajorityThreshold(total) {
+      return Math.floor(total / 2) + 1;
+    }
+
+    function getAgendaTallies(agenda) {
+      let approve = agenda.baseApprove;
+      let reject = agenda.baseReject;
+      let abstain = agenda.baseAbstain;
+      const votesMap = agenda.memberVotes || {};
+      Object.keys(votesMap).forEach(function(memId) {
+        if (agenda.id === "ag-1" && (memId === "mem-1" || memId === "mem-2" || memId === "mem-3")) {
+          return;
+        }
+        const choice = votesMap[memId];
+        if (choice === "approve") approve += 1;
+        else if (choice === "reject") reject += 1;
+        else if (choice === "abstain") abstain += 1;
+      });
+      const totalVoted = approve + reject + abstain;
+      const totalAttendees = Math.max(appState.totalAttendees, totalVoted);
+      const majorityThreshold = getMajorityThreshold(totalAttendees);
+      const isAdopted = approve >= majorityThreshold;
+      return {
+        approve: approve,
+        reject: reject,
+        abstain: abstain,
+        totalVoted: totalVoted,
+        remaining: Math.max(0, totalAttendees - totalVoted),
+        totalAttendees: totalAttendees,
+        majorityThreshold: majorityThreshold,
+        isAdopted: isAdopted
+      };
+    }
+
+    function normalizeArticleQuery(rawQuery) {
+      if (!rawQuery) return "";
+      const trimmed = rawQuery.trim();
+      const match = trimmed.match(/^(?:제\s*)?(\d+)\s*조/);
+      if (match) {
+        return "제" + match[1] + "조";
+      }
+      return trimmed;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function highlightMatch(text, rawQuery) {
+      const safeText = escapeHtml(text);
+      if (!rawQuery || !rawQuery.trim()) return safeText;
+      const q = rawQuery.trim();
+      const norm = normalizeArticleQuery(q);
+      const patterns = [];
+      if (norm && norm !== q) {
+        patterns.push(norm.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+      }
+      patterns.push(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+      const regex = new RegExp("(" + patterns.join("|") + ")", "gi");
+      return safeText.replace(regex, '<mark class="hl">$1</mark>');
+    }
+
+    function matchesSearch(itemTextArray, rawQuery) {
+      if (!rawQuery || !rawQuery.trim()) return true;
+      const q = rawQuery.trim().toLowerCase();
+      const norm = normalizeArticleQuery(q).toLowerCase();
+      const combined = itemTextArray.join(" ").toLowerCase();
+      return combined.indexOf(q) !== -1 || (norm && combined.indexOf(norm) !== -1);
+    }
+
+    function getCurrentVoter() {
+      return appState.members.find(function(m) { return m.id === appState.currentVoterId; }) || appState.members[0];
+    }
+
+    function getActiveAgenda() {
+      return appState.agendas.find(function(a) { return a.id === appState.activeAgendaId; }) || appState.agendas[0];
+    }
+
+    // =========================================================================
+    // 3. RENDER FUNCTIONS
+    // =========================================================================
+
+    function renderAll() {
+      renderHeaderStatus();
+      renderAgendaStepper();
+      renderActiveVotingView();
+      renderFullSearchView();
+      renderDrawerSearchResults();
+      renderEventsView();
+      renderSettlementView();
+      renderAdminView();
+      renderAuthModalMemberList();
+    }
+
+    function renderHeaderStatus() {
+      const majority = getMajorityThreshold(appState.totalAttendees);
+      document.getElementById("headerTotalAttendees").textContent = appState.totalAttendees + "명";
+      document.getElementById("headerMajorityThreshold").textContent = majority + "표↑";
+
+      const voter = getCurrentVoter();
+      document.getElementById("currentVoterBadgeText").textContent =
+        voter.name + " (" + voter.part + " · " + voter.code + ")";
+
+      const activeAgenda = getActiveAgenda();
+      document.getElementById("navBadgeAgendaProgress").textContent =
+        activeAgenda.orderNo + "/" + appState.agendas.length;
+    }
+
+    function renderAgendaStepper() {
+      const container = document.getElementById("agendaStepperList");
+      let html = "";
+      appState.agendas.forEach(function(ag) {
+        const isCurrent = ag.id === appState.activeAgendaId;
+        const tallies = getAgendaTallies(ag);
+        let statusTag = "";
+        if (ag.status === "adopted") {
+          statusTag = '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 whitespace-nowrap">채택</span>';
+        } else if (ag.status === "rejected") {
+          statusTag = '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-rose-100 text-rose-800 whitespace-nowrap">부결</span>';
+        } else if (ag.status === "active") {
+          statusTag = '<span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-900 whitespace-nowrap">투표중</span>';
+        } else {
+          statusTag = '<span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-600 whitespace-nowrap">대기</span>';
+        }
+
+        const cardBorder = isCurrent
+          ? "border-2 border-indigo-600 bg-indigo-50/60 shadow-xs"
+          : "border border-slate-200 bg-white hover:bg-slate-50";
+
+        html += '<button type="button" onclick="selectAgenda(\'' + ag.id + '\')" class="text-left p-2.5 rounded-xl transition flex flex-col justify-between ' + cardBorder + '">' +
+          '<div class="flex items-center justify-between gap-1 w-full">' +
+            '<span class="text-xs font-extrabold whitespace-nowrap ' + (isCurrent ? 'text-indigo-700' : 'text-slate-700') + '">제' + ag.orderNo + '호 · ' + escapeHtml(ag.targetArticle.split(" ")[0]) + '</span>' +
+            statusTag +
+          '</div>' +
+          '<div class="text-xs font-semibold text-slate-800 line-clamp-1 mt-1">' + escapeHtml(ag.title) + '</div>' +
+          '<div class="text-[11px] text-slate-500 mt-1 flex items-center justify-between w-full">' +
+            '<span>찬성 ' + tallies.approve + '/' + tallies.majorityThreshold + '표</span>' +
+            '<span class="whitespace-nowrap ' + (tallies.isAdopted ? 'text-emerald-600 font-bold' : 'text-slate-400') + '">' + (tallies.isAdopted ? '과반달성' : '미달') + '</span>' +
+          '</div>' +
+        '</button>';
+      });
+      container.innerHTML = html;
+    }
+
+    function renderActiveVotingView() {
+      const ag = getActiveAgenda();
+      const tallies = getAgendaTallies(ag);
+      const voter = getCurrentVoter();
+      const existingVote = (ag.memberVotes || {})[voter.id] || null;
+
+      document.getElementById("activeAgendaOrderBadge").textContent = "제" + ag.orderNo + "호 안건";
+      const typeBadge = document.getElementById("activeAgendaTypeBadge");
+      typeBadge.textContent = ag.type === "신규안" ? "신규 제정안" : "단칙 개정안";
+      typeBadge.className = ag.type === "신규안"
+        ? "px-2.5 py-1 rounded-lg bg-emerald-400 text-slate-950 font-extrabold text-xs whitespace-nowrap"
+        : "px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 font-extrabold text-xs whitespace-nowrap";
+
+      document.getElementById("activeAgendaTargetArticle").textContent = ag.targetArticle;
+      document.getElementById("activeAgendaTitle").textContent = ag.title;
+      document.getElementById("activeAgendaReason").textContent = ag.reason;
+
+      const statusBadgeEl = document.getElementById("activeAgendaStatusBadge");
+      if (ag.status === "adopted") {
+        statusBadgeEl.innerHTML = '<span class="px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-500 text-white shadow-xs whitespace-nowrap">✓ 의결 마감: 과반 찬성 채택(가결)</span>';
+      } else if (ag.status === "rejected") {
+        statusBadgeEl.innerHTML = '<span class="px-3 py-1 rounded-full text-xs font-extrabold bg-rose-500 text-white shadow-xs whitespace-nowrap">✕ 의결 마감: 과반 미달 부결</span>';
+      } else if (ag.status === "active") {
+        statusBadgeEl.innerHTML = '<span class="px-3 py-1 rounded-full text-xs font-extrabold bg-amber-400 text-slate-950 animate-pulse whitespace-nowrap">● 현재 상정 · 실시간 투표 진행중</span>';
+      } else {
+        statusBadgeEl.innerHTML = '<span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-700 text-slate-200 whitespace-nowrap">상정 대기 (즉시 투표 가능)</span>';
+      }
+
+      document.getElementById("compareBeforeClauseLabel").textContent = ag.targetArticle;
+      document.getElementById("compareAfterClauseLabel").textContent = ag.targetArticle;
+      document.getElementById("compareAfterBadge").textContent = ag.type === "신규안" ? "신규안 (신설 조문)" : "개정안 (상정 조문)";
+      document.getElementById("activeAgendaBeforeText").textContent = ag.beforeText;
+      document.getElementById("activeAgendaAfterText").textContent = ag.afterText;
+
+      let kwHtml = '<span class="text-xs font-bold text-slate-400 mr-1">관련 조항·키워드:</span>';
+      (ag.keywords || []).forEach(function(kw) {
+        kwHtml += '<button type="button" onclick="openDrawerWithQuery(\'' + escapeHtml(kw) + '\')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 text-xs font-semibold transition">#' + escapeHtml(kw) + '</button>';
+      });
+      document.getElementById("activeAgendaKeywordsList").innerHTML = kwHtml;
+
+      renderRelatedIssuesForActiveAgenda(ag);
+
+      document.getElementById("voterAvatarCircle").textContent = voter.name.charAt(0);
+      document.getElementById("voterPanelName").textContent = voter.name + " 단원";
+      document.getElementById("voterPanelPart").textContent = voter.part;
+      document.getElementById("voterPanelCode").textContent = "본인확인 코드: " + voter.code + " · 안건당 1인 1표 제한";
+
+      const voterBadgeEl = document.getElementById("voterCurrentAgendaBadge");
+      const lockTextEl = document.getElementById("voteLockNoticeText");
+      const btnApprove = document.getElementById("btnVoteApprove");
+      const btnReject = document.getElementById("btnVoteReject");
+      const btnAbstain = document.getElementById("btnVoteAbstain");
+
+      const choiceMapKor = { approve: "찬성", reject: "반대", abstain: "기권" };
+
+      if (existingVote) {
+        voterBadgeEl.innerHTML = '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-extrabold whitespace-nowrap">투표 완료 (' + choiceMapKor[existingVote] + ')</span>';
+        lockTextEl.innerHTML = '<strong class="text-indigo-700">' + escapeHtml(voter.name) + '(' + escapeHtml(voter.code) + ')</strong> 님은 이 안건에 <strong>[' + choiceMapKor[existingVote] + ']</strong> 표를 행사하셨습니다. (중복 투표 차단됨)';
+      } else {
+        voterBadgeEl.innerHTML = '<span class="px-2.5 py-1 rounded-lg bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-bold whitespace-nowrap">미투표 (투표 가능)</span>';
+        lockTextEl.textContent = escapeHtml(voter.name) + "(" + escapeHtml(voter.code) + ") 단원 명의로 찬성·반대·기권 중 1표를 행사할 수 있습니다.";
+      }
+
+      [
+        { btn: btnApprove, key: "approve" },
+        { btn: btnReject, key: "reject" },
+        { btn: btnAbstain, key: "abstain" }
+      ].forEach(function(item) {
+        if (item.key === "approve") {
+          item.btn.className = "group relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition shadow-sm " +
+            (existingVote === "approve"
+              ? "border-emerald-600 bg-emerald-600 text-white ring-4 ring-emerald-200"
+              : existingVote
+                ? "border-slate-200 bg-slate-100 text-slate-400 opacity-60 cursor-not-allowed"
+                : "border-emerald-200 bg-emerald-50/50 hover:bg-emerald-600 hover:border-emerald-600 text-emerald-900 hover:text-white");
+        } else if (item.key === "reject") {
+          item.btn.className = "group relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition shadow-sm " +
+            (existingVote === "reject"
+              ? "border-rose-600 bg-rose-600 text-white ring-4 ring-rose-200"
+              : existingVote
+                ? "border-slate-200 bg-slate-100 text-slate-400 opacity-60 cursor-not-allowed"
+                : "border-rose-200 bg-rose-50/50 hover:bg-rose-600 hover:border-rose-600 text-rose-900 hover:text-white");
+        } else {
+          item.btn.className = "group relative flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition shadow-sm " +
+            (existingVote === "abstain"
+              ? "border-slate-700 bg-slate-700 text-white ring-4 ring-slate-200"
+              : existingVote
+                ? "border-slate-200 bg-slate-100 text-slate-400 opacity-60 cursor-not-allowed"
+                : "border-slate-200 bg-slate-50 hover:bg-slate-700 hover:border-slate-700 text-slate-800 hover:text-white");
+        }
+      });
+
+      document.getElementById("statTotalAttendees").textContent = tallies.totalAttendees + "명";
+      document.getElementById("statMajorityRequired").textContent = tallies.majorityThreshold + "표↑";
+      document.getElementById("statVotedCount").textContent = tallies.totalVoted + "명";
+      document.getElementById("statRemainingCount").textContent = tallies.remaining + "명";
+
+      const approvePct = tallies.totalAttendees > 0 ? ((tallies.approve / tallies.totalAttendees) * 100) : 0;
+      const rejectPct = tallies.totalAttendees > 0 ? ((tallies.reject / tallies.totalAttendees) * 100) : 0;
+      const abstainPct = tallies.totalAttendees > 0 ? ((tallies.abstain / tallies.totalAttendees) * 100) : 0;
+
+      document.getElementById("majorityApprovalBar").style.width = Math.min(100, approvePct).toFixed(1) + "%";
+      document.getElementById("majorityMarkerLabel").textContent = "▲ 과반 채택선 (" + tallies.majorityThreshold + "표)";
+      document.getElementById("majorityMaxLabel").textContent = tallies.totalAttendees + "표 (100%)";
+
+      const verdictPill = document.getElementById("decisionVerdictPill");
+      const subtextEl = document.getElementById("majorityProgressSubtext");
+
+      if (tallies.isAdopted) {
+        verdictPill.innerHTML = '<span class="px-3 py-1.5 rounded-xl bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-extrabold flex items-center gap-1 whitespace-nowrap">✓ 참석 과반 찬성 달성 (채택)</span>';
+        subtextEl.textContent = "찬성 " + tallies.approve + "표 (" + approvePct.toFixed(1) + "%) — 과반 기준(" + tallies.majorityThreshold + "표) 달성!";
+        subtextEl.className = "font-extrabold text-emerald-400";
+      } else {
+        const needed = tallies.majorityThreshold - tallies.approve;
+        verdictPill.innerHTML = '<span class="px-3 py-1.5 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 text-xs font-extrabold whitespace-nowrap">채택까지 찬성 ' + needed + '표 필요</span>';
+        subtextEl.textContent = "현재 찬성 " + tallies.approve + "표 (" + approvePct.toFixed(1) + "%) · 과반 채택까지 " + needed + "표 남음";
+        subtextEl.className = "font-bold text-amber-300";
+      }
+
+      document.getElementById("barLabelApprove").textContent = tallies.approve + "표 (" + approvePct.toFixed(1) + "%)";
+      document.getElementById("barFillApprove").style.width = Math.min(100, approvePct).toFixed(1) + "%";
+
+      document.getElementById("barLabelReject").textContent = tallies.reject + "표 (" + rejectPct.toFixed(1) + "%)";
+      document.getElementById("barFillReject").style.width = Math.min(100, rejectPct).toFixed(1) + "%";
+
+      document.getElementById("barLabelAbstain").textContent = tallies.abstain + "표 (" + abstainPct.toFixed(1) + "%)";
+      document.getElementById("barFillAbstain").style.width = Math.min(100, abstainPct).toFixed(1) + "%";
+    }
+
+    function renderRelatedIssuesForActiveAgenda(activeAgenda) {
+      const container = document.getElementById("relatedIssuesAndAgendasContainer");
+      const activeClauseSet = new Set(activeAgenda.relatedClauses || []);
+      const activeKwSet = new Set(activeAgenda.keywords || []);
+
+      const matchedIssues = appState.issues.filter(function(iss) {
+        if ((iss.relatedAgendas || []).indexOf(activeAgenda.id) !== -1) return true;
+        return (iss.relatedClauses || []).some(function(c) { return activeClauseSet.has(c); });
+      });
+
+      const matchedAgendas = appState.agendas.filter(function(other) {
+        if (other.id === activeAgenda.id) return false;
+        const shareClause = (other.relatedClauses || []).some(function(c) { return activeClauseSet.has(c); });
+        const shareKw = (other.keywords || []).some(function(k) { return activeKwSet.has(k); });
+        return shareClause || shareKw;
+      });
+
+      const matchedClauses = appState.bylaws.filter(function(cl) {
+        return activeClauseSet.has(cl.articleNo);
+      });
+
+      let html = "";
+
+      matchedIssues.forEach(function(iss) {
+        html += '<div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
+          '<div class="space-y-1">' +
+            '<div class="flex flex-wrap items-center gap-1.5">' +
+              '<span class="px-2 py-0.5 rounded bg-amber-500 text-white text-[11px] font-extrabold">' + escapeHtml(iss.code) + ' · 논의 배경</span>' +
+              '<span class="text-xs font-bold text-amber-900">연관 조항: ' + escapeHtml((iss.relatedClauses || []).join(", ")) + '</span>' +
+            '</div>' +
+            '<div class="text-sm font-extrabold text-slate-900">' + escapeHtml(iss.title) + '</div>' +
+            '<p class="text-xs text-slate-700 leading-relaxed">' + escapeHtml(iss.summary) + '</p>' +
+          '</div>' +
+          '<button type="button" onclick="openDrawerWithQuery(\'' + escapeHtml(iss.relatedClauses[0] || iss.title) + '\')" class="self-start sm:self-center px-3 py-1.5 rounded-xl bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold shrink-0 transition whitespace-nowrap">' +
+            '관련 조항 즉석보기 →' +
+          '</button>' +
+        '</div>';
+      });
+
+      if (matchedAgendas.length > 0) {
+        html += '<div class="pt-2"><div class="text-xs font-bold text-slate-500 mb-2">함께 언급되거나 연동된 다른 개정안·신규안 (' + matchedAgendas.length + '건)</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">';
+        matchedAgendas.forEach(function(other) {
+          const t = getAgendaTallies(other);
+          html += '<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:border-indigo-300 transition flex flex-col justify-between gap-2">' +
+            '<div>' +
+              '<div class="flex items-center justify-between gap-1">' +
+                '<span class="text-xs font-extrabold text-indigo-700">제' + other.orderNo + '호 안건 (' + escapeHtml(other.targetArticle) + ')</span>' +
+                '<span class="text-[11px] font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700 whitespace-nowrap">' + escapeHtml(other.type) + '</span>' +
+              '</div>' +
+              '<div class="text-xs font-bold text-slate-900 mt-1">' + escapeHtml(other.title) + '</div>' +
+            '</div>' +
+            '<div class="flex items-center justify-between pt-2 border-t border-slate-200/70 text-[11px]">' +
+              '<span class="text-slate-500">찬성 ' + t.approve + '표 / 기준 ' + t.majorityThreshold + '표</span>' +
+              '<button type="button" onclick="selectAgenda(\'' + other.id + '\')" class="font-bold text-indigo-600 hover:text-indigo-800 whitespace-nowrap">이 안건으로 이동 →</button>' +
+            '</div>' +
+          '</div>';
+        });
+        html += '</div></div>';
+      }
+
+      if (matchedClauses.length > 0) {
+        html += '<div class="pt-2"><div class="text-xs font-bold text-slate-500 mb-2">참조된 현행 단칙 조문 (' + matchedClauses.length + '건)</div><div class="space-y-2">';
+        matchedClauses.forEach(function(cl) {
+          html += '<div class="p-3 rounded-xl border border-slate-200 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">' +
+            '<div class="text-xs">' +
+              '<span class="font-extrabold text-slate-900">' + escapeHtml(cl.articleNo) + ' (' + escapeHtml(cl.title) + ')</span> ' +
+              '<span class="text-slate-600">' + escapeHtml(cl.content) + '</span>' +
+            '</div>' +
+            '<button type="button" onclick="openDrawerWithQuery(\'' + escapeHtml(cl.articleNo) + '\')" class="text-xs font-bold text-indigo-600 hover:underline shrink-0 whitespace-nowrap">조문 상세</button>' +
+          '</div>';
+        });
+        html += '</div></div>';
+      }
+
+      container.innerHTML = html;
+    }
+
+    // =========================================================================
+    // 4. INSTANT SEARCH RENDERING (With Direct Bylaw Editing)
+    // =========================================================================
+
+    function renderFullSearchView() {
+      const q = appState.fullSearchQuery;
+
+      const filteredClauses = appState.bylaws.filter(function(cl) {
+        return matchesSearch([cl.chapter, cl.articleNo, cl.title, cl.content, (cl.keywords || []).join(" ")], q);
+      });
+      document.getElementById("searchCountClauses").textContent = filteredClauses.length + "개 조항";
+
+      let clHtml = "";
+      if (filteredClauses.length === 0) {
+        clHtml = '<div class="p-6 text-center text-sm text-slate-500 bg-slate-50 rounded-xl">검색어와 일치하는 현행 단칙 조항이 없습니다.</div>';
+      } else {
+        filteredClauses.forEach(function(cl) {
+          const amendedBadge = cl.lastAmended
+            ? '<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">' + escapeHtml(cl.lastAmended) + '</span>'
+            : '';
+          clHtml += '<div class="p-4 rounded-xl border border-slate-200 hover:border-indigo-300 transition bg-slate-50/50 space-y-1.5">' +
+            '<div class="flex flex-wrap items-center justify-between gap-1">' +
+              '<div class="flex items-center gap-1.5">' +
+                '<span class="text-xs font-bold text-indigo-700 px-2 py-0.5 rounded bg-indigo-50">' + highlightMatch(cl.articleNo + " · " + cl.title, q) + '</span>' +
+                amendedBadge +
+              '</div>' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="text-[11px] text-slate-400">' + escapeHtml(cl.chapter) + '</span>' +
+                '<button type="button" onclick="openEditClauseModal(\'' + cl.id + '\')" class="px-2 py-0.5 rounded bg-white border border-slate-300 hover:border-indigo-500 text-[11px] font-bold text-indigo-700">✎ 조문 수정</button>' +
+              '</div>' +
+            '</div>' +
+            '<p class="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line">' + highlightMatch(cl.content, q) + '</p>' +
+            '<div class="flex flex-wrap gap-1 pt-1">' +
+              (cl.keywords || []).map(function(k) {
+                return '<button type="button" onclick="setFullSearchQuery(\'' + escapeHtml(k) + '\')" class="text-[11px] px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600">#' + highlightMatch(k, q) + '</button>';
+              }).join("") +
+            '</div>' +
+          '</div>';
+        });
+      }
+      document.getElementById("fullSearchClausesList").innerHTML = clHtml;
+
+      const filteredAgendas = appState.agendas.filter(function(ag) {
+        return matchesSearch([
+          "제" + ag.orderNo + "호",
+          ag.type,
+          ag.targetArticle,
+          ag.title,
+          ag.beforeText,
+          ag.afterText,
+          ag.reason,
+          (ag.relatedClauses || []).join(" "),
+          (ag.keywords || []).join(" ")
+        ], q);
+      });
+      document.getElementById("searchCountAgendas").textContent = filteredAgendas.length + "건";
+
+      let agHtml = "";
+      if (filteredAgendas.length === 0) {
+        agHtml = '<div class="p-6 text-center text-sm text-slate-500 bg-slate-50 rounded-xl">일치하는 개정안·신규안이 없습니다.</div>';
+      } else {
+        filteredAgendas.forEach(function(ag) {
+          const t = getAgendaTallies(ag);
+          agHtml += '<div class="p-4 rounded-xl border border-slate-200 bg-white space-y-2">' +
+            '<div class="flex flex-wrap items-center justify-between gap-2">' +
+              '<div class="flex items-center gap-1.5">' +
+                '<span class="px-2 py-0.5 rounded bg-slate-900 text-white text-xs font-bold">제' + ag.orderNo + '호</span>' +
+                '<span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-xs font-bold">' + highlightMatch(ag.targetArticle, q) + '</span>' +
+                '<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-xs font-bold">' + escapeHtml(ag.type) + '</span>' +
+              '</div>' +
+              '<button type="button" onclick="jumpToAgendaFromSearch(\'' + ag.id + '\')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline">투표 화면으로 이동 →</button>' +
+            '</div>' +
+            '<div class="text-sm font-extrabold text-slate-900">' + highlightMatch(ag.title, q) + '</div>' +
+            '<div class="p-2.5 rounded-lg bg-indigo-50/60 border border-indigo-100 text-xs text-slate-800">' +
+              '<strong class="text-indigo-800">[상정 조문]</strong> ' + highlightMatch(ag.afterText, q) +
+            '</div>' +
+            '<div class="text-xs text-slate-500 flex items-center justify-between">' +
+              '<span>현재 득표: 찬성 ' + t.approve + ' / 반대 ' + t.reject + ' / 기권 ' + t.abstain + '</span>' +
+              '<span class="font-bold ' + (t.isAdopted ? 'text-emerald-600' : 'text-amber-700') + '">' + (t.isAdopted ? '과반 찬성 달성' : '과반 기준 ' + t.majorityThreshold + '표') + '</span>' +
+            '</div>' +
+          '</div>';
+        });
+      }
+      document.getElementById("fullSearchAgendasList").innerHTML = agHtml;
+
+      const filteredIssues = appState.issues.filter(function(iss) {
+        return matchesSearch([
+          iss.code,
+          iss.title,
+          iss.summary,
+          (iss.relatedClauses || []).join(" "),
+          (iss.keywords || []).join(" ")
+        ], q);
+      });
+      document.getElementById("searchCountIssues").textContent = filteredIssues.length + "건";
+
+      let issHtml = "";
+      if (filteredIssues.length === 0) {
+        issHtml = '<div class="p-6 text-center text-sm text-slate-500 bg-slate-50 rounded-xl">일치하는 현안이 없습니다.</div>';
+      } else {
+        filteredIssues.forEach(function(iss) {
+          issHtml += '<div class="p-4 rounded-xl border border-amber-200 bg-amber-50/50 space-y-1.5">' +
+            '<div class="flex items-center justify-between">' +
+              '<span class="px-2 py-0.5 rounded bg-amber-500 text-white text-xs font-extrabold">' + escapeHtml(iss.code) + '</span>' +
+              '<span class="text-xs font-bold text-amber-900">관련 조항: ' + highlightMatch((iss.relatedClauses || []).join(", "), q) + '</span>' +
+            '</div>' +
+            '<div class="text-sm font-extrabold text-slate-900">' + highlightMatch(iss.title, q) + '</div>' +
+            '<p class="text-xs text-slate-700 leading-relaxed">' + highlightMatch(iss.summary, q) + '</p>' +
+          '</div>';
+        });
+      }
+      document.getElementById("fullSearchIssuesList").innerHTML = issHtml;
+    }
+
+    function renderDrawerSearchResults() {
+      const q = appState.drawerSearchQuery;
+      const container = document.getElementById("drawerSearchResultsContainer");
+
+      const clauses = appState.bylaws.filter(function(cl) {
+        return matchesSearch([cl.chapter, cl.articleNo, cl.title, cl.content, (cl.keywords || []).join(" ")], q);
+      });
+      const agendas = appState.agendas.filter(function(ag) {
+        return matchesSearch([ag.targetArticle, ag.title, ag.beforeText, ag.afterText, ag.reason, (ag.relatedClauses || []).join(" "), (ag.keywords || []).join(" ")], q);
+      });
+      const issues = appState.issues.filter(function(iss) {
+        return matchesSearch([iss.code, iss.title, iss.summary, (iss.relatedClauses || []).join(" "), (iss.keywords || []).join(" ")], q);
+      });
+
+      let html = "";
+
+      html += '<div><div class="text-xs font-extrabold text-indigo-700 uppercase tracking-wider mb-2">현행 단칙 조항 (' + clauses.length + '건)</div><div class="space-y-2">';
+      clauses.forEach(function(cl) {
+        html += '<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1">' +
+          '<div class="flex items-center justify-between">' +
+            '<div class="text-xs font-extrabold text-slate-900">' + highlightMatch(cl.articleNo + " (" + cl.title + ")", q) + '</div>' +
+            '<button type="button" onclick="openEditClauseModal(\'' + cl.id + '\')" class="text-[11px] font-bold text-indigo-600 hover:underline">✎ 수정</button>' +
+          '</div>' +
+          '<p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">' + highlightMatch(cl.content, q) + '</p>' +
+        '</div>';
+      });
+      html += '</div></div>';
+
+      html += '<div><div class="text-xs font-extrabold text-emerald-700 uppercase tracking-wider mb-2">관련 상정 개정안·신규안 (' + agendas.length + '건)</div><div class="space-y-2">';
+      agendas.forEach(function(ag) {
+        html += '<div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1.5">' +
+          '<div class="flex items-center justify-between">' +
+            '<span class="text-xs font-extrabold text-emerald-900">제' + ag.orderNo + '호 · ' + highlightMatch(ag.targetArticle, q) + ' (' + escapeHtml(ag.type) + ')</span>' +
+            '<button type="button" onclick="selectAgenda(\'' + ag.id + '\'); toggleSearchDrawer(false);" class="text-xs font-bold text-indigo-600 underline">이 안건 보기</button>' +
+          '</div>' +
+          '<div class="text-xs font-bold text-slate-900">' + highlightMatch(ag.title, q) + '</div>' +
+          '<p class="text-xs text-slate-700">' + highlightMatch(ag.afterText, q) + '</p>' +
+        '</div>';
+      });
+      html += '</div></div>';
+
+      html += '<div><div class="text-xs font-extrabold text-amber-700 uppercase tracking-wider mb-2">관련 총회 현안 (' + issues.length + '건)</div><div class="space-y-2">';
+      issues.forEach(function(iss) {
+        html += '<div class="p-3.5 rounded-xl border border-amber-200 bg-amber-50/50 space-y-1">' +
+          '<div class="text-xs font-extrabold text-amber-900">' + escapeHtml(iss.code) + ' · ' + highlightMatch(iss.title, q) + '</div>' +
+          '<p class="text-xs text-slate-700 leading-relaxed">' + highlightMatch(iss.summary, q) + '</p>' +
+        '</div>';
+      });
+      html += '</div></div>';
+
+      container.innerHTML = html;
+    }
+
+    // =========================================================================
+    // 5. EVENTS VIEW, SETTLEMENT VIEW & ADMIN VIEW RENDERING
+    // =========================================================================
+
+    function renderEventsView() {
+      const container = document.getElementById("clubEventsTimelineList");
+      let html = "";
+      appState.events.forEach(function(ev, index) {
+        html += '<div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:shadow-xs transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
+          '<div class="space-y-1.5">' +
+            '<div class="flex flex-wrap items-center gap-2">' +
+              '<span class="px-2 py-0.5 rounded bg-slate-200 text-slate-700 text-[11px] font-extrabold">#' + (index + 1) + '</span>' +
+              '<span class="px-2.5 py-0.5 rounded-lg bg-indigo-600 text-white text-xs font-bold">' + escapeHtml(ev.category) + '</span>' +
+              '<span class="text-xs font-bold text-slate-500">' + escapeHtml(ev.date) + '</span>' +
+              '<span class="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">참석 단원 ' + ev.participantsCount + '명</span>' +
+            '</div>' +
+            '<h4 class="text-base font-extrabold text-slate-900">' + escapeHtml(ev.title) + '</h4>' +
+            '<p class="text-xs sm:text-sm text-slate-700 leading-relaxed">' + escapeHtml(ev.summary) + '</p>' +
+          '</div>' +
+        '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function renderSettlementView() {
+      const container = document.getElementById("settlementEventsList");
+      if (!container) return;
+      let html = "";
+      appState.events.forEach(function(ev) {
+        html += '<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 space-y-1">' +
+          '<div class="flex items-center justify-between gap-2">' +
+            '<span class="text-xs font-bold text-indigo-700">' + escapeHtml(ev.date) + ' · ' + escapeHtml(ev.category) + '</span>' +
+            '<span class="text-[11px] text-slate-500">참석 ' + ev.participantsCount + '명</span>' +
+          '</div>' +
+          '<div class="text-xs sm:text-sm font-extrabold text-slate-900">' + escapeHtml(ev.title) + '</div>' +
+          '<div class="text-xs font-bold text-teal-800 bg-teal-50 border border-teal-200/80 px-2.5 py-1.5 rounded-lg mt-1">' +
+            '정산 내역: ' + escapeHtml(ev.budgetNote) +
+          '</div>' +
+        '</div>';
+      });
+      container.innerHTML = html;
+    }
+
+    function renderAdminView() {
+      const majority = getMajorityThreshold(appState.totalAttendees);
+      document.getElementById("adminInputTotalAttendees").value = appState.totalAttendees;
+      document.getElementById("adminQuorumPreviewBadge").textContent = "과반 기준: " + majority + "표 이상 찬성 시 채택";
+
+      const tbody = document.getElementById("adminAgendasTableBody");
+      let html = "";
+      appState.agendas.forEach(function(ag) {
+        const t = getAgendaTallies(ag);
+        const isCurrent = ag.id === appState.activeAgendaId;
+
+        let statusBadge = "";
+        if (ag.status === "adopted") {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 whitespace-nowrap">채택 확정</span>';
+        } else if (ag.status === "rejected") {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 whitespace-nowrap">부결 확정</span>';
+        } else if (ag.status === "active") {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 whitespace-nowrap">상정·투표중</span>';
+        } else {
+          statusBadge = '<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 whitespace-nowrap">대기</span>';
+        }
+
+        html += '<tr class="' + (isCurrent ? 'bg-indigo-50/40' : '') + '">' +
+          '<td class="py-3 px-3 font-extrabold text-slate-900 whitespace-nowrap">제' + ag.orderNo + '호</td>' +
+          '<td class="py-3 px-3 whitespace-nowrap">' +
+            '<span class="font-bold text-indigo-700">' + escapeHtml(ag.targetArticle) + '</span>' +
+            '<span class="ml-1 text-xs text-slate-500">(' + escapeHtml(ag.type) + ')</span>' +
+          '</td>' +
+          '<td class="py-3 px-3 font-semibold text-slate-900 max-w-xs">' + escapeHtml(ag.title) + '</td>' +
+          '<td class="py-3 px-3 text-right font-mono font-bold whitespace-nowrap">' +
+            '<span class="text-emerald-700">' + t.approve + '</span> / ' +
+            '<span class="text-rose-700">' + t.reject + '</span> / ' +
+            '<span class="text-slate-600">' + t.abstain + '</span>' +
+          '</td>' +
+          '<td class="py-3 px-3 text-center whitespace-nowrap">' +
+            (t.isAdopted
+              ? '<span class="text-xs font-extrabold text-emerald-600">과반 달성 (' + t.approve + '/' + t.majorityThreshold + ')</span>'
+              : '<span class="text-xs font-semibold text-amber-700">미달 (' + t.approve + '/' + t.majorityThreshold + ')</span>') +
+          '</td>' +
+          '<td class="py-3 px-3 text-center">' + statusBadge + '</td>' +
+          '<td class="py-3 px-3 text-right space-x-1 whitespace-nowrap">' +
+            '<button type="button" onclick="adminPresentAgenda(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">상정</button>' +
+            '<button type="button" onclick="adminSimulateVote(\'' + ag.id + '\', \'approve\')" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold">+찬성</button>' +
+            '<button type="button" onclick="adminSimulateVote(\'' + ag.id + '\', \'reject\')" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold">+반대</button>' +
+            '<button type="button" onclick="adminSimulateVote(\'' + ag.id + '\', \'abstain\')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">+기권</button>' +
+            '<button type="button" onclick="adminFinalizeSpecificAgenda(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">마감확정</button>' +
+          '</td>' +
+        '</tr>';
+      });
+      tbody.innerHTML = html;
+    }
+
+    function renderAuthModalMemberList() {
+      const container = document.getElementById("authMemberListGrid");
+      const activeAg = getActiveAgenda();
+      const votesMap = activeAg.memberVotes || {};
+
+      let html = "";
+      appState.members.forEach(function(m) {
+        const isSelected = m.id === appState.currentVoterId;
+        const votedChoice = votesMap[m.id];
+        const choiceLabel = votedChoice === "approve" ? "찬성 완료" : votedChoice === "reject" ? "반대 완료" : votedChoice === "abstain" ? "기권 완료" : "미투표";
+
+        html += '<button type="button" onclick="selectVoter(\'' + m.id + '\')" class="p-3 rounded-xl border text-left transition flex items-center justify-between ' +
+          (isSelected ? 'border-2 border-indigo-600 bg-indigo-50/70' : 'border-slate-200 hover:bg-slate-50') + '">' +
+          '<div>' +
+            '<div class="text-xs font-extrabold text-slate-900">' + escapeHtml(m.name) + ' <span class="text-indigo-600 font-semibold">(' + escapeHtml(m.part) + ')</span></div>' +
+            '<div class="text-[11px] text-slate-500">코드: ' + escapeHtml(m.code) + '</div>' +
+          '</div>' +
+          '<span class="px-2 py-0.5 rounded text-[10px] font-bold whitespace-nowrap ' + (votedChoice ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800') + '">' + choiceLabel + '</span>' +
+        '</button>';
+      });
+      container.innerHTML = html;
+    }
+
+    // =========================================================================
+    // 6. USER INTERACTIONS & CONTROLLERS
+    // =========================================================================
+
+    function switchMainTab(tabName) {
+      appState.activeTab = tabName;
+      ["voting", "search", "events", "settlement", "admin"].forEach(function(t) {
+        const sec = document.getElementById("view-" + t);
+        const btn = document.getElementById("tabBtn-" + t);
+        if (!sec || !btn) return;
+        if (t === tabName) {
+          sec.classList.remove("hidden");
+          btn.className = "nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-1.5 bg-white text-slate-900 shadow-sm shrink-0";
+        } else {
+          sec.classList.add("hidden");
+          btn.className = "nav-tab-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white hover:bg-slate-800/70 shrink-0";
+        }
+      });
+      renderAll();
+    }
+
+    function selectAgenda(agendaId) {
+      appState.activeAgendaId = agendaId;
+      saveStateToStorage();
+      renderAll();
+    }
+
+    function stepAgenda(delta) {
+      const idx = appState.agendas.findIndex(function(a) { return a.id === appState.activeAgendaId; });
+      if (idx === -1) return;
+      const nextIdx = (idx + delta + appState.agendas.length) % appState.agendas.length;
+      const nextAg = appState.agendas[nextIdx];
+      appState.activeAgendaId = nextAg.id;
+      if (nextAg.status === "pending") {
+        nextAg.status = "active";
+      }
+      saveStateToStorage();
+      renderAll();
+      showToast("제" + nextAg.orderNo + "호 안건(" + nextAg.targetArticle + ")이 화면에 상정되었습니다.");
+    }
+
+    function castVote(choice) {
+      const ag = getActiveAgenda();
+      const voter = getCurrentVoter();
+      if (!ag.memberVotes) ag.memberVotes = {};
+
+      if (ag.memberVotes[voter.id]) {
+        showToast("이미 이 안건에 투표하셨습니다. (1인 1표 중복 투표 제한)");
+        return;
+      }
+
+      ag.memberVotes[voter.id] = choice;
+      if (ag.status === "pending") {
+        ag.status = "active";
+      }
+
+      const tallies = getAgendaTallies(ag);
+      const korChoice = choice === "approve" ? "찬성" : choice === "reject" ? "반대" : "기권";
+      saveStateToStorage();
+      renderAll();
+
+      if (tallies.isAdopted) {
+        showToast(voter.name + " 단원 [" + korChoice + "] 투표 완료! 참석 과반(" + tallies.majorityThreshold + "표) 달성으로 채택 기준을 충족했습니다.");
+      } else {
+        showToast(voter.name + " 단원 [" + korChoice + "] 투표가 집계되었습니다.");
+      }
+    }
+
+    function switchNextUnvotedMember() {
+      const ag = getActiveAgenda();
+      const votesMap = ag.memberVotes || {};
+      const nextMember = appState.members.find(function(m) { return !votesMap[m.id]; });
+      if (nextMember) {
+        appState.currentVoterId = nextMember.id;
+        renderAll();
+        showToast("미투표 단원 [" + nextMember.name + " (" + nextMember.part + ")] 계정으로 전환되었습니다.");
+      } else {
+        openAuthModal();
+      }
+    }
+
+    function finalizeActiveAgenda() {
+      const ag = getActiveAgenda();
+      const tallies = getAgendaTallies(ag);
+      ag.status = tallies.isAdopted ? "adopted" : "rejected";
+      saveStateToStorage();
+      renderAll();
+      showToast(
+        "제" + ag.orderNo + "호 안건 투표 마감: 찬성 " + tallies.approve + "표 (과반 기준 " + tallies.majorityThreshold + "표) → 최종 [" +
+        (tallies.isAdopted ? "채택(가결)" : "부결") + "] 확정!"
+      );
+    }
+
+    function reopenActiveAgenda() {
+      const ag = getActiveAgenda();
+      ag.status = "active";
+      saveStateToStorage();
+      renderAll();
+      showToast("제" + ag.orderNo + "호 안건 투표가 재개시되었습니다.");
+    }
+
+    // Search handlers
+    function handleFullSearchInput(val) {
+      appState.fullSearchQuery = val;
+      renderFullSearchView();
+    }
+
+    function setFullSearchQuery(val) {
+      appState.fullSearchQuery = val;
+      const input = document.getElementById("fullSearchInput");
+      if (input) input.value = val;
+      renderFullSearchView();
+    }
+
+    function handleDrawerSearchInput(val) {
+      appState.drawerSearchQuery = val;
+      renderDrawerSearchResults();
+    }
+
+    function setDrawerSearchQuery(val) {
+      appState.drawerSearchQuery = val;
+      const input = document.getElementById("drawerSearchInput");
+      if (input) input.value = val;
+      renderDrawerSearchResults();
+    }
+
+    function toggleSearchDrawer(open) {
+      const backdrop = document.getElementById("searchDrawerBackdrop");
+      const panel = document.getElementById("searchDrawerPanel");
+      if (open) {
+        backdrop.classList.remove("hidden");
+        panel.classList.remove("translate-x-full");
+        renderDrawerSearchResults();
+      } else {
+        backdrop.classList.add("hidden");
+        panel.classList.add("translate-x-full");
+      }
+    }
+
+    function openDrawerWithQuery(query) {
+      setDrawerSearchQuery(query);
+      toggleSearchDrawer(true);
+    }
+
+    function openClauseInDrawerFromActive() {
+      const ag = getActiveAgenda();
+      const baseClause = (ag.relatedClauses && ag.relatedClauses[0]) || ag.targetArticle.split(" ")[0];
+      openDrawerWithQuery(baseClause);
+    }
+
+    function openRelatedInFullSearch() {
+      const ag = getActiveAgenda();
+      const baseClause = (ag.relatedClauses && ag.relatedClauses[0]) || ag.targetArticle.split(" ")[0];
+      setFullSearchQuery(baseClause);
+      switchMainTab("search");
+    }
+
+    function jumpToAgendaFromSearch(agendaId) {
+      appState.activeAgendaId = agendaId;
+      switchMainTab("voting");
+      showToast("선택한 안건 투표 화면으로 이동했습니다.");
+    }
+
+    // =========================================================================
+    // 7. BYLAW & AGENDA LIVE EDITING + MERGING ADOPTED AGENDAS INTO BYLAWS
+    // =========================================================================
+
+    function openEditClauseModal(clauseId) {
+      const cl = appState.bylaws.find(function(c) { return c.id === clauseId; });
+      if (!cl) return;
+      document.getElementById("editTargetMode").value = "clause";
+      document.getElementById("editTargetId").value = cl.id;
+      document.getElementById("editModalHeaderTitle").textContent = cl.articleNo + " 단칙 원문 직접 수정";
+      document.getElementById("editLabelTitle").textContent = cl.articleNo + " 조항 제목";
+      document.getElementById("editLabelContent").textContent = cl.articleNo + " 조문 본문 내용";
+      document.getElementById("editInputTitle").value = cl.title;
+      document.getElementById("editInputContent").value = cl.content;
+      document.getElementById("editExtraBeforeWrap").classList.add("hidden");
+
+      const m = document.getElementById("editClauseModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function openEditActiveAgendaModal() {
+      const ag = getActiveAgenda();
+      if (!ag) return;
+      document.getElementById("editTargetMode").value = "agenda";
+      document.getElementById("editTargetId").value = ag.id;
+      document.getElementById("editModalHeaderTitle").textContent = "제" + ag.orderNo + "호 안건 (" + ag.targetArticle + ") 문구 수정";
+      document.getElementById("editLabelTitle").textContent = "안건 제목";
+      document.getElementById("editLabelContent").textContent = "개정안 / 신설 조문 문구 (우측 대비표)";
+      document.getElementById("editInputTitle").value = ag.title;
+      document.getElementById("editInputContent").value = ag.afterText;
+      document.getElementById("editInputBefore").value = ag.beforeText;
+      document.getElementById("editExtraBeforeWrap").classList.remove("hidden");
+
+      const m = document.getElementById("editClauseModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function closeEditClauseModal() {
+      const m = document.getElementById("editClauseModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function saveEditedClauseOrAgenda() {
+      const mode = document.getElementById("editTargetMode").value;
+      const targetId = document.getElementById("editTargetId").value;
+      const newTitle = (document.getElementById("editInputTitle").value || "").trim();
+      const newContent = (document.getElementById("editInputContent").value || "").trim();
+
+      if (!newTitle || !newContent) {
+        showToast("제목과 본문 내용을 모두 입력해 주세요.");
+        return;
+      }
+
+      if (mode === "clause") {
+        const cl = appState.bylaws.find(function(c) { return c.id === targetId; });
+        if (cl) {
+          cl.title = newTitle;
+          cl.content = newContent;
+          cl.lastAmended = "2026.12.18 현장수정";
+        }
+        showToast((cl ? cl.articleNo : "단칙") + " 조문이 수정 저장되었습니다.");
+      } else {
+        const ag = appState.agendas.find(function(a) { return a.id === targetId; });
+        const newBefore = (document.getElementById("editInputBefore").value || "").trim();
+        if (ag) {
+          ag.title = newTitle;
+          ag.afterText = newContent;
+          if (newBefore) ag.beforeText = newBefore;
+        }
+        showToast("상정 안건 문구가 수정 저장되었습니다.");
+      }
+
+      closeEditClauseModal();
+      saveStateToStorage();
+      renderAll();
+    }
+
+    // Automatically merge adopted agendas into the club's official bylaws
+    function applyAdoptedAgendasToBylaws() {
+      let appliedCount = 0;
+      appState.agendas.forEach(function(ag) {
+        const t = getAgendaTallies(ag);
+        const isAdopted = ag.status === "adopted" || t.isAdopted;
+        if (!isAdopted) return;
+
+        const baseArt = normalizeArticleQuery(ag.targetArticle.split(" ")[0]);
+        const targetClause = appState.bylaws.find(function(c) { return c.articleNo === baseArt; });
+        if (!targetClause) return;
+
+        // Clean prefix like "제3조 제1항(개정): " from afterText
+        const cleanedAfter = ag.afterText.replace(/^제\s*\d+\s*조[^:：]*[:：]\s*/, "").trim();
+        const tagMarker = "[제" + ag.orderNo + "호 " + ag.type + " 반영]";
+
+        if (targetClause.content.indexOf(cleanedAfter) === -1) {
+          if (ag.type === "신규안") {
+            targetClause.content = targetClause.content + "\n• 신설(" + ag.targetArticle + "): " + cleanedAfter + " " + tagMarker;
+          } else {
+            targetClause.content = targetClause.content + "\n• 개정(" + ag.targetArticle + "): " + cleanedAfter + " " + tagMarker;
+          }
+          targetClause.lastAmended = "2026.12.18 총회개정";
+          appliedCount += 1;
+        }
+      });
+
+      saveStateToStorage();
+      renderAll();
+      if (appliedCount > 0) {
+        showToast("과반 찬성 채택 안건 " + appliedCount + "건이 단칙 원문에 반영되었습니다!");
+      } else {
+        showToast("현재 채택 기준을 충족한 모든 안건이 이미 단칙 원문에 반영되어 있습니다.");
+      }
+    }
+
+    // =========================================================================
+    // 8. EXPORT DELIVERABLES (원본 단칙 파일 Export / 공식 의결보고서 / JSON 백업)
+    // =========================================================================
+
+    function triggerDownloadBlob(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Export 1: Final Amended Club Bylaws in Original Structure (.md)
+    function exportFinalBylawsMarkdown() {
+      const lines = [
+        "# 삼성한우리합창단 회칙(단칙) 전문",
+        "",
+        "- **개정 기준일**: 2026년 12월 18일 (2026 삼성한우리합창단 정기총회 with ‘메리고잉 운영진’ 의결 반영)",
+        "- **총회 참석 인원**: " + appState.totalAttendees + "명 (과반 채택 기준: " + getMajorityThreshold(appState.totalAttendees) + "표 이상 찬성)",
+        ""
+      ];
+
+      let currentChapter = "";
+      appState.bylaws.forEach(function(cl) {
+        if (cl.chapter !== currentChapter) {
+          currentChapter = cl.chapter;
+          lines.push("## " + currentChapter);
+          lines.push("");
+        }
+        const badge = cl.lastAmended ? " [" + cl.lastAmended + "]" : "";
+        lines.push("### " + cl.articleNo + " (" + cl.title + ")" + badge);
+        lines.push(cl.content);
+        lines.push("");
+      });
+
+      lines.push("## 부칙 (2026. 12. 18 정기총회 단칙 개정 및 신설 이력)");
+      lines.push("");
+      appState.agendas.forEach(function(ag) {
+        const t = getAgendaTallies(ag);
+        const verdict = (ag.status === "adopted" || t.isAdopted) ? "채택(가결)" : "부결";
+        lines.push("- **제" + ag.orderNo + "호 안건 [" + ag.type + " · " + ag.targetArticle + "] " + ag.title + "**");
+        lines.push("  - 표결 결과: 찬성 " + t.approve + "표 / 반대 " + t.reject + "표 / 기권 " + t.abstain + "표 → **" + verdict + "**");
+        lines.push("  - 상정 조문: " + ag.afterText);
+      });
+
+      triggerDownloadBlob(lines.join("\n"), "2026_삼성한우리합창단_최종개정단칙_전문.md", "text/markdown;charset=utf-8;");
+      showToast("최종 개정 단칙 전문(.md) 파일 다운로드가 시작되었습니다.");
+    }
+
+    // Export 2: Printable Official Bylaws Document (.html)
+    function exportFinalBylawsHTML() {
+      let clausesHtml = "";
+      let currentChapter = "";
+      appState.bylaws.forEach(function(cl) {
+        if (cl.chapter !== currentChapter) {
+          currentChapter = cl.chapter;
+          clausesHtml += '<h2 style="margin-top:24px;font-size:16px;color:#1e1b4b;border-bottom:2px solid #e2e8f0;padding-bottom:6px;">' + escapeHtml(currentChapter) + '</h2>';
+        }
+        clausesHtml += '<div style="margin:12px 0;padding:12px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;">' +
+          '<div style="font-weight:800;font-size:14px;color:#0f172a;">' + escapeHtml(cl.articleNo) + ' (' + escapeHtml(cl.title) + ') ' +
+          (cl.lastAmended ? '<span style="font-size:11px;color:#047857;background:#d1fae5;padding:2px 6px;border-radius:4px;">' + escapeHtml(cl.lastAmended) + '</span>' : '') +
+          '</div>' +
+          '<div style="margin-top:6px;font-size:13px;line-height:1.7;white-space:pre-line;color:#334155;">' + escapeHtml(cl.content) + '</div>' +
+        '</div>';
+      });
+
+      const docHtml = '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>2026 삼성한우리합창단 최종 개정 단칙 전문</title></head>' +
+        '<body style="font-family:\'Malgun Gothic\',sans-serif;max-width:840px;margin:32px auto;padding:0 20px;color:#0f172a;">' +
+        '<div style="text-align:center;border-bottom:3px double #1e293b;padding-bottom:16px;">' +
+          '<div style="font-size:12px;color:#475569;font-weight:700;">2026 삼성한우리합창단 정기총회 의결 반영본</div>' +
+          '<h1 style="font-size:24px;margin:8px 0;">삼성한우리합창단 회칙(단칙) 전문</h1>' +
+          '<div style="font-size:12px;color:#64748b;">개정 의결일: 2026년 12월 18일 · 주관: 메리고잉 운영진</div>' +
+        '</div>' +
+        clausesHtml +
+        '</body></html>';
+
+      triggerDownloadBlob(docHtml, "2026_삼성한우리합창단_최종개정단칙_인쇄용.html", "text/html;charset=utf-8;");
+      showToast("인쇄·보관용 최종 단칙 문서(.html) 다운로드가 시작되었습니다.");
+    }
+
+    // Export 3: Official Voting Deliverable Report (.html with comparison table & tallies)
+    function exportOfficialMinutesHTML() {
+      let rowsHtml = "";
+      appState.agendas.forEach(function(ag) {
+        const t = getAgendaTallies(ag);
+        const verdict = (ag.status === "adopted" || t.isAdopted) ? "채택 (가결)" : "부결";
+        const verdictColor = (ag.status === "adopted" || t.isAdopted) ? "#047857" : "#be123c";
+        rowsHtml += '<tr>' +
+          '<td style="border:1px solid #cbd5e1;padding:10px;font-weight:700;text-align:center;">제' + ag.orderNo + '호<br><span style="font-size:11px;color:#475569;">(' + escapeHtml(ag.type) + ')</span></td>' +
+          '<td style="border:1px solid #cbd5e1;padding:10px;font-weight:700;">' + escapeHtml(ag.targetArticle) + '<br><span style="font-weight:600;font-size:12px;">' + escapeHtml(ag.title) + '</span></td>' +
+          '<td style="border:1px solid #cbd5e1;padding:10px;font-size:12px;color:#475569;">' + escapeHtml(ag.beforeText) + '</td>' +
+          '<td style="border:1px solid #cbd5e1;padding:10px;font-size:12px;font-weight:600;background:#f8fafc;">' + escapeHtml(ag.afterText) + '</td>' +
+          '<td style="border:1px solid #cbd5e1;padding:10px;text-align:center;font-size:12px;">찬성 <strong>' + t.approve + '</strong><br>반대 ' + t.reject + '<br>기권 ' + t.abstain + '</td>' +
+          '<td style="border:1px solid #cbd5e1;padding:10px;text-align:center;font-weight:800;color:' + verdictColor + ';">' + verdict + '</td>' +
+        '</tr>';
+      });
+
+      const reportHtml = '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>2026 삼성한우리합창단 총회 단칙 개정 찬반투표 결과보고서</title></head>' +
+        '<body style="font-family:\'Malgun Gothic\',sans-serif;max-width:980px;margin:32px auto;padding:0 20px;color:#0f172a;">' +
+        '<h1 style="text-align:center;font-size:22px;margin-bottom:6px;">2026 삼성한우리합창단 총회 with ‘메리고잉 운영진’</h1>' +
+        '<h2 style="text-align:center;font-size:16px;color:#475569;margin-top:0;">단칙 개정안·신규안 찬반투표 공식 의결 결과 산출물</h2>' +
+        '<p style="font-size:13px;background:#f1f5f9;padding:12px;border-radius:8px;">' +
+          '• <strong>총회 일시</strong>: 2026년 12월 18일(금) 19:00 &nbsp;|&nbsp; ' +
+          '• <strong>참석 전체 인원(모수)</strong>: ' + appState.totalAttendees + '명 &nbsp;|&nbsp; ' +
+          '• <strong>과반 채택 기준</strong>: ' + getMajorityThreshold(appState.totalAttendees) + '표 이상 찬성' +
+        '</p>' +
+        '<table style="width:100%;border-collapse:collapse;margin-top:16px;font-size:13px;">' +
+          '<thead><tr style="background:#e2e8f0;">' +
+            '<th style="border:1px solid #cbd5e1;padding:10px;">안건</th>' +
+            '<th style="border:1px solid #cbd5e1;padding:10px;">대상 조항 및 안건명</th>' +
+            '<th style="border:1px solid #cbd5e1;padding:10px;">현행 단칙</th>' +
+            '<th style="border:1px solid #cbd5e1;padding:10px;">개정안·신규안</th>' +
+            '<th style="border:1px solid #cbd5e1;padding:10px;">득표 결과</th>' +
+            '<th style="border:1px solid #cbd5e1;padding:10px;">의결 판정</th>' +
+          '</tr></thead>' +
+          '<tbody>' + rowsHtml + '</tbody>' +
+        '</table>' +
+        '<div style="margin-top:40px;display:flex;justify-content:space-around;font-size:13px;text-align:center;">' +
+          '<div>삼성한우리합창단 단장 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (서명/인)</div>' +
+          '<div>메리고잉 운영진 총무 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (서명/인)</div>' +
+        '</div>' +
+        '</body></html>';
+
+      triggerDownloadBlob(reportHtml, "2026_삼성한우리합창단_찬반투표_공식결과보고서.html", "text/html;charset=utf-8;");
+      showToast("찬반투표 공식 의결 결과보고서(.html) 다운로드가 시작되었습니다.");
+    }
+
+    // Export 4: Full State JSON Backup & Import
+    function exportFullStateJSON() {
+      const jsonStr = JSON.stringify(appState, null, 2);
+      triggerDownloadBlob(jsonStr, "2026_삼성한우리합창단_총회데이터_백업.json", "application/json;charset=utf-8;");
+      showToast("전체 단칙·안건·투표 데이터(.json) 백업 파일이 저장되었습니다.");
+    }
+
+    function triggerImportJSON() {
+      const inp = document.getElementById("hiddenJsonFileInput");
+      if (inp) inp.click();
+    }
+
+    function handleImportJSONFile(inputEl) {
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (parsed && Array.isArray(parsed.agendas) && Array.isArray(parsed.bylaws)) {
+            appState = parsed;
+            saveStateToStorage();
+            renderAll();
+            showToast("백업 파일(.json)로부터 단칙 및 투표 데이터를 성공적으로 복원했습니다!");
+          } else {
+            showToast("올바른 총회 백업 JSON 파일 형식이 아닙니다.");
+          }
+        } catch (err) {
+          showToast("JSON 파일 읽기에 실패했습니다.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // =========================================================================
+    // 9. REALTIME CLOUD DB SYNC (Firebase Realtime Database REST Sync)
+    // =========================================================================
+
+    function openCloudSyncModal() {
+      const m = document.getElementById("cloudSyncModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function closeCloudSyncModal() {
+      const m = document.getElementById("cloudSyncModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function normalizeFirebaseEndpoint(rawUrl) {
+      if (!rawUrl) return "";
+      let u = rawUrl.trim().replace(/\/+$/, "");
+      if (u.indexOf("https://") !== 0) return "";
+      if (!u.endsWith(".json")) {
+        u = u + "/hanuri_assembly_2026.json";
+      }
+      return u;
+    }
+
+    function connectRealtimeDb() {
+      const inp = document.getElementById("inputFirebaseDbUrl");
+      const endpoint = normalizeFirebaseEndpoint(inp ? inp.value : "");
+      if (!endpoint) {
+        showToast("https:// 로 시작하는 유효한 Firebase Realtime DB 주소를 입력해 주세요.");
+        return;
+      }
+      cloudSyncUrl = endpoint;
+      try {
+        localStorage.setItem(STORAGE_KEY + "_db_url", inp.value.trim());
+      } catch (e) {}
+      pushStateToCloudIfConnected();
+      startCloudSyncPolling();
+      updateCloudSyncUiBadge(true);
+      showToast("실시간 클라우드 DB 동기화가 연결되었습니다!");
+    }
+
+    function disconnectRealtimeDb() {
+      cloudSyncUrl = "";
+      if (cloudSyncTimer) clearInterval(cloudSyncTimer);
+      cloudSyncTimer = null;
+      try {
+        localStorage.removeItem(STORAGE_KEY + "_db_url");
+      } catch (e) {}
+      updateCloudSyncUiBadge(false);
+      showToast("실시간 DB 연결이 해제되고 로컬 저장 모드로 전환되었습니다.");
+    }
+
+    function updateCloudSyncUiBadge(connected) {
+      const label = document.getElementById("cloudSyncStatusLabel");
+      const badge = document.getElementById("modalSyncBadge");
+      if (connected) {
+        if (label) label.textContent = "실시간 클라우드 DB 동기화 연결됨 (LIVE)";
+        if (badge) {
+          badge.textContent = "실시간 DB 연결중";
+          badge.className = "px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-bold";
+        }
+      } else {
+        if (label) label.textContent = "2026 정기총회 실시간 의결 시스템 (자동저장 ON)";
+        if (badge) {
+          badge.textContent = "로컬 저장 모드";
+          badge.className = "px-2 py-0.5 rounded bg-slate-200 text-slate-700 text-xs font-bold";
+        }
+      }
+    }
+
+    function pushStateToCloudIfConnected() {
+      if (!cloudSyncUrl) return;
+      const endpoint = cloudSyncUrl;
+      fetch(endpoint, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          totalAttendees: appState.totalAttendees,
+          activeAgendaId: appState.activeAgendaId,
+          members: appState.members,
+          bylaws: appState.bylaws,
+          agendas: appState.agendas,
+          events: appState.events,
+          updatedAt: Date.now()
+        })
+      }).catch(function() {});
+    }
+
+    function startCloudSyncPolling() {
+      if (cloudSyncTimer) clearInterval(cloudSyncTimer);
+      if (!cloudSyncUrl) return;
+      updateCloudSyncUiBadge(true);
+      cloudSyncTimer = setInterval(function() {
+        if (!cloudSyncUrl) return;
+        const endpoint = cloudSyncUrl;
+        fetch(endpoint)
+          .then(function(res) { return res.json(); })
+          .then(function(remote) {
+            if (remote && Array.isArray(remote.agendas) && Array.isArray(remote.bylaws)) {
+              appState.totalAttendees = remote.totalAttendees || appState.totalAttendees;
+              appState.activeAgendaId = remote.activeAgendaId || appState.activeAgendaId;
+              appState.members = remote.members || appState.members;
+              appState.bylaws = remote.bylaws;
+              appState.agendas = remote.agendas;
+              appState.events = remote.events || appState.events;
+              renderAll();
+            }
+          })
+          .catch(function() {});
+      }, 2500);
+    }
+
+    // =========================================================================
+    // 10. AUTH, ADMIN & OTHER MODALS
+    // =========================================================================
+
+    function openAuthModal() {
+      renderAuthModalMemberList();
+      const m = document.getElementById("authModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function closeAuthModal() {
+      const m = document.getElementById("authModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function selectVoter(memberId) {
+      appState.currentVoterId = memberId;
+      closeAuthModal();
+      renderAll();
+      const v = getCurrentVoter();
+      showToast(v.name + " (" + v.part + " · " + v.code + ") 단원으로 본인 확인이 완료되었습니다.");
+    }
+
+    function registerAndSwitchVoter() {
+      const nameInput = document.getElementById("inputNewVoterName");
+      const partInput = document.getElementById("inputNewVoterPart");
+      const codeInput = document.getElementById("inputNewVoterCode");
+
+      const name = (nameInput.value || "").trim();
+      const part = partInput.value || "소프라노";
+      const code = (codeInput.value || "").trim() || String(Math.floor(1000 + Math.random() * 9000));
+
+      if (!name) {
+        showToast("단원 이름을 입력해 주세요.");
+        return;
+      }
+
+      let existing = appState.members.find(function(m) {
+        return m.name === name && m.code === code;
+      });
+      if (!existing) {
+        existing = {
+          id: "mem-" + (appState.members.length + 1),
+          name: name,
+          part: part,
+          code: code
+        };
+        appState.members.push(existing);
+      }
+
+      appState.currentVoterId = existing.id;
+      nameInput.value = "";
+      codeInput.value = "";
+      closeAuthModal();
+      saveStateToStorage();
+      renderAll();
+      showToast(existing.name + " (" + existing.part + ") 단원으로 링크 접속 인증이 완료되었습니다.");
+    }
+
+    // Admin Controls
+    function adjustTotalAttendees(delta) {
+      const nextVal = Math.max(1, appState.totalAttendees + delta);
+      appState.totalAttendees = nextVal;
+      saveStateToStorage();
+      renderAll();
+      showToast("총회 참석 전체 인원이 " + nextVal + "명(과반 기준 " + getMajorityThreshold(nextVal) + "표)으로 변경되었습니다.");
+    }
+
+    function setTotalAttendeesDirect(val) {
+      const parsed = parseInt(val, 10);
+      if (!isNaN(parsed) && parsed > 0) {
+        appState.totalAttendees = parsed;
+        saveStateToStorage();
+        renderAll();
+        showToast("총회 참석 전체 인원이 " + parsed + "명으로 설정되었습니다.");
+      }
+    }
+
+    function adminPresentAgenda(agendaId) {
+      const ag = appState.agendas.find(function(a) { return a.id === agendaId; });
+      if (!ag) return;
+      ag.status = "active";
+      appState.activeAgendaId = agendaId;
+      saveStateToStorage();
+      switchMainTab("voting");
+      showToast("제" + ag.orderNo + "호 안건을 메인 투표 화면에 상정했습니다.");
+    }
+
+    function adminSimulateVote(agendaId, choice) {
+      const ag = appState.agendas.find(function(a) { return a.id === agendaId; });
+      if (!ag) return;
+      if (choice === "approve") ag.baseApprove += 1;
+      else if (choice === "reject") ag.baseReject += 1;
+      else if (choice === "abstain") ag.baseAbstain += 1;
+      saveStateToStorage();
+      renderAll();
+    }
+
+    function adminFinalizeSpecificAgenda(agendaId) {
+      const ag = appState.agendas.find(function(a) { return a.id === agendaId; });
+      if (!ag) return;
+      const t = getAgendaTallies(ag);
+      ag.status = t.isAdopted ? "adopted" : "rejected";
+      saveStateToStorage();
+      renderAll();
+      showToast("제" + ag.orderNo + "호 안건이 [" + (t.isAdopted ? "채택" : "부결") + "]로 확정되었습니다.");
+    }
+
+    // Add Agenda Modal
+    function openAddAgendaModal() {
+      const m = document.getElementById("addAgendaModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function closeAddAgendaModal() {
+      const m = document.getElementById("addAgendaModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function submitNewAgenda() {
+      const type = document.getElementById("newAgendaType").value;
+      const article = (document.getElementById("newAgendaArticle").value || "").trim() || "제8조 제2항";
+      const title = (document.getElementById("newAgendaTitle").value || "").trim();
+      const beforeText = (document.getElementById("newAgendaBefore").value || "").trim() || "현행 단칙 내 관련 조문 없음 (신설)";
+      const afterText = (document.getElementById("newAgendaAfter").value || "").trim();
+      const reason = (document.getElementById("newAgendaReason").value || "").trim() || "메리고잉 운영진 및 단원 건의로 상정됨";
+      const kwRaw = (document.getElementById("newAgendaKeywords").value || "").trim();
+
+      if (!title || !afterText) {
+        showToast("안건 제목과 상정 조문 문구를 입력해 주세요.");
+        return;
+      }
+
+      const normClause = normalizeArticleQuery(article.split(" ")[0]);
+      const keywords = kwRaw
+        ? kwRaw.split(",").map(function(s) { return s.trim(); }).filter(Boolean)
+        : [normClause, type];
+
+      const newOrder = appState.agendas.length + 1;
+      const newAg = {
+        id: "ag-" + newOrder,
+        orderNo: newOrder,
+        type: type,
+        targetArticle: article,
+        relatedClauses: [normClause],
+        title: title,
+        beforeText: beforeText,
+        afterText: afterText,
+        reason: reason,
+        keywords: keywords,
+        status: "pending",
+        baseApprove: 0,
+        baseReject: 0,
+        baseAbstain: 0,
+        memberVotes: {}
+      };
+
+      appState.agendas.push(newAg);
+      appState.activeAgendaId = newAg.id;
+      closeAddAgendaModal();
+      saveStateToStorage();
+      renderAll();
+      showToast("제" + newOrder + "호 안건이 등록되었습니다.");
+    }
+
+    // Add Event Modal
+    function openAddEventModal() {
+      const m = document.getElementById("addEventModal");
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+
+    function closeAddEventModal() {
+      const m = document.getElementById("addEventModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    function submitNewEvent() {
+      const date = (document.getElementById("newEventDate").value || "").trim() || "2026. 12. 05";
+      const category = (document.getElementById("newEventCategory").value || "").trim() || "특별행사";
+      const title = (document.getElementById("newEventTitle").value || "").trim();
+      const count = parseInt(document.getElementById("newEventCount").value, 10) || 35;
+      const budget = (document.getElementById("newEventBudget").value || "").trim() || "결산 내역 확인중";
+      const summary = (document.getElementById("newEventSummary").value || "").trim() || "메리고잉 운영진 주관 행사";
+
+      if (!title) {
+        showToast("행사명을 입력해 주세요.");
+        return;
+      }
+
+      appState.events.push({
+        id: "ev-" + (appState.events.length + 1),
+        date: date,
+        category: category,
+        title: title,
+        participantsCount: count,
+        budgetNote: budget,
+        summary: summary
+      });
+
+      closeAddEventModal();
+      saveStateToStorage();
+      renderAll();
+      showToast("연말 총회 행사 내역이 추가되었습니다.");
+    }
+
+    // Projector Mode Toggle
+    function toggleProjectorMode() {
+      appState.projectorMode = !appState.projectorMode;
+      const mainEl = document.getElementById("mainAppContainer");
+      const labelEl = document.getElementById("projectorToggleLabel");
+      if (appState.projectorMode) {
+        mainEl.classList.add("projector-mode");
+        labelEl.textContent = "단상 스크린 확대모드 ON";
+        showToast("단상 프로젝터 스크린용 글자 확대 모드가 켜졌습니다.");
+      } else {
+        mainEl.classList.remove("projector-mode");
+        labelEl.textContent = "단상 스크린 확대모드 OFF";
+        showToast("일반 글자 크기로 전환되었습니다.");
+      }
+    }
+
+    // Export CSV & Copy Summary
+    function exportAssemblyResultsCSV() {
+      const rows = [
+        ["안건번호", "구분", "대상조항", "안건제목", "참석전체인원", "과반기준", "찬성", "반대", "기권", "과반달성여부", "의결상태"]
+      ];
+      appState.agendas.forEach(function(ag) {
+        const t = getAgendaTallies(ag);
+        rows.push([
+          "제" + ag.orderNo + "호",
+          ag.type,
+          ag.targetArticle,
+          '"' + ag.title.replace(/"/g, '""') + '"',
+          t.totalAttendees,
+          t.majorityThreshold,
+          t.approve,
+          t.reject,
+          t.abstain,
+          t.isAdopted ? "채택(가결)" : "부결",
+          ag.status
+        ]);
+      });
+      const csvContent = "\uFEFF" + rows.map(function(r) { return r.join(","); }).join("\n");
+      triggerDownloadBlob(csvContent, "2026_삼성한우리합창단_총회의결결과.csv", "text/csv;charset=utf-8;");
+      showToast("총회 의결 결과 CSV 파일 다운로드가 시작되었습니다.");
+    }
+
+    function copyTextToClipboard(text, successMsg) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        showToast(successMsg);
+      } catch (err) {
+        showToast("클립보드 복사에 실패했습니다.");
+      }
+      document.body.removeChild(textarea);
+    }
+
+    function copyShareLink() {
+      const currentUrl = window.location && window.location.href && window.location.href.indexOf("http") === 0
+        ? window.location.href
+        : "https://hanuri-choir.github.io/assembly-2026/";
+      const shareText = "[2026 삼성한우리합창단 총회 with ‘메리고잉 운영진’]\n실시간 단칙 개정 찬반투표 및 현안 조회 접속 링크: " + currentUrl;
+      copyTextToClipboard(shareText, "총회 단원 접속용 공유 링크가 클립보드에 복사되었습니다!");
+    }
+
+    function copyMinutesSummaryText() {
+      let lines = [
+        "■ 2026 삼성한우리합창단 총회 with ‘메리고잉 운영진’ 의결 결과 요약",
+        "- 총회 참석 전체 인원: " + appState.totalAttendees + "명 (과반 채택 기준: " + getMajorityThreshold(appState.totalAttendees) + "표 이상 찬성)",
+        ""
+      ];
+      appState.agendas.forEach(function(ag) {
+        const t = getAgendaTallies(ag);
+        lines.push(
+          "• 제" + ag.orderNo + "호 [" + ag.type + " · " + ag.targetArticle + "] " + ag.title +
+          " → 찬성 " + t.approve + "표 / 반대 " + t.reject + "표 / 기권 " + t.abstain + "표 (" +
+          (t.isAdopted ? "과반 찬성 채택" : "과반 미달 부결") + ")"
+        );
+      });
+      copyTextToClipboard(lines.join("\n"), "총회 회의록 요약 텍스트가 클립보드에 복사되었습니다!");
+    }
+
+    // Toast helper
+    let toastTimer = null;
+    function showToast(msg) {
+      const banner = document.getElementById("toastBanner");
+      const textEl = document.getElementById("toastMessageText");
+      textEl.textContent = msg;
+      banner.classList.remove("hidden");
+      banner.classList.add("flex");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function() {
+        banner.classList.add("hidden");
+        banner.classList.remove("flex");
+      }, 3200);
+    }
+
+    // Initialize App on Load
+    window.addEventListener("DOMContentLoaded", function() {
+      loadStateFromStorage();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
