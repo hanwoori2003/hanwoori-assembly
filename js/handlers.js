@@ -1,5 +1,6 @@
-// 3-3. 사용자 이벤트, 인증, 모달 및 내보내기 핸들러 모음
-    function setTotalAttendeesPreset(count) {
+// 5. 이벤트 핸들러, 단원 인증(4자리 코드), 모달 제어 및 파일 내보내기 모듈 (js/handlers.js)
+
+        function setTotalAttendeesPreset(count) {
       appState.totalAttendees = count;
       saveStateToStorage();
       renderAll();
@@ -12,6 +13,7 @@
       }
     }
 
+
     function handleRosterTableSearch(val) {
       appState.rosterSearchQuery = val;
       renderFullMemberRosterTable();
@@ -21,6 +23,10 @@
       appState.rosterPartFilter = pf;
       renderFullMemberRosterTable();
     }
+
+    // =========================================================================
+    // 5. CURRENT BYLAWS VIEWER (현재 단칙 보기 전용 탭)
+    // =========================================================================
 
     function setBylawViewerChapter(ch) {
       appState.bylawViewerChapter = ch;
@@ -41,6 +47,7 @@
       if (inp) inp.value = "";
       renderCurrentBylawsView();
     }
+
 
     function setElectionModeAndCount(mode, count) {
       appState.election.mode = mode;
@@ -202,67 +209,85 @@
       renderAll();
     }
 
-    function selectVoter(memberId) {
-      const m = appState.members.find(function(x) { return x.id === memberId; });
-      if (!m) return;
 
-      pendingExecMemberId = m.id;
-      const box = document.getElementById("execPasswordAuthBox");
-      const label = document.getElementById("execAuthTargetLabel");
-      const inp = document.getElementById("inputExecPassword");
-      const err = document.getElementById("execPasswordErrorMsg");
-      if (label) label.textContent = m.name + " (" + m.part + ") — 휴대폰 뒷자리 4자리 인증";
-      if (err) err.classList.add("hidden");
-      if (box) box.classList.remove("hidden");
-      if (inp) {
-        inp.value = "";
-        setTimeout(function() { inp.focus(); }, 50);
-      }
+    function handleAuthModalSearch(val) {
+      appState.authModalSearch = val;
+      renderAuthModalMemberList();
     }
 
-    function cancelExecPasswordPrompt() {
-      pendingExecMemberId = null;
-      const box = document.getElementById("execPasswordAuthBox");
-      if (box) box.classList.add("hidden");
+    function setAuthModalFilter(filterKey) {
+      appState.authModalFilter = filterKey;
+      renderAuthModalMemberList();
     }
 
-    function confirmExecPasswordLogin() {
-      const inp = document.getElementById("inputExecPassword");
-      const err = document.getElementById("execPasswordErrorMsg");
-      const entered = (inp ? inp.value : "").trim();
 
-      const m = appState.members.find(function(x) { return x.id === pendingExecMemberId; });
-      if (!m) return;
 
-      const validCode = m.code || (m.isExecutive ? "2003" : "1000");
+function promptExecutiveLoginFromOutside(memberId) {
+  openAuthModal();
+  selectVoter(memberId);
+}
 
-      if (entered !== validCode && entered !== "2003") {
-        if (err) err.classList.remove("hidden");
-        showToast("휴대폰 뒷자리 4자리가 일치하지 않습니다. 정확히 입력해 주세요.");
-        return;
-      }
+function selectVoter(memberId) {
+  const m = appState.members.find(function(x) { return x.id === memberId; });
+  if (!m) return;
 
-      appState.currentVoterId = m.id;
-      appState.isAdminAuthenticated = Boolean(m.isExecutive && (entered === "2003" || entered === m.code));
-      pendingExecMemberId = null;
+  // 모든 단원(운영진 및 일반 단원 공통) 클릭 시 즉시 로그인하지 않고 4자리 코드(휴대폰 뒷자리) 인증창 오픈
+  pendingExecMemberId = m.id;
+  const modal = document.getElementById("authModal");
+  if (modal && modal.classList.contains("hidden")) {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    renderAuthModalMemberList();
+  }
+  const box = document.getElementById("execPasswordAuthBox");
+  const label = document.getElementById("execAuthTargetLabel");
+  const inp = document.getElementById("inputExecPassword");
+  const err = document.getElementById("execPasswordErrorMsg");
+  if (label) {
+    label.textContent = m.name + " (" + m.part + ") 단원 로그인 — 휴대폰 뒷 4자리(코드) 인증";
+  }
+  if (err) err.classList.add("hidden");
+  if (box) box.classList.remove("hidden");
+  if (inp) {
+    inp.value = "";
+    setTimeout(function() { inp.focus(); }, 50);
+  }
+}
 
-      const box = document.getElementById("execPasswordAuthBox");
-      if (box) box.classList.add("hidden");
-      closeAuthModal();
-      saveStateToStorage();
-      renderAll();
+function cancelExecPasswordPrompt() {
+  pendingExecMemberId = null;
+  const box = document.getElementById("execPasswordAuthBox");
+  if (box) box.classList.add("hidden");
+}
 
-      if (appState.isAdminAuthenticated) {
-        showToast(m.name + " (" + m.part + ") 운영진 로그인 완료! (운영진 제어 탭 활성화)");
-      } else {
-        showToast(m.name + " (" + m.part + ") 단원으로 로그인되었습니다.");
-      }
-    }
+function confirmExecPasswordLogin() {
+  const inp = document.getElementById("inputExecPassword");
+  const err = document.getElementById("execPasswordErrorMsg");
+  const entered = (inp ? inp.value : "").trim();
 
-    function promptExecutiveLoginFromOutside(memberId) {
-      openAuthModal();
-      selectVoter(memberId);
-    }
+  const m = appState.members.find(function(x) { return x.id === pendingExecMemberId; }) || appState.members[0];
+  const expectedCode = String(m.code || "2003").trim();
+
+  if (entered !== expectedCode) {
+    if (err) err.classList.remove("hidden");
+    showToast("인증 코드(휴대폰 뒷 4자리)가 일치하지 않습니다. 정확히 입력해 주세요.");
+    return;
+  }
+
+  appState.currentVoterId = m.id;
+  appState.isAdminAuthenticated = Boolean(m.isExecutive);
+  pendingExecMemberId = null;
+  const box = document.getElementById("execPasswordAuthBox");
+  if (box) box.classList.add("hidden");
+  closeAuthModal();
+  saveStateToStorage();
+  renderAll();
+  if (m.isExecutive) {
+    showToast("인증 완료! [" + m.name + " (" + m.part + ")] 운영진으로 로그인되었습니다.");
+  } else {
+    showToast("인증 완료! [" + m.name + " (" + m.part + ")] 단원으로 로그인되었습니다.");
+  }
+}
 
     function switchMainTab(tabName) {
       if (tabName === "search") tabName = "bylaws";
@@ -435,6 +460,10 @@
       showToast("선택한 안건 투표 화면으로 이동했습니다.");
     }
 
+    // =========================================================================
+    // 12. BYLAW & AGENDA LIVE EDITING + MERGING ADOPTED AGENDAS INTO BYLAWS
+    // =========================================================================
+
     function openEditClauseModal(clauseId) {
       const cl = appState.bylaws.find(function(c) { return c.id === clauseId; });
       if (!cl) return;
@@ -541,6 +570,22 @@
       } else {
         showToast("가결된 5건(개정안 2-2, 4, 7-2, 8, 9)이 이미 《삼성한우리합창단 단칙(25.12.13)》 원문에 모두 반영되어 있습니다.");
       }
+    }
+
+    // =========================================================================
+    // 13. EXPORT DELIVERABLES
+    // =========================================================================
+
+    function triggerDownloadBlob(content, filename, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
     function exportFinalBylawsMarkdown() {
@@ -669,6 +714,10 @@
       reader.readAsText(file);
     }
 
+    // =========================================================================
+    // 14. REALTIME CLOUD DB SYNC & MODALS
+    // =========================================================================
+
     function openCloudSyncModal() {
       const m = document.getElementById("cloudSyncModal");
       m.classList.remove("hidden");
@@ -681,15 +730,6 @@
       m.classList.remove("flex");
     }
 
-    function normalizeFirebaseEndpoint(rawUrl) {
-      if (!rawUrl) return "";
-      let u = rawUrl.trim().replace(/\/+$/, "");
-      if (u.indexOf("https://") !== 0) return "";
-      if (!u.endsWith(".json")) {
-        u = u + "/hanuri_assembly_2026.json";
-      }
-      return u;
-    }
 
     function connectRealtimeDb() {
       const inp = document.getElementById("inputFirebaseDbUrl");
@@ -1161,6 +1201,22 @@
       showToast("총회 의결 결과 CSV 파일 다운로드가 시작되었습니다.");
     }
 
+    function copyTextToClipboard(text, successMsg) {
+      const textarea = document.createElement("textarea");
+      textarea.value = text;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand("copy");
+        showToast(successMsg);
+      } catch (err) {
+        showToast("클립보드 복사에 실패했습니다.");
+      }
+      document.body.removeChild(textarea);
+    }
+
     function copyShareLink() {
       const currentUrl = window.location && window.location.href && window.location.href.indexOf("http") === 0
         ? window.location.href
@@ -1185,3 +1241,4 @@
       });
       copyTextToClipboard(lines.join("\n"), "총회 회의록 요약 텍스트가 클립보드에 복사되었습니다!");
     }
+

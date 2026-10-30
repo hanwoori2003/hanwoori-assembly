@@ -1,20 +1,4 @@
-// 3-2. 화면 렌더링 함수 모음
-    function renderAll() {
-      renderHeaderStatus();
-      renderExecutiveRosterTable();
-      renderFullMemberRosterTable();
-      renderEventsView();
-      renderCurrentBylawsView();
-      renderFullSearchView();
-      renderDrawerSearchResults();
-      renderAgendaStepper();
-      renderActiveVotingView();
-      renderElectionView();
-      renderWinnerView();
-      renderSettlementView();
-      renderAdminView();
-      renderAuthModalMemberList();
-    }
+// 4. 화면 렌더링 모듈 (js/render.js)
 
     function renderHeaderStatus() {
       const majority = getMajorityThreshold(appState.totalAttendees);
@@ -38,6 +22,7 @@
       document.getElementById("currentVoterBadgeText").textContent =
         rolePrefix + voter.name + " (" + voter.part + ")";
 
+      // 운영진 로그인 여부에 따라 상단 [메리고잉 운영진 제어] 및 [단장 당선 공고] 탭 표시/숨김 제어
       const isExecLoggedIn = Boolean(voter.isExecutive && appState.isAdminAuthenticated);
       const adminTabBtn = document.getElementById("tabBtn-admin");
       const winnerTabBtn = document.getElementById("tabBtn-winner");
@@ -113,16 +98,6 @@
       tbody.innerHTML = html;
     }
 
-    function formatAttCell(val) {
-      if (!val || val === "-") return '<span class="text-slate-300">-</span>';
-      if (val.indexOf("출석 1") !== -1) {
-        return '<span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 font-semibold text-[11px]">' + escapeHtml(val) + '</span>';
-      }
-      if (val.indexOf("지각") !== -1 || val.indexOf("조퇴") !== -1) {
-        return '<span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 font-semibold text-[11px]">' + escapeHtml(val) + '</span>';
-      }
-      return '<span class="text-slate-600 text-[11px]">' + escapeHtml(val) + '</span>';
-    }
 
     function renderFullMemberRosterTable() {
       const tbody = document.getElementById("fullMemberRosterTableBody");
@@ -147,7 +122,7 @@
       const filtered = sorted.filter(function(m) {
         if (partFilter !== "all" && m.basePart !== partFilter) return false;
         if (q) {
-          const hay = (m.name + " " + m.part + " " + (m.basePart || "") + " " + (m.execRole || "")).toLowerCase();
+          const hay = (m.name + " " + m.basePart + " " + m.part + " " + (m.key || "")).toLowerCase();
           if (hay.indexOf(q) === -1) return false;
         }
         return true;
@@ -157,7 +132,7 @@
       filtered.forEach(function(m) {
         const isCurrent = m.id === appState.currentVoterId;
         const roleBadge = m.isExecutive
-          ? '<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-bold text-[11px]">' + escapeHtml(m.execRole) + '</span>'
+          ? '<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-extrabold text-[11px]">★ ' + escapeHtml(m.execRole) + '</span>'
           : '<span class="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-semibold text-[11px]">정단원</span>';
 
         html += '<tr class="' + (isCurrent ? 'bg-indigo-50/70' : 'hover:bg-slate-50') + '">' +
@@ -173,12 +148,15 @@
           '<td class="py-2 px-3 text-right whitespace-nowrap">' +
             (isCurrent
               ? '<span class="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[11px]">현재 로그인</span>'
-              : '<button type="button" onclick="selectVoter('' + m.id + '')" class="px-2 py-0.5 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-[11px]">로그인 인증</button>') +
+              : m.isExecutive
+                ? '<button type="button" onclick="promptExecutiveLoginFromOutside(\'' + m.id + '\')" class="px-2 py-0.5 rounded bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-[11px]">운영진 로그인(PW)</button>'
+                : '<button type="button" onclick="selectVoter(\'' + m.id + '\')" class="px-2 py-0.5 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-[11px]">이름으로 로그인</button>') +
           '</td>' +
         '</tr>';
       });
       tbody.innerHTML = html;
     }
+
 
     function renderCurrentBylawsView() {
       const container = document.getElementById("currentBylawsDocumentContainer");
@@ -223,7 +201,7 @@
                 '<span class="px-2.5 py-1 rounded-lg bg-slate-900 text-white text-xs sm:text-sm font-extrabold">' + highlightMatch(cl.articleNo + " (" + cl.title + ")", q) + '</span>' +
               '</div>' +
               '<div class="flex items-center gap-1.5">' +
-                '<button type="button" onclick="openEditClauseModal('' + cl.id + '')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 hover:border-slate-500 text-xs font-bold text-slate-700">✎ 조문 수정</button>' +
+                '<button type="button" onclick="openEditClauseModal(\'' + cl.id + '\')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 hover:border-slate-500 text-xs font-bold text-slate-700">✎ 조문 수정</button>' +
               '</div>' +
             '</div>' +
             '<div class="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line pl-1">' + highlightMatch(cl.content, q) + '</div>' +
@@ -233,6 +211,282 @@
 
       container.innerHTML = html;
     }
+
+
+    function renderElectionView() {
+      const elec = appState.election;
+      const cands = getActiveCandidates();
+      const tallies = getElectionTallies();
+      const voter = getCurrentVoter();
+
+      const headerBadge = document.getElementById("electionHeaderModeBadge");
+      const navBadge = document.getElementById("navBadgeElectionMode");
+      if (elec.mode === "single") {
+        if (headerBadge) headerBadge.textContent = "단독 후보 출마 (찬반 투표 모드)";
+        if (navBadge) navBadge.textContent = "단독 찬반";
+      } else {
+        if (headerBadge) headerBadge.textContent = cands.length + "인 경선 출마 (후보자 다자 투표 모드)";
+        if (navBadge) navBadge.textContent = cands.length + "인 경선";
+      }
+
+      [1, 2, 3].forEach(function(n) {
+        const btn = document.getElementById("btnElecMode-" + n);
+        if (!btn) return;
+        const active = (n === 1 && elec.mode === "single") || (n > 1 && elec.mode === "multi" && cands.length === n);
+        btn.className = active
+          ? "px-3 py-1.5 rounded-xl text-xs font-extrabold bg-amber-400 text-slate-950 shadow-xs"
+          : "px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white";
+      });
+
+      // Render Candidate Cards with Photo, Career, and Pledges
+      const listEl = document.getElementById("electionCandidatesListContainer");
+      if (listEl) {
+        let cHtml = "";
+        cands.forEach(function(c) {
+          const careerItems = (c.career || []).map(function(line) {
+            return '<li class="flex items-start gap-1.5"><span class="text-purple-600 font-bold">•</span><span>' + escapeHtml(line) + '</span></li>';
+          }).join("");
+
+          cHtml += '<div class="bg-white rounded-2xl shadow-sm border-2 border-slate-200 hover:border-purple-400 transition p-5 sm:p-6">' +
+            '<div class="flex flex-col sm:flex-row items-start gap-5">' +
+              '<div class="flex flex-col items-center gap-2 shrink-0">' +
+                '<div class="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-4 border-purple-100 shadow-md bg-slate-100">' +
+                  '<img src="' + c.photo + '" alt="' + escapeHtml(c.name) + ' 후보 사진" class="w-full h-full object-cover" />' +
+                '</div>' +
+                '<div class="flex gap-1">' +
+                  '<button type="button" onclick="triggerCandidatePhotoUpload(\'' + c.id + '\')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-50 text-slate-700 hover:text-purple-800 border border-slate-300 text-[11px] font-bold">📷 사진 변경</button>' +
+                  '<button type="button" onclick="openCandidateModal(\'' + c.id + '\')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-800 border border-slate-300 text-[11px] font-bold">✎ 이력 편집</button>' +
+                '</div>' +
+              '</div>' +
+              '<div class="flex-1 space-y-3 min-w-0">' +
+                '<div class="flex flex-wrap items-center justify-between gap-2">' +
+                  '<div>' +
+                    '<span class="px-2.5 py-0.5 rounded-lg bg-purple-600 text-white text-xs font-extrabold">' +
+                      (elec.mode === "single" ? "단독 입후보" : "기호 " + c.number + "번 후보") +
+                    '</span>' +
+                    '<h4 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">' + escapeHtml(c.name) + ' <span class="text-xs sm:text-sm font-semibold text-slate-500">(' + escapeHtml(c.meta) + ')</span></h4>' +
+                  '</div>' +
+                '</div>' +
+                '<div class="p-3 rounded-xl bg-purple-50/70 border border-purple-200 text-xs sm:text-sm font-extrabold text-purple-950">' +
+                  '“' + escapeHtml(c.slogan) + '”' +
+                '</div>' +
+                '<div>' +
+                  '<div class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-1">합창단 활동 및 운영진 주요 이력 (제11조 제3항 자격 충족)</div>' +
+                  '<ul class="text-xs sm:text-sm text-slate-700 space-y-1">' + careerItems + '</ul>' +
+                '</div>' +
+                '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">' +
+                  '<div class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-1">핵심 공약 및 운영 비전</div>' +
+                  '<p class="text-xs sm:text-sm text-slate-700 whitespace-pre-line leading-relaxed">' + escapeHtml(c.pledge) + '</p>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        });
+        listEl.innerHTML = cHtml;
+      }
+
+      // Voter banner in election tab
+      document.getElementById("elecVoterAvatar").textContent = voter.name.charAt(0);
+      document.getElementById("elecVoterName").textContent = voter.name + " 단원";
+      document.getElementById("elecVoterSub").textContent = voter.part;
+
+      const ballotTitle = document.getElementById("electionBallotBoxTitle");
+      const ballotBtns = document.getElementById("electionBallotButtonsContainer");
+      const voterStatus = document.getElementById("elecVoterStatusBadge");
+
+      if (elec.mode === "single") {
+        const cand = cands[0];
+        const myVote = (elec.singleVotes.memberVotes || {})[voter.id];
+        if (ballotTitle) ballotTitle.textContent = cand.name + " 단장 후보 찬반 투표";
+        if (voterStatus) {
+          voterStatus.innerHTML = myVote
+            ? '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">투표완료</span>'
+            : '<span class="px-2.5 py-1 rounded-lg bg-amber-400/20 text-amber-200 text-xs font-bold">투표가능</span>';
+        }
+        if (ballotBtns) {
+          ballotBtns.innerHTML =
+            '<div class="grid grid-cols-3 gap-2.5">' +
+              '<button type="button" onclick="castPresidentVote(\'approve\')" class="p-4 rounded-2xl border-2 border-emerald-300 bg-emerald-50 hover:bg-emerald-600 text-emerald-950 hover:text-white font-extrabold text-sm transition flex flex-col items-center gap-1">' +
+                '<span class="text-base">찬성</span><span class="text-[11px] opacity-80">' + escapeHtml(cand.name) + ' 후보 선출</span>' +
+              '</button>' +
+              '<button type="button" onclick="castPresidentVote(\'reject\')" class="p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 hover:bg-rose-600 text-rose-950 hover:text-white font-extrabold text-sm transition flex flex-col items-center gap-1">' +
+                '<span class="text-base">반대</span><span class="text-[11px] opacity-80">선출 반대</span>' +
+              '</button>' +
+              '<button type="button" onclick="castPresidentVote(\'abstain\')" class="p-4 rounded-2xl border-2 border-slate-300 bg-slate-50 hover:bg-slate-700 text-slate-800 hover:text-white font-extrabold text-sm transition flex flex-col items-center gap-1">' +
+                '<span class="text-base">기권</span><span class="text-[11px] opacity-80">의결권 유보</span>' +
+              '</button>' +
+            '</div>';
+        }
+      } else {
+        const myVote = (elec.multiMemberVotes || {})[voter.id];
+        if (ballotTitle) ballotTitle.textContent = cands.length + "인 경선 후보자 선택 투표 (1인 1표)";
+        if (voterStatus) {
+          voterStatus.innerHTML = myVote
+            ? '<span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">투표완료</span>'
+            : '<span class="px-2.5 py-1 rounded-lg bg-amber-400/20 text-amber-200 text-xs font-bold">투표가능</span>';
+        }
+        if (ballotBtns) {
+          let bHtml = "";
+          cands.forEach(function(c) {
+            const selected = myVote === c.id;
+            bHtml += '<button type="button" onclick="castPresidentVote(\'' + c.id + '\')" class="w-full p-3.5 rounded-2xl border-2 ' +
+              (selected ? 'border-purple-600 bg-purple-600 text-white' : 'border-purple-200 bg-purple-50/50 hover:bg-purple-600 hover:border-purple-600 text-slate-900 hover:text-white') +
+              ' transition flex items-center justify-between gap-3">' +
+              '<div class="flex items-center gap-3 text-left">' +
+                '<img src="' + c.photo + '" alt="' + escapeHtml(c.name) + '" class="w-10 h-10 rounded-xl object-cover border border-white/40" />' +
+                '<div>' +
+                  '<div class="text-xs font-bold opacity-80">기호 ' + c.number + '번</div>' +
+                  '<div class="text-sm sm:text-base font-extrabold">' + escapeHtml(c.name) + ' 후보 선택</div>' +
+                '</div>' +
+              '</div>' +
+              '<span class="px-3 py-1 rounded-xl bg-white/20 text-xs font-extrabold">투표하기 ✓</span>' +
+            '</button>';
+          });
+          ballotBtns.innerHTML = bHtml;
+        }
+      }
+
+      // Render Election Tally Bars
+      const tallyEl = document.getElementById("electionTallyBarsContainer");
+      const verdictEl = document.getElementById("electionVerdictBadge");
+      if (elec.mode === "single") {
+        const appPct = tallies.totalPool > 0 ? ((tallies.approve / tallies.totalPool) * 100) : 0;
+        const rejPct = tallies.totalPool > 0 ? ((tallies.reject / tallies.totalPool) * 100) : 0;
+        const absPct = tallies.totalPool > 0 ? ((tallies.abstain / tallies.totalPool) * 100) : 0;
+
+        if (verdictEl) {
+          verdictEl.innerHTML = tallies.isElected
+            ? '<span class="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-900 font-extrabold text-xs">✓ ' + escapeHtml(tallies.winner.name) + ' 후보 당선 확정</span>'
+            : '<span class="px-3 py-1 rounded-xl bg-amber-100 text-amber-900 font-extrabold text-xs">투표 진행중</span>';
+        }
+        if (tallyEl) {
+          tallyEl.innerHTML =
+            '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs flex justify-between">' +
+              '<span>총 투표 참여: <strong>' + tallies.totalVoted + '명</strong></span>' +
+              '<span>2/3 당선 기준: <strong class="text-purple-700">' + tallies.passThreshold + '표 이상</strong></span>' +
+            '</div>' +
+            '<div>' +
+              '<div class="flex justify-between text-xs font-bold mb-1"><span class="text-emerald-700">찬성 (' + escapeHtml(tallies.winner.name) + ' 선출 동의)</span><span>' + tallies.approve + '표 (' + appPct.toFixed(1) + '%)</span></div>' +
+              '<div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 rounded-full" style="width:' + Math.min(100, appPct).toFixed(1) + '%"></div></div>' +
+            '</div>' +
+            '<div>' +
+              '<div class="flex justify-between text-xs font-bold mb-1"><span class="text-rose-700">반대</span><span>' + tallies.reject + '표 (' + rejPct.toFixed(1) + '%)</span></div>' +
+              '<div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-rose-500 rounded-full" style="width:' + Math.min(100, rejPct).toFixed(1) + '%"></div></div>' +
+            '</div>' +
+            '<div>' +
+              '<div class="flex justify-between text-xs font-bold mb-1"><span class="text-slate-600">기권</span><span>' + tallies.abstain + '표 (' + absPct.toFixed(1) + '%)</span></div>' +
+              '<div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-slate-400 rounded-full" style="width:' + Math.min(100, absPct).toFixed(1) + '%"></div></div>' +
+            '</div>';
+        }
+      } else {
+        if (verdictEl) {
+          verdictEl.innerHTML = '<span class="px-3 py-1 rounded-xl bg-emerald-100 text-emerald-900 font-extrabold text-xs">1위 당선: 기호 ' + tallies.winner.number + '번 ' + escapeHtml(tallies.winner.name) + '</span>';
+        }
+        if (tallyEl) {
+          let tHtml = '<div class="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs flex justify-between">' +
+            '<span>경선 총 투표수: <strong>' + tallies.totalVoted + '표</strong></span>' +
+            '<span>최다 득표자: <strong class="text-purple-700">' + escapeHtml(tallies.winner.name) + ' (' + tallies.topVotes + '표)</strong></span>' +
+          '</div>';
+          cands.forEach(function(c) {
+            const v = tallies.counts[c.id] || 0;
+            const pct = tallies.totalVoted > 0 ? ((v / tallies.totalVoted) * 100) : 0;
+            const isWin = c.id === tallies.winner.id;
+            tHtml += '<div>' +
+              '<div class="flex justify-between text-xs font-bold mb-1">' +
+                '<span class="' + (isWin ? 'text-purple-800 font-extrabold' : 'text-slate-700') + '">기호 ' + c.number + '번 ' + escapeHtml(c.name) + (isWin ? ' ★당선권' : '') + '</span>' +
+                '<span>' + v + '표 (' + pct.toFixed(1) + '%)</span>' +
+              '</div>' +
+              '<div class="h-3 bg-slate-100 rounded-full overflow-hidden"><div class="h-full ' + (isWin ? 'bg-purple-600' : 'bg-slate-400') + ' rounded-full" style="width:' + Math.min(100, pct).toFixed(1) + '%"></div></div>' +
+            '</div>';
+          });
+          tallyEl.innerHTML = tHtml;
+        }
+      }
+    }
+
+    function renderWinnerView() {
+      const container = document.getElementById("winnerAnnouncementContainer");
+      if (!container) return;
+      const tallies = getElectionTallies();
+      const winner = tallies.winner;
+      const voteSummary = tallies.mode === "single"
+        ? "단독 출마 찬반투표 · 총 " + tallies.totalVoted + "표 중 찬성 " + tallies.approve + "표 (" + ((tallies.approve / Math.max(1, tallies.totalVoted)) * 100).toFixed(1) + "% 찬성 가결)"
+        : getActiveCandidates().length + "인 경선 투표 · 총 " + tallies.totalVoted + "표 중 최다 득표 " + tallies.topVotes + "표 (" + ((tallies.topVotes / Math.max(1, tallies.totalVoted)) * 100).toFixed(1) + "% 득표 1위)";
+
+      const careerHtml = (winner.career || []).map(function(line) {
+        return '<li class="flex items-start gap-2"><span class="text-amber-500 font-extrabold">✓</span><span>' + escapeHtml(line) + '</span></li>';
+      }).join("");
+
+      container.innerHTML =
+        '<div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-purple-950 rounded-3xl p-6 sm:p-10 text-white shadow-xl border-2 border-amber-400/50 relative overflow-hidden">' +
+          '<div class="flex flex-col lg:flex-row items-center gap-8">' +
+            '<div class="flex flex-col items-center shrink-0">' +
+              '<div class="relative">' +
+                '<div class="w-40 h-40 sm:w-48 sm:h-48 rounded-3xl overflow-hidden border-4 border-amber-400 shadow-2xl bg-slate-800">' +
+                  '<img src="' + winner.photo + '" alt="' + escapeHtml(winner.name) + ' 당선자 사진" class="w-full h-full object-cover" />' +
+                '</div>' +
+                '<span class="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-amber-400 text-slate-950 font-extrabold text-xs shadow-lg whitespace-nowrap">' +
+                  '🏆 2026 단장 당선인' +
+                '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="flex-1 space-y-4 text-center lg:text-left">' +
+              '<div class="flex flex-wrap items-center justify-center lg:justify-start gap-2">' +
+                '<span class="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-300 text-xs font-extrabold">OFFICIAL CERTIFICATE OF ELECTION · 제2026대 단장 당선 공고</span>' +
+                '<span class="px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">' + escapeHtml(voteSummary) + '</span>' +
+              '</div>' +
+              '<h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight">' +
+                '제2026대 삼성한우리합창단 단장 <span class="text-amber-300">' + escapeHtml(winner.name) + '</span> 당선' +
+              '</h2>' +
+              '<p class="text-sm sm:text-base text-indigo-200 font-semibold">' + escapeHtml(winner.meta) + ' · 임기: 2026. 01. 01 ~ 2026. 12. 31 (단칙 제11조)</p>' +
+              '<div class="p-4 rounded-2xl bg-white/10 border border-white/15 text-left space-y-2">' +
+                '<div class="text-xs font-extrabold text-amber-300 uppercase tracking-wider">당선인 취임 인사 및 2026 슬로건</div>' +
+                '<p class="text-sm sm:text-base font-bold text-white leading-relaxed">' +
+                  '“올해는 <strong>‘메리고잉 한우리’</strong>를 주제로 한 해를 이어가고자 합니다. 안산시립합창단 지휘자 박지훈 선생님, 그리고 18인의 메리고잉 운영진과 함께 모든 단원이 행복하게 화음을 맞추는 2026년을 만들겠습니다. 잘 부탁드립니다!”' +
+                '</p>' +
+              '</div>' +
+              '<div class="flex flex-wrap justify-center lg:justify-start gap-2 pt-1">' +
+                '<button type="button" onclick="switchMainTab(\'election\')" class="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold">← 단장 선거 투표소로 돌아가기</button>' +
+                '<button type="button" onclick="switchMainTab(\'events\')" class="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-extrabold">2026 정기총회 메인 현황 보기 →</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">' +
+          '<div class="lg:col-span-5 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">' +
+            '<span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-extrabold">WINNER CAREER &amp; PLEDGES</span>' +
+            '<h3 class="text-lg font-extrabold text-slate-900">' + escapeHtml(winner.name) + ' 신임 단장 주요 이력 및 공약</h3>' +
+            '<ul class="text-xs sm:text-sm text-slate-700 space-y-2">' + careerHtml + '</ul>' +
+            '<div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-800 whitespace-pre-line leading-relaxed">' +
+              escapeHtml(winner.pledge) +
+            '</div>' +
+          '</div>' +
+          '<div class="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">' +
+            '<div class="flex items-center justify-between">' +
+              '<div>' +
+                '<span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 text-xs font-extrabold">2026 MERRY-GOING LEADERSHIP</span>' +
+                '<h3 class="text-lg font-extrabold text-slate-900 mt-1">제2026대 메리고잉 삼성한우리합창단 운영진 인준 명단 (18인)</h3>' +
+              '</div>' +
+              '<span class="text-xs font-bold text-slate-500">지휘: 박지훈 선생님</span>' +
+            '</div>' +
+            '<div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">' +
+              EXECUTIVE_ROSTER.map(function(e) {
+                const rLabel = e.subRole !== "-" ? e.subRole + " 파트장" : e.role;
+                return '<div class="p-3 rounded-xl border border-slate-200 bg-slate-50/70">' +
+                  '<div class="font-bold text-indigo-700">' + escapeHtml(rLabel) + '</div>' +
+                  '<div class="text-sm font-extrabold text-slate-900 mt-0.5">' + escapeHtml(e.name) + ' <span class="text-xs font-semibold text-slate-500">(' + escapeHtml(e.gen) + '기·' + escapeHtml(e.detailPart) + ')</span></div>' +
+                  '<div class="text-[11px] text-slate-500">' + escapeHtml(e.company) + '</div>' +
+                '</div>';
+              }).join("") +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+
+    // =========================================================================
+    // 7. VOTING VIEW & AGENDA STEPPER RENDERING
+    // =========================================================================
 
     function renderAgendaStepper() {
       const container = document.getElementById("agendaStepperList");
@@ -256,7 +510,7 @@
           ? "border-2 border-indigo-600 bg-indigo-50/60 shadow-xs"
           : "border border-slate-200 bg-white hover:bg-slate-50";
 
-        html += '<button type="button" onclick="selectAgenda('' + ag.id + '')" class="text-left p-2.5 rounded-xl transition flex flex-col justify-between ' + cardBorder + '">' +
+        html += '<button type="button" onclick="selectAgenda(\'' + ag.id + '\')" class="text-left p-2.5 rounded-xl transition flex flex-col justify-between ' + cardBorder + '">' +
           '<div class="flex items-center justify-between gap-1 w-full">' +
             '<span class="text-xs font-extrabold whitespace-nowrap ' + (isCurrent ? 'text-indigo-700' : 'text-slate-700') + '">' + escapeHtml(ag.codeName || ("제" + ag.orderNo + "호")) + '</span>' +
             statusTag +
@@ -312,7 +566,7 @@
 
       let kwHtml = '<span class="text-xs font-bold text-slate-400 mr-1">관련 조항·키워드:</span>';
       (ag.keywords || []).forEach(function(kw) {
-        kwHtml += '<button type="button" onclick="openDrawerWithQuery('' + escapeHtml(kw) + '')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 text-xs font-semibold transition">#' + escapeHtml(kw) + '</button>';
+        kwHtml += '<button type="button" onclick="openDrawerWithQuery(\'' + escapeHtml(kw) + '\')" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-700 text-xs font-semibold transition">#' + escapeHtml(kw) + '</button>';
       });
       document.getElementById("activeAgendaKeywordsList").innerHTML = kwHtml;
 
@@ -438,7 +692,7 @@
             '<div class="text-sm font-extrabold text-slate-900">' + escapeHtml(iss.title) + '</div>' +
             '<p class="text-xs text-slate-700 leading-relaxed">' + escapeHtml(iss.summary) + '</p>' +
           '</div>' +
-          '<button type="button" onclick="openDrawerWithQuery('' + escapeHtml(iss.relatedClauses[0] || iss.title) + '')" class="self-start sm:self-center px-3 py-1.5 rounded-xl bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold shrink-0 transition whitespace-nowrap">' +
+          '<button type="button" onclick="openDrawerWithQuery(\'' + escapeHtml(iss.relatedClauses[0] || iss.title) + '\')" class="self-start sm:self-center px-3 py-1.5 rounded-xl bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold shrink-0 transition whitespace-nowrap">' +
             '관련 조항 즉석보기 →' +
           '</button>' +
         '</div>';
@@ -458,7 +712,7 @@
             '</div>' +
             '<div class="flex items-center justify-between pt-2 border-t border-slate-200/70 text-[11px]">' +
               '<span class="text-slate-500">찬성 ' + t.approve + '표 / 기준 ' + t.majorityThreshold + '표</span>' +
-              '<button type="button" onclick="selectAgenda('' + other.id + '')" class="font-bold text-indigo-600 hover:text-indigo-800 whitespace-nowrap">이 안건으로 이동 →</button>' +
+              '<button type="button" onclick="selectAgenda(\'' + other.id + '\')" class="font-bold text-indigo-600 hover:text-indigo-800 whitespace-nowrap">이 안건으로 이동 →</button>' +
             '</div>' +
           '</div>';
         });
@@ -473,7 +727,7 @@
               '<span class="font-extrabold text-slate-900">' + escapeHtml(cl.articleNo) + ' (' + escapeHtml(cl.title) + ')</span> ' +
               '<span class="text-slate-600 line-clamp-2">' + escapeHtml(cl.content) + '</span>' +
             '</div>' +
-            '<button type="button" onclick="openDrawerWithQuery('' + escapeHtml(cl.articleNo) + '')" class="text-xs font-bold text-indigo-600 hover:underline shrink-0 whitespace-nowrap">조문 전문 보기</button>' +
+            '<button type="button" onclick="openDrawerWithQuery(\'' + escapeHtml(cl.articleNo) + '\')" class="text-xs font-bold text-indigo-600 hover:underline shrink-0 whitespace-nowrap">조문 전문 보기</button>' +
           '</div>';
         });
         html += '</div></div>';
@@ -481,6 +735,10 @@
 
       container.innerHTML = html;
     }
+
+    // =========================================================================
+    // 8. INSTANT SEARCH RENDERING (32 Clauses + Keyword Highlight)
+    // =========================================================================
 
     function renderFullSearchView() {
       const q = appState.fullSearchQuery;
@@ -506,13 +764,13 @@
               '</div>' +
               '<div class="flex items-center gap-2">' +
                 '<span class="text-[11px] font-semibold text-slate-500">' + highlightMatch(cl.chapter, q) + '</span>' +
-                '<button type="button" onclick="openEditClauseModal('' + cl.id + '')" class="px-2 py-0.5 rounded bg-white border border-slate-300 hover:border-indigo-500 text-[11px] font-bold text-indigo-700">✎ 조문 수정</button>' +
+                '<button type="button" onclick="openEditClauseModal(\'' + cl.id + '\')" class="px-2 py-0.5 rounded bg-white border border-slate-300 hover:border-indigo-500 text-[11px] font-bold text-indigo-700">✎ 조문 수정</button>' +
               '</div>' +
             '</div>' +
             '<p class="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line">' + highlightMatch(cl.content, q) + '</p>' +
             '<div class="flex flex-wrap gap-1 pt-1">' +
               (cl.keywords || []).map(function(k) {
-                return '<button type="button" onclick="setFullSearchQuery('' + escapeHtml(k) + '')" class="text-[11px] px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600">#' + highlightMatch(k, q) + '</button>';
+                return '<button type="button" onclick="setFullSearchQuery(\'' + escapeHtml(k) + '\')" class="text-[11px] px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:text-indigo-600">#' + highlightMatch(k, q) + '</button>';
               }).join("") +
             '</div>' +
           '</div>';
@@ -549,7 +807,7 @@
                 '<span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-xs font-bold">' + highlightMatch(ag.targetArticle, q) + '</span>' +
                 '<span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 text-xs font-bold">' + escapeHtml(ag.proposer || ag.type) + '</span>' +
               '</div>' +
-              '<button type="button" onclick="jumpToAgendaFromSearch('' + ag.id + '')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline">투표 화면으로 이동 →</button>' +
+              '<button type="button" onclick="jumpToAgendaFromSearch(\'' + ag.id + '\')" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 underline">투표 화면으로 이동 →</button>' +
             '</div>' +
             '<div class="text-sm font-extrabold text-slate-900">' + highlightMatch(ag.title, q) + '</div>' +
             '<div class="p-2.5 rounded-lg bg-indigo-50/60 border border-indigo-100 text-xs text-slate-800 whitespace-pre-line">' +
@@ -614,7 +872,7 @@
         html += '<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 space-y-1">' +
           '<div class="flex items-center justify-between">' +
             '<div class="text-xs font-extrabold text-slate-900">' + highlightMatch(cl.articleNo + " (" + cl.title + ")", q) + ' <span class="text-[11px] font-normal text-slate-500">· ' + escapeHtml(cl.chapter) + '</span></div>' +
-            '<button type="button" onclick="openEditClauseModal('' + cl.id + '')" class="text-[11px] font-bold text-indigo-600 hover:underline">✎ 수정</button>' +
+            '<button type="button" onclick="openEditClauseModal(\'' + cl.id + '\')" class="text-[11px] font-bold text-indigo-600 hover:underline">✎ 수정</button>' +
           '</div>' +
           '<p class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">' + highlightMatch(cl.content, q) + '</p>' +
         '</div>';
@@ -626,7 +884,7 @@
         html += '<div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 space-y-1.5">' +
           '<div class="flex items-center justify-between">' +
             '<span class="text-xs font-extrabold text-emerald-900">' + escapeHtml(ag.codeName || ("제" + ag.orderNo + "호")) + ' · ' + highlightMatch(ag.targetArticle, q) + '</span>' +
-            '<button type="button" onclick="selectAgenda('' + ag.id + ''); switchMainTab('voting'); toggleSearchDrawer(false);" class="text-xs font-bold text-indigo-600 underline">이 안건 보기</button>' +
+            '<button type="button" onclick="selectAgenda(\'' + ag.id + '\'); switchMainTab(\'voting\'); toggleSearchDrawer(false);" class="text-xs font-bold text-indigo-600 underline">이 안건 보기</button>' +
           '</div>' +
           '<div class="text-xs font-bold text-slate-900">' + highlightMatch(ag.title, q) + '</div>' +
           '<p class="text-xs text-slate-700 whitespace-pre-line">' + highlightMatch(ag.afterText, q) + '</p>' +
@@ -646,7 +904,12 @@
       container.innerHTML = html;
     }
 
+    // =========================================================================
+    // 9. EVENTS VIEW, SETTLEMENT VIEW & ADMIN VIEW RENDERING
+    // =========================================================================
+
     function renderEventsView() {
+      // 1. Render General Assembly Official Schedule (정기총회 공식 식순 - 추가/수정/삭제 지원)
       const schedContainer = document.getElementById("assemblyScheduleListContainer");
       if (schedContainer) {
         let sHtml = "";
@@ -660,7 +923,7 @@
           if (item.targetTab === "sectionConcertReview") {
             actionBtn = '<a href="#sectionConcertReview" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold text-[11px] hover:bg-indigo-100">요약보기 ↓</a>';
           } else if (item.targetTab) {
-            actionBtn = '<button type="button" onclick="switchMainTab('' + escapeHtml(item.targetTab) + '')" class="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px]">' + escapeHtml(item.btnLabel || "바로가기 →") + '</button>';
+            actionBtn = '<button type="button" onclick="switchMainTab(\'' + escapeHtml(item.targetTab) + '\')" class="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px]">' + escapeHtml(item.btnLabel || "바로가기 →") + '</button>';
           }
 
           sHtml += '<li class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-indigo-200 transition">' +
@@ -673,8 +936,8 @@
             '</div>' +
             '<div class="flex items-center gap-1 shrink-0 self-end sm:self-center">' +
               actionBtn +
-              '<button type="button" onclick="openScheduleModal('' + item.id + '')" class="px-2 py-0.5 rounded bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-[11px]" title="식순 수정">✎ 수정</button>' +
-              '<button type="button" onclick="deleteScheduleItem('' + item.id + '')" class="px-2 py-0.5 rounded bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 font-bold text-[11px]" title="식순 삭제">삭제</button>' +
+              '<button type="button" onclick="openScheduleModal(\'' + item.id + '\')" class="px-2 py-0.5 rounded bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-[11px]" title="식순 수정">✎ 수정</button>' +
+              '<button type="button" onclick="deleteScheduleItem(\'' + item.id + '\')" class="px-2 py-0.5 rounded bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 font-bold text-[11px]" title="식순 삭제">삭제</button>' +
             '</div>' +
           '</li>';
         });
@@ -684,6 +947,7 @@
         schedContainer.innerHTML = sHtml;
       }
 
+      // 2. Render Annual Events Timeline (행사 내역 - 추가/수정/삭제 지원)
       const container = document.getElementById("clubEventsTimelineList");
       if (!container) return;
       let html = "";
@@ -700,8 +964,8 @@
             '<p class="text-xs sm:text-sm text-slate-700 leading-relaxed">' + escapeHtml(ev.summary) + '</p>' +
           '</div>' +
           '<div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">' +
-            '<button type="button" onclick="openEditEventModal('' + ev.id + '')" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition">✎ 수정</button>' +
-            '<button type="button" onclick="deleteEventItem('' + ev.id + '')" class="px-2.5 py-1.5 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">🗑️ 삭제</button>' +
+            '<button type="button" onclick="openEditEventModal(\'' + ev.id + '\')" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition">✎ 수정</button>' +
+            '<button type="button" onclick="deleteEventItem(\'' + ev.id + '\')" class="px-2.5 py-1.5 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">🗑️ 삭제</button>' +
           '</div>' +
         '</div>';
       });
@@ -762,63 +1026,67 @@
           '</td>' +
           '<td class="py-3 px-3 text-center">' + statusBadge + '</td>' +
           '<td class="py-3 px-3 text-right space-x-1 whitespace-nowrap">' +
-            '<button type="button" onclick="adminPresentAgenda('' + ag.id + '')" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">상정</button>' +
-            '<button type="button" onclick="adminSimulateVote('' + ag.id + '', 'approve')" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold">+찬성</button>' +
-            '<button type="button" onclick="adminSimulateVote('' + ag.id + '', 'reject')" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold">+반대</button>' +
-            '<button type="button" onclick="adminSimulateVote('' + ag.id + '', 'abstain')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">+기권</button>' +
-            '<button type="button" onclick="adminFinalizeSpecificAgenda('' + ag.id + '')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">마감확정</button>' +
+            '<button type="button" onclick="adminPresentAgenda(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">상정</button>' +
+            '<button type="button" onclick="adminSimulateVote(\'' + ag.id + '\', \'approve\')" class="px-2 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold">+찬성</button>' +
+            '<button type="button" onclick="adminSimulateVote(\'' + ag.id + '\', \'reject\')" class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-bold">+반대</button>' +
+            '<button type="button" onclick="adminSimulateVote(\'' + ag.id + '\', \'abstain\')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">+기권</button>' +
+            '<button type="button" onclick="adminFinalizeSpecificAgenda(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">마감확정</button>' +
           '</td>' +
         '</tr>';
       });
       tbody.innerHTML = html;
     }
 
-    function renderAuthModalMemberList() {
-      const container = document.getElementById("authMemberListGrid");
-      if (!container) return;
-      const activeAg = getActiveAgenda();
-      const votesMap = activeAg.memberVotes || {};
-      const fKey = appState.authModalFilter || "all";
-      const q = (appState.authModalSearch || "").trim().toLowerCase();
+    // =========================================================================
+    // 10. AUTH MODAL: 134 MEMBERS + EXECUTIVE PASSWORD ("2003") GATE
+    // =========================================================================
 
-      ["all", "exec", "소프라노", "알토", "테너", "베이스"].forEach(function(k) {
-        const btn = document.getElementById("btnAuthFilter-" + k);
-        if (!btn) return;
-        if (k === fKey) {
-          btn.className = "px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-slate-900 text-white";
-        } else if (k === "exec") {
-          btn.className = "px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-amber-100 text-amber-900 border border-amber-300";
-        } else {
-          btn.className = "px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-indigo-50";
-        }
-      });
 
-      const filtered = appState.members.filter(function(m) {
-        if (fKey === "exec" && !m.isExecutive) return false;
-        if (fKey !== "all" && fKey !== "exec" && m.basePart !== fKey) return false;
-        if (q) {
-          const hay = (m.name + " " + m.part + " " + (m.basePart || "") + " " + (m.execRole || "")).toLowerCase();
-          if (hay.indexOf(q) === -1) return false;
-        }
-        return true;
-      });
 
-      let html = "";
-      filtered.forEach(function(m) {
-        const isSelected = m.id === appState.currentVoterId;
-        const votedChoice = votesMap[m.id];
-        const choiceLabel = votedChoice === "approve" ? "찬성 완료" : votedChoice === "reject" ? "반대 완료" : votedChoice === "abstain" ? "기권 완료" : "";
+function renderAuthModalMemberList() {
+  const container = document.getElementById("authMemberListGrid");
+  if (!container) return;
+  const activeAg = getActiveAgenda();
+  const votesMap = activeAg.memberVotes || {};
+  const fKey = appState.authModalFilter || "all";
+  const q = (appState.authModalSearch || "").trim().toLowerCase();
 
-        html += '<button type="button" onclick="selectVoter('' + m.id + '')" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between gap-1 ' +
-          (isSelected ? 'border-2 border-indigo-600 bg-indigo-50/70' : 'border-slate-200 hover:bg-slate-50') + '">' +
-          '<div class="min-w-0">' +
-            '<div class="text-xs font-extrabold text-slate-900 truncate">' +
-              escapeHtml(m.name) + ' <span class="text-indigo-600 font-semibold">(' + escapeHtml(m.part) + ')</span>' +
-            '</div>' +
-            '<div class="text-[11px] text-slate-500">휴대폰 뒷자리 인증</div>' +
-          '</div>' +
-          (votedChoice ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold whitespace-nowrap shrink-0 bg-emerald-100 text-emerald-800">' + choiceLabel + '</span>' : '') +
-        '</button>';
-      });
-      container.innerHTML = html;
+  ["all", "exec", "소프라노", "알토", "테너", "베이스"].forEach(function(k) {
+    const btn = document.getElementById("btnAuthFilter-" + k);
+    if (!btn) return;
+    if (k === fKey) {
+      btn.className = "px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-slate-900 text-white";
+    } else {
+      btn.className = "px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-indigo-50";
     }
+  });
+
+  const filtered = appState.members.filter(function(m) {
+    if (fKey === "exec" && !m.isExecutive) return false;
+    if (fKey !== "all" && fKey !== "exec" && m.basePart !== fKey) return false;
+    if (q) {
+      const hay = (m.name + " " + m.part + " " + (m.basePart || "")).toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
+    }
+    return true;
+  });
+
+  let html = "";
+  filtered.forEach(function(m) {
+    const isSelected = m.id === appState.currentVoterId;
+    const votedChoice = votesMap[m.id];
+
+    html += '<button type="button" onclick="selectVoter(\'' + m.id + '\')" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between gap-2 ' +
+      (isSelected ? 'border-2 border-indigo-600 bg-indigo-50/70' : 'border-slate-200 bg-white hover:bg-slate-50') + '">' +
+      '<div class="min-w-0">' +
+        '<div class="text-xs font-extrabold text-slate-900 truncate">' +
+          escapeHtml(m.name) + ' <span class="text-indigo-600 font-semibold">(' + escapeHtml(m.part) + ')</span>' +
+        '</div>' +
+      '</div>' +
+      (votedChoice
+        ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold whitespace-nowrap shrink-0 bg-emerald-100 text-emerald-800">투표완료</span>'
+        : '') +
+    '</button>';
+  });
+  container.innerHTML = html;
+}

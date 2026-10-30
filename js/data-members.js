@@ -2,7 +2,7 @@
 // =========================================================================
     // 1. INITIAL DATA: 2026 삼성한우리합창단 정기총회 with '메리고잉 운영진'
     // =========================================================================
-    const STORAGE_KEY = "hanuri_choir_assembly_2026_state_v7";
+    const STORAGE_KEY = "hanuri_choir_assembly_2026_state_v8";
     const ADMIN_PASSWORD_CODE = "2003";
     let cloudSyncUrl = "";
     let cloudSyncTimer = null;
