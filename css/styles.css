@@ -1,0 +1,38 @@
+body {
+      font-family: 'Noto Sans KR', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      word-break: keep-all;
+    }
+    mark.hl {
+      background-color: #fef08a;
+      color: #854d0e;
+      padding: 0 3px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .projector-mode .proj-scale-title {
+      font-size: 1.75rem !important;
+      line-height: 2.25rem !important;
+    }
+    .projector-mode .proj-scale-text {
+      font-size: 1.15rem !important;
+      line-height: 1.85rem !important;
+    }
+    .projector-mode .proj-scale-num {
+      font-size: 2.25rem !important;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
