@@ -34,22 +34,22 @@ function showToast(msg) {
   }, 3500);
 }
 
-// Window scroll event listener for slim sticky header with multi-browser scrollY fallback & init check
-function updateHeaderSlim() {
+// Window scroll event listener for sticky navigation bar elevation & shadow enhancement (Zero layout-shift)
+function updateHeaderScrollState() {
   const header = document.getElementById("mainHeader");
   if (!header) return;
   const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || (document.body ? document.body.scrollTop : 0) || 0;
-  if (scrollY > 30) {
-    header.classList.add("header-slim");
+  if (scrollY > 20) {
+    header.classList.add("is-scrolled");
   } else {
-    header.classList.remove("header-slim");
+    header.classList.remove("is-scrolled");
   }
 }
 
-window.addEventListener("scroll", updateHeaderSlim, { passive: true });
+window.addEventListener("scroll", updateHeaderScrollState, { passive: true });
 
 window.addEventListener("DOMContentLoaded", function() {
   loadStateFromStorage();
   renderAll();
-  updateHeaderSlim();
+  updateHeaderScrollState();
 });

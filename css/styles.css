@@ -37,37 +37,21 @@ mark.hl {
   background: #94a3b8;
 }
 
-/* Header Smooth Transition & Slim Mode */
+/* Sticky Navigation Bar & Butter-Smooth Scroll Styling (Zero Jitter, No Height Collapse) */
 #mainHeader {
-  transition: all 0.25s ease-in-out;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
 }
-#mainHeader .header-brand-icon,
-#mainHeader .header-brand-title,
-#mainHeader .header-inner-wrap {
-  transition: all 0.25s ease-in-out;
+#mainHeader.is-scrolled {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.45), 0 8px 10px -6px rgba(0, 0, 0, 0.35);
+  border-bottom-color: rgba(99, 102, 241, 0.45);
 }
-#mainHeader.header-slim .header-collapsible {
-  display: none !important;
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
 }
-#mainHeader.header-slim .header-brand-icon {
-  width: 1.75rem !important;
-  height: 1.75rem !important;
-}
-#mainHeader.header-slim .header-brand-icon svg {
-  width: 1.1rem !important;
-  height: 1.1rem !important;
-}
-#mainHeader.header-slim .header-brand-title {
-  font-size: 0.95rem !important;
-}
-#mainHeader.header-slim .header-row-2 {
-  display: none !important;
-}
-#mainHeader.header-slim .header-inner-wrap {
-  padding-top: 0.35rem !important;
-  padding-bottom: 0.35rem !important;
-}
-#mainHeader.header-slim nav {
-  margin-top: 0.35rem !important;
-  padding-top: 0.25rem !important;
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

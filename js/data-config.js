@@ -23,10 +23,10 @@ function getDefaultState() {
           {
             id: "sch-2",
             title: "2. 2025 활동 보고(김형택) 및 정기연주회 강평(황태희)",
-            desc: "제20회 여의도 KBS홀 정기연주회(140명 출연) 설문 및 2026 기대 활동 보고",
+            desc: "제20회 여의도 KBS홀 정기연주회(140명 출연) 설문 및 2027 기대 활동 보고",
             status: "완료",
-            targetTab: "sectionConcertReview",
-            btnLabel: "요약보기 ↓"
+            targetTab: "concert",
+            btnLabel: "강평·설문 →"
           },
           {
             id: "sch-3",
@@ -933,7 +933,7 @@ function getDefaultState() {
               name: "이창욱",
               meta: "17기 · 테너(T2) · 삼성전자 (cw8.lee@samsung.com)",
               photo: "assets/cand_1.jpg",
-              slogan: "2026 메리고잉 한우리 (Merry-Going Hanuri) — 즐겁게 노래하고 따뜻하게 소통하는 합창단",
+              slogan: "2026 메리고잉 한우리 (Merry-Going Hanwoori) — 즐겁게 노래하고 따뜻하게 소통하는 합창단",
               career: [
                 "삼성한우리합창단 17기 테너(T2) 입단 및 정단원 활동",
                 "제18회 · 제19회 · 제20회(여의도 KBS홀 베토벤 합창교향곡) 정기연주회 연속 출연 (단칙 제11조 제3항 피선거권 충족)",

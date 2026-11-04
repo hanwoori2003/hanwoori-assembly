@@ -304,7 +304,7 @@ function confirmExecPasswordLogin() {
         return;
       }
       appState.activeTab = tabName;
-      ["events", "settlement", "voting", "election", "bylaws", "search", "winner", "admin"].forEach(function(t) {
+      ["events", "concert", "settlement", "voting", "election", "bylaws", "search", "winner", "admin"].forEach(function(t) {
         const sec = document.getElementById("view-" + t);
         const btn = document.getElementById("tabBtn-" + t);
         if (!sec || !btn) return;
@@ -1220,7 +1220,7 @@ function confirmExecPasswordLogin() {
     function copyShareLink() {
       const currentUrl = window.location && window.location.href && window.location.href.indexOf("http") === 0
         ? window.location.href
-        : "https://hanuri-choir.github.io/assembly-2026/";
+        : "https://hanwoori-choir.github.io/assembly-2026/";
       const shareText = "[2026 삼성한우리합창단 정기총회 with ‘메리고잉 운영진’]\n단칙 검색·개정안 투표·단장 선거 접속 링크: " + currentUrl;
       copyTextToClipboard(shareText, "총회 단원 접속용 공유 링크가 클립보드에 복사되었습니다!");
     }

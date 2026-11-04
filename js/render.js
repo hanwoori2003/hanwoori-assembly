@@ -19,9 +19,11 @@
 
       const voter = getCurrentVoter();
       const rolePrefix = (voter.isExecutive && appState.isAdminAuthenticated) ? "★운영진 · " : "";
-      document.getElementById("currentVoterBadgeText").textContent =
-        rolePrefix + voter.name + " (" + voter.part + ")";
-
+      const voterBadgeStr = rolePrefix + voter.name + " (" + voter.part + ")";
+      const b1 = document.getElementById("currentVoterBadgeText");
+      if (b1) b1.textContent = voterBadgeStr;
+      const b2 = document.getElementById("stickyVoterBadgeText");
+      if (b2) b2.textContent = voterBadgeStr;
       // 운영진 로그인 여부에 따라 상단 [메리고잉 운영진 제어] 및 [단장 당선 공고] 탭 표시/숨김 제어
       const isExecLoggedIn = Boolean(voter.isExecutive && appState.isAdminAuthenticated);
       const adminTabBtn = document.getElementById("tabBtn-admin");
@@ -909,7 +911,7 @@
     // =========================================================================
 
     function renderEventsView() {
-      // 1. Render General Assembly Official Schedule (정기총회 공식 식순 - 추가/수정/삭제 지원)
+      // 1. Render General Assembly Official Schedule in Tab 1 (View-only for members, zero edit/delete)
       const schedContainer = document.getElementById("assemblyScheduleListContainer");
       if (schedContainer) {
         let sHtml = "";
@@ -920,59 +922,88 @@
           else if (item.status === "안건상정") badgeClass = "bg-indigo-100 text-indigo-800";
 
           let actionBtn = "";
-          if (item.targetTab === "sectionConcertReview") {
-            actionBtn = '<a href="#sectionConcertReview" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold text-[11px] hover:bg-indigo-100">요약보기 ↓</a>';
+          if (item.targetTab === "concert" || item.targetTab === "sectionConcertReview") {
+            actionBtn = '<button type="button" onclick="switchMainTab(\'concert\')" class="px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs shadow-xs transition">강평·설문 보기 →</button>';
           } else if (item.targetTab) {
-            actionBtn = '<button type="button" onclick="switchMainTab(\'' + escapeHtml(item.targetTab) + '\')" class="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px]">' + escapeHtml(item.btnLabel || "바로가기 →") + '</button>';
+            actionBtn = '<button type="button" onclick="switchMainTab(\'' + escapeHtml(item.targetTab) + '\')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition">' + escapeHtml(item.btnLabel || "바로가기 →") + '</button>';
           }
 
-          sHtml += '<li class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-indigo-200 transition">' +
+          sHtml += '<li class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-slate-50/80 border border-slate-200/90 hover:border-indigo-300 hover:bg-white hover:shadow-xs transition">' +
+            '<div class="min-w-0 space-y-1">' +
+              '<div class="flex flex-wrap items-center gap-2">' +
+                '<span class="font-extrabold text-sm sm:text-base text-slate-900">' + escapeHtml(item.title) + '</span>' +
+                '<span class="px-2 py-0.5 rounded-md font-bold text-[11px] ' + badgeClass + '">' + escapeHtml(item.status || "진행") + '</span>' +
+              '</div>' +
+              '<div class="text-xs sm:text-sm text-slate-600">' + escapeHtml(item.desc) + '</div>' +
+            '</div>' +
+            '<div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">' +
+              actionBtn +
+            '</div>' +
+          '</li>';
+        });
+        if (!sHtml) {
+          sHtml = '<li class="p-6 text-center text-xs sm:text-sm text-slate-400 bg-slate-50 rounded-2xl">등록된 식순이 없습니다.</li>';
+        }
+        schedContainer.innerHTML = sHtml;
+      }
+
+      // 2. Render Schedule in Admin Console (Editable only by authenticated executives)
+      const adminSchedContainer = document.getElementById("adminAssemblyScheduleContainer");
+      if (adminSchedContainer) {
+        let asHtml = "";
+        (appState.assemblySchedule || []).forEach(function(item) {
+          let badgeClass = "bg-slate-100 text-slate-700";
+          if (item.status === "완료") badgeClass = "bg-emerald-100 text-emerald-800";
+          else if (item.status === "진행중") badgeClass = "bg-amber-100 text-amber-900";
+          else if (item.status === "안건상정") badgeClass = "bg-indigo-100 text-indigo-800";
+
+          asHtml += '<li class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-200 transition">' +
             '<div class="min-w-0">' +
               '<div class="flex flex-wrap items-center gap-1.5">' +
-                '<span class="font-extrabold text-slate-900">' + escapeHtml(item.title) + '</span>' +
+                '<span class="font-extrabold text-slate-900 text-xs sm:text-sm">' + escapeHtml(item.title) + '</span>' +
                 '<span class="px-2 py-0.5 rounded font-bold text-[10px] ' + badgeClass + '">' + escapeHtml(item.status || "진행") + '</span>' +
               '</div>' +
               '<div class="text-xs text-slate-600 mt-0.5">' + escapeHtml(item.desc) + '</div>' +
             '</div>' +
             '<div class="flex items-center gap-1 shrink-0 self-end sm:self-center">' +
-              actionBtn +
-              '<button type="button" onclick="openScheduleModal(\'' + item.id + '\')" class="px-2 py-0.5 rounded bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-[11px]" title="식순 수정">✎ 수정</button>' +
-              '<button type="button" onclick="deleteScheduleItem(\'' + item.id + '\')" class="px-2 py-0.5 rounded bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 font-bold text-[11px]" title="식순 삭제">삭제</button>' +
+              '<button type="button" onclick="openScheduleModal(\'' + item.id + '\')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-xs" title="식순 수정">✎ 수정</button>' +
+              '<button type="button" onclick="deleteScheduleItem(\'' + item.id + '\')" class="px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 font-bold text-xs" title="식순 삭제">🗑️ 삭제</button>' +
             '</div>' +
           '</li>';
         });
-        if (!sHtml) {
-          sHtml = '<li class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">등록된 식순이 없습니다. [+ 식순 추가] 버튼으로 추가해 주세요.</li>';
+        if (!asHtml) {
+          asHtml = '<li class="p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">등록된 식순이 없습니다. [+ 식순 추가] 버튼으로 추가해 주세요.</li>';
         }
-        schedContainer.innerHTML = sHtml;
+        adminSchedContainer.innerHTML = asHtml;
       }
 
-      // 2. Render Annual Events Timeline (행사 내역 - 추가/수정/삭제 지원)
+      // 3. Render Annual Events Timeline in Admin Console (Editable only by authenticated executives)
       const container = document.getElementById("clubEventsTimelineList");
-      if (!container) return;
-      let html = "";
-      appState.events.forEach(function(ev, index) {
-        html += '<div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:shadow-xs transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
-          '<div class="space-y-1.5 min-w-0">' +
-            '<div class="flex flex-wrap items-center gap-2">' +
-              '<span class="px-2 py-0.5 rounded bg-slate-200 text-slate-700 text-[11px] font-extrabold">#' + (index + 1) + '</span>' +
-              '<span class="px-2.5 py-0.5 rounded-lg bg-indigo-600 text-white text-xs font-bold">' + escapeHtml(ev.category) + '</span>' +
-              '<span class="text-xs font-bold text-slate-500">' + escapeHtml(ev.date) + '</span>' +
-              '<span class="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">참여/성원 ' + ev.participantsCount + '명</span>' +
+      if (container) {
+        let html = "";
+        appState.events.forEach(function(ev, index) {
+          html += '<div class="p-4 rounded-2xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:shadow-xs transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
+            '<div class="space-y-1.5 min-w-0">' +
+              '<div class="flex flex-wrap items-center gap-2">' +
+                '<span class="px-2 py-0.5 rounded bg-slate-200 text-slate-700 text-[11px] font-extrabold">#' + (index + 1) + '</span>' +
+                '<span class="px-2.5 py-0.5 rounded-lg bg-indigo-600 text-white text-xs font-bold">' + escapeHtml(ev.category) + '</span>' +
+                '<span class="text-xs font-bold text-slate-500">' + escapeHtml(ev.date) + '</span>' +
+                '<span class="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">참여/성원 ' + ev.participantsCount + '명</span>' +
+              '</div>' +
+              '<h4 class="text-base font-extrabold text-slate-900">' + escapeHtml(ev.title) + '</h4>' +
+              '<p class="text-xs sm:text-sm text-slate-700 leading-relaxed">' + escapeHtml(ev.summary) + '</p>' +
             '</div>' +
-            '<h4 class="text-base font-extrabold text-slate-900">' + escapeHtml(ev.title) + '</h4>' +
-            '<p class="text-xs sm:text-sm text-slate-700 leading-relaxed">' + escapeHtml(ev.summary) + '</p>' +
-          '</div>' +
-          '<div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">' +
-            '<button type="button" onclick="openEditEventModal(\'' + ev.id + '\')" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition">✎ 수정</button>' +
-            '<button type="button" onclick="deleteEventItem(\'' + ev.id + '\')" class="px-2.5 py-1.5 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">🗑️ 삭제</button>' +
-          '</div>' +
-        '</div>';
-      });
-      if (!html) {
-        html = '<div class="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">등록된 행사 내역이 없습니다. [+ 행사 내역 추가] 버튼으로 추가해 주세요.</div>';
+            '<div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">' +
+              '<button type="button" onclick="openEditEventModal(\'' + ev.id + '\')" class="px-2.5 py-1.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition">✎ 수정</button>' +
+              '<button type="button" onclick="deleteEventItem(\'' + ev.id + '\')" class="px-2.5 py-1.5 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition">🗑️ 삭제</button>' +
+            '</div>' +
+          '</div>';
+        });
+        if (!html) {
+          html = '<div class="p-6 text-center text-xs text-slate-400 bg-slate-50 rounded-xl">등록된 행사 내역이 없습니다. [+ 행사 내역 추가] 버튼으로 추가해 주세요.</div>';
+        }
+        container.innerHTML = html;
       }
-      container.innerHTML = html;
     }
 
     function renderSettlementView() {

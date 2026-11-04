@@ -25,7 +25,7 @@ function saveStateToStorage() {
 
 function loadStateFromStorage() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
     if (raw) {
       const parsed = JSON.parse(raw);
       if (parsed && Array.isArray(parsed.agendas) && Array.isArray(parsed.bylaws)) {
@@ -417,7 +417,7 @@ function resetToDefaultInitialData() {
       let u = rawUrl.trim().replace(/\/+$/, "");
       if (u.indexOf("https://") !== 0) return "";
       if (!u.endsWith(".json")) {
-        u = u + "/hanuri_assembly_2026.json";
+        u = u + "/hanwoori_assembly_2026.json";
       }
       return u;
     }
