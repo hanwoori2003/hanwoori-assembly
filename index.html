@@ -14,33 +14,33 @@
 <body class="min-h-screen flex flex-col selection:bg-indigo-100 selection:text-indigo-900">
 
   <!-- Top Announcement & Session Header -->
-  <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg border-b border-indigo-800/50 sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
+  <header id="mainHeader" class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg border-b border-indigo-800/50 sticky top-0 z-30">
+    <div class="header-inner-wrap max-w-7xl mx-auto px-4 sm:px-6 py-3.5">
       <!-- Row 1: Brand & Full Unclipped Title + Utility Buttons -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <!-- Brand & Title (Full breathing room, never squished by status pills) -->
         <div class="flex items-start sm:items-center gap-3 min-w-0">
-          <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md shrink-0 mt-0.5 sm:mt-0">
+          <div class="header-brand-icon w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-md shrink-0 mt-0.5 sm:mt-0">
             <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
             </svg>
           </div>
           <div class="min-w-0">
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="header-collapsible flex flex-wrap items-center gap-2">
               <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-200 border border-indigo-400/30 whitespace-nowrap">
                 <span id="cloudSyncStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span id="cloudSyncStatusLabel">2026 정기총회 실시간 의결 시스템 (자동저장 ON)</span>
               </span>
               <span class="text-xs text-slate-300">지휘: 박지훈 선생님 (안산시립합창단) · 단장: 이창욱 (17기)</span>
             </div>
-            <h1 class="text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-white mt-1 break-keep">
+            <h1 class="header-brand-title text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-white mt-1 break-keep">
               2026 삼성한우리합창단 총회 <span class="text-amber-300 font-bold">with ‘메리고잉 운영진’</span>
             </h1>
           </div>
         </div>
 
         <!-- Compact Top-Right Utility Buttons -->
-        <div class="flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-center">
+        <div class="header-collapsible flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-center">
           <button id="btnOpenCloudSyncModal" type="button" onclick="openCloudSyncModal()" class="flex items-center gap-1.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-400/40 text-emerald-100 rounded-xl px-3 py-1.5 text-xs font-bold transition whitespace-nowrap" title="실시간 DB 연동 및 산출물 저장">
             <svg class="w-3.5 h-3.5 text-emerald-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
@@ -58,7 +58,7 @@
       </div>
 
       <!-- Row 2: Dedicated Status & Quick Action Bar (참석 인원 · 로그인 단원 이름 · 조항 즉석검색) -->
-      <div class="mt-3 pt-2.5 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2.5">
+      <div class="header-row-2 mt-3 pt-2.5 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-2.5">
         <!-- Left: Quorum & Attendance Summary Pill with Preset Switcher -->
         <div class="flex flex-wrap items-center gap-2">
           <div class="flex flex-wrap items-center gap-2 bg-slate-800/90 border border-slate-700 rounded-xl px-3.5 py-1.5 text-xs">

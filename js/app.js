@@ -34,7 +34,22 @@ function showToast(msg) {
   }, 3500);
 }
 
+// Window scroll event listener for slim sticky header with multi-browser scrollY fallback & init check
+function updateHeaderSlim() {
+  const header = document.getElementById("mainHeader");
+  if (!header) return;
+  const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || (document.body ? document.body.scrollTop : 0) || 0;
+  if (scrollY > 30) {
+    header.classList.add("header-slim");
+  } else {
+    header.classList.remove("header-slim");
+  }
+}
+
+window.addEventListener("scroll", updateHeaderSlim, { passive: true });
+
 window.addEventListener("DOMContentLoaded", function() {
   loadStateFromStorage();
   renderAll();
+  updateHeaderSlim();
 });
