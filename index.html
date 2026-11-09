@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.13" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.14" />
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
 
@@ -51,13 +51,18 @@
 
             <!-- Row 2: Tabs bar (6 primary tabs + Admin conditional tabs + Projector toggle) -->
             <div class="flex items-center justify-between gap-2 py-1.5 text-xs sm:text-sm font-medium min-w-0">
-                <!-- Tabs wrapper with gradient fade indicators for horizontal scroll hint -->
-                <div class="relative flex-1 min-w-0 flex items-center">
+                <!-- Tabs wrapper with Left/Right arrow buttons & gradient fade indicators for horizontal scroll -->
+                <div id="tabsWrapper" class="relative flex-1 min-w-0 flex items-center">
+                    <!-- Left Arrow Button (shown when overflowing & scrolled right) -->
+                    <button id="btnTabScrollLeft" type="button" onclick="scrollTabsNav(-220)" aria-label="이전 탭 보기" title="이전 탭 보기" class="hidden absolute left-0 z-20 h-7 w-7 rounded-full bg-slate-800/90 hover:bg-indigo-600 text-white shadow-lg border border-slate-700/80 items-center justify-center transition-all cursor-pointer backdrop-blur-xs">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+
                     <!-- Left fade hint (shown when scrolled) -->
-                    <div id="tabsFadeLeft" class="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-slate-900 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
+                    <div id="tabsFadeLeft" class="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
 
                     <!-- Horizontal scrollable tabs container -->
-                    <nav id="mainTabsNav" class="tabs-scroll-container flex-1 min-w-0 flex items-center gap-1 sm:gap-2 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5 scroll-smooth" aria-label="메인 탭 내비게이션">
+                    <nav id="mainTabsNav" class="tabs-scroll-container flex-1 min-w-0 flex flex-nowrap items-center gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap py-1 scroll-smooth cursor-grab select-none" aria-label="메인 탭 내비게이션">
                         <!-- Tab 1: 2026 정기총회 -->
                         <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm cursor-pointer">
                             <span>📅 2026 정기총회</span>
@@ -95,7 +100,12 @@
                     </nav>
 
                     <!-- Right fade hint (shown when more tabs can be scrolled) -->
-                    <div id="tabsFadeRight" class="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
+                    <div id="tabsFadeRight" class="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-slate-900 via-slate-900/80 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
+
+                    <!-- Right Arrow Button (shown when overflowing & more tabs available) -->
+                    <button id="btnTabScrollRight" type="button" onclick="scrollTabsNav(220)" aria-label="다음 탭 보기" title="다음 탭 보기" class="hidden absolute right-0 z-20 h-7 w-7 rounded-full bg-slate-800/90 hover:bg-indigo-600 text-white shadow-lg border border-slate-700/80 items-center justify-center transition-all cursor-pointer backdrop-blur-xs">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+                    </button>
                 </div>
 
                 <!-- Right controls: Projector Mode toggle & Cloud Sync -->
@@ -1180,7 +1190,7 @@
     <script src="js/data-config.js?v=2026.7"></script>
     <script src="js/utils.js?v=2026.7"></script>
     <script src="js/render.js?v=2026.7"></script>
-    <script src="js/handlers.js?v=2026.7"></script>
-    <script src="js/app.js?v=2026.7"></script>
+    <script src="js/handlers.js?v=2026.14"></script>
+    <script src="js/app.js?v=2026.14"></script>
 </body>
 </html>

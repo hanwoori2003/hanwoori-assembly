@@ -134,6 +134,10 @@ function renderHeaderStatus() {
             adminBtn.classList.remove("flex");
         }
     }
+
+    if (typeof updateTabsScrollIndicator === "function") {
+        setTimeout(updateTabsScrollIndicator, 50);
+    }
 }
 
 function renderExecutiveRosterTable() {

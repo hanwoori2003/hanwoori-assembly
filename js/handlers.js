@@ -104,19 +104,50 @@ function switchMainTab(tabId, btnEl) {
     }
 }
 
-// Function to update left/right fade gradients based on tabs scroll position
+// Function to programmatically scroll tabs left or right via arrow buttons
+function scrollTabsNav(delta) {
+    const nav = document.getElementById("mainTabsNav");
+    if (!nav) return;
+    nav.scrollBy({ left: delta, behavior: "smooth" });
+    setTimeout(updateTabsScrollIndicator, 150);
+    setTimeout(updateTabsScrollIndicator, 350);
+}
+
+// Function to update left/right fade gradients and scroll arrow buttons based on tabs scroll position
 function updateTabsScrollIndicator() {
     const nav = document.getElementById("mainTabsNav");
     const fadeLeft = document.getElementById("tabsFadeLeft");
     const fadeRight = document.getElementById("tabsFadeRight");
+    const btnLeft = document.getElementById("btnTabScrollLeft");
+    const btnRight = document.getElementById("btnTabScrollRight");
     if (!nav) return;
+
     const scrollLeft = nav.scrollLeft;
     const maxScroll = nav.scrollWidth - nav.clientWidth;
-    if (fadeLeft) {
-        fadeLeft.style.opacity = scrollLeft > 6 ? "0.9" : "0";
+    const isOverflowing = maxScroll > 4;
+
+    const canScrollLeft = isOverflowing && scrollLeft > 8;
+    if (fadeLeft) fadeLeft.style.opacity = canScrollLeft ? "0.9" : "0";
+    if (btnLeft) {
+        if (canScrollLeft) {
+            btnLeft.classList.remove("hidden");
+            btnLeft.classList.add("flex");
+        } else {
+            btnLeft.classList.add("hidden");
+            btnLeft.classList.remove("flex");
+        }
     }
-    if (fadeRight) {
-        fadeRight.style.opacity = (maxScroll - scrollLeft) > 6 ? "0.9" : "0";
+
+    const canScrollRight = isOverflowing && (maxScroll - scrollLeft) > 8;
+    if (fadeRight) fadeRight.style.opacity = canScrollRight ? "0.9" : "0";
+    if (btnRight) {
+        if (canScrollRight) {
+            btnRight.classList.remove("hidden");
+            btnRight.classList.add("flex");
+        } else {
+            btnRight.classList.add("hidden");
+            btnRight.classList.remove("flex");
+        }
     }
 }
 

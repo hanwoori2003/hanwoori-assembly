@@ -50,26 +50,103 @@ function updateHeaderScrollShadow() {
 // Remove jittery toggles: ONLY subtle elevation shadow is added on scroll
 window.addEventListener("scroll", updateHeaderScrollShadow, { passive: true });
 
+
+// Horizontal drag-to-scroll for desktop mouse interaction (Swipe emulation)
+function initTabsDragToScroll() {
+    const nav = document.getElementById("mainTabsNav");
+    if (!nav) return;
+
+    let isDown = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let hasMoved = false;
+
+    nav.addEventListener("mousedown", function(e) {
+        if (e.button !== 0) return; // left click only
+        isDown = true;
+        hasMoved = false;
+        startX = e.pageX - nav.offsetLeft;
+        scrollLeft = nav.scrollLeft;
+        nav.classList.add("is-dragging");
+        nav.style.scrollBehavior = "auto";
+    });
+
+    window.addEventListener("mousemove", function(e) {
+        if (!isDown) return;
+        const x = e.pageX - nav.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        if (Math.abs(walk) > 4) {
+            hasMoved = true;
+            e.preventDefault();
+        }
+        nav.scrollLeft = scrollLeft - walk;
+        updateTabsScrollIndicator();
+    });
+
+    function endDrag() {
+        if (!isDown) return;
+        isDown = false;
+        nav.classList.remove("is-dragging");
+        nav.style.scrollBehavior = "smooth";
+        updateTabsScrollIndicator();
+    }
+
+    window.addEventListener("mouseup", endDrag);
+
+    // Suppress tab button click if user was dragging
+    nav.addEventListener("click", function(e) {
+        if (hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+            hasMoved = false;
+        }
+    }, true);
+}
+
+// Horizontal wheel scroll conversion for standard desktop mouse
+function initTabsWheelScroll() {
+    const nav = document.getElementById("mainTabsNav");
+    const wrapper = document.getElementById("tabsWrapper");
+    const target = wrapper || nav;
+    if (!nav || !target) return;
+
+    target.addEventListener("wheel", function(e) {
+        if (nav.scrollWidth <= nav.clientWidth) return;
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && e.deltaY !== 0) {
+            e.preventDefault();
+            nav.scrollBy({ left: e.deltaY, behavior: "auto" });
+            updateTabsScrollIndicator();
+        }
+    }, { passive: false });
+}
+
 window.addEventListener("DOMContentLoaded", function() {
     loadStateFromStorage();
     renderAll();
     updateHeaderScrollShadow();
 
-    // Horizontal tabs scroll listeners, wheel support & initial center
+        // Horizontal tabs drag-to-scroll, wheel scroll & responsive listeners
+    initTabsDragToScroll();
+    initTabsWheelScroll();
+
     const nav = document.getElementById("mainTabsNav");
     if (nav) {
         nav.addEventListener("scroll", updateTabsScrollIndicator, { passive: true });
-        nav.addEventListener("wheel", function(e) {
-            if (e.deltaY !== 0 && nav.scrollWidth > nav.clientWidth) {
-                e.preventDefault();
-                nav.scrollLeft += e.deltaY;
-                updateTabsScrollIndicator();
-            }
-        }, { passive: false });
+        if (window.ResizeObserver) {
+            try {
+                const ro = new ResizeObserver(function() {
+                    updateTabsScrollIndicator();
+                });
+                ro.observe(nav);
+            } catch (e) {}
+        }
     }
     window.addEventListener("resize", updateTabsScrollIndicator, { passive: true });
+    window.addEventListener("load", updateTabsScrollIndicator, { passive: true });
     if (typeof updateTabsScrollIndicator === "function") {
         updateTabsScrollIndicator();
+        setTimeout(updateTabsScrollIndicator, 100);
+        setTimeout(updateTabsScrollIndicator, 350);
     }
 
     // Auto-scroll initial active tab into view
