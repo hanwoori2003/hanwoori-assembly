@@ -27,7 +27,7 @@ function saveStateToStorage() {
 
 function loadStateFromStorage() {
     try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.agendas) && Array.isArray(parsed.bylaws)) {
@@ -37,6 +37,17 @@ function loadStateFromStorage() {
                 appState.currentVoterId = parsed.currentVoterId || appState.currentVoterId;
                 appState.isAdminAuthenticated = Boolean(parsed.isAdminAuthenticated);
                 if (Array.isArray(parsed.members) && parsed.members.length >= 100) {
+                    const codeMap = {};
+                    if (typeof FULL_MEMBER_ROSTER !== "undefined") {
+                        FULL_MEMBER_ROSTER.forEach(function(fm) {
+                            codeMap[fm.id] = fm.code;
+                        });
+                    }
+                    parsed.members.forEach(function(pm) {
+                        if (codeMap[pm.id]) {
+                            pm.code = codeMap[pm.id];
+                        }
+                    });
                     appState.members = parsed.members;
                 }
                 appState.bylaws = parsed.bylaws;

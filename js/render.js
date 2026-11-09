@@ -843,6 +843,14 @@ function renderAuthModalMemberList() {
         return true;
     });
 
+    if (pendingExecMemberId) {
+        const pm = appState.members.find(function(x) { return x.id === pendingExecMemberId; });
+        const label = document.getElementById("execAuthTargetLabel");
+        if (pm && label) {
+            label.textContent = pm.name + " (" + pm.basePart + ") 단원 본인 확인 — 휴대폰 뒷 4자리 입력";
+        }
+    }
+
     let html = "";
     filtered.forEach(function(m) {
         const isSelected = m.id === appState.currentVoterId;

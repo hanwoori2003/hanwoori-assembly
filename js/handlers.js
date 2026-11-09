@@ -135,12 +135,12 @@ function selectVoter(memberId) {
     const err = document.getElementById("execPasswordErrorMsg");
 
     if (label) {
-        label.textContent = m.name + " (" + m.basePart + ") 단원 본인 확인 — 휴대폰 뒷 4자리(인증코드) 입력";
+        label.textContent = m.name + " (" + m.basePart + ") 단원 본인 확인 — 휴대폰 뒷 4자리 입력";
     }
     if (err) err.classList.add("hidden");
     if (box) box.classList.remove("hidden");
     if (inp) {
-        inp.placeholder = "본인 확인 4자리 번호를 입력하세요";
+        inp.placeholder = "본인 확인용 휴대폰 뒷 4자리를 입력하세요";
         inp.value = "";
         setTimeout(function() { inp.focus(); }, 60);
     }
@@ -154,13 +154,19 @@ function confirmExecPasswordLogin() {
     const m = appState.members.find(function(x) { return x.id === pendingExecMemberId; });
     if (!m) return;
 
-    // 인증 번호 검증 (운영진 비밀번호 2003 또는 단원 개인 코드)
-    const expectedCode = String(m.code || ADMIN_PASSWORD_CODE).trim();
-    const isValid = (entered === expectedCode) || (entered === ADMIN_PASSWORD_CODE);
+    // 인증 번호 검증:
+    // 일반 단원: 오직 본인의 고유 4자리 휴대폰 뒷자리 코드만 일치해야 로그인 허용 (마스터 암호 2003 불허)
+    // 운영진 단원: 본인의 휴대폰 뒷 4자리 또는 운영진 마스터 암호(2003) 모두 허용
+    const memberCode = String(m.code || "").trim();
+    const isCodeMatch = Boolean(memberCode && entered === memberCode);
+    const isMasterAdminMatch = Boolean(m.isExecutive && entered === ADMIN_PASSWORD_CODE);
+    const isValid = isCodeMatch || isMasterAdminMatch;
 
     if (!isValid) {
         if (err) {
-            err.textContent = "✕ 인증번호가 일치하지 않습니다. 본인 확인 4자리 번호를 정확히 입력해 주세요.";
+            err.textContent = m.isExecutive
+                ? "✕ 인증번호가 일치하지 않습니다. 휴대폰 뒷 4자리 또는 운영진 암호(2003)를 입력해 주세요."
+                : "✕ 인증번호가 일치하지 않습니다. 본인 확인용 휴대폰 뒷 4자리를 정확히 입력해 주세요.";
             err.classList.remove("hidden");
         }
         showToast("인증번호가 일치하지 않습니다.");
@@ -168,8 +174,8 @@ function confirmExecPasswordLogin() {
     }
 
     appState.currentVoterId = m.id;
-    // 2003을 입력했거나 운영진인 경우 관리자 권한 부여
-    appState.isAdminAuthenticated = Boolean(m.isExecutive || entered === ADMIN_PASSWORD_CODE);
+    // 운영진인 경우 관리자 권한 부여
+    appState.isAdminAuthenticated = Boolean(m.isExecutive);
     pendingExecMemberId = null;
 
     closeAuthModal();

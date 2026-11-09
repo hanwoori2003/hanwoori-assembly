@@ -699,7 +699,7 @@
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 class="text-base font-black text-slate-900">전체 단원 로그인 (단원 변경)</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">본인 이름을 누른 후 4자리 본인 확인 코드를 입력하세요.</p>
+                    <p class="text-xs text-slate-500 mt-0.5">본인 이름을 누른 후 본인 확인용 휴대폰 뒷 4자리를 입력하세요.</p>
                 </div>
                 <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition">✕</button>
             </div>
@@ -719,9 +719,9 @@
 
             <!-- Password / Code Input Box -->
             <div id="execPasswordAuthBox" class="p-4 bg-indigo-50/80 border-b border-indigo-100 hidden space-y-2">
-                <div id="execAuthTargetLabel" class="text-xs font-bold text-indigo-900">단원 본인 확인 — 4자리 코드 입력</div>
+                <div id="execAuthTargetLabel" class="text-xs font-bold text-indigo-900">단원 본인 확인 — 휴대폰 뒷 4자리 입력</div>
                 <div class="flex items-center gap-2">
-                    <input type="password" id="inputExecPassword" maxlength="10" placeholder="4자리 인증번호" class="flex-1 px-3 py-1.5 rounded-xl border border-indigo-200 text-xs font-mono bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="if(event.key==='Enter') confirmExecPasswordLogin();" />
+                    <input type="password" id="inputExecPassword" maxlength="10" placeholder="본인 확인용 휴대폰 뒷 4자리를 입력하세요" class="flex-1 px-3 py-1.5 rounded-xl border border-indigo-200 text-xs font-mono bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500" onkeydown="if(event.key==='Enter') confirmExecPasswordLogin();" />
                     <button type="button" onclick="confirmExecPasswordLogin()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-sm transition">
                         확인
                     </button>
