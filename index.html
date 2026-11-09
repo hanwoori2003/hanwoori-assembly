@@ -40,6 +40,7 @@
 
                 <!-- Right: Current Voter Button (Single point of login/member change) -->
                 <div class="flex items-center gap-2 shrink-0">
+                    <div id="headerAdminModeBadgeContainer" class="flex items-center gap-1.5 sm:gap-2"></div>
                     <button id="btnHeaderVoter" type="button" onclick="openAuthModal()" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition text-xs font-medium cursor-pointer shadow-xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
                         <span id="headerVoterBadge" class="font-bold text-white truncate max-w-[130px] sm:max-w-none">이창욱 (단장 · T2)</span>
@@ -104,6 +105,9 @@
 
     <!-- MAIN APP CONTENT PANELS -->
     <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- EXECUTIVE ADMIN QUICK ACTION BAR (Visible ONLY when isCurrentUserExecutive() is true) -->
+        <div id="adminQuickActionBarContainer"></div>
 
         <!-- ============================================================ -->
         <!-- TAB 1: 2026 정기총회 메인 허브 (#view-events) -->
@@ -302,6 +306,9 @@
         <!-- TAB 4: 단칙 개정 찬반투표 (#view-voting) -->
         <!-- ============================================================ -->
         <section id="view-voting" class="hidden space-y-6">
+            <!-- Dynamic Admin Bylaw Control Bar -->
+            <div id="bylawAdminControlBarContainer"></div>
+
             <!-- Stepper Container -->
             <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs">
                 <div class="flex items-center justify-between mb-2">
@@ -369,7 +376,7 @@
                 </div>
 
                 <!-- Voting Action Buttons -->
-                <div class="grid grid-cols-3 gap-3 pt-2">
+                <div id="activeAgendaVotingButtonsContainer" class="grid grid-cols-3 gap-3 pt-2">
                     <button type="button" onclick="voteAgenda('approve')" class="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
                         <span>✓</span>
                         <span>찬성</span>

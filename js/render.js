@@ -8,10 +8,21 @@ function renderHeaderStatus() {
     if (majEl) majEl.textContent = majority + "표↑";
 
     const isExec = (typeof isCurrentUserExecutive === "function") ? isCurrentUserExecutive() : Boolean(appState.isAdminAuthenticated);
+    const isRealExec = (typeof isRealExecutiveAuthenticated === "function") ? isRealExecutiveAuthenticated() : isExec;
     const voter = getCurrentVoter();
-    const rolePrefix = isExec ? "★운영진 · " : "";
+    const rolePrefix = isExec ? "👑운영진 · " : "";
     const voterPartStr = voter.detailPart ? (voter.part + " · " + voter.detailPart) : voter.part;
     const voterBadgeStr = rolePrefix + voter.name + " (" + voterPartStr + ")";
+
+    // Header styling based on Admin Mode
+    const headerEl = document.getElementById("mainHeader");
+    if (headerEl) {
+        if (isExec) {
+            headerEl.classList.add("admin-mode-active");
+        } else {
+            headerEl.classList.remove("admin-mode-active");
+        }
+    }
 
     // 단일 헤더 투표자 배지 및 버튼 텍스트 업데이트
     const badgeEl = document.getElementById("headerVoterBadge");
@@ -25,11 +36,76 @@ function renderHeaderStatus() {
     const b3 = document.getElementById("miniHeaderMemberName");
     if (b3) b3.textContent = voterBadgeStr;
 
+    // Header Admin Mode Badge & Preview Toggle
+    const headerAdminBadgeContainer = document.getElementById("headerAdminModeBadgeContainer");
+    if (headerAdminBadgeContainer) {
+        if (isRealExec) {
+            if (isExec) {
+                headerAdminBadgeContainer.innerHTML = 
+                    '<span class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[11px] sm:text-xs shadow-xs animate-pulse whitespace-nowrap">' +
+                        '<span>👑</span> <span>운영진 모드 ON</span>' +
+                    '</span>' +
+                    '<button type="button" onclick="toggleAdminPreviewMode()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600 text-[11px] sm:text-xs font-bold transition flex items-center gap-1 cursor-pointer whitespace-nowrap">' +
+                        '<span>👁️</span> <span class="hidden sm:inline">일반 단원</span> 미리보기' +
+                    '</button>';
+            } else {
+                headerAdminBadgeContainer.innerHTML = 
+                    '<span class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 font-bold text-[11px] sm:text-xs whitespace-nowrap">' +
+                        '<span>👁️</span> <span>단원 화면 미리보기 중</span>' +
+                    '</span>' +
+                    '<button type="button" onclick="toggleAdminPreviewMode()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[11px] sm:text-xs transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">' +
+                        '<span>👑</span> <span>운영진 모드로 복귀</span>' +
+                    '</button>';
+            }
+        } else {
+            headerAdminBadgeContainer.innerHTML = "";
+        }
+    }
+
+    // Admin Quick Action Bar in Main Container
+    const quickBarContainer = document.getElementById("adminQuickActionBarContainer");
+    if (quickBarContainer) {
+        if (isExec) {
+            quickBarContainer.innerHTML = 
+                '<div id="adminQuickActionBar" class="mb-6 p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border-2 border-amber-500/40 shadow-lg text-white flex flex-col md:flex-row md:items-center justify-between gap-3">' +
+                    '<div class="flex items-center gap-2.5">' +
+                        '<span class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-black border border-amber-500/30 shadow-xs shrink-0">👑</span>' +
+                        '<div>' +
+                            '<div class="flex items-center gap-2">' +
+                                '<span class="text-xs sm:text-sm font-black text-amber-300">메리고잉 운영진 통합 퀵 컨트롤 바</span>' +
+                                '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">ADMIN ACTIVE</span>' +
+                            '</div>' +
+                            '<p class="text-[11px] text-slate-300">총회 식순·단칙 개정안·단장 선거·명부 및 설정을 원클릭으로 총괄 제어합니다.</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="flex items-center gap-1.5 flex-wrap">' +
+                        '<button type="button" onclick="openScheduleModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-200 border border-indigo-400/30 text-xs font-bold transition flex items-center gap-1 cursor-pointer">' +
+                            '<span>+</span> <span>식순 추가</span>' +
+                        '</button>' +
+                        '<button type="button" onclick="openAgendaModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-indigo-200 border border-indigo-400/30 text-xs font-bold transition flex items-center gap-1 cursor-pointer">' +
+                            '<span>+</span> <span>새 개정안 추가</span>' +
+                        '</button>' +
+                        '<button type="button" onclick="openCandidateModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-purple-200 border border-purple-400/30 text-xs font-bold transition flex items-center gap-1 cursor-pointer">' +
+                            '<span>+</span> <span>단장 후보 등록</span>' +
+                        '</button>' +
+                        '<button type="button" onclick="triggerBylawFileUpload()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-200 border border-emerald-400/30 text-xs font-bold transition flex items-center gap-1 cursor-pointer">' +
+                            '<span>📂</span> <span>단칙 .docx 업로드</span>' +
+                        '</button>' +
+                        '<button type="button" onclick="switchMainTab(\'admin\')" class="px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition flex items-center gap-1 cursor-pointer shadow-sm">' +
+                            '<span>⚙</span> <span>전체 설정/명부</span>' +
+                        '</button>' +
+                    '</div>' +
+                '</div>';
+        } else {
+            quickBarContainer.innerHTML = "";
+        }
+    }
+
     // 투표 현황 네비게이션 배지
     const curAg = getActiveAgenda();
-    const curIdx = appState.agendas.findIndex(function(a) { return a.id === curAg.id; }) + 1;
+    const curIdx = curAg ? ((appState.agendas || []).findIndex(function(a) { return a.id === curAg.id; }) + 1) : 1;
     const navProg = document.getElementById("navBadgeAgendaProgress");
-    if (navProg) navProg.textContent = curIdx + "/" + appState.agendas.length;
+    if (navProg) navProg.textContent = curIdx + "/" + ((appState.agendas || []).length || 12);
 
     const navElec = document.getElementById("navBadgeElectionMode");
     if (navElec) {
@@ -334,18 +410,23 @@ function renderAgendaStepper() {
     const container = document.getElementById("agendaStepperContainer");
     if (!container) return;
     let html = "";
-    appState.agendas.forEach(function(ag, i) {
+    (appState.agendas || []).forEach(function(ag, i) {
         const isActive = ag.id === appState.activeAgendaId;
-        const tallies = getAgendaTallies(ag);
+        const agNo = ag.no || ag.agendaNo || ag.number || (i + 1);
         const hasVoted = Boolean((ag.memberVotes || {})[appState.currentVoterId]);
-        const badge = hasVoted
-            ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>'
-            : '';
+        const isLocked = Boolean(ag.isLocked || ag.status === "closed" || ag.status === "locked");
+        
+        let statusBadge = "";
+        if (isLocked) {
+            statusBadge = '<span class="text-[10px]" title="의결 확정(잠금)">🔒</span>';
+        } else if (hasVoted) {
+            statusBadge = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500" title="투표 완료"></span>';
+        }
 
-        html += '<button type="button" onclick="selectAgenda(\'' + ag.id + '\')" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ' +
+        html += '<button type="button" onclick="selectAgenda(\'' + (ag.id || ('ag-' + (i + 1))) + '\')" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ' +
             (isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50') + '">' +
-            '<span>안건 ' + ag.no + '</span>' +
-            badge +
+            '<span>안건 ' + agNo + '</span>' +
+            statusBadge +
         '</button>';
     });
     container.innerHTML = html;
@@ -357,14 +438,54 @@ function renderActiveVotingView() {
     const isExec = isCurrentUserExecutive();
     const tallies = getAgendaTallies(ag);
     const myVote = (ag.memberVotes || {})[appState.currentVoterId];
+    const isLocked = Boolean(ag.isLocked || ag.status === "closed" || ag.status === "locked");
+    const agNo = ag.no || ag.agendaNo || ag.number || "";
 
+    // 1. Dynamic bylaw admin control bar container (above stepper)
+    const bylawAdminBar = document.getElementById("bylawAdminControlBarContainer");
+    if (bylawAdminBar) {
+        if (isExec) {
+            const totalAg = (appState.agendas || []).length;
+            const lockedAg = (appState.agendas || []).filter(function(a) { return a.isLocked || a.status === "closed" || a.status === "locked"; }).length;
+            const votingAg = totalAg - lockedAg;
+
+            bylawAdminBar.innerHTML = 
+                '<div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-md border-2 border-amber-500/40 space-y-3 mb-2">' +
+                    '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-indigo-800/40 pb-2.5">' +
+                        '<div class="flex items-center gap-2 flex-wrap">' +
+                            '<span class="text-sm font-black text-amber-300">👑 단칙 개정 총괄 제어 대시보드</span>' +
+                            '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950">운영진 모드</span>' +
+                            '<span class="text-xs text-slate-300">총 ' + totalAg + '개 안건 중 <strong class="text-amber-300">' + lockedAg + '개 확정(마감)</strong> / <strong class="text-emerald-400">' + votingAg + '개 표결 중</strong></span>' +
+                        '</div>' +
+                        '<div class="flex items-center gap-2 flex-wrap">' +
+                            '<button type="button" onclick="toggleAllAgendasLock(' + (lockedAg < totalAg) + ')" class="px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer ' +
+                                (lockedAg < totalAg ? 'bg-rose-600 hover:bg-rose-500 text-white' : 'bg-emerald-600 hover:bg-emerald-500 text-white') + '">' +
+                                (lockedAg < totalAg ? '🔒 전체 안건 일괄 마감(잠금)' : '🔓 전체 안건 일괄 재개') +
+                            '</button>' +
+                            '<button type="button" onclick="openAgendaModal()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition flex items-center gap-1 cursor-pointer">' +
+                                '<span>+</span> 새 개정안 상정' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+        } else {
+            bylawAdminBar.innerHTML = '';
+        }
+    }
+
+    // 2. Admin actions on active agenda
     const adminActionsEl = document.getElementById("activeAgendaAdminActions");
     if (adminActionsEl) {
         if (isExec) {
             adminActionsEl.innerHTML = 
-                '<div class="flex items-center gap-1.5">' +
-                    '<button type="button" onclick="openAgendaModal(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer">✎ 안건 수정</button>' +
-                    '<button type="button" onclick="deleteAgenda(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer">🗑️ 안건 삭제</button>' +
+                '<div class="flex items-center gap-1.5 flex-wrap justify-end">' +
+                    '<button type="button" onclick="toggleAgendaLock(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-black transition cursor-pointer flex items-center gap-1 ' +
+                        (isLocked ? 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300' : 'bg-rose-100 hover:bg-rose-200 text-rose-800 border border-rose-300') + '">' +
+                        '<span>' + (isLocked ? '🔓' : '🔒') + '</span> ' +
+                        '<span>' + (isLocked ? '투표 재개 (잠금 해제)' : '투표 마감 및 결과 확정 (잠금)') + '</span>' +
+                    '</button>' +
+                    '<button type="button" onclick="openAgendaModal(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer flex items-center gap-1">✎ 안건 수정</button>' +
+                    '<button type="button" onclick="deleteAgenda(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer flex items-center gap-1">🗑️ 안건 삭제</button>' +
                 '</div>';
         } else {
             adminActionsEl.innerHTML = '';
@@ -372,17 +493,21 @@ function renderActiveVotingView() {
     }
 
     const titleEl = document.getElementById("activeAgendaTitle");
-    if (titleEl) titleEl.textContent = ag.title;
+    if (titleEl) titleEl.textContent = ag.title || ag.name || ("안건 제" + agNo + "호");
     const catEl = document.getElementById("activeAgendaCategory");
-    if (catEl) catEl.textContent = ag.category + " · " + ag.author;
+    if (catEl) {
+        const catStr = ag.category || ag.targetArticle || ag.articleNo || "단칙 개정";
+        const authorStr = ag.author || ag.proposer || "운영진 발의";
+        catEl.textContent = catStr + " · " + authorStr;
+    }
     const descEl = document.getElementById("activeAgendaSummary");
-    if (descEl) descEl.textContent = ag.summary;
+    if (descEl) descEl.textContent = ag.summary || ag.description || "";
     const reasonEl = document.getElementById("activeAgendaReason");
-    if (reasonEl) reasonEl.textContent = ag.proposalReason;
+    if (reasonEl) reasonEl.textContent = ag.proposalReason || ag.reason || "";
     const beforeEl = document.getElementById("activeAgendaBefore");
-    if (beforeEl) beforeEl.textContent = ag.beforeText;
+    if (beforeEl) beforeEl.textContent = ag.beforeText || ag.before || "";
     const afterEl = document.getElementById("activeAgendaAfter");
-    if (afterEl) afterEl.textContent = ag.afterText;
+    if (afterEl) afterEl.textContent = ag.afterText || ag.after || "";
 
     // Tally numbers
     const appEl = document.getElementById("activeAgendaApproveCount");
@@ -399,23 +524,71 @@ function renderActiveVotingView() {
     // Vote result status badge
     const statusEl = document.getElementById("activeAgendaResultStatus");
     if (statusEl) {
-        if (tallies.isAdopted) {
-            statusEl.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200";
-            statusEl.textContent = "가결 확정 (2/3 정족수 충족)";
+        if (isLocked) {
+            statusEl.className = tallies.isAdopted
+                ? "px-2.5 py-1 rounded-lg text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1"
+                : "px-2.5 py-1 rounded-lg text-xs font-black bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1";
+            statusEl.textContent = "🔒 의결 확정 (" + (tallies.isAdopted ? "가결 확정" : "부결 확정") + " · 투표 마감)";
+        } else if (tallies.isAdopted) {
+            statusEl.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1";
+            statusEl.textContent = "가결 요건 충족 (2/3 정족수 충족)";
         } else {
-            statusEl.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-slate-100 text-slate-700 border border-slate-200";
+            statusEl.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1";
             statusEl.textContent = "표결 진행 중 (가결 기준: " + tallies.majorityThreshold + "표↑)";
         }
     }
 
     // My vote indicator
     const myVoteEl = document.getElementById("myVoteStatusNotice");
+    const labelMap = { approve: "찬성", reject: "반대", abstain: "기권" };
     if (myVoteEl) {
-        if (myVote) {
-            const labelMap = { approve: "찬성", reject: "반대", abstain: "기권" };
-            myVoteEl.innerHTML = '<span class="text-xs font-bold text-indigo-700">✓ 본인 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong>로 의결권을 행사하셨습니다.</span>';
+        if (isLocked) {
+            if (myVote) {
+                myVoteEl.innerHTML = '<span class="text-xs font-black text-indigo-800">🔒 나의 최종 의결: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong> (확정)</span>';
+            } else {
+                myVoteEl.innerHTML = '<span class="text-xs font-bold text-rose-600">🔒 투표가 공식 마감되어 더 이상 투표에 참여할 수 없습니다.</span>';
+            }
         } else {
-            myVoteEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">아직 본 안건에 투표하지 않으셨습니다. 아래 버튼을 눌러 투표하세요.</span>';
+            if (myVote) {
+                myVoteEl.innerHTML = '<span class="text-xs font-bold text-indigo-700">✓ 본인 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong>로 의결권을 행사하셨습니다.</span>';
+            } else {
+                myVoteEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">아직 본 안건에 투표하지 않으셨습니다. 아래 버튼을 눌러 투표하세요.</span>';
+            }
+        }
+    }
+
+    // Voting Action Buttons (Lock enforcement)
+    const btnBox = document.getElementById("activeAgendaVotingButtonsContainer");
+    if (btnBox) {
+        if (isLocked) {
+            btnBox.innerHTML = 
+                '<div class="col-span-3 p-4 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 text-center space-y-1">' +
+                    '<div class="flex items-center justify-center gap-2 text-slate-800 font-black text-sm">' +
+                        '<span class="text-base">🔒</span>' +
+                        '<span>투표가 마감되어 의결이 확정되었습니다 (변경 불가)</span>' +
+                    '</div>' +
+                    '<p class="text-xs text-slate-500 font-medium">본 안건의 의결권 행사가 종료되어 최종 표결 결과가 확정되었습니다.</p>' +
+                '</div>';
+        } else {
+            const isApp = myVote === "approve";
+            const isRej = myVote === "reject";
+            const isAbs = myVote === "abstain";
+            btnBox.innerHTML = 
+                '<button type="button" onclick="voteAgenda(\'approve\')" class="py-3 rounded-xl font-extrabold text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5 ' +
+                    (isApp ? 'bg-emerald-700 text-white ring-2 ring-emerald-400' : 'bg-emerald-600 hover:bg-emerald-500 text-white') + '">' +
+                    '<span>✓</span>' +
+                    '<span>찬성' + (isApp ? ' (선택됨)' : '') + '</span>' +
+                '</button>' +
+                '<button type="button" onclick="voteAgenda(\'reject\')" class="py-3 rounded-xl font-extrabold text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5 ' +
+                    (isRej ? 'bg-rose-700 text-white ring-2 ring-rose-400' : 'bg-rose-600 hover:bg-rose-500 text-white') + '">' +
+                    '<span>✕</span>' +
+                    '<span>반대' + (isRej ? ' (선택됨)' : '') + '</span>' +
+                '</button>' +
+                '<button type="button" onclick="voteAgenda(\'abstain\')" class="py-3 rounded-xl font-extrabold text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5 ' +
+                    (isAbs ? 'bg-slate-800 text-white ring-2 ring-slate-400' : 'bg-slate-700 hover:bg-slate-600 text-white') + '">' +
+                    '<span>-</span>' +
+                    '<span>기권' + (isAbs ? ' (선택됨)' : '') + '</span>' +
+                '</button>';
         }
     }
 }
@@ -426,51 +599,51 @@ function renderElectionView() {
     const isExec = isCurrentUserExecutive();
     const tallies = getElectionTallies();
     const isSingle = elec.mode === "single";
-    const isClosed = elec.status === "closed";
+    const isClosed = Boolean(elec.status === "closed" || elec.isLocked);
 
-    // 1. Render "🔧 운영진 선거 관리 바" at top of election view if executive
+    // 1. Render "👑 단장 선거 총괄 제어 대시보드" at top of election view if executive
     const barCont = document.getElementById("electionAdminControlBarContainer");
     if (barCont) {
         if (isExec) {
             barCont.innerHTML = 
-                '<div id="electionAdminControlBar" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white shadow-md border border-purple-500/40 space-y-3.5">' +
-                    '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-purple-800/40 pb-2.5">' +
+                '<div id="electionAdminControlBar" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-md border-2 border-amber-500/40 space-y-3.5 mb-2">' +
+                    '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-indigo-800/40 pb-2.5">' +
                         '<div class="flex items-center gap-2">' +
-                            '<span class="text-sm font-black text-purple-200">🔧 운영진 선거 관리 바</span>' +
-                            '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/30 text-purple-200 border border-purple-400/30">운영진 전용 제어</span>' +
+                            '<span class="text-sm font-black text-amber-300">👑 단장 선거 총괄 제어 대시보드</span>' +
+                            '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950">운영진 모드</span>' +
                         '</div>' +
-                        '<button type="button" onclick="openCandidateModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-400 hover:to-indigo-500 text-white shadow-sm transition flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">' +
-                            '<span>+</span> 후보자 추가' +
+                        '<button type="button" onclick="openCandidateModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white shadow-sm transition flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">' +
+                            '<span>+</span> 단장 후보자 등록' +
                         '</button>' +
                     '</div>' +
                     '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">' +
                         '<!-- 1) 선거 방식 전환 스위치 -->' +
                         '<div class="bg-black/30 p-3 rounded-xl border border-white/10 space-y-1.5">' +
-                            '<div class="text-[11px] font-bold text-purple-300 flex items-center justify-between">' +
+                            '<div class="text-[11px] font-bold text-indigo-300 flex items-center justify-between">' +
                                 '<span>선거 방식 전환</span>' +
                                 '<span class="text-[10px] text-slate-400">현재: ' + (isSingle ? '단독 출마 찬반' : '다자 경선') + '</span>' +
                             '</div>' +
                             '<div class="grid grid-cols-2 gap-2">' +
                                 '<button type="button" onclick="setElectionMode(\'single\')" class="py-2 px-2.5 rounded-lg text-xs font-black text-center transition cursor-pointer ' +
-                                    (isSingle ? 'bg-purple-600 text-white shadow-sm ring-1 ring-purple-400' : 'bg-white/10 text-slate-300 hover:bg-white/20') + '">' +
+                                    (isSingle ? 'bg-indigo-600 text-white shadow-sm ring-1 ring-indigo-400' : 'bg-white/10 text-slate-300 hover:bg-white/20') + '">' +
                                     '✓ 단독 출마 찬반투표' +
                                 '</button>' +
                                 '<button type="button" onclick="setElectionMode(\'multi\')" class="py-2 px-2.5 rounded-lg text-xs font-black text-center transition cursor-pointer ' +
-                                    (!isSingle ? 'bg-purple-600 text-white shadow-sm ring-1 ring-purple-400' : 'bg-white/10 text-slate-300 hover:bg-white/20') + '">' +
+                                    (!isSingle ? 'bg-indigo-600 text-white shadow-sm ring-1 ring-indigo-400' : 'bg-white/10 text-slate-300 hover:bg-white/20') + '">' +
                                     '✓ 다자 경선 투표' +
                                 '</button>' +
                             '</div>' +
                         '</div>' +
-                        '<!-- 4) 투표 상태 제어 -->' +
+                        '<!-- 2) 투표 상태 및 당선공고 제어 -->' +
                         '<div class="bg-black/30 p-3 rounded-xl border border-white/10 space-y-1.5">' +
-                            '<div class="text-[11px] font-bold text-purple-300 flex items-center justify-between">' +
-                                '<span>투표 상태 및 당선 공고 제어</span>' +
-                                '<span class="text-[10px] ' + (isClosed ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold') + '">' + (isClosed ? '● 투표 마감됨' : '● 투표 진행중') + '</span>' +
+                            '<div class="text-[11px] font-bold text-amber-300 flex items-center justify-between">' +
+                                '<span>선거 투표 마감 및 공고 제어</span>' +
+                                '<span class="text-[10px] ' + (isClosed ? 'text-rose-400 font-bold' : 'text-emerald-400 font-bold') + '">' + (isClosed ? '🔒 투표 마감(의결 확정)' : '● 표결 진행중') + '</span>' +
                             '</div>' +
                             '<div class="grid grid-cols-2 gap-2">' +
                                 '<button type="button" onclick="toggleElectionStatus()" class="py-2 px-2 rounded-lg text-xs font-black text-center transition cursor-pointer ' +
                                     (isClosed ? 'bg-emerald-600 hover:bg-emerald-500 text-white' : 'bg-rose-600 hover:bg-rose-500 text-white') + '">' +
-                                    (isClosed ? '▶ 투표 재개' : '🛑 투표 마감 및 확정') +
+                                    (isClosed ? '🔓 투표 재개' : '🔒 단장 선거 마감 및 결과 확정') +
                                 '</button>' +
                                 '<button type="button" onclick="toggleWinnerPublic()" class="py-2 px-2 rounded-lg text-xs font-black text-center transition cursor-pointer ' +
                                     (appState.winnerPagePublic ? 'bg-amber-500 hover:bg-amber-400 text-slate-950 font-black' : 'bg-slate-700 hover:bg-slate-600 text-slate-200 border border-slate-600') + '">' +
@@ -527,12 +700,20 @@ function renderElectionView() {
 
         const myVote = (elec.singleVotes.memberVotes || {})[appState.currentVoterId];
         const statusEl = document.getElementById("myElectionVoteStatus");
+        const labelMap = { approve: "찬성", reject: "반대", abstain: "기권" };
         if (statusEl) {
-            if (myVote) {
-                const labelMap = { approve: "찬성", reject: "반대", abstain: "기권" };
-                statusEl.innerHTML = '<span class="text-xs font-bold text-purple-700">✓ 단장 선거 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong></span>';
+            if (isClosed) {
+                if (myVote) {
+                    statusEl.innerHTML = '<span class="text-xs font-black text-purple-800">🔒 나의 최종 의결: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong> (확정)</span>';
+                } else {
+                    statusEl.innerHTML = '<span class="text-xs font-bold text-rose-600">🔒 단장 선거 투표가 공식 마감되었습니다.</span>';
+                }
             } else {
-                statusEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">' + (isClosed ? '투표가 마감되었습니다.' : '아직 단장 선거에 투표하지 않으셨습니다.') + '</span>';
+                if (myVote) {
+                    statusEl.innerHTML = '<span class="text-xs font-bold text-purple-700">✓ 단장 선거 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong></span>';
+                } else {
+                    statusEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">아직 단장 선거에 투표하지 않으셨습니다. 아래 버튼을 눌러 투표하세요.</span>';
+                }
             }
         }
 
@@ -541,19 +722,29 @@ function renderElectionView() {
         if (btnBox) {
             if (isClosed) {
                 btnBox.innerHTML = 
-                    '<div class="col-span-3 p-3.5 rounded-xl bg-slate-100 border border-slate-300 text-center text-xs font-extrabold text-slate-600">' +
-                        '🛑 단장 선거 투표가 공식 마감되었습니다. (의결 결과 집계 완료)' +
+                    '<div class="col-span-3 p-4 rounded-xl bg-slate-100 border-2 border-dashed border-slate-300 text-center space-y-1">' +
+                        '<div class="flex items-center justify-center gap-2 text-slate-800 font-black text-sm">' +
+                            '<span class="text-base">🔒</span>' +
+                            '<span>단장 선거 투표가 마감되었습니다 (변경 불가)</span>' +
+                        '</div>' +
+                        '<p class="text-xs text-slate-500 font-medium">2026년도 신임 단장 선출 의결권 행사가 공식 종료되어 결과가 확정되었습니다.</p>' +
                     '</div>';
             } else {
+                const isApp = myVote === "approve";
+                const isRej = myVote === "reject";
+                const isAbs = myVote === "abstain";
                 btnBox.innerHTML = 
-                    '<button type="button" onclick="voteElectionSingle(\'approve\')" class="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition shadow-sm cursor-pointer">' +
-                        '후보 찬성' +
+                    '<button type="button" onclick="voteElectionSingle(\'approve\')" class="py-3 rounded-xl font-extrabold text-sm transition shadow-sm cursor-pointer ' +
+                        (isApp ? 'bg-emerald-700 text-white ring-2 ring-emerald-400' : 'bg-emerald-600 hover:bg-emerald-500 text-white') + '">' +
+                        '후보 찬성' + (isApp ? ' (선택됨)' : '') +
                     '</button>' +
-                    '<button type="button" onclick="voteElectionSingle(\'reject\')" class="py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-extrabold text-sm transition shadow-sm cursor-pointer">' +
-                        '후보 반대' +
+                    '<button type="button" onclick="voteElectionSingle(\'reject\')" class="py-3 rounded-xl font-extrabold text-sm transition shadow-sm cursor-pointer ' +
+                        (isRej ? 'bg-rose-700 text-white ring-2 ring-rose-400' : 'bg-rose-600 hover:bg-rose-500 text-white') + '">' +
+                        '후보 반대' + (isRej ? ' (선택됨)' : '') +
                     '</button>' +
-                    '<button type="button" onclick="voteElectionSingle(\'abstain\')" class="py-3 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-extrabold text-sm transition shadow-sm cursor-pointer">' +
-                        '기권' +
+                    '<button type="button" onclick="voteElectionSingle(\'abstain\')" class="py-3 rounded-xl font-extrabold text-sm transition shadow-sm cursor-pointer ' +
+                        (isAbs ? 'bg-slate-800 text-white ring-2 ring-slate-400' : 'bg-slate-700 hover:bg-slate-600 text-white') + '">' +
+                        '기권' + (isAbs ? ' (선택됨)' : '') +
                     '</button>';
             }
         }
@@ -578,10 +769,12 @@ function renderElectionView() {
                     '</div>') : '';
 
                 const voteBtnHtml = isClosed ?
-                    ('<span class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">마감</span>') :
+                    (isSelected 
+                        ? '<span class="px-3 py-1 rounded-lg text-xs font-extrabold bg-purple-100 text-purple-800 border border-purple-300">🔒 최종 선택 (확정)</span>'
+                        : '<span class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">🔒 투표 마감</span>') :
                     ('<button type="button" onclick="voteElectionMulti(\'' + c.id + '\')" class="px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ' +
-                        (isSelected ? 'bg-purple-600 text-white' : 'bg-slate-100 text-slate-700 hover:bg-purple-100') + '">' +
-                        (isSelected ? '선택됨' : '투표하기') +
+                        (isSelected ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-purple-100') + '">' +
+                        (isSelected ? '✓ 선택됨' : '투표하기') +
                     '</button>');
 
                 html += '<div class="p-4 rounded-xl border ' + (isSelected ? 'border-2 border-purple-600 bg-purple-50/50' : 'border-slate-200 bg-white') + ' shadow-xs space-y-3 flex flex-col justify-between">' +

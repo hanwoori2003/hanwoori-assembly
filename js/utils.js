@@ -5,6 +5,7 @@ function saveStateToStorage() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             totalAttendees: appState.totalAttendees,
             activeAgendaId: appState.activeAgendaId,
+            adminPreviewAsMember: appState.adminPreviewAsMember,
             uploadedFileName: appState.uploadedFileName,
             currentVoterId: appState.currentVoterId,
             isAdminAuthenticated: appState.isAdminAuthenticated,
@@ -27,12 +28,13 @@ function saveStateToStorage() {
 
 function loadStateFromStorage() {
     try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
-            if (parsed && Array.isArray(parsed.agendas) && Array.isArray(parsed.bylaws)) {
+            if (parsed && Array.isArray(parsed.bylaws)) {
                 appState.totalAttendees = parsed.totalAttendees || 127;
                 appState.activeAgendaId = parsed.activeAgendaId || "ag-1";
+                appState.adminPreviewAsMember = Boolean(parsed.adminPreviewAsMember);
                 appState.uploadedFileName = parsed.uploadedFileName || appState.uploadedFileName;
                 appState.currentVoterId = parsed.currentVoterId || appState.currentVoterId;
                 appState.isAdminAuthenticated = Boolean(parsed.isAdminAuthenticated);
@@ -51,8 +53,53 @@ function loadStateFromStorage() {
                     appState.members = parsed.members;
                 }
                 appState.bylaws = parsed.bylaws;
-                appState.agendas = parsed.agendas;
-                if (parsed.election) appState.election = parsed.election;
+                
+                // Normalize agendas
+                if (Array.isArray(parsed.agendas) && parsed.agendas.length > 0) {
+                    appState.agendas = parsed.agendas.map(function(ag, idx) {
+                        const no = ag.no || ag.agendaNo || ag.number || (idx + 1);
+                        const isLocked = Boolean(ag.isLocked || ag.status === "closed" || ag.status === "locked");
+                        return {
+                            id: ag.id || ("ag-" + (idx + 1)),
+                            no: no,
+                            agendaNo: ag.agendaNo || no,
+                            number: ag.number || no,
+                            title: ag.title || ag.name || ("제" + no + "호 안건"),
+                            author: ag.author || ag.proposer || "운영진 발의",
+                            proposer: ag.proposer || ag.author || "운영진 발의",
+                            chapter: ag.chapter || "",
+                            targetArticle: ag.targetArticle || ag.articleNo || "",
+                            articleNo: ag.articleNo || ag.targetArticle || "",
+                            category: ag.category || ag.targetArticle || ag.articleNo || "단칙 개정",
+                            summary: ag.summary || ag.description || "",
+                            proposalReason: ag.proposalReason || ag.reason || "",
+                            reason: ag.reason || ag.proposalReason || "",
+                            beforeText: ag.beforeText || ag.before || "",
+                            afterText: ag.afterText || ag.after || "",
+                            baseApprove: typeof ag.baseApprove === "number" ? ag.baseApprove : 0,
+                            baseReject: typeof ag.baseReject === "number" ? ag.baseReject : 0,
+                            baseAbstain: typeof ag.baseAbstain === "number" ? ag.baseAbstain : 0,
+                            voterTotal: ag.voterTotal || 37,
+                            passThreshold: ag.passThreshold || 25,
+                            isLocked: isLocked,
+                            status: isLocked ? "closed" : "voting",
+                            memberVotes: ag.memberVotes || {}
+                        };
+                    });
+                } else if (typeof INITIAL_AGENDAS !== "undefined") {
+                    appState.agendas = JSON.parse(JSON.stringify(INITIAL_AGENDAS));
+                }
+
+                if (!appState.agendas.some(function(a) { return a.id === appState.activeAgendaId; })) {
+                    appState.activeAgendaId = (appState.agendas[0] && appState.agendas[0].id) ? appState.agendas[0].id : "ag-1";
+                }
+
+                if (parsed.election) {
+                    appState.election = parsed.election;
+                    if (appState.election.isLocked === undefined) {
+                        appState.election.isLocked = (appState.election.status === "closed");
+                    }
+                }
                 if (parsed.issues) appState.issues = parsed.issues;
                 if (parsed.events) appState.events = parsed.events;
                 if (Array.isArray(parsed.assemblySchedule) && parsed.assemblySchedule.length > 0) {
@@ -346,11 +393,59 @@ function getCurrentVoter() {
 
 function isCurrentUserExecutive() {
     const voter = getCurrentVoter();
+    const isReal = Boolean(voter && voter.isExecutive && appState.isAdminAuthenticated);
+    if (!isReal) return false;
+    if (appState.adminPreviewAsMember) return false;
+    return true;
+}
+
+function isRealExecutiveAuthenticated() {
+    const voter = getCurrentVoter();
     return Boolean(voter && voter.isExecutive && appState.isAdminAuthenticated);
 }
 
+function toggleAdminPreviewMode() {
+    appState.adminPreviewAsMember = !appState.adminPreviewAsMember;
+    saveStateToStorage();
+    renderAll();
+    if (appState.adminPreviewAsMember) {
+        showToast("👁️ 일반 단원 화면으로 미리보기 중입니다 (운영진 제어 도구 숨김).");
+    } else {
+        showToast("👑 메리고잉 운영진 제어 모드로 복귀했습니다.");
+    }
+}
+
 function getActiveAgenda() {
-    return appState.agendas.find(function(a) { return a.id === appState.activeAgendaId; }) || appState.agendas[0];
+    if (!Array.isArray(appState.agendas) || appState.agendas.length === 0) {
+        if (typeof INITIAL_AGENDAS !== "undefined" && Array.isArray(INITIAL_AGENDAS)) {
+            appState.agendas = JSON.parse(JSON.stringify(INITIAL_AGENDAS));
+        } else if (typeof getDefaultState === "function") {
+            appState.agendas = (getDefaultState().agendas) || [];
+        }
+    }
+    let found = (appState.agendas || []).find(function(a) { return a && a.id === appState.activeAgendaId; });
+    if (!found && appState.agendas && appState.agendas.length > 0) {
+        found = appState.agendas[0];
+        appState.activeAgendaId = found.id;
+    }
+    return found || (appState.agendas && appState.agendas[0]) || {
+        id: "ag-1",
+        no: 1,
+        agendaNo: 1,
+        number: 1,
+        title: "제1호 안건",
+        author: "운영진 발의",
+        proposer: "운영진 발의",
+        category: "단칙 개정",
+        summary: "",
+        proposalReason: "",
+        reason: "",
+        beforeText: "",
+        afterText: "",
+        isLocked: false,
+        status: "voting",
+        memberVotes: {}
+    };
 }
 
 function formatAttCell(val) {

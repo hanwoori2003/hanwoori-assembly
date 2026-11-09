@@ -1,5 +1,5 @@
 // 1. 운영진(18명) 및 전체 단원 명부(134명) 데이터 (js/data-members.js)
-const STORAGE_KEY = "hanwoori_choir_assembly_2026_state_v11";
+const STORAGE_KEY = "hanwoori_choir_assembly_2026_state_v12";
 const ADMIN_PASSWORD_CODE = "2003";
 let cloudSyncUrl = "";
 let cloudSyncTimer = null;

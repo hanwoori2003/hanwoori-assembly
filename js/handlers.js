@@ -198,6 +198,10 @@ function toggleProjectorMode() {
 function voteAgenda(choice) {
     const ag = getActiveAgenda();
     if (!ag) return;
+    if (ag.isLocked || ag.status === "closed" || ag.status === "locked") {
+        showToast("🔒 본 안건은 투표가 마감되어 의결이 확정되었습니다 (변경 불가).");
+        return;
+    }
     if (!ag.memberVotes) ag.memberVotes = {};
 
     ag.memberVotes[appState.currentVoterId] = choice;
@@ -206,7 +210,39 @@ function voteAgenda(choice) {
     renderAgendaStepper();
     renderHeaderStatus();
     const labelMap = { approve: "찬성", reject: "반대", abstain: "기권" };
-    showToast("안건 " + ag.no + "에 [" + labelMap[choice] + "] 투표를 완료했습니다.");
+    const agNo = ag.no || ag.agendaNo || ag.number || "";
+    showToast("안건 " + agNo + "에 [" + labelMap[choice] + "] 투표를 완료했습니다.");
+}
+
+function toggleAgendaLock(agendaId) {
+    if (!agendaId) agendaId = appState.activeAgendaId;
+    const ag = (appState.agendas || []).find(function(a) { return a.id === agendaId; });
+    if (!ag) return;
+    ag.isLocked = !ag.isLocked;
+    ag.status = ag.isLocked ? "closed" : "voting";
+    saveStateToStorage();
+    renderAll();
+    const agNo = ag.no || ag.agendaNo || ag.number || "";
+    showToast(ag.isLocked
+        ? ("안건 " + agNo + " 투표가 마감되어 의결이 확정되었습니다 (잠금 완료).")
+        : ("안건 " + agNo + " 투표가 재개되었습니다 (잠금 해제).")
+    );
+}
+
+function toggleAllAgendasLock(shouldLock) {
+    const target = (typeof shouldLock === "boolean")
+        ? shouldLock
+        : !(appState.agendas || []).every(function(a) { return a.isLocked || a.status === "closed"; });
+    (appState.agendas || []).forEach(function(a) {
+        a.isLocked = target;
+        a.status = target ? "closed" : "voting";
+    });
+    saveStateToStorage();
+    renderAll();
+    showToast(target
+        ? "🔒 12개 모든 단칙 개정안 투표가 공식 마감(잠금)되었습니다."
+        : "🔓 12개 모든 단칙 개정안 투표가 재개되었습니다."
+    );
 }
 
 function selectAgenda(agendaId) {
@@ -219,6 +255,10 @@ function selectAgenda(agendaId) {
 function voteElectionSingle(choice) {
     const elec = appState.election;
     if (!elec || !elec.singleVotes) return;
+    if (elec.status === "closed" || elec.isLocked) {
+        showToast("🔒 단장 선거 투표가 마감되어 의결이 확정되었습니다 (변경 불가).");
+        return;
+    }
     if (!elec.singleVotes.memberVotes) elec.singleVotes.memberVotes = {};
 
     elec.singleVotes.memberVotes[appState.currentVoterId] = choice;
@@ -231,12 +271,16 @@ function voteElectionSingle(choice) {
 function voteElectionMulti(candId) {
     const elec = appState.election;
     if (!elec) return;
+    if (elec.status === "closed" || elec.isLocked) {
+        showToast("🔒 단장 선거 투표가 마감되어 의결이 확정되었습니다 (변경 불가).");
+        return;
+    }
     if (!elec.multiMemberVotes) elec.multiMemberVotes = {};
 
     elec.multiMemberVotes[appState.currentVoterId] = candId;
     saveStateToStorage();
     renderElectionView();
-    const cand = elec.candidates.find(function(c) { return c.id === candId; });
+    const cand = (elec.candidates || []).find(function(c) { return c.id === candId; });
     showToast((cand ? cand.name : "후보자") + "에게 투표를 완료했습니다.");
 }
 
@@ -628,11 +672,15 @@ function setElectionMode(mode) {
 
 function toggleElectionStatus() {
     if (!appState.election) appState.election = {};
-    const isCurrentlyClosed = appState.election.status === "closed";
-    appState.election.status = isCurrentlyClosed ? "in_progress" : "closed";
+    const isCurrentlyClosed = Boolean(appState.election.status === "closed" || appState.election.isLocked);
+    appState.election.status = isCurrentlyClosed ? "voting" : "closed";
+    appState.election.isLocked = (appState.election.status === "closed");
     saveStateToStorage();
     renderAll();
-    showToast("선거 상태가 [" + (appState.election.status === "closed" ? "투표 마감 및 결과 확정" : "투표 진행중") + "]으로 전환되었습니다.");
+    showToast(appState.election.isLocked
+        ? "🔒 단장 선거 투표가 마감되어 의결 결과가 확정되었습니다 (잠금 완료)."
+        : "🔓 단장 선거 투표가 재개되었습니다 (잠금 해제)."
+    );
 }
 
 function toggleWinnerPublic() {
@@ -862,30 +910,46 @@ function saveAgendaModal() {
         const item = appState.agendas.find(function(a) { return a.id === id; });
         if (item) {
             item.no = no || item.no;
-            item.category = category;
-            item.author = author;
+            item.agendaNo = item.no;
+            item.number = item.no;
+            item.category = category || item.category || "운영체계";
+            item.author = author || item.author || "운영진 발의";
+            item.proposer = item.author;
             item.title = title;
             item.summary = summary;
             item.proposalReason = proposalReason;
+            item.reason = proposalReason;
             item.beforeText = beforeText;
             item.afterText = afterText;
             showToast("안건 " + item.no + "이(가) 수정되었습니다.");
         }
     } else {
         const newId = "ag-" + Date.now();
+        const nextNo = no || String(appState.agendas.length + 1);
         const newAg = {
             id: newId,
-            no: no || String(appState.agendas.length + 1),
+            no: nextNo,
+            agendaNo: nextNo,
+            number: nextNo,
             title: title,
             category: category || "운영체계",
             author: author || "운영진 발의",
+            proposer: author || "운영진 발의",
+            chapter: "제3장 조직",
+            targetArticle: "신설",
+            articleNo: "신설",
             summary: summary,
             proposalReason: proposalReason,
+            reason: proposalReason,
             beforeText: beforeText,
             afterText: afterText,
             baseApprove: 0,
             baseReject: 0,
             baseAbstain: 0,
+            voterTotal: 37,
+            passThreshold: 25,
+            isLocked: false,
+            status: "voting",
             memberVotes: {}
         };
         appState.agendas.push(newAg);
