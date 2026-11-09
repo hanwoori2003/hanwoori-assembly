@@ -54,4 +54,29 @@ window.addEventListener("DOMContentLoaded", function() {
     loadStateFromStorage();
     renderAll();
     updateHeaderScrollShadow();
+
+    // Horizontal tabs scroll listeners, wheel support & initial center
+    const nav = document.getElementById("mainTabsNav");
+    if (nav) {
+        nav.addEventListener("scroll", updateTabsScrollIndicator, { passive: true });
+        nav.addEventListener("wheel", function(e) {
+            if (e.deltaY !== 0 && nav.scrollWidth > nav.clientWidth) {
+                e.preventDefault();
+                nav.scrollLeft += e.deltaY;
+                updateTabsScrollIndicator();
+            }
+        }, { passive: false });
+    }
+    window.addEventListener("resize", updateTabsScrollIndicator, { passive: true });
+    if (typeof updateTabsScrollIndicator === "function") {
+        updateTabsScrollIndicator();
+    }
+
+    // Auto-scroll initial active tab into view
+    const activeBtn = document.querySelector(".main-tab-btn.bg-indigo-600");
+    if (activeBtn) {
+        try {
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } catch (e) {}
+    }
 });

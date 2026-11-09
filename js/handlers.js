@@ -76,6 +76,13 @@ function switchMainTab(tabId, btnEl) {
     if (activeBtn) {
         activeBtn.classList.remove("text-slate-300", "text-amber-300", "text-rose-300");
         activeBtn.classList.add("bg-indigo-600", "text-white", "font-bold", "shadow-sm");
+
+        // Auto-scroll active tab into view in the horizontal tabs container
+        try {
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } catch (e) {
+            activeBtn.scrollIntoView(false);
+        }
     }
 
     if (tabId === "search") {
@@ -89,6 +96,28 @@ function switchMainTab(tabId, btnEl) {
 
     renderAll();
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Update tabs scroll indicators (left/right fade)
+    if (typeof updateTabsScrollIndicator === "function") {
+        setTimeout(updateTabsScrollIndicator, 100);
+        setTimeout(updateTabsScrollIndicator, 350);
+    }
+}
+
+// Function to update left/right fade gradients based on tabs scroll position
+function updateTabsScrollIndicator() {
+    const nav = document.getElementById("mainTabsNav");
+    const fadeLeft = document.getElementById("tabsFadeLeft");
+    const fadeRight = document.getElementById("tabsFadeRight");
+    if (!nav) return;
+    const scrollLeft = nav.scrollLeft;
+    const maxScroll = nav.scrollWidth - nav.clientWidth;
+    if (fadeLeft) {
+        fadeLeft.style.opacity = scrollLeft > 6 ? "0.9" : "0";
+    }
+    if (fadeRight) {
+        fadeRight.style.opacity = (maxScroll - scrollLeft) > 6 ? "0.9" : "0";
+    }
 }
 
 function openAuthModal() {
@@ -250,6 +279,17 @@ function selectAgenda(agendaId) {
     renderAgendaStepper();
     renderActiveVotingView();
     renderHeaderStatus();
+
+    // Auto-scroll active agenda pill into view
+    const stepperContainer = document.getElementById("agendaStepperContainer");
+    if (stepperContainer) {
+        const activeAgendaBtn = stepperContainer.querySelector(".bg-indigo-600");
+        if (activeAgendaBtn) {
+            try {
+                activeAgendaBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } catch (e) {}
+        }
+    }
 }
 
 function voteElectionSingle(choice) {

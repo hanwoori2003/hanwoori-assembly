@@ -423,7 +423,7 @@ function renderAgendaStepper() {
             statusBadge = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500" title="투표 완료"></span>';
         }
 
-        html += '<button type="button" onclick="selectAgenda(\'' + (ag.id || ('ag-' + (i + 1))) + '\')" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ' +
+        html += '<button type="button" onclick="selectAgenda(\'' + (ag.id || ('ag-' + (i + 1))) + '\')" class="shrink-0 px-3 py-1.5 rounded-xl border text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap ' +
             (isActive ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50') + '">' +
             '<span>안건 ' + agNo + '</span>' +
             statusBadge +

@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.7" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.13" />
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
 
@@ -50,42 +50,52 @@
             </div>
 
             <!-- Row 2: Tabs bar (6 primary tabs + Admin conditional tabs + Projector toggle) -->
-            <div class="flex items-center justify-between gap-2 py-1.5 text-xs sm:text-sm font-medium">
-                <div class="flex items-center gap-1 overflow-x-auto no-scrollbar scrollbar-none py-0.5">
-                    <!-- Tab 1: 2026 정기총회 -->
-                    <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm">
-                        <span>📅 2026 정기총회</span>
-                    </button>
-                    <!-- Tab 2: 연주회 강평 및 설문 -->
-                    <button id="tabBtn-concert" type="button" onclick="switchMainTab('concert', this)" class="main-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
-                        <span>🎷 연주회 강평 및 설문</span>
-                    </button>
-                    <!-- Tab 3: 2026 결산 보고 -->
-                    <button id="tabBtn-settlement" type="button" onclick="switchMainTab('settlement', this)" class="main-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
-                        <span>📑 2026 결산 보고</span>
-                    </button>
-                    <!-- Tab 4: 단칙 개정 찬반투표 -->
-                    <button id="tabBtn-voting" type="button" onclick="switchMainTab('voting', this)" class="main-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
-                        <span>☑ 단칙 개정 찬반투표</span>
-                        <span id="navBadgeAgendaProgress" class="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">1/12</span>
-                    </button>
-                    <!-- Tab 5: 단장 선거 투표 -->
-                    <button id="tabBtn-election" type="button" onclick="switchMainTab('election', this)" class="main-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
-                        <span>👤 단장 선거 투표</span>
-                        <span id="navBadgeElectionMode" class="px-1.5 py-0.2 rounded text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">단독 찬반</span>
-                    </button>
-                    <!-- Tab 6: 현재 단칙 보기 -->
-                    <button id="tabBtn-bylaws" type="button" onclick="switchMainTab('bylaws', this)" class="main-tab-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800">
-                        <span>📖 현재 단칙 보기</span>
-                    </button>
-                    <!-- Admin Conditional Tab 1: 단장 당선 공고 -->
-                    <button id="tabBtn-winner" type="button" onclick="switchMainTab('winner', this)" class="main-tab-btn hidden items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-amber-300 hover:text-white hover:bg-slate-800 border border-amber-500/30">
-                        <span>🏆 단장 당선 공고</span>
-                    </button>
-                    <!-- Admin Conditional Tab 2: 메리고잉 운영진 제어 -->
-                    <button id="tabBtn-admin" type="button" onclick="switchMainTab('admin', this)" class="main-tab-btn hidden items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-rose-300 hover:text-white hover:bg-slate-800 border border-rose-500/30">
-                        <span>⚙ 메리고잉 운영진 제어</span>
-                    </button>
+            <div class="flex items-center justify-between gap-2 py-1.5 text-xs sm:text-sm font-medium min-w-0">
+                <!-- Tabs wrapper with gradient fade indicators for horizontal scroll hint -->
+                <div class="relative flex-1 min-w-0 flex items-center">
+                    <!-- Left fade hint (shown when scrolled) -->
+                    <div id="tabsFadeLeft" class="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-slate-900 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
+
+                    <!-- Horizontal scrollable tabs container -->
+                    <nav id="mainTabsNav" class="tabs-scroll-container flex-1 min-w-0 flex items-center gap-1 sm:gap-2 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5 scroll-smooth" aria-label="메인 탭 내비게이션">
+                        <!-- Tab 1: 2026 정기총회 -->
+                        <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm cursor-pointer">
+                            <span>📅 2026 정기총회</span>
+                        </button>
+                        <!-- Tab 2: 연주회 강평 및 설문 -->
+                        <button id="tabBtn-concert" type="button" onclick="switchMainTab('concert', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>🎷 연주회 강평 및 설문</span>
+                        </button>
+                        <!-- Tab 3: 2026 결산 보고 -->
+                        <button id="tabBtn-settlement" type="button" onclick="switchMainTab('settlement', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>📑 2026 결산 보고</span>
+                        </button>
+                        <!-- Tab 4: 단칙 개정 찬반투표 -->
+                        <button id="tabBtn-voting" type="button" onclick="switchMainTab('voting', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>☑ 단칙 개정 찬반투표</span>
+                            <span id="navBadgeAgendaProgress" class="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">1/12</span>
+                        </button>
+                        <!-- Tab 5: 단장 선거 투표 -->
+                        <button id="tabBtn-election" type="button" onclick="switchMainTab('election', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>👤 단장 선거 투표</span>
+                            <span id="navBadgeElectionMode" class="px-1.5 py-0.2 rounded text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">단독 찬반</span>
+                        </button>
+                        <!-- Tab 6: 현재 단칙 보기 -->
+                        <button id="tabBtn-bylaws" type="button" onclick="switchMainTab('bylaws', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>📖 현재 단칙 보기</span>
+                        </button>
+                        <!-- Admin Conditional Tab 1: 단장 당선 공고 -->
+                        <button id="tabBtn-winner" type="button" onclick="switchMainTab('winner', this)" class="main-tab-btn shrink-0 hidden items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-amber-300 hover:text-white hover:bg-slate-800 border border-amber-500/30 cursor-pointer">
+                            <span>🏆 단장 당선 공고</span>
+                        </button>
+                        <!-- Admin Conditional Tab 2: 메리고잉 운영진 제어 -->
+                        <button id="tabBtn-admin" type="button" onclick="switchMainTab('admin', this)" class="main-tab-btn shrink-0 hidden items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-rose-300 hover:text-white hover:bg-slate-800 border border-rose-500/30 cursor-pointer">
+                            <span>⚙ 메리고잉 운영진 제어</span>
+                        </button>
+                    </nav>
+
+                    <!-- Right fade hint (shown when more tabs can be scrolled) -->
+                    <div id="tabsFadeRight" class="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
                 </div>
 
                 <!-- Right controls: Projector Mode toggle & Cloud Sync -->
