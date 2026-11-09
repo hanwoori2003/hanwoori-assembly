@@ -58,7 +58,7 @@ function getDefaultState() {
     rosterSearchQuery: "",
     authModalFilter: "all",
     authModalSearch: "",
-    currentVoterId: "mem-1",
+    currentVoterId: "mem-3",
     isAdminAuthenticated: true,
     uploadedFileName: "삼성한우리합창단 단칙(25.12.13).docx",
     members: JSON.parse(JSON.stringify(FULL_MEMBER_ROSTER)),
@@ -773,6 +773,7 @@ function getDefaultState() {
 ],
     election: {
     "mode": "single",
+    "status": "in_progress",
     "activeCandidateCount": 3,
     "totalVoters": 38,
     "singleVotes": {

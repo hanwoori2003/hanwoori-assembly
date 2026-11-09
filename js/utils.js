@@ -15,7 +15,9 @@ function saveStateToStorage() {
             issues: appState.issues,
             events: appState.events,
             assemblySchedule: appState.assemblySchedule,
-            winnerPagePublic: appState.winnerPagePublic
+            winnerPagePublic: appState.winnerPagePublic,
+            settlement: appState.settlement,
+            concertSurvey: appState.concertSurvey
         }));
     } catch (e) {}
     if (typeof pushStateToCloudIfConnected === "function") {
@@ -46,6 +48,8 @@ function loadStateFromStorage() {
                     appState.assemblySchedule = parsed.assemblySchedule;
                 }
                 appState.winnerPagePublic = Boolean(parsed.winnerPagePublic);
+                if (parsed.settlement) appState.settlement = parsed.settlement;
+                if (parsed.concertSurvey) appState.concertSurvey = parsed.concertSurvey;
             }
         }
         const savedUrl = localStorage.getItem(STORAGE_KEY + "_db_url");
@@ -329,6 +333,11 @@ function getCurrentVoter() {
     return appState.members.find(function(m) { return m.id === appState.currentVoterId; }) || appState.members[0];
 }
 
+function isCurrentUserExecutive() {
+    const voter = getCurrentVoter();
+    return Boolean(voter && voter.isExecutive && appState.isAdminAuthenticated);
+}
+
 function getActiveAgenda() {
     return appState.agendas.find(function(a) { return a.id === appState.activeAgendaId; }) || appState.agendas[0];
 }
@@ -346,8 +355,11 @@ function formatAttCell(val) {
 
 function getActiveCandidates() {
     const elec = appState.election;
-    const count = elec.mode === "single" ? 1 : Math.max(2, elec.activeCandidateCount || 2);
-    return elec.candidates.slice(0, count);
+    if (!elec || !elec.candidates) return [];
+    if (elec.mode === "single") {
+        return elec.candidates.slice(0, 1);
+    }
+    return elec.candidates;
 }
 
 function getElectionTallies() {
@@ -375,7 +387,7 @@ function getElectionTallies() {
             totalPool: totalPool,
             passThreshold: passThreshold,
             isElected: isElected,
-            winner: elec.candidates[0]
+            winner: (elec.candidates && elec.candidates.length > 0) ? elec.candidates[0] : null
         };
     } else {
         const cands = getActiveCandidates();
@@ -387,7 +399,7 @@ function getElectionTallies() {
             if (counts[cid] !== undefined) counts[cid] += 1;
         });
         let totalVoted = 0;
-        let topCand = cands[0];
+        let topCand = (cands && cands.length > 0) ? cands[0] : null;
         let topVotes = -1;
         cands.forEach(function(c) {
             const v = counts[c.id] || 0;
