@@ -225,8 +225,11 @@ function renderEventsView() {
                     ? '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-200 animate-pulse shrink-0">진행중</span>'
                     : '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-600 shrink-0">' + escapeHtml(item.status) + '</span>');
 
-            const jumpBtn = item.targetTab
-                ? '<button type="button" onclick="switchMainTab(\'' + item.targetTab + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition shrink-0 cursor-pointer">' + escapeHtml(item.btnLabel || "이동 ->") + '</button>'
+            const safeTargetTab = (typeof normalizeScheduleTargetTab === "function")
+                ? normalizeScheduleTargetTab(item.targetTab)
+                : (item.targetTab === "sectionConcertReview" ? "concert" : (item.targetTab || ""));
+            const jumpBtn = safeTargetTab
+                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition shrink-0 cursor-pointer">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
                 : '';
 
             const execControls = isExec
@@ -911,8 +914,11 @@ function renderAdminView() {
                     ? '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-200 animate-pulse shrink-0">진행중</span>'
                     : '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-slate-100 text-slate-600 shrink-0">' + escapeHtml(item.status) + '</span>');
 
-            const tabBadge = item.targetTab
-                ? '<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 shrink-0">연결: ' + escapeHtml(item.targetTab) + ' (' + escapeHtml(item.btnLabel || "이동") + ')</span>'
+            const safeAdminTargetTab = (typeof normalizeScheduleTargetTab === "function")
+                ? normalizeScheduleTargetTab(item.targetTab)
+                : (item.targetTab === "sectionConcertReview" ? "concert" : (item.targetTab || ""));
+            const tabBadge = safeAdminTargetTab
+                ? '<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 shrink-0">연결: ' + escapeHtml(safeAdminTargetTab) + ' (' + escapeHtml(item.btnLabel || "이동") + ')</span>'
                 : '<span class="text-[11px] text-slate-400 shrink-0">(연결 없음)</span>';
 
             schHtml += '<div class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">' +

@@ -1,5 +1,28 @@
 // 3. 유틸리티, 로컬 스토리지 관리, 득표 집계, 검색 헬퍼 및 DOCX/TXT 단칙 파서 (js/utils.js)
 
+function normalizeScheduleTargetTab(rawTab) {
+    if (!rawTab) return "";
+    const trimmed = String(rawTab).trim().replace(/^#/, "");
+    const aliasMap = {
+        "sectionConcertReview": "concert",
+        "concertReview": "concert",
+        "activity": "concert",
+        "concert": "concert",
+        "finance": "settlement",
+        "settlement": "settlement",
+        "rules": "voting",
+        "voting": "voting",
+        "election": "election",
+        "viewRules": "bylaws",
+        "search": "bylaws",
+        "bylaws": "bylaws",
+        "events": "events",
+        "winner": "winner",
+        "admin": "admin"
+    };
+    return aliasMap[trimmed] || "";
+}
+
 function saveStateToStorage() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
@@ -28,7 +51,8 @@ function saveStateToStorage() {
 
 function loadStateFromStorage() {
     try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
+        const isCurrentKey = Boolean(localStorage.getItem(STORAGE_KEY));
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.bylaws)) {
@@ -102,11 +126,49 @@ function loadStateFromStorage() {
                 }
                 if (parsed.issues) appState.issues = parsed.issues;
                 if (parsed.events) appState.events = parsed.events;
+                let needsPersistMigration = !isCurrentKey;
                 if (Array.isArray(parsed.assemblySchedule) && parsed.assemblySchedule.length > 0) {
-                    appState.assemblySchedule = parsed.assemblySchedule;
+                    const legacyPattern = /(2025|김형택|황태희|이효정|박다정|윤상목|이창욱|한석범|sectionConcertReview|활동 보고.*강평)/;
+                    const hasLegacySchedule = !isCurrentKey || parsed.assemblySchedule.some(function(item) {
+                        if (!item || typeof item !== "object") return true;
+                        return legacyPattern.test(String(item.title || "") + " " + String(item.desc || "") + " " + String(item.targetTab || ""));
+                    });
+                    if (hasLegacySchedule) {
+                        appState.assemblySchedule = getDefaultState().assemblySchedule;
+                        needsPersistMigration = true;
+                    } else {
+                        appState.assemblySchedule = parsed.assemblySchedule.map(function(item) {
+                            if (!item || typeof item !== "object") return item;
+                            const copy = Object.assign({}, item);
+                            const rawTarget = copy.targetTab || "";
+                            const normalizedTarget = normalizeScheduleTargetTab(rawTarget);
+                            if (rawTarget && rawTarget !== normalizedTarget) {
+                                copy.targetTab = normalizedTarget;
+                                needsPersistMigration = true;
+                            }
+                            return copy;
+                        });
+                    }
                 }
                 appState.winnerPagePublic = Boolean(parsed.winnerPagePublic);
-                if (parsed.settlement) appState.settlement = parsed.settlement;
+                if (parsed.settlement) {
+                    if (Array.isArray(parsed.settlement.revenueItems)) {
+                        parsed.settlement.revenueItems.forEach(function(ri) {
+                            if (ri && typeof ri.name === "string" && ri.name.indexOf("2025") !== -1) {
+                                ri.name = ri.name.replace(/2025/g, "2026");
+                                needsPersistMigration = true;
+                            }
+                        });
+                    }
+                    appState.settlement = parsed.settlement;
+                }
+                if (needsPersistMigration) {
+                    try {
+                        parsed.assemblySchedule = appState.assemblySchedule;
+                        parsed.settlement = appState.settlement;
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+                    } catch (e) {}
+                }
                 if (parsed.concertSurvey) appState.concertSurvey = parsed.concertSurvey;
             }
         }

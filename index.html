@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.14" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.16" />
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
 
@@ -151,7 +151,7 @@
                 </div>
             </div>
 
-            <!-- Official Assembly Schedule (식순 1~5번) -->
+            <!-- Official Assembly Schedule (식순 1~6번) -->
             <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                     <div>
@@ -209,7 +209,7 @@
         <section id="view-concert" class="hidden space-y-6">
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-900/90 via-slate-900 to-amber-950 text-white shadow-md border border-amber-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-xl sm:text-2xl font-black">제20회 정기연주회 강평 및 2027년 기대 연주 활동 설문 결과</h2>
+                    <h2 class="text-xl sm:text-2xl font-black">2026년 정기연주회 강평 및 2027년 기대 연주 활동 설문 결과</h2>
                     <p class="text-xs sm:text-sm text-slate-300 mt-1">발표: 황태희 단원 · 설문 응답자 71인(연주회 참가 단원의 68.9%) 분석 보고</p>
                 </div>
                 <div id="concertAdminActions" class="shrink-0"></div>
@@ -222,7 +222,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Favorite Songs Ranking -->
                 <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-                    <h3 class="text-base font-extrabold text-slate-900">제20회 정기연주회 단원 최선호 연주곡 순위</h3>
+                    <h3 class="text-base font-extrabold text-slate-900">2026년 정기연주회 단원 최선호 연주곡 순위</h3>
                     <div id="concertFavoriteSongsContainer" class="space-y-3 pt-2"></div>
                 </div>
 
@@ -257,8 +257,8 @@
         <section id="view-settlement" class="hidden space-y-6">
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white shadow-md border border-emerald-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-xl sm:text-2xl font-black">2025년도 회계 결산 보고서</h2>
-                    <p class="text-xs sm:text-sm text-slate-300 mt-1">보고: 회계 이효정 · 차기 회계 박다정 | 정기총회 의결 안건 제3호</p>
+                    <h2 class="text-xl sm:text-2xl font-black">2026년도 회계 결산 보고서</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1">보고: 회계 이효정 · 차기 회계 박다정 | 정기총회 의결 안건 제4호</p>
                 </div>
                 <div id="settlementAdminActions" class="shrink-0"></div>
             </div>
@@ -1125,7 +1125,7 @@
         <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                    <h3 class="text-base font-black text-slate-900">2025 회계 결산 내역 수정</h3>
+                    <h3 class="text-base font-black text-slate-900">2026 회계 결산 내역 수정</h3>
                     <p class="text-xs text-slate-500 mt-0.5">총수입, 총지출, 이월 잔금 및 세부 내역 항목을 편집합니다.</p>
                 </div>
                 <button type="button" onclick="closeSettlementModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition">✕</button>
@@ -1147,7 +1147,7 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">수입 세부 항목 (항목명 | 금액 | 비고, 한 줄에 하나씩)</label>
-                    <textarea id="inputSettleRevenueItems" rows="4" placeholder="예: 2025 정기연회비 | 53600000 | 1인당 40만원" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none font-mono text-xs"></textarea>
+                    <textarea id="inputSettleRevenueItems" rows="4" placeholder="예: 2026 정기연회비 | 53600000 | 1인당 40만원" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-emerald-500 outline-none font-mono text-xs"></textarea>
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">지출 세부 항목 (항목명 | 금액 | 비고, 한 줄에 하나씩)</label>
@@ -1186,11 +1186,11 @@
     </div>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.7"></script>
-    <script src="js/data-config.js?v=2026.7"></script>
-    <script src="js/utils.js?v=2026.7"></script>
-    <script src="js/render.js?v=2026.7"></script>
-    <script src="js/handlers.js?v=2026.14"></script>
-    <script src="js/app.js?v=2026.14"></script>
+    <script src="js/data-members.js?v=2026.16"></script>
+    <script src="js/data-config.js?v=2026.16"></script>
+    <script src="js/utils.js?v=2026.16"></script>
+    <script src="js/render.js?v=2026.16"></script>
+    <script src="js/handlers.js?v=2026.16"></script>
+    <script src="js/app.js?v=2026.16"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@ function switchMainTab(tabId, btnEl) {
     if (!tabId) return;
 
     // Support both canonical and legacy alias names
+    const cleanTabId = String(tabId).trim().replace(/^#/, "");
     const tabAliasMap = {
         "settlement": "settlement",
         "finance": "settlement",
@@ -14,12 +15,15 @@ function switchMainTab(tabId, btnEl) {
         "search": "bylaws",
         "events": "events",
         "concert": "concert",
+        "sectionConcertReview": "concert",
+        "concertReview": "concert",
+        "activity": "concert",
         "election": "election",
         "winner": "winner",
         "admin": "admin"
     };
 
-    const canonicalTab = tabAliasMap[tabId] || tabId;
+    let canonicalTab = tabAliasMap[cleanTabId] || cleanTabId;
     appState.activeTab = canonicalTab;
     
     // Hide all view panels (canonical + legacy aliases)
@@ -42,13 +46,18 @@ function switchMainTab(tabId, btnEl) {
         if (el) el.classList.add("hidden");
     });
 
-    // Show target view panel (checks canonical ID first, falls back to raw or alias)
+    // Show target view panel (checks canonical ID first, falls back to raw or alias, never leaves blank page)
     let targetEl = document.getElementById("view-" + canonicalTab) ||
-                   document.getElementById("view-" + tabId);
+                   document.getElementById("view-" + cleanTabId);
     if (!targetEl) {
         if (canonicalTab === "settlement") targetEl = document.getElementById("view-finance");
         else if (canonicalTab === "voting") targetEl = document.getElementById("view-rules");
         else if (canonicalTab === "bylaws") targetEl = document.getElementById("view-viewRules");
+    }
+    if (!targetEl) {
+        canonicalTab = "events";
+        appState.activeTab = "events";
+        targetEl = document.getElementById("view-events");
     }
     if (targetEl) targetEl.classList.remove("hidden");
 
@@ -396,7 +405,12 @@ function openScheduleModal(scheduleId) {
             if (descInp) descInp.value = item.desc || "";
             if (statusSel) statusSel.value = item.status || "안건상정";
             if (btnLabelInp) btnLabelInp.value = item.btnLabel || "";
-            if (targetTabSel) targetTabSel.value = item.targetTab || "";
+            if (targetTabSel) {
+                const normTab = (typeof normalizeScheduleTargetTab === "function")
+                    ? normalizeScheduleTargetTab(item.targetTab)
+                    : (item.targetTab || "");
+                targetTabSel.value = normTab;
+            }
             if (delBtn) delBtn.classList.remove("hidden");
         }
     } else {
@@ -428,8 +442,22 @@ function saveScheduleModalItem() {
     const title = (document.getElementById("inputScheduleTitle") ? document.getElementById("inputScheduleTitle").value : "").trim();
     const desc = (document.getElementById("inputScheduleDesc") ? document.getElementById("inputScheduleDesc").value : "").trim();
     const status = (document.getElementById("selectScheduleStatus") ? document.getElementById("selectScheduleStatus").value : "안건상정");
-    const btnLabel = (document.getElementById("inputScheduleBtnLabel") ? document.getElementById("inputScheduleBtnLabel").value : "").trim();
-    const targetTab = (document.getElementById("selectScheduleTargetTab") ? document.getElementById("selectScheduleTargetTab").value : "").trim();
+    const rawTargetTab = (document.getElementById("selectScheduleTargetTab") ? document.getElementById("selectScheduleTargetTab").value : "").trim();
+    const targetTab = (typeof normalizeScheduleTargetTab === "function")
+        ? normalizeScheduleTargetTab(rawTargetTab)
+        : rawTargetTab;
+    const defaultLabelMap = {
+        "events": "정기총회 →",
+        "concert": "강평·요약 보기 →",
+        "settlement": "결산탭 →",
+        "voting": "투표탭 →",
+        "election": "단장선거 →",
+        "bylaws": "단칙보기 →",
+        "winner": "당선공고 →",
+        "admin": "운영진제어 →"
+    };
+    const rawBtnLabel = (document.getElementById("inputScheduleBtnLabel") ? document.getElementById("inputScheduleBtnLabel").value : "").trim();
+    const btnLabel = rawBtnLabel || (targetTab ? (defaultLabelMap[targetTab] || "이동 →") : "");
 
     if (!title) {
         showToast("식순 제목을 입력해 주세요.");
@@ -1224,7 +1252,7 @@ function saveSettlementModal() {
     closeSettlementModal();
     saveStateToStorage();
     renderAll();
-    showToast("2025 회계 결산 내역이 성공적으로 저장되었습니다.");
+    showToast("2026 회계 결산 내역이 성공적으로 저장되었습니다.");
 }
 
 // Aliases for cross-modal call compatibility

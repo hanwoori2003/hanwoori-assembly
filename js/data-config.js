@@ -332,7 +332,7 @@ function getDefaultState() {
     assemblySchedule: [
     {
         "id": "sch-1",
-        "title": "1. 정족수 확인 및 개회 선언",
+        "title": "1. 개회 및 성원 보고",
         "desc": "재적 164명 중 현장 39명 + 쉐도우보팅 94명 = 총 127명 참석 성원 완료 (의결정족수 2/3 기준 85표↑)",
         "status": "완료",
         "targetTab": "",
@@ -340,35 +340,43 @@ function getDefaultState() {
     },
     {
         "id": "sch-2",
-        "title": "2. 2025 활동 보고(김형택) 및 정기연주회 강평(황태희)",
-        "desc": "제20회 여의도 KBS홀 정기연주회(140명 출연) 단원 설문 분석 및 2027 기대 활동 발표",
+        "title": "2. 2026년 활동보고",
+        "desc": "2026년도 정기연습, 대외활동 및 연간 주요 합창단 활동 실적 보고",
         "status": "완료",
         "targetTab": "concert",
-        "btnLabel": "강평·설문 ->"
+        "btnLabel": "활동보고 보기 →"
     },
     {
         "id": "sch-3",
-        "title": "3. 2025 회계 결산 보고 (회계 이효정 · 차기 박다정)",
-        "desc": "총수입 10,991만원 / 총지출 8,909만원 / 차기 이월 잔금 20,887,349원 정산 승인",
-        "status": "진행중",
-        "targetTab": "settlement",
-        "btnLabel": "결산탭 ->"
+        "title": "3. 2026년 정기연주회 강평",
+        "desc": "2026년 정기연주회(140명 출연) 단원 설문 분석 및 2027년 기대 활동 발표",
+        "status": "완료",
+        "targetTab": "concert",
+        "btnLabel": "강평 보기 →"
     },
     {
         "id": "sch-4",
-        "title": "4. 단칙 개정안 찬반투표 (윤상목 · 총 12개 안건)",
-        "desc": "지휘자 임기, 대외수익 귀속, 환불 규정 등 12건 전자투표 및 5건 가결 의결",
-        "status": "안건상정",
-        "targetTab": "voting",
-        "btnLabel": "투표탭 ->"
+        "title": "4. 2026년 회계",
+        "desc": "2026년 총수입 10,991만원 / 총지출 8,902만원 / 차기 이월 잔금 20,887,349원 결산 보고 및 승인",
+        "status": "진행중",
+        "targetTab": "settlement",
+        "btnLabel": "회계 보기 →"
     },
     {
         "id": "sch-5",
-        "title": "5. 2026 단장 선출 투표 및 메리고잉 운영진 출범",
-        "desc": "이창욱 단장 후보 찬반투표 / 차기 18인 메리고잉 운영진 조직도 공표",
+        "title": "5. 단칙 개정안 찬반투표",
+        "desc": "지휘자 임기, 대외수익 귀속, 환불 규정 등 단칙 개정안 총 12개 안건 전자투표 및 의결",
+        "status": "안건상정",
+        "targetTab": "voting",
+        "btnLabel": "투표 이동 →"
+    },
+    {
+        "id": "sch-6",
+        "title": "6. 단장 선거 투표",
+        "desc": "신임 단장 선출 찬반투표 및 차기 18인 메리고잉 운영진 출범 공표",
         "status": "안건상정",
         "targetTab": "election",
-        "btnLabel": "단장선거 ->"
+        "btnLabel": "선거 이동 →"
     }
 ],
     rosterPartFilter: "all",
@@ -960,7 +968,7 @@ function getDefaultState() {
     "balance": 20887349,
     "revenueItems": [
         {
-            "name": "2025 정기연회비 (정단원 134명 기준)",
+            "name": "2026 정기연회비 (정단원 134명 기준)",
             "amount": 53600000,
             "note": "1인당 40만원 일괄 납부"
         },
