@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.16" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.17" />
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
 
@@ -563,6 +563,9 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Firebase Real-Time Cloud Sync Status Bar -->
+            <div id="adminFirebaseSyncBar"></div>
 
             <!-- CARD 1: 정기총회 공식 식순 관리 -->
             <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
@@ -1168,11 +1171,15 @@
                 <h3 class="text-base font-black text-slate-900">클라우드 동기화 및 백업 센터</h3>
                 <button type="button" onclick="closeCloudSyncModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold">✕</button>
             </div>
+            <div id="cloudSyncModalStatus"></div>
             <p class="text-xs text-slate-600 leading-relaxed">
-                모든 의결 및 투표 데이터는 브라우저 로컬 스토리지에 자동 보관되며, 전체 백업 JSON을 다운로드하여 다른 기기에서 복원하실 수 있습니다.
+                Firebase 설정 시 모든 운영진 편집과 134명 단원 투표가 실시간 동기화되며, 미설정 시 브라우저 로컬 스토리지에 자동 보관됩니다.
             </p>
             <div class="space-y-2">
-                <button type="button" onclick="exportJsonBackup(); closeCloudSyncModal();" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold transition">
+                <button type="button" onclick="manualPushConfigToCloud()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition cursor-pointer">
+                    ☁️ 현재 데이터 서버에 즉시 반영
+                </button>
+                <button type="button" onclick="exportJsonBackup(); closeCloudSyncModal();" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold transition cursor-pointer">
                     전체 데이터 JSON 백업 다운로드
                 </button>
             </div>
@@ -1185,12 +1192,18 @@
         <span id="toastMessageText">안내 메시지</span>
     </div>
 
+    <!-- FIREBASE v10 COMPAT CDN (ZERO BUILD STEP) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.16"></script>
-    <script src="js/data-config.js?v=2026.16"></script>
-    <script src="js/utils.js?v=2026.16"></script>
-    <script src="js/render.js?v=2026.16"></script>
-    <script src="js/handlers.js?v=2026.16"></script>
-    <script src="js/app.js?v=2026.16"></script>
+    <script src="js/data-members.js?v=2026.17"></script>
+    <script src="js/data-config.js?v=2026.17"></script>
+    <script src="js/firebase-config.js?v=2026.17"></script>
+    <script src="js/firebase-sync.js?v=2026.17"></script>
+    <script src="js/utils.js?v=2026.17"></script>
+    <script src="js/render.js?v=2026.17"></script>
+    <script src="js/handlers.js?v=2026.17"></script>
+    <script src="js/app.js?v=2026.17"></script>
 </body>
 </html>

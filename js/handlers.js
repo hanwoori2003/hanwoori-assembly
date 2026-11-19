@@ -234,7 +234,7 @@ function confirmExecPasswordLogin() {
     if (!isValid) {
         if (err) {
             err.textContent = m.isExecutive
-                ? "✕ 인증번호가 일치하지 않습니다. 휴대폰 뒷 4자리 또는 운영진 암호(2003)를 입력해 주세요."
+                ? "✕ 인증번호가 일치하지 않습니다. 휴대폰 뒷 4자리 또는 운영진 인증 암호를 입력해 주세요."
                 : "✕ 인증번호가 일치하지 않습니다. 본인 확인용 휴대폰 뒷 4자리를 정확히 입력해 주세요.";
             err.classList.remove("hidden");
         }
@@ -248,7 +248,7 @@ function confirmExecPasswordLogin() {
     pendingExecMemberId = null;
 
     closeAuthModal();
-    saveStateToStorage();
+    saveStateToStorage({ skipCloudConfigPush: true });
     renderAll();
     showToast(m.name + " (" + m.basePart + ") 단원으로 로그인되었습니다.");
 }
@@ -273,8 +273,15 @@ function voteAgenda(choice) {
     }
     if (!ag.memberVotes) ag.memberVotes = {};
 
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    const voterName = voter ? voter.name : "";
     ag.memberVotes[appState.currentVoterId] = choice;
-    saveStateToStorage();
+    saveStateToStorage({ skipCloudConfigPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.submitAgendaVoteToCloud === "function") {
+        window.FirebaseSync.submitAgendaVoteToCloud(ag.id, appState.currentVoterId, voterName, choice);
+    }
     renderActiveVotingView();
     renderAgendaStepper();
     renderHeaderStatus();
@@ -341,8 +348,15 @@ function voteElectionSingle(choice) {
     }
     if (!elec.singleVotes.memberVotes) elec.singleVotes.memberVotes = {};
 
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    const voterName = voter ? voter.name : "";
     elec.singleVotes.memberVotes[appState.currentVoterId] = choice;
-    saveStateToStorage();
+    saveStateToStorage({ skipCloudConfigPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.submitElectionVoteToCloud === "function") {
+        window.FirebaseSync.submitElectionVoteToCloud(appState.currentVoterId, voterName, choice);
+    }
     renderElectionView();
     const labelMap = { approve: "찬성", reject: "반대", abstain: "기권" };
     showToast("신임 단장 후보에 [" + labelMap[choice] + "] 투표를 완료했습니다.");
@@ -357,8 +371,15 @@ function voteElectionMulti(candId) {
     }
     if (!elec.multiMemberVotes) elec.multiMemberVotes = {};
 
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    const voterName = voter ? voter.name : "";
     elec.multiMemberVotes[appState.currentVoterId] = candId;
-    saveStateToStorage();
+    saveStateToStorage({ skipCloudConfigPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.submitElectionVoteToCloud === "function") {
+        window.FirebaseSync.submitElectionVoteToCloud(appState.currentVoterId, voterName, candId);
+    }
     renderElectionView();
     const cand = (elec.candidates || []).find(function(c) { return c.id === candId; });
     showToast((cand ? cand.name : "후보자") + "에게 투표를 완료했습니다.");
@@ -1355,4 +1376,25 @@ function exportJsonBackup() {
     } catch(e) {
         showToast("백업 저장 중 오류가 발생했습니다.");
     }
+}
+
+function manualPushConfigToCloud() {
+    if (typeof window === "undefined" || !window.FirebaseSync) {
+        showToast("동기화 모듈을 찾을 수 없습니다.");
+        return;
+    }
+    const st = window.FirebaseSync.getStatus();
+    if (st.mode !== "cloud") {
+        showToast("현재 로컬 저장 모드입니다. js/firebase-config.js에 Firebase 설정을 입력해 주세요.");
+        return;
+    }
+    window.FirebaseSync.pushConfigToCloud(appState, { force: true, immediate: true })
+        .then(function(res) {
+            if (res && res.ok) {
+                if (typeof renderAdminView === "function") renderAdminView();
+                showToast("☁️ 현재 총회 데이터가 Firebase 서버에 즉시 반영되었습니다.");
+            } else {
+                showToast("서버 반영 중 오류가 발생했습니다: " + ((res && res.error) || "알 수 없는 오류"));
+            }
+        });
 }

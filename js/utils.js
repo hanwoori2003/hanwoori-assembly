@@ -23,7 +23,8 @@ function normalizeScheduleTargetTab(rawTab) {
     return aliasMap[trimmed] || "";
 }
 
-function saveStateToStorage() {
+function saveStateToStorage(options) {
+    const opts = options || {};
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             totalAttendees: appState.totalAttendees,
@@ -44,6 +45,12 @@ function saveStateToStorage() {
             concertSurvey: appState.concertSurvey
         }));
     } catch (e) {}
+    if (!opts.skipCloudConfigPush &&
+        typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.pushConfigToCloud === "function") {
+        window.FirebaseSync.pushConfigToCloud(appState);
+    }
     if (typeof pushStateToCloudIfConnected === "function") {
         pushStateToCloudIfConnected();
     }
@@ -186,9 +193,18 @@ function loadStateFromStorage() {
 
 function resetToDefaultInitialData() {
     appState = getDefaultState();
+    if (typeof window !== "undefined") window.appState = appState;
     try {
         localStorage.removeItem(STORAGE_KEY);
     } catch (e) {}
+    if (typeof window !== "undefined" && window.FirebaseSync) {
+        if (typeof window.FirebaseSync.resetVotesInCloud === "function") {
+            window.FirebaseSync.resetVotesInCloud();
+        }
+        if (typeof window.FirebaseSync.pushConfigToCloud === "function") {
+            window.FirebaseSync.pushConfigToCloud(appState, { force: true, immediate: true });
+        }
+    }
     switchMainTab("events");
     renderAll();
     closeCloudSyncModal();
@@ -468,7 +484,7 @@ function isRealExecutiveAuthenticated() {
 
 function toggleAdminPreviewMode() {
     appState.adminPreviewAsMember = !appState.adminPreviewAsMember;
-    saveStateToStorage();
+    saveStateToStorage({ skipCloudConfigPush: true });
     renderAll();
     if (appState.adminPreviewAsMember) {
         showToast("👁️ 일반 단원 화면으로 미리보기 중입니다 (운영진 제어 도구 숨김).");

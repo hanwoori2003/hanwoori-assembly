@@ -891,7 +891,60 @@ function renderCurrentBylawsView() {
 function renderFullSearchView() {}
 function renderDrawerSearchResults() {}
 
+function renderFirebaseSyncStatusHtml() {
+    const st = (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.getStatus === "function")
+        ? window.FirebaseSync.getStatus()
+        : { connected: false, mode: "local", error: null };
+
+    let badgeHtml = "";
+    if (st.mode === "cloud" && st.connected) {
+        badgeHtml =
+            '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-extrabold">' +
+                '<span>🟢</span>' +
+                '<span>Firebase 실시간 동기화 연결됨</span>' +
+                (st.projectId ? '<span class="text-[10px] font-mono text-emerald-600">(' + escapeHtml(st.projectId) + ')</span>' : '') +
+            '</span>';
+    } else if (st.mode === "cloud" && !st.connected) {
+        badgeHtml =
+            '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-extrabold">' +
+                '<span>🟡</span>' +
+                '<span>Firebase 연결 오류' + (st.error ? ' (' + escapeHtml(st.error) + ')' : '') + '</span>' +
+            '</span>';
+    } else {
+        badgeHtml =
+            '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold">' +
+                '<span>⚪</span>' +
+                '<span>로컬 저장 모드 (js/firebase-config.js 미설정)</span>' +
+            '</span>';
+    }
+
+    return '<div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
+        '<div class="flex items-center gap-2 flex-wrap">' +
+            '<span class="text-xs font-black text-slate-700">실시간 동기화 상태:</span>' +
+            badgeHtml +
+        '</div>' +
+        '<button type="button" onclick="manualPushConfigToCloud()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold shadow-xs transition flex items-center gap-1.5 self-start sm:self-center cursor-pointer shrink-0">' +
+            '<span>☁️</span>' +
+            '<span>현재 데이터 서버에 즉시 반영</span>' +
+        '</button>' +
+    '</div>';
+}
+
 function renderAdminView() {
+    const syncBarEl = document.getElementById("adminFirebaseSyncBar");
+    if (syncBarEl) {
+        syncBarEl.innerHTML = renderFirebaseSyncStatusHtml();
+    }
+    const syncModalEl = document.getElementById("cloudSyncModalStatus");
+    if (syncModalEl) {
+        const st = (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.getStatus === "function")
+            ? window.FirebaseSync.getStatus()
+            : { connected: false, mode: "local", error: null };
+        syncModalEl.innerHTML = (st.mode === "cloud" && st.connected)
+            ? '<div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-extrabold text-emerald-800">🟢 Firebase 실시간 동기화 연결됨</div>'
+            : '<div class="p-3 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">⚪ 로컬 저장 모드 (js/firebase-config.js 미설정)</div>';
+    }
+
     const totalInp = document.getElementById("adminInputTotalAttendees");
     if (totalInp) totalInp.value = appState.totalAttendees;
 
@@ -1010,7 +1063,7 @@ function renderAdminView() {
                 '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(exec.company) + '</td>' +
                 '<td class="py-2.5 px-3 text-slate-500 text-[11px] font-mono">' + escapeHtml(exec.email) + '</td>' +
                 '<td class="py-2.5 px-3 text-center font-mono text-[11px] text-slate-600">' +
-                    '<span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 font-bold text-slate-800">' + escapeHtml(exec.code || '2003') + '</span>' +
+                    '<span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 font-bold text-slate-800">' + escapeHtml(exec.code || '-') + '</span>' +
                 '</td>' +
             '</tr>';
         });

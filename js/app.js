@@ -1,6 +1,7 @@
 // 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
 
 let appState = getDefaultState();
+window.appState = appState;
 
 function renderAll() {
     renderHeaderStatus();
@@ -123,6 +124,11 @@ function initTabsWheelScroll() {
 window.addEventListener("DOMContentLoaded", function() {
     loadStateFromStorage();
     renderAll();
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.init === "function") {
+        window.FirebaseSync.init();
+    }
     updateHeaderScrollShadow();
 
         // Horizontal tabs drag-to-scroll, wheel scroll & responsive listeners
