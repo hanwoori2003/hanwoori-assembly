@@ -386,6 +386,9 @@ function voteElectionMulti(candId) {
 }
 
 function openCloudSyncModal() {
+    if (typeof renderSyncStatusUI === "function") {
+        renderSyncStatusUI();
+    }
     const modal = document.getElementById("cloudSyncModal");
     if (modal) {
         modal.classList.remove("hidden");
@@ -1390,6 +1393,7 @@ function manualPushConfigToCloud() {
     }
     window.FirebaseSync.pushConfigToCloud(appState, { force: true, immediate: true })
         .then(function(res) {
+            if (typeof renderSyncStatusUI === "function") renderSyncStatusUI();
             if (res && res.ok) {
                 if (typeof renderAdminView === "function") renderAdminView();
                 showToast("☁️ 현재 총회 데이터가 Firebase 서버에 즉시 반영되었습니다.");

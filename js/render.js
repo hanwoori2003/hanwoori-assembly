@@ -14,6 +14,10 @@ function renderHeaderStatus() {
     const voterPartStr = voter.detailPart ? (voter.part + " · " + voter.detailPart) : voter.part;
     const voterBadgeStr = rolePrefix + voter.name + " (" + voterPartStr + ")";
 
+    if (typeof renderSyncStatusUI === "function") {
+        renderSyncStatusUI();
+    }
+
     // Header styling based on Admin Mode
     const headerEl = document.getElementById("mainHeader");
     if (headerEl) {
@@ -891,24 +895,52 @@ function renderCurrentBylawsView() {
 function renderFullSearchView() {}
 function renderDrawerSearchResults() {}
 
+function getFirebaseSyncStatusSafe() {
+    if (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.getStatus === "function") {
+        return window.FirebaseSync.getStatus();
+    }
+    return { connected: false, mode: "local", error: null, lastSyncAt: null, projectId: "" };
+}
+
+function getFirebaseErrorDiagnosticHint(errorMsg) {
+    const raw = String(errorMsg || "").toLowerCase();
+    if (!raw) return "";
+    if (raw.indexOf("permission-denied") !== -1 || raw.indexOf("insufficient permissions") !== -1 || raw.indexOf("permission") !== -1) {
+        return "Firestore 보안 규칙을 게시했는지 확인하세요.";
+    }
+    if (raw.indexOf("not-found") !== -1 || raw.indexOf("not found") !== -1 || raw.indexOf("offline") !== -1 || raw.indexOf("unavailable") !== -1 || raw.indexOf("failed-precondition") !== -1 || raw.indexOf("database") !== -1) {
+        return "Firestore Database가 생성되었는지 확인하세요.";
+    }
+    return "Firebase Console에서 Firestore Database 생성 여부 및 보안 규칙을 확인하세요.";
+}
+
 function renderFirebaseSyncStatusHtml() {
-    const st = (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.getStatus === "function")
-        ? window.FirebaseSync.getStatus()
-        : { connected: false, mode: "local", error: null };
+    const st = getFirebaseSyncStatusSafe();
+    const projectSuffix = st.projectId ? " (" + escapeHtml(st.projectId) + ")" : "";
 
     let badgeHtml = "";
+    let hintHtml = "";
     if (st.mode === "cloud" && st.connected) {
         badgeHtml =
             '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-extrabold">' +
                 '<span>🟢</span>' +
-                '<span>Firebase 실시간 동기화 연결됨</span>' +
-                (st.projectId ? '<span class="text-[10px] font-mono text-emerald-600">(' + escapeHtml(st.projectId) + ')</span>' : '') +
+                '<span>Firebase 실시간 동기화 연결됨' + projectSuffix + '</span>' +
             '</span>';
+    } else if (st.mode === "cloud" && !st.connected && st.error) {
+        const hint = getFirebaseErrorDiagnosticHint(st.error);
+        badgeHtml =
+            '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-300 text-xs font-extrabold">' +
+                '<span>🟡</span>' +
+                '<span>Firebase 연결 오류: ' + escapeHtml(st.error) + '</span>' +
+            '</span>';
+        if (hint) {
+            hintHtml = '<p class="text-[11px] font-semibold text-amber-700 mt-1.5">💡 ' + escapeHtml(hint) + (st.projectId ? ' <span class="font-mono text-amber-600">(' + escapeHtml(st.projectId) + ')</span>' : '') + '</p>';
+        }
     } else if (st.mode === "cloud" && !st.connected) {
         badgeHtml =
             '<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-extrabold">' +
                 '<span>🟡</span>' +
-                '<span>Firebase 연결 오류' + (st.error ? ' (' + escapeHtml(st.error) + ')' : '') + '</span>' +
+                '<span>Firebase 연결 중...' + projectSuffix + '</span>' +
             '</span>';
     } else {
         badgeHtml =
@@ -919,9 +951,12 @@ function renderFirebaseSyncStatusHtml() {
     }
 
     return '<div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">' +
-        '<div class="flex items-center gap-2 flex-wrap">' +
-            '<span class="text-xs font-black text-slate-700">실시간 동기화 상태:</span>' +
-            badgeHtml +
+        '<div class="min-w-0">' +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+                '<span class="text-xs font-black text-slate-700">실시간 동기화 상태:</span>' +
+                badgeHtml +
+            '</div>' +
+            hintHtml +
         '</div>' +
         '<button type="button" onclick="manualPushConfigToCloud()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold shadow-xs transition flex items-center gap-1.5 self-start sm:self-center cursor-pointer shrink-0">' +
             '<span>☁️</span>' +
@@ -930,20 +965,80 @@ function renderFirebaseSyncStatusHtml() {
     '</div>';
 }
 
-function renderAdminView() {
+function renderCloudSyncModalStatusHtml() {
+    const st = getFirebaseSyncStatusSafe();
+    const projectSuffix = st.projectId ? " (" + escapeHtml(st.projectId) + ")" : "";
+
+    if (st.mode === "cloud" && st.connected) {
+        return '<div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 space-y-1">' +
+            '<div class="font-extrabold">🟢 Firebase 실시간 동기화 연결됨' + projectSuffix + '</div>' +
+            (st.lastSyncAt ? '<div class="text-[11px] text-emerald-700">최근 동기화: ' + escapeHtml(new Date(st.lastSyncAt).toLocaleTimeString("ko-KR")) + '</div>' : '') +
+        '</div>';
+    }
+    if (st.mode === "cloud" && !st.connected && st.error) {
+        const hint = getFirebaseErrorDiagnosticHint(st.error);
+        return '<div class="p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-xs text-amber-900 space-y-1.5">' +
+            '<div class="font-extrabold">🟡 Firebase 연결 오류: ' + escapeHtml(st.error) + '</div>' +
+            (hint ? '<div class="text-[11px] font-bold text-amber-800">💡 ' + escapeHtml(hint) + '</div>' : '') +
+            (st.projectId ? '<div class="text-[11px] font-mono text-amber-700">프로젝트 ID: ' + escapeHtml(st.projectId) + '</div>' : '') +
+        '</div>';
+    }
+    if (st.mode === "cloud" && !st.connected) {
+        return '<div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">' +
+            '<div class="font-extrabold">🟡 Firebase 연결 중...' + projectSuffix + '</div>' +
+            '<div class="text-[11px] text-amber-700">Firestore 서버와 실시간 연결을 설정하고 있습니다.</div>' +
+        '</div>';
+    }
+    return '<div class="p-3.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">⚪ 로컬 저장 모드 (js/firebase-config.js 미설정)</div>';
+}
+
+function renderSyncStatusUI() {
+    const st = getFirebaseSyncStatusSafe();
+
+    // 1. Always-visible live sync pill in #mainHeader
+    const headerBtn = document.getElementById("headerSyncBadge");
+    const headerDot = document.getElementById("headerSyncBadgeDot");
+    const headerText = document.getElementById("headerSyncBadgeText");
+    if (headerBtn && headerDot && headerText) {
+        const baseCls = "px-2.5 py-1 rounded-full border text-xs transition inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shadow-xs";
+        if (st.mode === "cloud" && st.connected) {
+            headerBtn.className = baseCls + " bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-400/40 text-emerald-200";
+            headerBtn.title = "Firebase 실시간 동기화 연결됨" + (st.projectId ? " (" + st.projectId + ")" : "");
+            headerDot.textContent = "🟢";
+            headerText.innerHTML = '실시간<span class="hidden sm:inline"> 동기화</span>';
+        } else if (st.mode === "cloud" && !st.connected && st.error) {
+            headerBtn.className = baseCls + " bg-amber-500/20 hover:bg-amber-500/30 border-amber-400/50 text-amber-200";
+            headerBtn.title = "Firebase 연결 오류: " + st.error;
+            headerDot.textContent = "🟡";
+            headerText.textContent = "DB 확인필요";
+        } else if (st.mode === "cloud" && !st.connected) {
+            headerBtn.className = baseCls + " bg-amber-500/20 hover:bg-amber-500/30 border-amber-400/40 text-amber-200";
+            headerBtn.title = "Firebase 실시간 동기화 연결 중..." + (st.projectId ? " (" + st.projectId + ")" : "");
+            headerDot.textContent = "🟡";
+            headerText.textContent = "연결 중...";
+        } else {
+            headerBtn.className = baseCls + " bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-white";
+            headerBtn.title = "로컬 저장 모드 (js/firebase-config.js 미설정)";
+            headerDot.textContent = "⚪";
+            headerText.textContent = "로컬";
+        }
+    }
+
+    // 2. Admin view sync status bar
     const syncBarEl = document.getElementById("adminFirebaseSyncBar");
     if (syncBarEl) {
         syncBarEl.innerHTML = renderFirebaseSyncStatusHtml();
     }
+
+    // 3. Cloud sync modal status panel
     const syncModalEl = document.getElementById("cloudSyncModalStatus");
     if (syncModalEl) {
-        const st = (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.getStatus === "function")
-            ? window.FirebaseSync.getStatus()
-            : { connected: false, mode: "local", error: null };
-        syncModalEl.innerHTML = (st.mode === "cloud" && st.connected)
-            ? '<div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-extrabold text-emerald-800">🟢 Firebase 실시간 동기화 연결됨</div>'
-            : '<div class="p-3 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700">⚪ 로컬 저장 모드 (js/firebase-config.js 미설정)</div>';
+        syncModalEl.innerHTML = renderCloudSyncModalStatusHtml();
     }
+}
+
+function renderAdminView() {
+    renderSyncStatusUI();
 
     const totalInp = document.getElementById("adminInputTotalAttendees");
     if (totalInp) totalInp.value = appState.totalAttendees;

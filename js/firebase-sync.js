@@ -53,7 +53,22 @@
         }
     }
 
+    function formatFirebaseError(err) {
+        if (!err) return "알 수 없는 오류";
+        var code = err.code ? String(err.code) : "";
+        var msg = err.message ? String(err.message) : String(err);
+        if (code && msg.toLowerCase().indexOf(code.toLowerCase()) === -1) {
+            return "[" + code + "] " + msg;
+        }
+        return msg || code || "알 수 없는 오류";
+    }
+
     function notifyUiRefresh() {
+        try {
+            if (typeof global.renderSyncStatusUI === "function") {
+                global.renderSyncStatusUI();
+            }
+        } catch (e) {}
         try {
             if (typeof global.renderAll === "function") {
                 global.renderAll();
@@ -390,31 +405,32 @@
             return status;
         }
 
+        var cfg = global.HANWOORI_FIREBASE_CONFIG || {};
         if (typeof global.firebase === "undefined" || typeof global.firebase.firestore !== "function") {
             status = {
                 connected: false,
-                mode: "local",
-                error: "Firebase SDK를 불러오지 못해 로컬 저장 모드로 동작합니다.",
+                mode: "cloud",
+                error: "Firebase SDK를 불러오지 못했습니다. 인터넷 연결 또는 스크립트 차단을 확인하세요.",
                 lastSyncAt: null,
-                projectId: ""
+                projectId: cfg.projectId || ""
             };
             notifyUiRefresh();
             return status;
         }
 
         try {
-            var cfg = global.HANWOORI_FIREBASE_CONFIG;
             if (!global.firebase.apps || global.firebase.apps.length === 0) {
                 global.firebase.initializeApp(cfg);
             }
             db = global.firebase.firestore();
             status = {
-                connected: true,
+                connected: false,
                 mode: "cloud",
                 error: null,
                 lastSyncAt: null,
                 projectId: cfg.projectId || ""
             };
+            notifyUiRefresh();
 
             // 기존 리스너 정리
             if (typeof unsubConfig === "function") {
@@ -429,11 +445,19 @@
             unsubConfig = configRef.onSnapshot(function(doc) {
                 status.connected = true;
                 status.error = null;
+                status.lastSyncAt = new Date().toISOString();
                 if (!doc || !doc.exists) {
+                    notifyUiRefresh();
                     var seedPayload = extractConfigPayload(getAppStateRef());
                     if (seedPayload) {
-                        configRef.set(seedPayload, { merge: true }).catch(function(err) {
-                            status.error = err && err.message ? err.message : String(err);
+                        configRef.set(seedPayload, { merge: true }).then(function() {
+                            status.connected = true;
+                            status.error = null;
+                            status.lastSyncAt = new Date().toISOString();
+                            notifyUiRefresh();
+                        }).catch(function(err) {
+                            status.connected = false;
+                            status.error = formatFirebaseError(err);
                             notifyUiRefresh();
                         });
                     }
@@ -442,7 +466,7 @@
                 applyRemoteConfig(doc.data());
             }, function(err) {
                 status.connected = false;
-                status.error = err && err.message ? err.message : String(err);
+                status.error = formatFirebaseError(err);
                 notifyUiRefresh();
             });
 
@@ -454,19 +478,17 @@
                 applyRemoteVotesSnapshot(snapshot);
             }, function(err) {
                 status.connected = false;
-                status.error = err && err.message ? err.message : String(err);
+                status.error = formatFirebaseError(err);
                 notifyUiRefresh();
             });
-
-            notifyUiRefresh();
         } catch (err) {
             db = null;
             status = {
                 connected: false,
-                mode: "local",
-                error: err && err.message ? err.message : String(err),
+                mode: "cloud",
+                error: formatFirebaseError(err),
                 lastSyncAt: null,
-                projectId: ""
+                projectId: cfg.projectId || ""
             };
             notifyUiRefresh();
         }
@@ -494,10 +516,12 @@
                     status.connected = true;
                     status.error = null;
                     status.lastSyncAt = new Date().toISOString();
+                    notifyUiRefresh();
                     return { ok: true };
                 })
                 .catch(function(err) {
-                    status.error = err && err.message ? err.message : String(err);
+                    status.connected = false;
+                    status.error = formatFirebaseError(err);
                     notifyUiRefresh();
                     return { ok: false, error: status.error };
                 });
