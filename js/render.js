@@ -591,10 +591,6 @@ function renderActivityView() {
     // ------------------------------------------------------------------
     // Section 2: 한우리 주요 변화 (6가지)
     // ------------------------------------------------------------------
-    const escapeJsSingle = function(val) {
-        return escapeHtml(String(val || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
-    };
-
     const changesCont = document.getElementById("activityMajorChangesContainer");
     if (changesCont && report) {
         let chHtml = "";

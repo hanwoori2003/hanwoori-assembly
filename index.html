@@ -11,9 +11,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.29" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.30" />
 
-    <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 완벽 방지 -->
+    <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <style>
         /* 이미 인증된 상태: 초기 HTML 파싱 즉시 로그인 게이트를 숨기고 메인 셸 표시 */
         html.is-authenticated #loginGateScreen {
@@ -21,22 +21,6 @@
         }
         html.is-authenticated #appShell {
             display: flex !important;
-        }
-
-        /* 탭 깜빡임 방지: 저장된 활성 탭이 있을 경우 해당 뷰 즉시 표시 */
-        html.is-authenticated[data-active-tab] section[id^="view-"] {
-            display: none !important;
-        }
-        html.is-authenticated[data-active-tab="events"] #view-events,
-        html.is-authenticated[data-active-tab="activity"] #view-activity,
-        html.is-authenticated[data-active-tab="concert"] #view-concert,
-        html.is-authenticated[data-active-tab="settlement"] #view-settlement,
-        html.is-authenticated[data-active-tab="voting"] #view-voting,
-        html.is-authenticated[data-active-tab="election"] #view-election,
-        html.is-authenticated[data-active-tab="bylaws"] #view-bylaws,
-        html.is-authenticated[data-active-tab="winner"] #view-winner,
-        html.is-authenticated[data-active-tab="admin"] #view-admin {
-            display: block !important;
         }
     </style>
     <script>
@@ -58,10 +42,6 @@
                     var parsed = JSON.parse(raw);
                     if (parsed && parsed.currentVoterId && (parsed.currentVoterId !== "mem-3" || parsed.hasExplicitLogin)) {
                         document.documentElement.classList.add("is-authenticated");
-                        var tab = parsed.activeTab || "events";
-                        if (tab === "admin" && !parsed.isAdminAuthenticated) tab = "events";
-                        if (tab === "winner" && !parsed.isAdminAuthenticated && !parsed.winnerPagePublic) tab = "events";
-                        document.documentElement.setAttribute("data-active-tab", tab);
                     }
                 }
             } catch (e) {}
@@ -1370,13 +1350,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.29"></script>
-    <script src="js/data-config.js?v=2026.29"></script>
-    <script src="js/firebase-config.js?v=2026.29"></script>
-    <script src="js/firebase-sync.js?v=2026.29"></script>
-    <script src="js/utils.js?v=2026.29"></script>
-    <script src="js/render.js?v=2026.29"></script>
-    <script src="js/handlers.js?v=2026.29"></script>
-    <script src="js/app.js?v=2026.29"></script>
+    <script src="js/data-members.js?v=2026.30"></script>
+    <script src="js/data-config.js?v=2026.30"></script>
+    <script src="js/firebase-config.js?v=2026.30"></script>
+    <script src="js/firebase-sync.js?v=2026.30"></script>
+    <script src="js/utils.js?v=2026.30"></script>
+    <script src="js/render.js?v=2026.30"></script>
+    <script src="js/handlers.js?v=2026.30"></script>
+    <script src="js/app.js?v=2026.30"></script>
 </body>
 </html>
