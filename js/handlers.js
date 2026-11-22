@@ -567,10 +567,12 @@ function voteElectionSingle(choice) {
         return;
     }
     if (!elec.singleVotes.memberVotes) elec.singleVotes.memberVotes = {};
+    if (!elec.memberVotes) elec.memberVotes = {};
 
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
     const voterName = voter ? voter.name : "";
     elec.singleVotes.memberVotes[appState.currentVoterId] = choice;
+    elec.memberVotes[appState.currentVoterId] = choice;
     saveStateToStorage({ skipCloudConfigPush: true });
     if (typeof window !== "undefined" &&
         window.FirebaseSync &&
@@ -595,10 +597,12 @@ function voteElectionMulti(candId) {
         return;
     }
     if (!elec.multiMemberVotes) elec.multiMemberVotes = {};
+    if (!elec.memberVotes) elec.memberVotes = {};
 
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
     const voterName = voter ? voter.name : "";
     elec.multiMemberVotes[appState.currentVoterId] = candId;
+    elec.memberVotes[appState.currentVoterId] = candId;
     saveStateToStorage({ skipCloudConfigPush: true });
     if (typeof window !== "undefined" &&
         window.FirebaseSync &&
@@ -608,6 +612,111 @@ function voteElectionMulti(candId) {
     renderElectionView();
     const cand = (elec.candidates || []).find(function(c) { return c.id === candId; });
     showToast((cand ? cand.name : "후보자") + "에게 투표를 완료했습니다.");
+}
+
+function cancelElectionVote() {
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    if (!appState.currentVoterId || !voter) {
+        showToast("투표 취소는 로그인 후 이용할 수 있습니다.");
+        openVoterLoginModal();
+        return;
+    }
+    const elec = appState.election;
+    if (!elec) return;
+    if (elec.status === "closed" || elec.isLocked) {
+        showToast("🔒 단장 선거 투표가 마감되어 의결이 확정되었습니다 (취소 불가).");
+        return;
+    }
+
+    const voterId = voter.id || appState.currentVoterId;
+    const hasSingle = Boolean(elec.singleVotes && elec.singleVotes.memberVotes && Object.prototype.hasOwnProperty.call(elec.singleVotes.memberVotes, voterId));
+    const hasMulti = Boolean(elec.multiMemberVotes && Object.prototype.hasOwnProperty.call(elec.multiMemberVotes, voterId));
+    const hasUnified = Boolean(elec.memberVotes && Object.prototype.hasOwnProperty.call(elec.memberVotes, voterId));
+    if (!hasSingle && !hasMulti && !hasUnified) {
+        return;
+    }
+
+    if (elec.singleVotes && elec.singleVotes.memberVotes) {
+        delete elec.singleVotes.memberVotes[voterId];
+    }
+    if (elec.multiMemberVotes) {
+        delete elec.multiMemberVotes[voterId];
+    }
+    if (elec.memberVotes) {
+        delete elec.memberVotes[voterId];
+    }
+    if (elec.electionVoters) {
+        delete elec.electionVoters[voterId];
+    }
+
+    saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.deleteElectionVoteFromCloud === "function") {
+        window.FirebaseSync.deleteElectionVoteFromCloud(voterId);
+    }
+    if (typeof renderAll === "function") {
+        renderAll();
+    } else if (typeof renderElectionView === "function") {
+        renderElectionView();
+    }
+    showToast("단장 선거 투표가 취소되었습니다. (미투표 상태)");
+}
+
+function resetAgendaVotesOnly() {
+    if (typeof confirm === "function" && !confirm("모든 단칙 개정안(12건)의 실시간 투표 기록을 0표로 초기화하시겠습니까?")) {
+        return;
+    }
+    (appState.agendas || []).forEach(function(ag) {
+        if (!ag) return;
+        ag.baseApprove = 0;
+        ag.baseReject = 0;
+        ag.baseAbstain = 0;
+        ag.agree = 0;
+        ag.disagree = 0;
+        ag.abstain = 0;
+        ag.memberVotes = {};
+        ag.voters = {};
+    });
+    saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.resetAgendaVotesInCloud === "function") {
+        window.FirebaseSync.resetAgendaVotesInCloud();
+    }
+    if (typeof renderAll === "function") {
+        renderAll();
+    }
+    showToast("모든 단칙 개정안 투표가 0표로 초기화되었습니다.");
+}
+
+function resetElectionVotesOnly() {
+    if (typeof confirm === "function" && !confirm("단장 선거(단독/다자)의 모든 실시간 투표 기록을 0표로 초기화하시겠습니까?")) {
+        return;
+    }
+    if (!appState.election) appState.election = {};
+    appState.election.singleVotes = {
+        approve: 0,
+        reject: 0,
+        abstain: 0,
+        memberVotes: {}
+    };
+    appState.election.memberVotes = {};
+    appState.election.multiMemberVotes = {};
+    appState.election.electionVoters = {};
+    (appState.election.candidates || []).forEach(function(c) {
+        if (c) c.baseVotes = 0;
+    });
+    saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.resetElectionVotesInCloud === "function") {
+        window.FirebaseSync.resetElectionVotesInCloud();
+    }
+    if (typeof renderAll === "function") {
+        renderAll();
+    }
+    showToast("단장 선거 투표가 0표로 초기화되었습니다.");
 }
 
 function openCloudSyncModal() {
@@ -1295,8 +1404,11 @@ function saveAgendaModal() {
             baseApprove: 0,
             baseReject: 0,
             baseAbstain: 0,
-            voterTotal: 37,
-            passThreshold: 25,
+            agree: 0,
+            disagree: 0,
+            abstain: 0,
+            voterTotal: 0,
+            passThreshold: getMajorityThreshold(appState.totalAttendees || (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134)),
             isLocked: false,
             status: "voting",
             memberVotes: {}
@@ -1627,4 +1739,56 @@ function manualPushConfigToCloud() {
                 showToast("서버 반영 중 오류가 발생했습니다: " + ((res && res.error) || "알 수 없는 오류"));
             }
         });
+}
+
+// ============================================================================
+// 11. 활동보고 사진 라이트박스 모달 핸들러 (openPhotoLightbox / closePhotoLightbox)
+// ============================================================================
+
+function openPhotoLightbox(src, caption) {
+    if (!src) return;
+    const modal = document.getElementById("activityPhotoLightbox");
+    const imgEl = document.getElementById("activityPhotoLightboxImg");
+    const capEl = document.getElementById("activityPhotoLightboxCaption");
+    if (!modal || !imgEl) return;
+    imgEl.src = src;
+    imgEl.alt = caption || "활동 사진";
+    if (capEl) {
+        capEl.textContent = caption || "";
+    }
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    try {
+        if (typeof document !== "undefined" && document.body) {
+            document.body.style.overflow = "hidden";
+        }
+    } catch (e) {}
+}
+
+function closePhotoLightbox() {
+    const modal = document.getElementById("activityPhotoLightbox");
+    const imgEl = document.getElementById("activityPhotoLightboxImg");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
+    if (imgEl) {
+        imgEl.src = "";
+    }
+    try {
+        if (typeof document !== "undefined" && document.body) {
+            document.body.style.overflow = "";
+        }
+    } catch (e) {}
+}
+
+if (typeof document !== "undefined" && typeof document.addEventListener === "function") {
+    document.addEventListener("keydown", function(e) {
+        if (e && e.key === "Escape") {
+            const modal = document.getElementById("activityPhotoLightbox");
+            if (modal && !modal.classList.contains("hidden")) {
+                closePhotoLightbox();
+            }
+        }
+    });
 }

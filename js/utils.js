@@ -23,6 +23,37 @@ function normalizeScheduleTargetTab(rawTab) {
     return aliasMap[trimmed] || "";
 }
 
+function backfillAnnualEventPhotos(eventsList) {
+    let changed = false;
+    const defaults = (typeof INITIAL_ANNUAL_EVENTS !== "undefined" && Array.isArray(INITIAL_ANNUAL_EVENTS))
+        ? INITIAL_ANNUAL_EVENTS
+        : [];
+    const items = (Array.isArray(eventsList) ? eventsList : []).map(function(ev) {
+        if (!ev || typeof ev !== "object") return ev;
+        if (Array.isArray(ev.photos) && ev.photos.length > 0) return ev;
+        const evId = String(ev.id || "").trim();
+        const evTitle = String(ev.title || "").trim();
+        const evTitleCompact = evTitle.replace(/\s+/g, "");
+        let matched = null;
+        if (evId) {
+            matched = defaults.find(function(d) { return d && d.id === evId; }) || null;
+        }
+        if (!matched && evTitle) {
+            matched = defaults.find(function(d) {
+                if (!d || !d.title) return false;
+                const dTitle = String(d.title).trim();
+                return dTitle === evTitle || dTitle.replace(/\s+/g, "") === evTitleCompact;
+            }) || null;
+        }
+        if (matched && Array.isArray(matched.photos) && matched.photos.length > 0) {
+            changed = true;
+            return Object.assign({}, ev, { photos: matched.photos.slice() });
+        }
+        return ev;
+    });
+    return { items: items, changed: changed };
+}
+
 function migrateAssemblyScheduleItems(scheduleList) {
     let changed = false;
     const migrated = (Array.isArray(scheduleList) ? scheduleList : []).map(function(item) {
@@ -129,17 +160,34 @@ function loadStateFromStorage() {
                 }
                 appState.bylaws = parsed.bylaws;
                 
-                // Normalize agendas
+                let needsPersistMigration = !isCurrentKey;
+                const dynamicPassThreshold = getMajorityThreshold(appState.totalAttendees || canonicalTotal);
+
+                // Normalize agendas & strip legacy sample baseline votes / [가결] tags
                 if (Array.isArray(parsed.agendas) && parsed.agendas.length > 0) {
                     appState.agendas = parsed.agendas.map(function(ag, idx) {
                         const no = ag.no || ag.agendaNo || ag.number || (idx + 1);
                         const isLocked = Boolean(ag.isLocked || ag.status === "closed" || ag.status === "locked");
+                        const rawTitle = ag.title || ag.name || ("제" + no + "호 안건");
+                        const cleanTitle = String(rawTitle).replace(/\s*\[가결\]\s*/g, " ").trim();
+                        if (cleanTitle !== rawTitle || ag.baseApprove || ag.baseReject || ag.baseAbstain || ag.voterTotal === 37 || ag.passThreshold === 25) {
+                            needsPersistMigration = true;
+                        }
+                        const mv = (ag.memberVotes && typeof ag.memberVotes === "object") ? ag.memberVotes : {};
+                        let agreeCnt = 0;
+                        let disagreeCnt = 0;
+                        let abstainCnt = 0;
+                        Object.keys(mv).forEach(function(k) {
+                            if (mv[k] === "approve") agreeCnt += 1;
+                            else if (mv[k] === "reject") disagreeCnt += 1;
+                            else if (mv[k] === "abstain") abstainCnt += 1;
+                        });
                         return {
                             id: ag.id || ("ag-" + (idx + 1)),
                             no: no,
                             agendaNo: ag.agendaNo || no,
                             number: ag.number || no,
-                            title: ag.title || ag.name || ("제" + no + "호 안건"),
+                            title: cleanTitle,
                             author: ag.author || ag.proposer || "운영진 발의",
                             proposer: ag.proposer || ag.author || "운영진 발의",
                             chapter: ag.chapter || "",
@@ -151,14 +199,17 @@ function loadStateFromStorage() {
                             reason: ag.reason || ag.proposalReason || "",
                             beforeText: ag.beforeText || ag.before || "",
                             afterText: ag.afterText || ag.after || "",
-                            baseApprove: typeof ag.baseApprove === "number" ? ag.baseApprove : 0,
-                            baseReject: typeof ag.baseReject === "number" ? ag.baseReject : 0,
-                            baseAbstain: typeof ag.baseAbstain === "number" ? ag.baseAbstain : 0,
-                            voterTotal: ag.voterTotal || 37,
-                            passThreshold: ag.passThreshold || 25,
+                            baseApprove: 0,
+                            baseReject: 0,
+                            baseAbstain: 0,
+                            agree: agreeCnt,
+                            disagree: disagreeCnt,
+                            abstain: abstainCnt,
+                            voterTotal: 0,
+                            passThreshold: dynamicPassThreshold,
                             isLocked: isLocked,
                             status: isLocked ? "closed" : "voting",
-                            memberVotes: ag.memberVotes || {}
+                            memberVotes: mv
                         };
                     });
                 } else if (typeof INITIAL_AGENDAS !== "undefined") {
@@ -174,11 +225,47 @@ function loadStateFromStorage() {
                     if (appState.election.isLocked === undefined) {
                         appState.election.isLocked = (appState.election.status === "closed");
                     }
+                    // Strip legacy sample singleVotes / candidate baseVotes / totalVoters=38
+                    if (!appState.election.singleVotes || typeof appState.election.singleVotes !== "object") {
+                        appState.election.singleVotes = { approve: 0, reject: 0, abstain: 0, memberVotes: {} };
+                    }
+                    if (appState.election.singleVotes.approve || appState.election.singleVotes.reject || appState.election.singleVotes.abstain) {
+                        needsPersistMigration = true;
+                    }
+                    appState.election.singleVotes.approve = 0;
+                    appState.election.singleVotes.reject = 0;
+                    appState.election.singleVotes.abstain = 0;
+                    if (!appState.election.singleVotes.memberVotes || typeof appState.election.singleVotes.memberVotes !== "object") {
+                        appState.election.singleVotes.memberVotes = {};
+                    }
+                    if (!appState.election.multiMemberVotes || typeof appState.election.multiMemberVotes !== "object") {
+                        appState.election.multiMemberVotes = {};
+                    }
+                    if (!appState.election.memberVotes || typeof appState.election.memberVotes !== "object") {
+                        appState.election.memberVotes = Object.assign({}, appState.election.singleVotes.memberVotes, appState.election.multiMemberVotes);
+                    }
+                    if (appState.election.totalVoters === 38) {
+                        appState.election.totalVoters = 0;
+                        needsPersistMigration = true;
+                    }
+                    if (Array.isArray(appState.election.candidates)) {
+                        appState.election.candidates.forEach(function(c) {
+                            if (c && c.baseVotes) {
+                                c.baseVotes = 0;
+                                needsPersistMigration = true;
+                            } else if (c) {
+                                c.baseVotes = 0;
+                            }
+                        });
+                    }
                 }
                 if (parsed.issues) appState.issues = parsed.issues;
-                let needsPersistMigration = !isCurrentKey;
                 if (Array.isArray(parsed.events) && parsed.events.length >= 10) {
-                    appState.events = parsed.events;
+                    const photoBackfill = backfillAnnualEventPhotos(parsed.events);
+                    appState.events = photoBackfill.items;
+                    if (photoBackfill.changed) {
+                        needsPersistMigration = true;
+                    }
                 } else {
                     appState.events = getDefaultState().events;
                     needsPersistMigration = true;
@@ -219,6 +306,8 @@ function loadStateFromStorage() {
                         parsed.currentVoterId = appState.currentVoterId;
                         parsed.hasExplicitLogin = appState.hasExplicitLogin;
                         parsed.isAdminAuthenticated = appState.isAdminAuthenticated;
+                        parsed.agendas = appState.agendas;
+                        parsed.election = appState.election;
                         parsed.events = appState.events;
                         parsed.assemblySchedule = appState.assemblySchedule;
                         parsed.settlement = appState.settlement;
@@ -484,10 +573,11 @@ function getMajorityThreshold(total) {
 }
 
 function getAgendaTallies(agenda) {
-    let approve = agenda.baseApprove;
-    let reject = agenda.baseReject;
-    let abstain = agenda.baseAbstain;
-    const votesMap = agenda.memberVotes || {};
+    const ag = agenda || {};
+    let approve = Number(ag.baseApprove) || 0;
+    let reject = Number(ag.baseReject) || 0;
+    let abstain = Number(ag.baseAbstain) || 0;
+    const votesMap = ag.memberVotes || {};
     Object.keys(votesMap).forEach(function(memId) {
         const choice = votesMap[memId];
         if (choice === "approve") approve += 1;
@@ -495,20 +585,29 @@ function getAgendaTallies(agenda) {
         else if (choice === "abstain") abstain += 1;
     });
     const totalVoted = approve + reject + abstain;
-    const baseTotal = agenda.voterTotal || appState.totalAttendees;
+    const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
+        ? FULL_MEMBER_ROSTER.length
+        : 134;
+    const baseTotal = (typeof appState !== "undefined" && appState && typeof appState.totalAttendees === "number" && appState.totalAttendees > 0)
+        ? appState.totalAttendees
+        : fallbackTotal;
     const totalAttendees = Math.max(baseTotal, totalVoted);
-    const majorityThreshold = (agenda.passThreshold && totalVoted === (agenda.baseApprove + agenda.baseReject + agenda.baseAbstain))
-        ? agenda.passThreshold
-        : getMajorityThreshold(totalAttendees);
+    const majorityThreshold = getMajorityThreshold(totalAttendees);
     const isAdopted = approve >= majorityThreshold;
+    const percent = totalAttendees > 0 ? Math.round((totalVoted / totalAttendees) * 100) : 0;
+    const approvePercent = totalVoted > 0 ? Math.round((approve / totalVoted) * 100) : 0;
     return {
         approve: approve,
         reject: reject,
         abstain: abstain,
         totalVoted: totalVoted,
+        total: totalVoted,
+        percent: percent,
+        approvePercent: approvePercent,
         remaining: Math.max(0, totalAttendees - totalVoted),
         totalAttendees: totalAttendees,
         majorityThreshold: majorityThreshold,
+        passThreshold: majorityThreshold,
         isAdopted: isAdopted
     };
 }
@@ -647,21 +746,29 @@ function getActiveCandidates() {
 }
 
 function getElectionTallies() {
-    const elec = appState.election;
+    const elec = appState.election || {};
+    const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
+        ? FULL_MEMBER_ROSTER.length
+        : 134;
+    const basePool = (elec.totalVoters && elec.totalVoters > 0)
+        ? elec.totalVoters
+        : ((typeof appState !== "undefined" && appState && appState.totalAttendees > 0) ? appState.totalAttendees : fallbackTotal);
     if (elec.mode === "single") {
-        let approve = elec.singleVotes.approve;
-        let reject = elec.singleVotes.reject;
-        let abstain = elec.singleVotes.abstain;
-        const mv = elec.singleVotes.memberVotes || {};
+        const sv = elec.singleVotes || { approve: 0, reject: 0, abstain: 0, memberVotes: {} };
+        let approve = Number(sv.approve) || 0;
+        let reject = Number(sv.reject) || 0;
+        let abstain = Number(sv.abstain) || 0;
+        const mv = sv.memberVotes || {};
         Object.keys(mv).forEach(function(mid) {
             if (mv[mid] === "approve") approve += 1;
             else if (mv[mid] === "reject") reject += 1;
             else if (mv[mid] === "abstain") abstain += 1;
         });
         const totalVoted = approve + reject + abstain;
-        const totalPool = Math.max(elec.totalVoters || 38, totalVoted);
+        const totalPool = Math.max(basePool, totalVoted);
         const passThreshold = Math.ceil((totalPool * 2) / 3);
         const isElected = approve >= passThreshold;
+        const approvePercent = totalVoted > 0 ? Math.round((approve / totalVoted) * 100) : 0;
         return {
             mode: "single",
             approve: approve,
@@ -670,13 +777,14 @@ function getElectionTallies() {
             totalVoted: totalVoted,
             totalPool: totalPool,
             passThreshold: passThreshold,
+            approvePercent: approvePercent,
             isElected: isElected,
             winner: (elec.candidates && elec.candidates.length > 0) ? elec.candidates[0] : null
         };
     } else {
         const cands = getActiveCandidates();
         const counts = {};
-        cands.forEach(function(c) { counts[c.id] = c.baseVotes || 0; });
+        cands.forEach(function(c) { counts[c.id] = Number(c.baseVotes) || 0; });
         const mv = elec.multiMemberVotes || {};
         Object.keys(mv).forEach(function(mid) {
             const cid = mv[mid];
@@ -693,7 +801,8 @@ function getElectionTallies() {
                 topCand = c;
             }
         });
-        const totalPool = Math.max(elec.totalVoters || 38, totalVoted);
+        if (topVotes < 0) topVotes = 0;
+        const totalPool = Math.max(basePool, totalVoted);
         return {
             mode: "multi",
             counts: counts,

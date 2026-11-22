@@ -105,7 +105,7 @@
                 no: no,
                 agendaNo: ag.agendaNo || no,
                 number: ag.number || no,
-                title: ag.title || "",
+                title: String(ag.title || "").replace(/\s*\[가결\]\s*/g, " ").trim(),
                 author: ag.author || ag.proposer || "운영진 발의",
                 proposer: ag.proposer || ag.author || "운영진 발의",
                 chapter: ag.chapter || "",
@@ -120,11 +120,11 @@
                 currentText: ag.beforeText || ag.currentText || "",
                 afterText: ag.afterText || "",
                 proposedText: ag.afterText || ag.proposedText || "",
-                baseApprove: typeof ag.baseApprove === "number" ? ag.baseApprove : 0,
-                baseReject: typeof ag.baseReject === "number" ? ag.baseReject : 0,
-                baseAbstain: typeof ag.baseAbstain === "number" ? ag.baseAbstain : 0,
-                voterTotal: ag.voterTotal || 37,
-                passThreshold: ag.passThreshold || 25,
+                baseApprove: 0,
+                baseReject: 0,
+                baseAbstain: 0,
+                voterTotal: 0,
+                passThreshold: Math.ceil(((typeof s.totalAttendees === "number" && s.totalAttendees > 0 ? s.totalAttendees : 134) * 2) / 3),
                 isLocked: locked,
                 locked: locked,
                 status: locked ? "closed" : "voting"
@@ -141,7 +141,7 @@
                 company: c.company || "",
                 title: c.title || "",
                 photo: c.photo || "assets/cand_1.jpg",
-                baseVotes: typeof c.baseVotes === "number" ? c.baseVotes : 0,
+                baseVotes: 0,
                 pledge: c.pledge || "",
                 career: c.career || ""
             };
@@ -166,11 +166,11 @@
             electionStatus: isElecLocked ? "closed" : (elec.status || "in_progress"),
             electionMode: elec.mode || "single",
             electionIsLocked: isElecLocked,
-            electionTotalVoters: elec.totalVoters || 38,
+            electionTotalVoters: 0,
             electionSingleBase: {
-                approve: typeof singleBase.approve === "number" ? singleBase.approve : 0,
-                reject: typeof singleBase.reject === "number" ? singleBase.reject : 0,
-                abstain: typeof singleBase.abstain === "number" ? singleBase.abstain : 0
+                approve: 0,
+                reject: 0,
+                abstain: 0
             },
             electionCandidates: electionCandidates,
             agendasMeta: agendasMeta,
@@ -251,7 +251,25 @@
                 ? data.annualEvents
                 : (Array.isArray(data.events) ? data.events : null);
             if (remoteEvents && remoteEvents.length >= 10) {
-                s.events = deepClone(remoteEvents);
+                var clonedEvents = deepClone(remoteEvents);
+                if (typeof global.backfillAnnualEventPhotos === "function") {
+                    s.events = global.backfillAnnualEventPhotos(clonedEvents).items;
+                } else {
+                    var defaultsList = (typeof INITIAL_ANNUAL_EVENTS !== "undefined" && Array.isArray(INITIAL_ANNUAL_EVENTS))
+                        ? INITIAL_ANNUAL_EVENTS
+                        : (Array.isArray(global.INITIAL_ANNUAL_EVENTS) ? global.INITIAL_ANNUAL_EVENTS : []);
+                    s.events = clonedEvents.map(function(ev) {
+                        if (!ev || typeof ev !== "object") return ev;
+                        if (Array.isArray(ev.photos) && ev.photos.length > 0) return ev;
+                        var match = defaultsList.find(function(d) {
+                            return d && ((ev.id && d.id === ev.id) || (ev.title && d.title && String(d.title).trim() === String(ev.title).trim()));
+                        });
+                        if (match && Array.isArray(match.photos) && match.photos.length > 0) {
+                            ev.photos = match.photos.slice();
+                        }
+                        return ev;
+                    });
+                }
             } else if (!Array.isArray(s.events) || s.events.length < 10) {
                 if (typeof global.getDefaultState === "function") {
                     s.events = deepClone(global.getDefaultState().events);
@@ -281,21 +299,26 @@
                 s.election.isLocked = (data.electionStatus === "closed");
             }
             if (typeof data.electionTotalVoters === "number") {
-                s.election.totalVoters = data.electionTotalVoters;
+                s.election.totalVoters = (data.electionTotalVoters === 38) ? 0 : data.electionTotalVoters;
             }
             if (Array.isArray(data.electionCandidates)) {
-                s.election.candidates = deepClone(data.electionCandidates);
+                s.election.candidates = deepClone(data.electionCandidates).map(function(c) {
+                    if (c && typeof c === "object") c.baseVotes = 0;
+                    return c;
+                });
             }
             if (!s.election.singleVotes) {
                 s.election.singleVotes = { approve: 0, reject: 0, abstain: 0, memberVotes: {} };
             }
-            if (data.electionSingleBase && typeof data.electionSingleBase === "object") {
-                if (typeof data.electionSingleBase.approve === "number") s.election.singleVotes.approve = data.electionSingleBase.approve;
-                if (typeof data.electionSingleBase.reject === "number") s.election.singleVotes.reject = data.electionSingleBase.reject;
-                if (typeof data.electionSingleBase.abstain === "number") s.election.singleVotes.abstain = data.electionSingleBase.abstain;
-            }
+            // Enforce strict 0 baseline votes regardless of legacy remote config
+            s.election.singleVotes.approve = 0;
+            s.election.singleVotes.reject = 0;
+            s.election.singleVotes.abstain = 0;
             if (!s.election.singleVotes.memberVotes) s.election.singleVotes.memberVotes = {};
             if (!s.election.multiMemberVotes) s.election.multiMemberVotes = {};
+            if (!s.election.memberVotes) {
+                s.election.memberVotes = Object.assign({}, s.election.singleVotes.memberVotes, s.election.multiMemberVotes);
+            }
 
             // 안건 메타데이터 병합 (기존 또는 클라우드 캐시된 memberVotes 보존)
             if (Array.isArray(data.agendasMeta) && data.agendasMeta.length > 0) {
@@ -315,12 +338,22 @@
                         cachedAgendaVotes[agId] || {}
                     );
                     var no = meta.no || meta.agendaNo || meta.number || (idx + 1);
+                    var cleanTitle = String(meta.title || ("제" + no + "호 안건")).replace(/\s*\[가결\]\s*/g, " ").trim();
+                    var agreeCnt = 0;
+                    var disagreeCnt = 0;
+                    var abstainCnt = 0;
+                    Object.keys(mergedVotes).forEach(function(mk) {
+                        if (mergedVotes[mk] === "approve") agreeCnt += 1;
+                        else if (mergedVotes[mk] === "reject") disagreeCnt += 1;
+                        else if (mergedVotes[mk] === "abstain") abstainCnt += 1;
+                    });
+                    var dynamicTotalAtt = (typeof s.totalAttendees === "number" && s.totalAttendees > 0) ? s.totalAttendees : 134;
                     return {
                         id: agId,
                         no: no,
                         agendaNo: meta.agendaNo || no,
                         number: meta.number || no,
-                        title: meta.title || ("제" + no + "호 안건"),
+                        title: cleanTitle,
                         author: meta.author || meta.proposer || "운영진 발의",
                         proposer: meta.proposer || meta.author || "운영진 발의",
                         chapter: meta.chapter || "",
@@ -332,11 +365,14 @@
                         reason: meta.reason || meta.proposalReason || "",
                         beforeText: meta.beforeText || meta.currentText || "",
                         afterText: meta.afterText || meta.proposedText || "",
-                        baseApprove: typeof meta.baseApprove === "number" ? meta.baseApprove : 0,
-                        baseReject: typeof meta.baseReject === "number" ? meta.baseReject : 0,
-                        baseAbstain: typeof meta.baseAbstain === "number" ? meta.baseAbstain : 0,
-                        voterTotal: meta.voterTotal || 37,
-                        passThreshold: meta.passThreshold || 25,
+                        baseApprove: 0,
+                        baseReject: 0,
+                        baseAbstain: 0,
+                        agree: agreeCnt,
+                        disagree: disagreeCnt,
+                        abstain: abstainCnt,
+                        voterTotal: 0,
+                        passThreshold: Math.ceil((dynamicTotalAtt * 2) / 3),
                         isLocked: locked,
                         status: locked ? "closed" : "voting",
                         memberVotes: mergedVotes,
@@ -432,6 +468,7 @@
                 }
                 s.election.singleVotes.memberVotes = deepClone(newSingleVotes);
                 s.election.multiMemberVotes = deepClone(newMultiVotes);
+                s.election.memberVotes = deepClone(electionVotersMap);
                 s.election.electionVoters = deepClone(electionVotersMap);
             }
 
@@ -698,6 +735,116 @@
     }
 
     /**
+     * 단장 선거 개별 투표 취소(삭제): hanwoori_2026_votes/election_${safeMemberKey}
+     */
+    function deleteElectionVoteFromCloud(memberKey) {
+        if (!memberKey) {
+            return Promise.resolve({ skipped: true, reason: "invalid_args" });
+        }
+        if (cachedSingleElectionVotes[memberKey]) {
+            delete cachedSingleElectionVotes[memberKey];
+        }
+        if (cachedMultiElectionVotes[memberKey]) {
+            delete cachedMultiElectionVotes[memberKey];
+        }
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        var safeMemberKey = sanitizeKey(memberKey);
+        var docId = "election_" + safeMemberKey;
+        return db.collection(VOTES_COLLECTION).doc(docId).delete()
+            .then(function() {
+                status.lastSyncAt = new Date().toISOString();
+                return { ok: true, docId: docId, deleted: true };
+            })
+            .catch(function(err) {
+                status.error = err && err.message ? err.message : String(err);
+                notifyUiRefresh();
+                return { ok: false, error: status.error };
+            });
+    }
+
+    /**
+     * 단칙 개정안(agenda_*) 투표 문서만 선택 삭제 후 클린 config 반영
+     */
+    function resetAgendaVotesInCloud() {
+        cachedAgendaVotes = {};
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        return db.collection(VOTES_COLLECTION).get()
+            .then(function(snapshot) {
+                var deletions = [];
+                if (snapshot && !snapshot.empty) {
+                    snapshot.forEach(function(doc) {
+                        var d = (doc && typeof doc.data === "function") ? doc.data() : null;
+                        var docId = (doc && doc.id) ? String(doc.id) : "";
+                        var isAgendaDoc = (docId.indexOf("agenda_") === 0) || (d && d.type === "agenda");
+                        if (!isAgendaDoc) return;
+                        if (doc && doc.ref && typeof doc.ref.delete === "function") {
+                            deletions.push(doc.ref.delete());
+                        } else if (docId) {
+                            deletions.push(db.collection(VOTES_COLLECTION).doc(docId).delete());
+                        }
+                    });
+                }
+                return Promise.all(deletions).then(function() {
+                    cachedAgendaVotes = {};
+                    status.lastSyncAt = new Date().toISOString();
+                    return pushConfigToCloud(getAppStateRef(), { force: true, immediate: true }).then(function() {
+                        return { ok: true, deleted: deletions.length };
+                    });
+                });
+            })
+            .catch(function(err) {
+                status.error = err && err.message ? err.message : String(err);
+                notifyUiRefresh();
+                return { ok: false, error: status.error };
+            });
+    }
+
+    /**
+     * 단장 선거(election_*) 투표 문서만 선택 삭제 후 클린 config 반영
+     */
+    function resetElectionVotesInCloud() {
+        cachedSingleElectionVotes = {};
+        cachedMultiElectionVotes = {};
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        return db.collection(VOTES_COLLECTION).get()
+            .then(function(snapshot) {
+                var deletions = [];
+                if (snapshot && !snapshot.empty) {
+                    snapshot.forEach(function(doc) {
+                        var d = (doc && typeof doc.data === "function") ? doc.data() : null;
+                        var docId = (doc && doc.id) ? String(doc.id) : "";
+                        var isElectionDoc = (docId.indexOf("election_") === 0) || (d && d.type === "election");
+                        if (!isElectionDoc) return;
+                        if (doc && doc.ref && typeof doc.ref.delete === "function") {
+                            deletions.push(doc.ref.delete());
+                        } else if (docId) {
+                            deletions.push(db.collection(VOTES_COLLECTION).doc(docId).delete());
+                        }
+                    });
+                }
+                return Promise.all(deletions).then(function() {
+                    cachedSingleElectionVotes = {};
+                    cachedMultiElectionVotes = {};
+                    status.lastSyncAt = new Date().toISOString();
+                    return pushConfigToCloud(getAppStateRef(), { force: true, immediate: true }).then(function() {
+                        return { ok: true, deleted: deletions.length };
+                    });
+                });
+            })
+            .catch(function(err) {
+                status.error = err && err.message ? err.message : String(err);
+                notifyUiRefresh();
+                return { ok: false, error: status.error };
+            });
+    }
+
+    /**
      * 운영진 투표 초기화 시 hanwoori_2026_votes 컬렉션 전체 삭제
      */
     function resetVotesInCloud() {
@@ -755,6 +902,9 @@
         submitAgendaVoteToCloud: submitAgendaVoteToCloud,
         deleteAgendaVoteFromCloud: deleteAgendaVoteFromCloud,
         submitElectionVoteToCloud: submitElectionVoteToCloud,
+        deleteElectionVoteFromCloud: deleteElectionVoteFromCloud,
+        resetAgendaVotesInCloud: resetAgendaVotesInCloud,
+        resetElectionVotesInCloud: resetElectionVotesInCloud,
         resetVotesInCloud: resetVotesInCloud,
         getStatus: getStatus,
         isApplyingRemote: isApplyingRemote

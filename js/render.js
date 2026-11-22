@@ -211,6 +211,83 @@ function renderHeaderStatus() {
     }
 }
 
+function getExecutiveRoleIconHtml(role) {
+    const r = String(role || "").trim();
+    if (!r) return "";
+    // 부단장 -> 은왕관 (Silver Crown)
+    if (r.indexOf("부단장") !== -1) {
+        return '<span class="inline-flex items-center align-middle ml-1" title="부단장" data-role-icon="silver-crown" aria-label="부단장 은왕관">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline-block shrink-0 drop-shadow-2xs">' +
+                '<defs>' +
+                    '<linearGradient id="silverCrownGrad" x1="2" y1="5" x2="22" y2="20" gradientUnits="userSpaceOnUse">' +
+                        '<stop offset="0%" stop-color="#E2E8F0"/>' +
+                        '<stop offset="50%" stop-color="#CBD5E1"/>' +
+                        '<stop offset="100%" stop-color="#94A3B8"/>' +
+                    '</linearGradient>' +
+                '</defs>' +
+                '<path d="M3 18L2 8.5L7.5 12.5L12 5.5L16.5 12.5L22 8.5L21 18H3Z" fill="url(#silverCrownGrad)" stroke="#64748B" stroke-width="1.6" stroke-linejoin="round"/>' +
+                '<rect x="3.5" y="18" width="17" height="2.4" rx="1.2" fill="#94A3B8" stroke="#64748B" stroke-width="1.2"/>' +
+                '<circle cx="12" cy="5" r="1.4" fill="#F8FAFC" stroke="#64748B" stroke-width="1"/>' +
+                '<circle cx="2.2" cy="8.2" r="1.2" fill="#E2E8F0" stroke="#64748B" stroke-width="1"/>' +
+                '<circle cx="21.8" cy="8.2" r="1.2" fill="#E2E8F0" stroke="#64748B" stroke-width="1"/>' +
+            '</svg>' +
+        '</span>';
+    }
+    // 단장 -> 금왕관 (Gold Crown)
+    if (r === "단장" || r.indexOf("단장") !== -1) {
+        return '<span class="inline-flex items-center align-middle ml-1" title="단장" data-role-icon="gold-crown" aria-label="단장 금왕관">' +
+            '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline-block shrink-0 drop-shadow-xs">' +
+                '<defs>' +
+                    '<linearGradient id="goldCrownGrad" x1="2" y1="5" x2="22" y2="20" gradientUnits="userSpaceOnUse">' +
+                        '<stop offset="0%" stop-color="#FDE047"/>' +
+                        '<stop offset="50%" stop-color="#FBBF24"/>' +
+                        '<stop offset="100%" stop-color="#F59E0B"/>' +
+                    '</linearGradient>' +
+                '</defs>' +
+                '<path d="M3 18L2 8.5L7.5 12.5L12 5.5L16.5 12.5L22 8.5L21 18H3Z" fill="url(#goldCrownGrad)" stroke="#B45309" stroke-width="1.5" stroke-linejoin="round"/>' +
+                '<rect x="3.5" y="18" width="17" height="2.4" rx="1.2" fill="#F59E0B" stroke="#B45309" stroke-width="1.2"/>' +
+                '<circle cx="12" cy="5" r="1.4" fill="#FEF08A" stroke="#B45309" stroke-width="1"/>' +
+                '<circle cx="2.2" cy="8.2" r="1.2" fill="#FDE047" stroke="#B45309" stroke-width="1"/>' +
+                '<circle cx="21.8" cy="8.2" r="1.2" fill="#FDE047" stroke="#B45309" stroke-width="1"/>' +
+            '</svg>' +
+        '</span>';
+    }
+    // 음악총괄 -> 팅커벨 요정 (Tinkerbell Fairy SVG with emerald wings & gold sparkles)
+    if (r.indexOf("음악총괄") !== -1) {
+        return '<span class="inline-flex items-center align-middle ml-1" title="음악총괄" data-role-icon="tinkerbell-fairy" aria-label="음악총괄 요정">' +
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="inline-block shrink-0 drop-shadow-xs">' +
+                '<defs>' +
+                    '<linearGradient id="fairyWingGrad" x1="2" y1="4" x2="15" y2="16" gradientUnits="userSpaceOnUse">' +
+                        '<stop offset="0%" stop-color="#A7F3D0"/>' +
+                        '<stop offset="60%" stop-color="#34D399"/>' +
+                        '<stop offset="100%" stop-color="#10B981"/>' +
+                    '</linearGradient>' +
+                    '<linearGradient id="fairyDressGrad" x1="9" y1="10" x2="16" y2="21" gradientUnits="userSpaceOnUse">' +
+                        '<stop offset="0%" stop-color="#34D399"/>' +
+                        '<stop offset="100%" stop-color="#059669"/>' +
+                    '</linearGradient>' +
+                '</defs>' +
+                '<!-- Translucent emerald fairy wings -->' +
+                '<path d="M11.2 11.2C8.2 7.2 3.2 5.4 2.4 7.8C1.7 10 5.4 12.6 9.8 13.2Z" fill="url(#fairyWingGrad)" fill-opacity="0.85" stroke="#059669" stroke-width="1" stroke-linejoin="round"/>' +
+                '<path d="M10.4 13.4C7.2 13.8 4.4 15.8 5.2 17.4C6 18.9 8.8 17.4 10.8 15Z" fill="#6EE7B7" fill-opacity="0.8" stroke="#059669" stroke-width="0.9" stroke-linejoin="round"/>' +
+                '<!-- Fairy head & bun -->' +
+                '<circle cx="12.8" cy="5.5" r="1.2" fill="#FBBF24"/>' +
+                '<circle cx="13" cy="7.4" r="2.1" fill="#FDE68A" stroke="#D97706" stroke-width="0.9"/>' +
+                '<!-- Emerald Tinkerbell dress & silhouette -->' +
+                '<path d="M12.2 9.6L14.1 9.8L16.3 16.5L13.5 15.4L12.1 17.2L10.3 15.3L12.2 9.6Z" fill="url(#fairyDressGrad)" stroke="#047857" stroke-width="0.9" stroke-linejoin="round"/>' +
+                '<!-- Legs -->' +
+                '<path d="M12 16.8L10.6 21.2M14.2 16.2L15.8 20.6" stroke="#D97706" stroke-width="1.3" stroke-linecap="round"/>' +
+                '<!-- Magic wand & sparkling star -->' +
+                '<path d="M14.3 11.4L19.4 7.6" stroke="#F59E0B" stroke-width="1.2" stroke-linecap="round"/>' +
+                '<path d="M20 4.6L20.6 6.4L22.4 7L20.6 7.6L20 9.4L19.4 7.6L17.6 7L19.4 6.4L20 4.6Z" fill="#FBBF24"/>' +
+                '<circle cx="18.2" cy="12.5" r="0.9" fill="#FDE047"/>' +
+                '<circle cx="6.2" cy="4.8" r="0.85" fill="#FBBF24"/>' +
+            '</svg>' +
+        '</span>';
+    }
+    return "";
+}
+
 function renderExecutiveRosterTable() {
     const container = document.getElementById("executiveRosterTableBody");
     if (!container) return;
@@ -219,7 +296,7 @@ function renderExecutiveRosterTable() {
         html += '<tr class="border-b border-slate-100 hover:bg-slate-50/80 transition text-xs whitespace-nowrap">' +
             '<td class="py-2.5 px-2.5 sm:px-3 text-center text-slate-500 font-semibold">' + (i + 1) + '</td>' +
             '<td class="py-2.5 px-2.5 sm:px-3 font-bold text-slate-800">' +
-                '<span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold mr-1.5">' + escapeHtml(exec.role) + '</span>' +
+                '<span class="inline-flex items-center px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold mr-1.5">' + escapeHtml(exec.role) + getExecutiveRoleIconHtml(exec.role) + '</span>' +
                 (exec.subRole && exec.subRole !== '-' ? '<span class="text-slate-500 font-normal">(' + escapeHtml(exec.subRole) + ')</span>' : '') +
             '</td>' +
             '<td class="py-2.5 px-2.5 sm:px-3 font-extrabold text-slate-900">' + escapeHtml(exec.name) + '</td>' +
@@ -454,11 +531,26 @@ function renderActivityView() {
     // ------------------------------------------------------------------
     // Section 2: 한우리 주요 변화 (6가지)
     // ------------------------------------------------------------------
+    const escapeJsSingle = function(val) {
+        return escapeHtml(String(val || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
+    };
+
     const changesCont = document.getElementById("activityMajorChangesContainer");
     if (changesCont && report) {
         let chHtml = "";
         (report.majorChanges || []).forEach(function(item) {
             const numStr = item.no < 10 ? ("0" + item.no) : String(item.no);
+            let photoThumbHtml = "";
+            if (item.photo) {
+                const cap = (item.title || "") + (item.desc ? (" · " + item.desc) : "");
+                photoThumbHtml =
+                    '<div class="mt-1 pl-7">' +
+                        '<div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-white cursor-zoom-in shadow-2xs">' +
+                            '<img src="' + escapeHtml(item.photo) + '" alt="' + escapeHtml(cap) + '" loading="lazy" onclick="openPhotoLightbox(\'' + escapeJsSingle(item.photo) + '\', \'' + escapeJsSingle(cap) + '\')" class="w-full aspect-video object-cover transition-transform duration-200 group-hover:scale-[1.03]" />' +
+                            '<span class="pointer-events-none absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-slate-900/70 text-white text-[10px] font-bold backdrop-blur-xs">🔍 크게 보기</span>' +
+                        '</div>' +
+                    '</div>';
+            }
             chHtml +=
                 '<div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition shadow-2xs flex flex-col gap-2">' +
                     '<div class="flex items-center justify-between gap-2">' +
@@ -469,6 +561,7 @@ function renderActivityView() {
                         '<span class="text-base shrink-0">' + escapeHtml(item.icon || "✨") + '</span>' +
                     '</div>' +
                     '<p class="text-xs text-slate-600 leading-relaxed break-keep pl-7">' + escapeHtml(item.desc) + '</p>' +
+                    photoThumbHtml +
                 '</div>';
         });
         changesCont.innerHTML = chHtml;
@@ -503,21 +596,40 @@ function renderActivityView() {
             const placeStr = String(ev.place || "");
             const showPlaceSuffix = placeStr && descStr.indexOf(placeStr) === -1;
 
-            evHtml += '<div class="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">' +
-                '<div class="flex items-start gap-2.5 min-w-0">' +
-                    '<span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5 tabular-nums">' + (idx + 1) + '</span>' +
-                    '<div class="min-w-0">' +
-                        '<div class="flex items-center flex-wrap gap-1.5">' +
-                            '<span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[11px] font-extrabold whitespace-nowrap">' + escapeHtml(ev.date) + '</span>' +
-                            '<span class="font-extrabold text-xs sm:text-sm text-slate-900 break-keep">' + escapeHtml(ev.title) + '</span>' +
+            const photos = Array.isArray(ev.photos) ? ev.photos.filter(Boolean) : [];
+            let galleryHtml = "";
+            if (photos.length > 0) {
+                const gridColsClass = photos.length === 1
+                    ? "grid-cols-1"
+                    : (photos.length === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1 sm:grid-cols-3");
+                const photoItemsHtml = photos.map(function(src, pIdx) {
+                    const caption = (ev.date ? (ev.date + " ") : "") + (ev.title || "") + (photos.length > 1 ? (" (" + (pIdx + 1) + "/" + photos.length + ")") : "");
+                    return '<div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-white cursor-zoom-in shadow-2xs">' +
+                        '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(caption) + '" loading="lazy" onclick="openPhotoLightbox(\'' + escapeJsSingle(src) + '\', \'' + escapeJsSingle(caption) + '\')" class="w-full aspect-video object-cover transition-transform duration-200 group-hover:scale-[1.03]" />' +
+                        '<span class="pointer-events-none absolute bottom-1.5 right-1.5 px-1.5 py-0.5 rounded-md bg-slate-900/65 text-white text-[10px] font-bold opacity-85 group-hover:opacity-100 transition">🔍</span>' +
+                    '</div>';
+                }).join("");
+                galleryHtml = '<div class="grid ' + gridColsClass + ' gap-2 pt-2.5 border-t border-slate-200/70">' + photoItemsHtml + '</div>';
+            }
+
+            evHtml += '<div class="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition flex flex-col gap-2.5">' +
+                '<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">' +
+                    '<div class="flex items-start gap-2.5 min-w-0">' +
+                        '<span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5 tabular-nums">' + (idx + 1) + '</span>' +
+                        '<div class="min-w-0">' +
+                            '<div class="flex items-center flex-wrap gap-1.5">' +
+                                '<span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[11px] font-extrabold whitespace-nowrap">' + escapeHtml(ev.date) + '</span>' +
+                                '<span class="font-extrabold text-xs sm:text-sm text-slate-900 break-keep">' + escapeHtml(ev.title) + '</span>' +
+                            '</div>' +
+                            '<p class="text-xs text-slate-600 mt-1 leading-relaxed break-keep">' +
+                                escapeHtml(descStr) +
+                                (showPlaceSuffix ? ' <span class="text-slate-400">(' + escapeHtml(placeStr) + ')</span>' : '') +
+                            '</p>' +
                         '</div>' +
-                        '<p class="text-xs text-slate-600 mt-1 leading-relaxed break-keep">' +
-                            escapeHtml(descStr) +
-                            (showPlaceSuffix ? ' <span class="text-slate-400">(' + escapeHtml(placeStr) + ')</span>' : '') +
-                        '</p>' +
                     '</div>' +
+                    execControls +
                 '</div>' +
-                execControls +
+                galleryHtml +
             '</div>';
         });
         evCont.innerHTML = evHtml || '<div class="text-center py-6 text-slate-400 text-xs col-span-full">등록된 연간 행사가 없습니다.</div>';
@@ -1089,7 +1201,13 @@ function renderElectionView() {
                     '<button type="button" onclick="voteElectionSingle(\'abstain\')" class="py-3 rounded-xl font-extrabold text-sm transition shadow-sm cursor-pointer ' +
                         (isAbs ? 'bg-slate-800 text-white ring-2 ring-slate-400' : 'bg-slate-700 hover:bg-slate-600 text-white') + '">' +
                         '기권' + (isAbs ? ' (선택됨)' : '') +
-                    '</button>';
+                    '</button>' +
+                    (myVote
+                        ? ('<button id="btnCancelElectionVoteSingle" type="button" onclick="cancelElectionVote()" class="col-span-3 min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 font-bold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5">' +
+                            '<span>↩️</span>' +
+                            '<span>투표 취소 (미투표로 되돌리기)</span>' +
+                        '</button>')
+                        : '');
             }
         }
     } else {
@@ -1143,6 +1261,30 @@ function renderElectionView() {
                 '</div>';
             });
             cardsCont.innerHTML = html || '<div class="col-span-3 text-center py-8 text-slate-400 text-xs">등록된 후보자가 없습니다. 운영진 관리 바에서 후보자를 추가해주세요.</div>';
+
+            const multiFooter = document.getElementById("multiElectionVoteFooter");
+            if (multiFooter) {
+                const selectedCand = myVote ? activeCands.find(function(c) { return c.id === myVote; }) : null;
+                if (isClosed) {
+                    multiFooter.innerHTML =
+                        '<div class="p-3.5 rounded-xl bg-slate-100 border border-slate-200 text-center text-xs font-bold text-slate-600">' +
+                            (selectedCand
+                                ? ('🔒 단장 선거 투표가 마감되었습니다. (최종 선택: <strong class="text-purple-800">' + escapeHtml(selectedCand.name) + '</strong>)')
+                                : '🔒 단장 선거 투표가 공식 마감되었습니다.') +
+                        '</div>';
+                } else if (myVote) {
+                    multiFooter.innerHTML =
+                        '<div class="p-3 rounded-xl bg-purple-50 border border-purple-200 text-xs font-bold text-purple-800 flex items-center justify-between gap-2">' +
+                            '<span>✓ 단장 선거 투표 완료: <strong class="underline">' + escapeHtml(selectedCand ? selectedCand.name : myVote) + '</strong></span>' +
+                        '</div>' +
+                        '<button id="btnCancelElectionVoteMulti" type="button" onclick="cancelElectionVote()" class="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 font-bold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5">' +
+                            '<span>↩️</span>' +
+                            '<span>투표 취소 (미투표로 되돌리기)</span>' +
+                        '</button>';
+                } else {
+                    multiFooter.innerHTML = '';
+                }
+            }
         }
     }
 }
@@ -1160,7 +1302,8 @@ function renderWinnerView() {
     const votesEl = document.getElementById("winnerVoteSummary");
     if (votesEl) {
         if (tallies.mode === "single") {
-            votesEl.textContent = "찬성 " + tallies.approve + "표 / 반대 " + tallies.reject + "표 / 기권 " + tallies.abstain + "표 (득표율 " + Math.round((tallies.approve / Math.max(1, tallies.totalVoted)) * 100) + "%)";
+            const pct = tallies.totalVoted > 0 ? Math.round((tallies.approve / tallies.totalVoted) * 100) : 0;
+            votesEl.textContent = "찬성 " + tallies.approve + "표 / 반대 " + tallies.reject + "표 / 기권 " + tallies.abstain + "표 (득표율 " + pct + "%)";
         } else {
             votesEl.textContent = "최다 득표 " + tallies.topVotes + "표로 당선 확정";
         }
@@ -1483,7 +1626,7 @@ function renderAdminView() {
             execHtml += '<tr class="border-b border-slate-100 hover:bg-slate-50/80 transition text-xs whitespace-nowrap">' +
                 '<td class="py-2.5 px-3 text-center text-slate-500 font-semibold">' + (i + 1) + '</td>' +
                 '<td class="py-2.5 px-3 font-bold text-slate-800">' +
-                    '<span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-bold mr-1.5 border border-rose-200">' + escapeHtml(exec.role) + '</span>' +
+                    '<span class="inline-flex items-center px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-bold mr-1.5 border border-rose-200">' + escapeHtml(exec.role) + getExecutiveRoleIconHtml(exec.role) + '</span>' +
                     (exec.subRole && exec.subRole !== '-' ? '<span class="text-slate-500 font-normal">(' + escapeHtml(exec.subRole) + ')</span>' : '') +
                 '</td>' +
                 '<td class="py-2.5 px-3 font-extrabold text-slate-900">' + escapeHtml(exec.name) + '</td>' +
