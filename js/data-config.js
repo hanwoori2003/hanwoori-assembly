@@ -355,74 +355,75 @@ const INITIAL_AGENDAS = [
 // 2-B. 활동보고 데이터 (PDF Pages 5-34 기준)
 const ACTIVITY_REPORT_DATA = {
     memberSummary: {
-        total: 164,
-        existing: 132,
-        newcomers: 32,
+        total: 136,
+        existing: 116,
+        newcomers: 20,
         note: "활동보고 집계 기준"
     },
     partStats: [
         {
             part: "Soprano",
-            total: 46,
+            total: 40,
             color: "rose",
             subParts: [
-                { label: "S1", count: "19" },
-                { label: "S2", count: "27*" }
+                { label: "S1", count: "17", photo: "assets/roster/soprano_1.jpg", title: "Soprano I 사진 명부 (17명)" },
+                { label: "S2", count: "23", photo: "assets/roster/soprano_2.jpg", title: "Soprano II 사진 명부 (23명)" }
             ]
         },
         {
             part: "Alto",
-            total: 42,
+            total: 40,
             color: "amber",
             subParts: [
-                { label: "A1", count: "23" },
-                { label: "A2", count: "19" }
+                { label: "A1", count: "22", photo: "assets/roster/alto_1.jpg", title: "Alto I 사진 명부 (22명)" },
+                { label: "A2", count: "18", photo: "assets/roster/alto_2.jpg", title: "Alto II 사진 명부 (18명)" }
             ]
         },
         {
             part: "Tenor",
-            total: 39,
+            total: 29,
             color: "sky",
             subParts: [
-                { label: "T1", count: "20" },
-                { label: "T2", count: "19" }
+                { label: "T1", count: "15", photo: "assets/roster/tenor_1.jpg", title: "Tenor I 사진 명부 (15명)" },
+                { label: "T2", count: "14", photo: "assets/roster/tenor_2.jpg", title: "Tenor II 사진 명부 (14명)" }
             ]
         },
         {
             part: "Bass",
-            total: 37,
+            total: 27,
             color: "indigo",
             subParts: [
-                { label: "B1", count: "22" },
-                { label: "B2", count: "15*" }
+                { label: "B1", count: "18", photo: "assets/roster/bass_1.jpg", title: "Bass I 사진 명부 (18명)" },
+                { label: "B2", count: "9", photo: "assets/roster/bass_2.jpg", title: "Bass II 사진 명부 (9명)" }
             ]
         }
     ],
-    generationHighlightBadge: "16~20기: 97명 (59%)",
+    generationHighlightBadge: "16~20기 및 신입: 88명 (65%)",
     generationStats: [
-        { gen: 1, label: "1기", count: 6, highlight: false },
+        { gen: 1, label: "1기", count: 5, highlight: false },
         { gen: 2, label: "2기", count: 3, highlight: false },
-        { gen: 3, label: "3기", count: 3, highlight: false },
-        { gen: 4, label: "4기", count: 10, highlight: false },
+        { gen: 3, label: "3기", count: 2, highlight: false },
+        { gen: 4, label: "4기", count: 6, highlight: false },
         { gen: 5, label: "5기", count: 5, highlight: false },
-        { gen: 6, label: "6기", count: 4, highlight: false },
+        { gen: 6, label: "6기", count: 3, highlight: false },
         { gen: 7, label: "7기", count: 1, highlight: false },
-        { gen: 8, label: "8기", count: 3, highlight: false },
+        { gen: 8, label: "8기", count: 2, highlight: false },
         { gen: 9, label: "9기", count: 1, highlight: false },
-        { gen: 10, label: "10기", count: 4, highlight: false },
-        { gen: 11, label: "11기", count: 5, highlight: false },
-        { gen: 12, label: "12기", count: 4, highlight: false },
-        { gen: 13, label: "13기", count: 6, highlight: false },
+        { gen: 10, label: "10기", count: 2, highlight: false },
+        { gen: 11, label: "11기", count: 4, highlight: false },
+        { gen: 12, label: "12기", count: 2, highlight: false },
+        { gen: 13, label: "13기", count: 3, highlight: false },
         { gen: 14, label: "14기", count: 5, highlight: false },
-        { gen: 15, label: "15기", count: 7, highlight: false },
+        { gen: 15, label: "15기", count: 4, highlight: false },
         { gen: 16, label: "16기", count: 14, highlight: true },
-        { gen: 17, label: "17기", count: 9, highlight: true },
-        { gen: 18, label: "18기", count: 21, highlight: true },
-        { gen: 19, label: "19기", count: 21, highlight: true },
-        { gen: 20, label: "20기", count: 32, highlight: true }
+        { gen: 17, label: "17기", count: 7, highlight: true },
+        { gen: 18, label: "18기", count: 14, highlight: true },
+        { gen: 19, label: "19기", count: 14, highlight: true },
+        { gen: 20, label: "20기", count: 19, highlight: true },
+        { gen: "신입", label: "신입", count: 20, highlight: true }
     ],
     majorChanges: [
-        { no: 1, title: "정단원 명부 작성", desc: "파트별 정단원 사진 명부 제작", icon: "📸", photo: "assets/activity/p08_roster.jpg" },
+        { no: 1, title: "정단원 명부 작성", desc: "파트별 정단원 사진 명부 8종 제작 완료", icon: "📸", photo: "assets/roster/bass_1.jpg" },
         { no: 2, title: "연회비 인상", desc: "24년 40만원 → 42만원 (얼리버드 2만원 할인 시 40만원)", icon: "💳" },
         { no: 3, title: "연습 지각 시간 변경", desc: "3시 15분 → 3시 5분", icon: "⏰" },
         { no: 4, title: "악보 보관 X", desc: "악보 개인 지참, 개인연습 활용", icon: "🎼" },

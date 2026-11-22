@@ -1,4 +1,4 @@
-﻿// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
+// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
 
 function renderAuthGate() {
     const gate = document.getElementById("loginGateScreen");
@@ -420,13 +420,16 @@ function renderEventsView() {
 function renderActivityView() {
     const isExec = (typeof isCurrentUserExecutive === "function") ? isCurrentUserExecutive() : Boolean(appState.isAdminAuthenticated);
     const report = (typeof ACTIVITY_REPORT_DATA !== "undefined" && ACTIVITY_REPORT_DATA) ? ACTIVITY_REPORT_DATA : null;
+    const escapeJsSingle = function(val) {
+        return escapeHtml(String(val || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'"));
+    };
 
     // ------------------------------------------------------------------
-    // Section 1: 단원 현황 (KPI + 파트별 현황 + 기수별 현황 바 차트)
+    // Section 1: 단원 현황 (KPI + 파트별 현황 + 기수별 현황 바 차트 + 사진 명부)
     // ------------------------------------------------------------------
     const statsCont = document.getElementById("activityMemberStatsContainer");
     if (statsCont && report) {
-        const ms = report.memberSummary || { total: 164, existing: 132, newcomers: 32, note: "활동보고 집계 기준" };
+        const ms = report.memberSummary || { total: 136, existing: 116, newcomers: 20, note: "활동보고 집계 기준" };
         const partColors = {
             rose: { bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-700", bar: "from-rose-500 to-pink-500", pill: "bg-white text-rose-700 border-rose-200" },
             amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", bar: "from-amber-500 to-orange-500", pill: "bg-white text-amber-800 border-amber-200" },
@@ -452,7 +455,7 @@ function renderActivityView() {
                 '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs">' +
                     '<span class="text-xs font-bold text-emerald-700">신입단원</span>' +
                     '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>' +
-                    '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (20기 신규 합류)</div>' +
+                    '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (신입단원 20명 합류)</div>' +
                 '</div>' +
             '</div>';
 
@@ -462,29 +465,36 @@ function renderActivityView() {
             const c = partColors[p.color] || partColors.indigo;
             const pct = Math.round((p.total / ms.total) * 100);
             const subBadges = (p.subParts || []).map(function(sp) {
+                if (sp.photo) {
+                    return '<button type="button" onclick="openPhotoLightbox(\'' + escapeJsSingle(sp.photo) + '\', \'' + escapeJsSingle(sp.title || (sp.label + ' 사진 명부')) + '\')" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[11px] font-bold ' + c.pill + ' cursor-pointer hover:shadow-xs transition" title="클릭하여 ' + escapeHtml(sp.label) + ' 사진 명부 보기">' +
+                        '<span>' + escapeHtml(sp.label) + '</span>' +
+                        '<span class="font-black">' + escapeHtml(sp.count) + '명</span>' +
+                        '<span class="text-[9px] opacity-70">📸</span>' +
+                    '</button>';
+                }
                 return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[11px] font-bold ' + c.pill + '">' +
                     '<span>' + escapeHtml(sp.label) + '</span>' +
-                    '<span class="font-black">' + escapeHtml(sp.count) + '</span>' +
+                    '<span class="font-black">' + escapeHtml(sp.count) + '명</span>' +
                 '</span>';
             }).join("");
 
             partsRowsHtml +=
                 '<div class="p-3 rounded-xl border ' + c.bg + ' ' + c.border + ' space-y-2">' +
-                    '<div class="flex items-center justify-between gap-2">' +
+                    '<div class="flex items-center justify-between gap-2 flex-wrap">' +
                         '<div class="flex items-center gap-2">' +
                             '<span class="text-sm font-black ' + c.text + '">' + escapeHtml(p.part) + '</span>' +
                             '<span class="text-xs font-extrabold text-slate-900 tabular-nums">' + p.total + '명</span>' +
                             '<span class="text-[11px] text-slate-500">(' + pct + '%)</span>' +
                         '</div>' +
-                        '<div class="flex items-center gap-1.5">' + subBadges + '</div>' +
+                        '<div class="flex items-center gap-1.5 flex-wrap">' + subBadges + '</div>' +
                     '</div>' +
                     '<div class="w-full h-2 rounded-full bg-white/80 overflow-hidden">' +
-                        '<div class="h-full rounded-full bg-gradient-to-r ' + c.bar + '" style="width:' + Math.min(100, Math.round((p.total / 50) * 100)) + '%"></div>' +
+                        '<div class="h-full rounded-full bg-gradient-to-r ' + c.bar + '" style="width:' + Math.min(100, Math.round((p.total / 45) * 100)) + '%"></div>' +
                     '</div>' +
                 '</div>';
         });
 
-        // Generation stats bar chart (1기~20기)
+        // Generation stats bar chart (1기~20기 & 신입)
         const genList = report.generationStats || [];
         const maxGenCount = genList.reduce(function(mx, item) { return Math.max(mx, item.count); }, 1);
         let genBarsHtml = "";
@@ -496,11 +506,12 @@ function renderActivityView() {
             const countClass = g.highlight ? "text-indigo-700 font-black" : "text-slate-500 font-bold";
             const labelClass = g.highlight ? "text-rose-600 font-extrabold" : "text-slate-500 font-semibold";
             const wrapBg = g.highlight ? "bg-indigo-50/70 rounded-lg px-0.5" : "";
+            const genText = (typeof g.gen === "number" || (!isNaN(Number(g.gen)) && g.gen !== "신입")) ? (g.gen + "기") : (g.label || g.gen);
             genBarsHtml +=
-                '<div class="flex flex-col items-center justify-end flex-1 min-w-[26px] pt-2 pb-1 ' + wrapBg + '" title="' + escapeHtml(g.label) + ': ' + g.count + '명">' +
+                '<div class="flex flex-col items-center justify-end flex-1 min-w-[24px] pt-2 pb-1 ' + wrapBg + '" title="' + escapeHtml(g.label) + ': ' + g.count + '명">' +
                     '<span class="text-[10px] leading-none mb-1 tabular-nums ' + countClass + '">' + g.count + '</span>' +
-                    '<div class="w-4 sm:w-5 rounded-t-md transition-all ' + barClass + '" style="height:' + heightPx + 'px"></div>' +
-                    '<span class="text-[10px] mt-1.5 leading-none whitespace-nowrap ' + labelClass + '">' + g.gen + '기</span>' +
+                    '<div class="w-3.5 sm:w-4.5 rounded-t-md transition-all ' + barClass + '" style="height:' + heightPx + 'px"></div>' +
+                    '<span class="text-[10px] mt-1.5 leading-none whitespace-nowrap ' + labelClass + '">' + genText + '</span>' +
                 '</div>';
         });
 
@@ -509,18 +520,18 @@ function renderActivityView() {
                 '<div class="lg:col-span-5 p-4 rounded-2xl bg-slate-50/60 border border-slate-200 space-y-3">' +
                     '<div class="flex items-center justify-between">' +
                         '<h4 class="text-sm font-extrabold text-slate-900">파트별 현황</h4>' +
-                        '<span class="text-[11px] text-slate-400 font-medium">* 세부 파트 기준</span>' +
+                        '<span class="text-[11px] text-slate-400 font-medium">* 8개 파트별 명부 기준</span>' +
                     '</div>' +
                     '<div class="space-y-2.5">' + partsRowsHtml + '</div>' +
                 '</div>' +
                 '<div class="lg:col-span-7 p-4 rounded-2xl bg-slate-50/60 border border-slate-200 flex flex-col justify-between space-y-3">' +
                     '<div class="flex flex-wrap items-center justify-between gap-2">' +
                         '<div>' +
-                            '<h4 class="text-sm font-extrabold text-slate-900">기수별 현황 (1기 ~ 20기)</h4>' +
-                            '<p class="text-[11px] text-slate-500 mt-0.5">최근 5개 기수(16~20기)가 전체 단원의 59%를 차지합니다.</p>' +
+                            '<h4 class="text-sm font-extrabold text-slate-900">기수별 현황 (1기 ~ 20기 &amp; 신입)</h4>' +
+                            '<p class="text-[11px] text-slate-500 mt-0.5">최근 기수(16~20기) 및 신입단원이 전체의 65%를 차지합니다.</p>' +
                         '</div>' +
                         '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-rose-500 text-white text-xs font-black shadow-xs whitespace-nowrap">' +
-                            escapeHtml(report.generationHighlightBadge || "16~20기: 97명 (59%)") +
+                            escapeHtml(report.generationHighlightBadge || "16~20기 및 신입: 88명 (65%)") +
                         '</span>' +
                     '</div>' +
                     '<div class="overflow-x-auto pb-1 -mx-1 px-1">' +
@@ -528,14 +539,53 @@ function renderActivityView() {
                             genBarsHtml +
                         '</div>' +
                     '</div>' +
-                    '<div class="flex items-center justify-end gap-3 text-[11px] text-slate-500">' +
-                        '<span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (67명 · 41%)</span>' +
-                        '<span class="inline-flex items-center gap-1 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 (97명 · 59%)</span>' +
+                    '<div class="flex items-center justify-end gap-3 text-[11px] text-slate-500 flex-wrap">' +
+                        '<span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (48명 · 35%)</span>' +
+                        '<span class="inline-flex items-center gap-1 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 및 신입 (88명 · 65%)</span>' +
                     '</div>' +
                 '</div>' +
             '</div>';
 
-        statsCont.innerHTML = kpiHtml + panelsHtml;
+        // 8-Part Photo Roster Gallery
+        const rosterGalleryItems = [
+            { label: "Soprano I", count: "17명", photo: "assets/roster/soprano_1.jpg", color: "border-rose-200 bg-rose-50/50 hover:bg-rose-50 text-rose-800" },
+            { label: "Soprano II", count: "23명", photo: "assets/roster/soprano_2.jpg", color: "border-pink-200 bg-pink-50/50 hover:bg-pink-50 text-pink-800" },
+            { label: "Alto I", count: "22명", photo: "assets/roster/alto_1.jpg", color: "border-amber-200 bg-amber-50/50 hover:bg-amber-50 text-amber-800" },
+            { label: "Alto II", count: "18명", photo: "assets/roster/alto_2.jpg", color: "border-orange-200 bg-orange-50/50 hover:bg-orange-50 text-orange-800" },
+            { label: "Tenor I", count: "15명", photo: "assets/roster/tenor_1.jpg", color: "border-sky-200 bg-sky-50/50 hover:bg-sky-50 text-sky-800" },
+            { label: "Tenor II", count: "14명", photo: "assets/roster/tenor_2.jpg", color: "border-blue-200 bg-blue-50/50 hover:bg-blue-50 text-blue-800" },
+            { label: "Bass I", count: "18명", photo: "assets/roster/bass_1.jpg", color: "border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50 text-indigo-800" },
+            { label: "Bass II", count: "9명", photo: "assets/roster/bass_2.jpg", color: "border-purple-200 bg-purple-50/50 hover:bg-purple-50 text-purple-800" }
+        ];
+
+        let rosterGalleryHtml =
+            '<div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">' +
+                '<div class="flex items-center justify-between gap-2 flex-wrap">' +
+                    '<div class="flex items-center gap-2">' +
+                        '<span class="text-sm font-black text-slate-900">📸 파트별 정단원 사진 명부 (8개 파트 · 136명)</span>' +
+                        '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200">클릭 시 확대</span>' +
+                    '</div>' +
+                    '<span class="text-[11px] text-slate-400">각 파트 카드를 클릭하면 상세 사진 명부가 크게 열립니다</span>' +
+                '</div>' +
+                '<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">';
+
+        rosterGalleryItems.forEach(function(r) {
+            const cap = r.label + ' 사진 명부 (' + r.count + ')';
+            rosterGalleryHtml +=
+                '<div onclick="openPhotoLightbox(\'' + escapeJsSingle(r.photo) + '\', \'' + escapeJsSingle(cap) + '\')" class="group relative flex flex-col rounded-xl overflow-hidden border ' + r.color + ' p-2 cursor-pointer transition hover:shadow-md hover:scale-[1.02] bg-white">' +
+                    '<div class="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-slate-100 mb-1.5 shadow-2xs">' +
+                        '<img src="' + escapeHtml(r.photo) + '" alt="' + escapeHtml(cap) + '" loading="lazy" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />' +
+                        '<span class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-slate-900/70 text-white backdrop-blur-xs">🔍 확대</span>' +
+                    '</div>' +
+                    '<div class="flex items-center justify-between text-xs">' +
+                        '<span class="font-black truncate">' + escapeHtml(r.label) + '</span>' +
+                        '<span class="text-[11px] font-bold opacity-80 shrink-0">' + escapeHtml(r.count) + '</span>' +
+                    '</div>' +
+                '</div>';
+        });
+        rosterGalleryHtml += '</div></div>';
+
+        statsCont.innerHTML = kpiHtml + panelsHtml + rosterGalleryHtml;
     }
 
     // ------------------------------------------------------------------
