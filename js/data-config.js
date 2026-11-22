@@ -319,7 +319,7 @@ const INITIAL_AGENDAS = [
 function getDefaultState() {
   return {
     sessionTitle: "2026 삼성한우리합창단 정기총회",
-    totalAttendees: 127,
+    totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134),
     activeTab: "events",
     activeAgendaId: "ag-1",
     adminPreviewAsMember: false,
@@ -333,7 +333,7 @@ function getDefaultState() {
     {
         "id": "sch-1",
         "title": "1. 개회 및 성원 보고",
-        "desc": "재적 164명 중 현장 39명 + 쉐도우보팅 94명 = 총 127명 참석 성원 완료 (의결정족수 2/3 기준 85표↑)",
+        "desc": "재적 정단원 134명 기준 성원 확인 완료 (개회·의결정족수 2/3 기준 90명/90표↑)",
         "status": "완료",
         "targetTab": "",
         "btnLabel": "성원확인"

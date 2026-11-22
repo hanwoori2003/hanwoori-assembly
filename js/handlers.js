@@ -198,6 +198,21 @@ function closeAuthModal() {
     closeVoterLoginModal();
 }
 
+function normalizeLoginText(str) {
+    const raw = String(str || "");
+    const nfc = (typeof raw.normalize === "function") ? raw.normalize("NFC") : raw;
+    return nfc.trim();
+}
+
+function normalizeLoginCode(str) {
+    const raw = String(str || "");
+    const nfc = (typeof raw.normalize === "function") ? raw.normalize("NFC") : raw;
+    // Convert full-width digits (０-９) to ASCII digits (0-9) and strip all whitespace
+    return nfc.replace(/[\uFF10-\uFF19]/g, function(ch) {
+        return String.fromCharCode(ch.charCodeAt(0) - 0xFEE0);
+    }).replace(/\s+/g, "");
+}
+
 function handleSimpleLoginSubmit(evt) {
     if (evt && typeof evt.preventDefault === "function") {
         evt.preventDefault();
@@ -206,8 +221,9 @@ function handleSimpleLoginSubmit(evt) {
     const codeInp = document.getElementById("loginCodeInput");
     const errEl = document.getElementById("loginErrorMsg");
 
-    const enteredName = (nameInp ? nameInp.value : "").trim();
-    const enteredCode = (codeInp ? codeInp.value : "").trim();
+    const enteredName = normalizeLoginText(nameInp ? nameInp.value : "");
+    const enteredNameCompact = enteredName.replace(/\s+/g, "");
+    const enteredCode = normalizeLoginCode(codeInp ? codeInp.value : "");
 
     function showLoginError(msg) {
         if (errEl) {
@@ -226,26 +242,43 @@ function handleSimpleLoginSubmit(evt) {
         return false;
     }
 
-    const roster = (Array.isArray(appState.members) && appState.members.length > 0)
-        ? appState.members
-        : (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER : []);
+    // ALWAYS authenticate against the canonical FULL_MEMBER_ROSTER from js/data-members.js
+    // Never trust stale cached localStorage or remote Firebase member lists/codes
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
+        ? FULL_MEMBER_ROSTER
+        : (Array.isArray(appState.members) ? appState.members : []);
+
+    // Keep appState.members strictly synced to canonical FULL_MEMBER_ROSTER
+    if (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0) {
+        appState.members = JSON.parse(JSON.stringify(FULL_MEMBER_ROSTER));
+    }
 
     const nameMatches = roster.filter(function(m) {
         if (!m) return false;
-        if (m.name === enteredName) return true;
-        if (Array.isArray(m.altNames) && m.altNames.indexOf(enteredName) !== -1) return true;
+        const mName = normalizeLoginText(m.name);
+        if (mName === enteredName || mName.replace(/\s+/g, "") === enteredNameCompact) return true;
+        if (Array.isArray(m.altNames)) {
+            for (let i = 0; i < m.altNames.length; i++) {
+                const alt = normalizeLoginText(m.altNames[i]);
+                if (alt === enteredName || alt.replace(/\s+/g, "") === enteredNameCompact) return true;
+            }
+        }
         return false;
     });
 
     if (nameMatches.length === 0) {
-        showLoginError("등록된 단원 이름이 아닙니다. 이름을 다시 확인해 주세요.");
+        showLoginError("등록된 정단원 이름이 아닙니다. 이름을 다시 확인해 주세요.");
         return false;
     }
 
     const matched = nameMatches.find(function(m) {
-        const primaryCode = String(m.code || "").trim();
+        const primaryCode = normalizeLoginCode(m.code);
         if (primaryCode && primaryCode === enteredCode) return true;
-        if (Array.isArray(m.altCodes) && m.altCodes.indexOf(enteredCode) !== -1) return true;
+        if (Array.isArray(m.altCodes)) {
+            for (let i = 0; i < m.altCodes.length; i++) {
+                if (normalizeLoginCode(m.altCodes[i]) === enteredCode) return true;
+            }
+        }
         return false;
     });
 
@@ -269,7 +302,7 @@ function handleSimpleLoginSubmit(evt) {
     } else {
         showToast(matched.name + "님 로그인되었습니다.");
     }
-    return true;
+    return false;
 }
 
 function logoutCurrentUser() {
@@ -1351,7 +1384,7 @@ function exportAssemblyReportHtml() {
             '.badge-fail{color:#b91c1c;font-weight:bold;}' +
             '</style></head><body>' +
             '<h1>2026 삼성한우리합창단 정기총회 공식 의결 보고서</h1>' +
-            '<p><strong>기준 성원:</strong> 재적 164명 중 참석 총원 ' + appState.totalAttendees + '명 | <strong>의결 정족수(2/3):</strong> ' + maj + '표 이상</p>' +
+            '<p><strong>기준 성원:</strong> 재적 정단원 ' + (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134) + '명 중 참석 총원 ' + appState.totalAttendees + '명 | <strong>의결 정족수(2/3):</strong> ' + maj + '표 이상</p>' +
             '<h2>1. 정기총회 공식 식순 진행 현황</h2><ul>' +
             (appState.assemblySchedule || []).map(function(s) {
                 return '<li><strong>' + escapeHtml(s.title) + '</strong> [' + escapeHtml(s.status) + ']: ' + escapeHtml(s.desc) + '</li>';

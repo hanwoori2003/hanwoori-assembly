@@ -82,12 +82,16 @@ function saveStateToStorage(options) {
 
 function loadStateFromStorage() {
     try {
+        const canonicalRoster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : [];
+        const canonicalTotal = canonicalRoster.length || 134;
         const isCurrentKey = Boolean(localStorage.getItem(STORAGE_KEY));
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v15") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.bylaws)) {
-                appState.totalAttendees = parsed.totalAttendees || 127;
+                appState.totalAttendees = (!isCurrentKey && parsed.totalAttendees === 127)
+                    ? canonicalTotal
+                    : (parsed.totalAttendees || canonicalTotal);
                 appState.activeAgendaId = parsed.activeAgendaId || "ag-1";
                 appState.adminPreviewAsMember = Boolean(parsed.adminPreviewAsMember);
                 appState.uploadedFileName = parsed.uploadedFileName || appState.uploadedFileName;
@@ -102,27 +106,15 @@ function loadStateFromStorage() {
                     appState.hasExplicitLogin = hasExplicitLogin;
                     appState.isAdminAuthenticated = Boolean(appState.currentVoterId && parsed.isAdminAuthenticated);
                 }
-                if (Array.isArray(parsed.members) && parsed.members.length >= 100) {
-                    const rosterMap = {};
-                    if (typeof FULL_MEMBER_ROSTER !== "undefined") {
-                        FULL_MEMBER_ROSTER.forEach(function(fm) {
-                            rosterMap[fm.id] = fm;
-                        });
+                // ALWAYS enforce canonical FULL_MEMBER_ROSTER so stale localStorage codes/members never override official roster
+                if (canonicalRoster.length > 0) {
+                    appState.members = JSON.parse(JSON.stringify(canonicalRoster));
+                    if (appState.currentVoterId && !canonicalRoster.some(function(fm) { return fm.id === appState.currentVoterId; })) {
+                        appState.currentVoterId = null;
+                        appState.hasExplicitLogin = false;
+                        appState.isAdminAuthenticated = false;
+                        appState.adminPreviewAsMember = false;
                     }
-                    parsed.members.forEach(function(pm) {
-                        const fm = rosterMap[pm.id];
-                        if (fm) {
-                            pm.code = fm.code;
-                            if (Array.isArray(fm.altCodes)) pm.altCodes = fm.altCodes.slice();
-                            else delete pm.altCodes;
-                            if (Array.isArray(fm.altNames)) pm.altNames = fm.altNames.slice();
-                            else delete pm.altNames;
-                        }
-                        if (typeof pm.gen === "string") {
-                            pm.gen = pm.gen.replace(/기+$/g, "");
-                        }
-                    });
-                    appState.members = parsed.members;
                 }
                 appState.bylaws = parsed.bylaws;
                 
@@ -176,7 +168,7 @@ function loadStateFromStorage() {
                 if (parsed.events) appState.events = parsed.events;
                 let needsPersistMigration = !isCurrentKey;
                 if (Array.isArray(parsed.assemblySchedule) && parsed.assemblySchedule.length > 0) {
-                    const legacyPattern = /(2025|김형택|황태희|이효정|박다정|윤상목|이창욱|한석범|sectionConcertReview|활동 보고.*강평)/;
+                    const legacyPattern = /(2025|164명|김형택|황태희|이효정|박다정|윤상목|이창욱|한석범|sectionConcertReview|활동 보고.*강평)/;
                     const hasLegacySchedule = !isCurrentKey || parsed.assemblySchedule.some(function(item) {
                         if (!item || typeof item !== "object") return true;
                         return legacyPattern.test(String(item.title || "") + " " + String(item.desc || "") + " " + String(item.targetTab || ""));
@@ -206,6 +198,11 @@ function loadStateFromStorage() {
                 }
                 if (needsPersistMigration) {
                     try {
+                        parsed.members = appState.members;
+                        parsed.totalAttendees = appState.totalAttendees;
+                        parsed.currentVoterId = appState.currentVoterId;
+                        parsed.hasExplicitLogin = appState.hasExplicitLogin;
+                        parsed.isAdminAuthenticated = appState.isAdminAuthenticated;
                         parsed.assemblySchedule = appState.assemblySchedule;
                         parsed.settlement = appState.settlement;
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
@@ -502,7 +499,10 @@ function matchesSearch(itemTextArray, rawQuery) {
 
 function getCurrentVoter() {
     if (!appState.currentVoterId) return null;
-    return (appState.members || []).find(function(m) { return m.id === appState.currentVoterId; }) || null;
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
+        ? FULL_MEMBER_ROSTER
+        : (appState.members || []);
+    return roster.find(function(m) { return m.id === appState.currentVoterId; }) || null;
 }
 
 function isCurrentUserExecutive() {

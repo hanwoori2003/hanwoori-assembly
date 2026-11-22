@@ -153,9 +153,9 @@
         return {
             sessionTitle: s.sessionTitle || "2026 삼성한우리합창단 정기총회",
             quorum: {
-                totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : 127
+                totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 134)
             },
-            totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : 127,
+            totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 134),
             winnerPagePublic: Boolean(s.winnerPagePublic),
             uploadedFileName: s.uploadedFileName || "",
             assemblySchedule: deepClone(Array.isArray(s.assemblySchedule) ? s.assemblySchedule : []),
@@ -189,6 +189,20 @@
         isApplyingRemoteUpdate = true;
         try {
 
+            // ALWAYS keep s.members strictly synced to canonical FULL_MEMBER_ROSTER (never accept stale remote members)
+            var canonicalRoster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
+                ? FULL_MEMBER_ROSTER
+                : (Array.isArray(global.FULL_MEMBER_ROSTER) ? global.FULL_MEMBER_ROSTER : null);
+            if (canonicalRoster && canonicalRoster.length > 0) {
+                s.members = deepClone(canonicalRoster);
+                if (s.currentVoterId && !canonicalRoster.some(function(fm) { return fm.id === s.currentVoterId; })) {
+                    s.currentVoterId = null;
+                    s.hasExplicitLogin = false;
+                    s.isAdminAuthenticated = false;
+                    s.adminPreviewAsMember = false;
+                }
+            }
+
             if (typeof data.sessionTitle === "string" && data.sessionTitle) {
                 s.sessionTitle = data.sessionTitle;
             }
@@ -221,6 +235,15 @@
                         return copy;
                     });
                 }
+            }
+            if (Array.isArray(s.assemblySchedule)) {
+                s.assemblySchedule.forEach(function(item) {
+                    if (item && typeof item.desc === "string" && item.desc.indexOf("164명") !== -1) {
+                        var officialCount = (canonicalRoster && canonicalRoster.length) ? canonicalRoster.length : 134;
+                        var quorumTwoThirds = Math.ceil((officialCount * 2) / 3);
+                        item.desc = "재적 정단원 " + officialCount + "명 기준 성원 확인 완료 (개회·의결정족수 2/3 기준 " + quorumTwoThirds + "명/" + quorumTwoThirds + "표↑)";
+                    }
+                });
             }
             if (Array.isArray(data.annualEvents)) {
                 s.events = deepClone(data.annualEvents);

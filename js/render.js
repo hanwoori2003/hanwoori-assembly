@@ -1090,6 +1090,10 @@ function renderAdminView() {
 
     const totalInp = document.getElementById("adminInputTotalAttendees");
     if (totalInp) totalInp.value = appState.totalAttendees;
+    const curAttSpan = document.getElementById("adminCurrentAttendeesSpan");
+    if (curAttSpan) curAttSpan.textContent = appState.totalAttendees;
+    const officialCountSpan = document.getElementById("adminOfficialMemberCountSpan");
+    if (officialCountSpan) officialCountSpan.textContent = (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134);
 
     const winnerToggle = document.getElementById("adminWinnerPublicToggle");
     if (winnerToggle) winnerToggle.checked = Boolean(appState.winnerPagePublic);
