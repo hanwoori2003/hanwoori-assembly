@@ -318,7 +318,7 @@ const INITIAL_AGENDAS = [
 
 function getDefaultState() {
   return {
-    sessionTitle: "2026 삼성한우리합창단 정기총회 with ‘메리고잉 운영진’",
+    sessionTitle: "2026 삼성한우리합창단 정기총회",
     totalAttendees: 127,
     activeTab: "events",
     activeAgendaId: "ag-1",
@@ -343,7 +343,7 @@ function getDefaultState() {
         "title": "2. 2026년 활동보고",
         "desc": "2026년도 정기연습, 대외활동 및 연간 주요 합창단 활동 실적 보고",
         "status": "완료",
-        "targetTab": "concert",
+        "targetTab": "activity",
         "btnLabel": "활동보고 보기 →"
     },
     {
@@ -373,7 +373,7 @@ function getDefaultState() {
     {
         "id": "sch-6",
         "title": "6. 단장 선거 투표",
-        "desc": "신임 단장 선출 찬반투표 및 차기 18인 메리고잉 운영진 출범 공표",
+        "desc": "신임 단장 선출 찬반투표 및 차기 18인 운영진 출범 공표",
         "status": "안건상정",
         "targetTab": "election",
         "btnLabel": "선거 이동 →"
@@ -384,7 +384,7 @@ function getDefaultState() {
     authModalFilter: "all",
     authModalSearch: "",
     currentVoterId: "mem-3",
-    isAdminAuthenticated: true,
+    isAdminAuthenticated: false,
     uploadedFileName: "삼성한우리합창단 단칙(25.12.13).docx",
     members: JSON.parse(JSON.stringify(FULL_MEMBER_ROSTER)),
     bylaws: [
@@ -889,7 +889,7 @@ function getDefaultState() {
             "title": "2026 한우리 신임 단장 후보 (단독 출마)",
             "photo": "assets/cand_1.jpg",
             "baseVotes": 32,
-            "pledge": "소통과 화합으로 함께 만드는 메리고잉 한우리! 제21회 정기연주회 성공 개최 및 연습 환경 획기적 개선",
+            "pledge": "소통과 화합으로 함께 만드는 삼성한우리! 제21회 정기연주회 성공 개최 및 연습 환경 획기적 개선",
             "career": "17기 입단 (Tenor 2) · 2024~2025 운영진 참여 · 제18~20회 정기연주회 출연 · IU 콘서트 및 방송 합창 참여"
         },
         {

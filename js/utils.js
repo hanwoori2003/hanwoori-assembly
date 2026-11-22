@@ -6,7 +6,7 @@ function normalizeScheduleTargetTab(rawTab) {
     const aliasMap = {
         "sectionConcertReview": "concert",
         "concertReview": "concert",
-        "activity": "concert",
+        "activity": "activity",
         "concert": "concert",
         "finance": "settlement",
         "settlement": "settlement",
@@ -21,6 +21,29 @@ function normalizeScheduleTargetTab(rawTab) {
         "admin": "admin"
     };
     return aliasMap[trimmed] || "";
+}
+
+function migrateAssemblyScheduleItems(scheduleList) {
+    let changed = false;
+    const migrated = (Array.isArray(scheduleList) ? scheduleList : []).map(function(item) {
+        if (!item || typeof item !== "object") return item;
+        const copy = Object.assign({}, item);
+        const rawTarget = copy.targetTab || "";
+        let nextTarget = normalizeScheduleTargetTab(rawTarget);
+        const titleStr = String(copy.title || "");
+        const isActivityReportItem =
+            copy.id === "sch-2" ||
+            (/활동\s*보고/.test(titleStr) && titleStr.indexOf("강평") === -1);
+        if (isActivityReportItem && nextTarget === "concert") {
+            nextTarget = "activity";
+        }
+        if (rawTarget !== nextTarget) {
+            copy.targetTab = nextTarget;
+            changed = true;
+        }
+        return copy;
+    });
+    return { items: migrated, changed: changed };
 }
 
 function saveStateToStorage(options) {
@@ -79,6 +102,9 @@ function loadStateFromStorage() {
                     parsed.members.forEach(function(pm) {
                         if (codeMap[pm.id]) {
                             pm.code = codeMap[pm.id];
+                        }
+                        if (typeof pm.gen === "string") {
+                            pm.gen = pm.gen.replace(/기+$/g, "");
                         }
                     });
                     appState.members = parsed.members;
@@ -144,17 +170,11 @@ function loadStateFromStorage() {
                         appState.assemblySchedule = getDefaultState().assemblySchedule;
                         needsPersistMigration = true;
                     } else {
-                        appState.assemblySchedule = parsed.assemblySchedule.map(function(item) {
-                            if (!item || typeof item !== "object") return item;
-                            const copy = Object.assign({}, item);
-                            const rawTarget = copy.targetTab || "";
-                            const normalizedTarget = normalizeScheduleTargetTab(rawTarget);
-                            if (rawTarget && rawTarget !== normalizedTarget) {
-                                copy.targetTab = normalizedTarget;
-                                needsPersistMigration = true;
-                            }
-                            return copy;
-                        });
+                        const migResult = migrateAssemblyScheduleItems(parsed.assemblySchedule);
+                        appState.assemblySchedule = migResult.items;
+                        if (migResult.changed) {
+                            needsPersistMigration = true;
+                        }
                     }
                 }
                 appState.winnerPagePublic = Boolean(parsed.winnerPagePublic);
@@ -483,13 +503,14 @@ function isRealExecutiveAuthenticated() {
 }
 
 function toggleAdminPreviewMode() {
+    if (!isRealExecutiveAuthenticated()) return;
     appState.adminPreviewAsMember = !appState.adminPreviewAsMember;
     saveStateToStorage({ skipCloudConfigPush: true });
     renderAll();
     if (appState.adminPreviewAsMember) {
         showToast("👁️ 일반 단원 화면으로 미리보기 중입니다 (운영진 제어 도구 숨김).");
     } else {
-        showToast("👑 메리고잉 운영진 제어 모드로 복귀했습니다.");
+        showToast("👑 운영진 제어 모드로 복귀했습니다.");
     }
 }
 

@@ -1,225 +1,16 @@
 // 1. 운영진(18명) 및 전체 단원 명부(134명) 데이터 (js/data-members.js)
 const STORAGE_KEY = "hanwoori_choir_assembly_2026_state_v15";
-const ADMIN_PASSWORD_CODE = "2003";
 let cloudSyncUrl = "";
 let cloudSyncTimer = null;
 let pendingExecMemberId = null;
 let pendingPhotoCandidateId = null;
 
-// 2026 메리고잉 삼성한우리합창단 운영진 18인 명단
+// 2026 삼성한우리합창단 운영진 18인 명단 (원본 순서 유지)
 const EXECUTIVE_ROSTER = [
-  {
-    "id": "mem-3",
-    "name": "김유림",
-    "gen": "16기",
-    "part": "소프라노",
-    "basePart": "소프라노",
-    "detailPart": "S1",
-    "company": "비삼성",
-    "groupType": "non_samsung",
-    "isExecutive": true,
-    "role": "음악총괄",
-    "subRole": "-",
-    "email": "mem-3@samsung-hanwoori.org",
-    "code": "4641",
-    "key": "김유림-소프라노"
-  },
-  {
-    "id": "mem-12",
-    "name": "장수민",
-    "gen": "17기",
-    "part": "소프라노",
-    "basePart": "소프라노",
-    "detailPart": "S1",
-    "company": "삼성웰스토리",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "문화홍보",
-    "subRole": "-",
-    "email": "mem-12@samsung-hanwoori.org",
-    "code": "8914",
-    "key": "장수민-소프라노"
-  },
-  {
-    "id": "mem-15",
-    "name": "차윤지",
-    "gen": "16기",
-    "part": "소프라노",
-    "basePart": "소프라노",
-    "detailPart": "S1",
-    "company": "삼성SDS",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "문화홍보",
-    "subRole": "-",
-    "email": "mem-15@samsung-hanwoori.org",
-    "code": "8216",
-    "key": "차윤지-소프라노"
-  },
-  {
-    "id": "mem-17",
-    "name": "황금비",
-    "gen": "17기",
-    "part": "소프라노",
-    "basePart": "소프라노",
-    "detailPart": "S1",
-    "company": "삼성바이오에피스",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "기획총무",
-    "subRole": "-",
-    "email": "mem-17@samsung-hanwoori.org",
-    "code": "6674",
-    "key": "황금비-소프라노"
-  },
-  {
-    "id": "mem-27",
-    "name": "박은영",
-    "gen": "14기",
-    "part": "소프라노",
-    "basePart": "소프라노",
-    "detailPart": "S2",
-    "company": "삼성웰스토리",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "파트장",
-    "subRole": "소프라노",
-    "email": "mem-27@samsung-hanwoori.org",
-    "code": "1020",
-    "key": "박은영-소프라노"
-  },
-  {
-    "id": "mem-33",
-    "name": "신다해",
-    "gen": "17기",
-    "part": "소프라노",
-    "basePart": "소프라노",
-    "detailPart": "S2",
-    "company": "비삼성",
-    "groupType": "non_samsung",
-    "isExecutive": true,
-    "role": "파트장",
-    "subRole": "소프라노",
-    "email": "mem-33@samsung-hanwoori.org",
-    "code": "0483",
-    "key": "신다해-소프라노"
-  },
-  {
-    "id": "mem-38",
-    "name": "최소혜",
-    "gen": "19기",
-    "part": "소프라노",
-    "basePart": "소프라노",
-    "detailPart": "S2",
-    "company": "삼성전자",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "인사",
-    "subRole": "-",
-    "email": "mem-38@samsung-hanwoori.org",
-    "code": "9968",
-    "key": "최소혜-소프라노"
-  },
-  {
-    "id": "mem-43",
-    "name": "권보미",
-    "gen": "18기",
-    "part": "알토",
-    "basePart": "알토",
-    "detailPart": "A1",
-    "company": "삼성SDI",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "파트장",
-    "subRole": "알토",
-    "email": "mem-43@samsung-hanwoori.org",
-    "code": "8078",
-    "key": "권보미-알토"
-  },
-  {
-    "id": "mem-47",
-    "name": "문지원",
-    "gen": "17기",
-    "part": "알토",
-    "basePart": "알토",
-    "detailPart": "A1",
-    "company": "삼성전자",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "파트장",
-    "subRole": "알토",
-    "email": "mem-47@samsung-hanwoori.org",
-    "code": "4517",
-    "key": "문지원-알토"
-  },
-  {
-    "id": "mem-48",
-    "name": "박다정",
-    "gen": "19기",
-    "part": "알토",
-    "basePart": "알토",
-    "detailPart": "A1",
-    "company": "삼성전자",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "회계",
-    "subRole": "-",
-    "email": "mem-48@samsung-hanwoori.org",
-    "code": "2898",
-    "key": "박다정-알토"
-  },
-  {
-    "id": "mem-85",
-    "name": "윤지현",
-    "gen": "17기",
-    "part": "테너",
-    "basePart": "테너",
-    "detailPart": "T1",
-    "company": "삼성디스플레이",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "인사",
-    "subRole": "-",
-    "email": "mem-85@samsung-hanwoori.org",
-    "code": "8532",
-    "key": "윤지현-테너"
-  },
-  {
-    "id": "mem-94",
-    "name": "한석범",
-    "gen": "4기",
-    "part": "테너",
-    "basePart": "테너",
-    "detailPart": "T1",
-    "company": "삼성전자",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "부단장",
-    "subRole": "-",
-    "email": "mem-94@samsung-hanwoori.org",
-    "code": "5493",
-    "key": "한석범-테너"
-  },
-  {
-    "id": "mem-97",
-    "name": "김석준",
-    "gen": "20기",
-    "part": "테너",
-    "basePart": "테너",
-    "detailPart": "T2",
-    "company": "삼성SDS",
-    "groupType": "samsung",
-    "isExecutive": true,
-    "role": "기획총무",
-    "subRole": "-",
-    "email": "mem-97@samsung-hanwoori.org",
-    "code": "2918",
-    "key": "김석준-테너"
-  },
   {
     "id": "mem-105",
     "name": "이창욱",
-    "gen": "17기",
+    "gen": "17",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -233,41 +24,57 @@ const EXECUTIVE_ROSTER = [
     "key": "이창욱-테너"
   },
   {
-    "id": "mem-107",
-    "name": "조강원",
-    "gen": "16기",
+    "id": "mem-94",
+    "name": "한석범",
+    "gen": "4",
+    "part": "테너",
+    "basePart": "테너",
+    "detailPart": "T1",
+    "company": "삼성전자",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "부단장",
+    "subRole": "-",
+    "email": "mem-94@samsung-hanwoori.org",
+    "code": "5493",
+    "key": "한석범-테너"
+  },
+  {
+    "id": "mem-17",
+    "name": "황금비",
+    "gen": "17",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S1",
+    "company": "삼성바이오에피스",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "기획총무",
+    "subRole": "-",
+    "email": "mem-17@samsung-hanwoori.org",
+    "code": "6674",
+    "key": "황금비-소프라노"
+  },
+  {
+    "id": "mem-97",
+    "name": "김석준",
+    "gen": "20",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
-    "company": "비삼성",
-    "groupType": "non_samsung",
-    "isExecutive": true,
-    "role": "파트장",
-    "subRole": "테너",
-    "email": "mem-107@samsung-hanwoori.org",
-    "code": "0120",
-    "key": "조강원-테너"
-  },
-  {
-    "id": "mem-115",
-    "name": "사제환",
-    "gen": "20기",
-    "part": "베이스",
-    "basePart": "베이스",
-    "detailPart": "B1",
-    "company": "강북삼성병원",
+    "company": "삼성SDS",
     "groupType": "samsung",
     "isExecutive": true,
-    "role": "파트장",
-    "subRole": "베이스",
-    "email": "mem-115@samsung-hanwoori.org",
-    "code": "8836",
-    "key": "사제환-베이스"
+    "role": "기획총무",
+    "subRole": "-",
+    "email": "mem-97@samsung-hanwoori.org",
+    "code": "2918",
+    "key": "김석준-테너"
   },
   {
     "id": "mem-120",
     "name": "이경환",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -281,9 +88,185 @@ const EXECUTIVE_ROSTER = [
     "key": "이경환-베이스"
   },
   {
+    "id": "mem-85",
+    "name": "윤지현",
+    "gen": "17",
+    "part": "테너",
+    "basePart": "테너",
+    "detailPart": "T1",
+    "company": "삼성디스플레이",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "인사",
+    "subRole": "-",
+    "email": "mem-85@samsung-hanwoori.org",
+    "code": "8532",
+    "key": "윤지현-테너"
+  },
+  {
+    "id": "mem-38",
+    "name": "최소혜",
+    "gen": "19",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S2",
+    "company": "삼성전자",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "인사",
+    "subRole": "-",
+    "email": "mem-38@samsung-hanwoori.org",
+    "code": "9968",
+    "key": "최소혜-소프라노"
+  },
+  {
+    "id": "mem-3",
+    "name": "김유림",
+    "gen": "16",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S1",
+    "company": "비삼성",
+    "groupType": "non_samsung",
+    "isExecutive": true,
+    "role": "음악총괄",
+    "subRole": "-",
+    "email": "mem-3@samsung-hanwoori.org",
+    "code": "4641",
+    "key": "김유림-소프라노"
+  },
+  {
+    "id": "mem-15",
+    "name": "차윤지",
+    "gen": "16",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S1",
+    "company": "삼성SDS",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "문화홍보",
+    "subRole": "-",
+    "email": "mem-15@samsung-hanwoori.org",
+    "code": "8216",
+    "key": "차윤지-소프라노"
+  },
+  {
+    "id": "mem-12",
+    "name": "장수민",
+    "gen": "17",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S1",
+    "company": "삼성웰스토리",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "문화홍보",
+    "subRole": "-",
+    "email": "mem-12@samsung-hanwoori.org",
+    "code": "8914",
+    "key": "장수민-소프라노"
+  },
+  {
+    "id": "mem-48",
+    "name": "박다정",
+    "gen": "19",
+    "part": "알토",
+    "basePart": "알토",
+    "detailPart": "A1",
+    "company": "삼성전자",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "회계",
+    "subRole": "-",
+    "email": "mem-48@samsung-hanwoori.org",
+    "code": "2898",
+    "key": "박다정-알토"
+  },
+  {
+    "id": "mem-33",
+    "name": "신다해",
+    "gen": "17",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S2",
+    "company": "비삼성",
+    "groupType": "non_samsung",
+    "isExecutive": true,
+    "role": "파트장",
+    "subRole": "소프라노",
+    "email": "mem-33@samsung-hanwoori.org",
+    "code": "0483",
+    "key": "신다해-소프라노"
+  },
+  {
+    "id": "mem-27",
+    "name": "박은영",
+    "gen": "14",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S2",
+    "company": "삼성웰스토리",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "파트장",
+    "subRole": "소프라노",
+    "email": "mem-27@samsung-hanwoori.org",
+    "code": "1020",
+    "key": "박은영-소프라노"
+  },
+  {
+    "id": "mem-47",
+    "name": "문지원",
+    "gen": "17",
+    "part": "알토",
+    "basePart": "알토",
+    "detailPart": "A1",
+    "company": "삼성전자",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "파트장",
+    "subRole": "알토",
+    "email": "mem-47@samsung-hanwoori.org",
+    "code": "4517",
+    "key": "문지원-알토"
+  },
+  {
+    "id": "mem-43",
+    "name": "권보미",
+    "gen": "18",
+    "part": "알토",
+    "basePart": "알토",
+    "detailPart": "A1",
+    "company": "삼성SDI",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "파트장",
+    "subRole": "알토",
+    "email": "mem-43@samsung-hanwoori.org",
+    "code": "8078",
+    "key": "권보미-알토"
+  },
+  {
+    "id": "mem-107",
+    "name": "조강원",
+    "gen": "16",
+    "part": "테너",
+    "basePart": "테너",
+    "detailPart": "T2",
+    "company": "비삼성",
+    "groupType": "non_samsung",
+    "isExecutive": true,
+    "role": "파트장",
+    "subRole": "테너",
+    "email": "mem-107@samsung-hanwoori.org",
+    "code": "0120",
+    "key": "조강원-테너"
+  },
+  {
     "id": "mem-134",
     "name": "박인화",
-    "gen": "19기",
+    "gen": "19",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B2",
@@ -295,15 +278,31 @@ const EXECUTIVE_ROSTER = [
     "email": "mem-134@samsung-hanwoori.org",
     "code": "9790",
     "key": "박인화-베이스"
+  },
+  {
+    "id": "mem-115",
+    "name": "사제환",
+    "gen": "20",
+    "part": "베이스",
+    "basePart": "베이스",
+    "detailPart": "B1",
+    "company": "강북삼성병원",
+    "groupType": "samsung",
+    "isExecutive": true,
+    "role": "파트장",
+    "subRole": "베이스",
+    "email": "mem-115@samsung-hanwoori.org",
+    "code": "8836",
+    "key": "사제환-베이스"
   }
 ];
 
-// 2026 전체 단원 명부 134인 데이터
+// 2026 전체 단원 명부 (134명, 휴대폰 뒷 4자리 본인인증 코드 포함)
 const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-1",
     "name": "김규연",
-    "gen": "5기",
+    "gen": "5",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -319,7 +318,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-2",
     "name": "김다솔",
-    "gen": "20기",
+    "gen": "20",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -335,7 +334,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-3",
     "name": "김유림",
-    "gen": "16기",
+    "gen": "16",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -351,7 +350,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-4",
     "name": "김지연",
-    "gen": "10기",
+    "gen": "10",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -367,7 +366,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-5",
     "name": "박유란",
-    "gen": "3기",
+    "gen": "3",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -383,7 +382,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-6",
     "name": "박채경",
-    "gen": "2기",
+    "gen": "2",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -399,7 +398,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-7",
     "name": "성지연",
-    "gen": "18기",
+    "gen": "18",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -415,7 +414,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-8",
     "name": "엄지예",
-    "gen": "18기",
+    "gen": "18",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -431,7 +430,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-9",
     "name": "오정현",
-    "gen": "8기",
+    "gen": "8",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -447,7 +446,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-10",
     "name": "이윤정",
-    "gen": "12기",
+    "gen": "12",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -463,7 +462,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-11",
     "name": "이지수",
-    "gen": "18기",
+    "gen": "18",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -479,7 +478,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-12",
     "name": "장수민",
-    "gen": "17기",
+    "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -495,7 +494,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-13",
     "name": "정솔이",
-    "gen": "17기",
+    "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -511,7 +510,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-14",
     "name": "주슬기",
-    "gen": "19기",
+    "gen": "19",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -527,7 +526,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-15",
     "name": "차윤지",
-    "gen": "16기",
+    "gen": "16",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -543,7 +542,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-16",
     "name": "최유리",
-    "gen": "16기",
+    "gen": "16",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -559,7 +558,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-17",
     "name": "황금비",
-    "gen": "17기",
+    "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S1",
@@ -575,7 +574,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-18",
     "name": "강혜라",
-    "gen": "16기",
+    "gen": "16",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -591,7 +590,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-19",
     "name": "구영민",
-    "gen": "18기",
+    "gen": "18",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -607,7 +606,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-20",
     "name": "김서영",
-    "gen": "18기",
+    "gen": "18",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -623,7 +622,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-21",
     "name": "김유정",
-    "gen": "19기",
+    "gen": "19",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -639,7 +638,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-22",
     "name": "김인해",
-    "gen": "20기",
+    "gen": "20",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -671,7 +670,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-24",
     "name": "민나리",
-    "gen": "15기",
+    "gen": "15",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -687,7 +686,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-25",
     "name": "박성경",
-    "gen": "13기",
+    "gen": "13",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -719,7 +718,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-27",
     "name": "박은영",
-    "gen": "14기",
+    "gen": "14",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -735,7 +734,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-28",
     "name": "박재영",
-    "gen": "14기",
+    "gen": "14",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -751,7 +750,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-29",
     "name": "박채원",
-    "gen": "16기",
+    "gen": "16",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -767,7 +766,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-30",
     "name": "박희주",
-    "gen": "15기",
+    "gen": "15",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -783,7 +782,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-31",
     "name": "손유미",
-    "gen": "4기",
+    "gen": "4",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -815,7 +814,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-33",
     "name": "신다해",
-    "gen": "17기",
+    "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -831,7 +830,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-34",
     "name": "신혜선",
-    "gen": "10기",
+    "gen": "10",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -847,7 +846,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-35",
     "name": "양지연",
-    "gen": "11기",
+    "gen": "11",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -863,7 +862,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-36",
     "name": "이유정",
-    "gen": "20기",
+    "gen": "20",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -879,7 +878,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-37",
     "name": "장규연",
-    "gen": "8기",
+    "gen": "8",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -895,7 +894,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-38",
     "name": "최소혜",
-    "gen": "19기",
+    "gen": "19",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -911,7 +910,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-39",
     "name": "최예진",
-    "gen": "20기",
+    "gen": "20",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -927,7 +926,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-40",
     "name": "황미아",
-    "gen": "2기",
+    "gen": "2",
     "part": "소프라노",
     "basePart": "소프라노",
     "detailPart": "S2",
@@ -943,7 +942,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-41",
     "name": "고우리",
-    "gen": "11기",
+    "gen": "11",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -959,7 +958,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-42",
     "name": "곽수일",
-    "gen": "11기",
+    "gen": "11",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -975,7 +974,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-43",
     "name": "권보미",
-    "gen": "18기",
+    "gen": "18",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1023,7 +1022,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-46",
     "name": "노혜경",
-    "gen": "5기",
+    "gen": "5",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1039,7 +1038,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-47",
     "name": "문지원",
-    "gen": "17기",
+    "gen": "17",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1055,7 +1054,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-48",
     "name": "박다정",
-    "gen": "19기",
+    "gen": "19",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1087,7 +1086,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-50",
     "name": "서정원",
-    "gen": "19기",
+    "gen": "19",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1103,7 +1102,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-51",
     "name": "송주아",
-    "gen": "20기",
+    "gen": "20",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1135,7 +1134,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-53",
     "name": "양현정",
-    "gen": "6기",
+    "gen": "6",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1183,7 +1182,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-56",
     "name": "이원정",
-    "gen": "19기",
+    "gen": "19",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1199,7 +1198,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-57",
     "name": "이현주",
-    "gen": "18기",
+    "gen": "18",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1215,7 +1214,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-58",
     "name": "이효정",
-    "gen": "20기",
+    "gen": "20",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1247,7 +1246,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-60",
     "name": "조윤서",
-    "gen": "14기",
+    "gen": "14",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1263,7 +1262,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-61",
     "name": "최지은",
-    "gen": "20기",
+    "gen": "20",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1279,7 +1278,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-62",
     "name": "박소현",
-    "gen": "20기",
+    "gen": "20",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A1",
@@ -1295,7 +1294,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-63",
     "name": "김내아",
-    "gen": "3기",
+    "gen": "3",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1327,7 +1326,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-65",
     "name": "김예진",
-    "gen": "13기",
+    "gen": "13",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1343,7 +1342,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-66",
     "name": "김현경",
-    "gen": "16기",
+    "gen": "16",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1375,7 +1374,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-68",
     "name": "노혜란",
-    "gen": "4기",
+    "gen": "4",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1407,7 +1406,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-70",
     "name": "송우정",
-    "gen": "19기",
+    "gen": "19",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1423,7 +1422,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-71",
     "name": "안소담",
-    "gen": "16기",
+    "gen": "16",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1439,7 +1438,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-72",
     "name": "윤성아",
-    "gen": "14기",
+    "gen": "14",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1455,7 +1454,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-73",
     "name": "이은하",
-    "gen": "6기",
+    "gen": "6",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1471,7 +1470,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-74",
     "name": "채수경",
-    "gen": "4기",
+    "gen": "4",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1487,7 +1486,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-75",
     "name": "홍혜경",
-    "gen": "18기",
+    "gen": "18",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1503,7 +1502,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-76",
     "name": "황유빈",
-    "gen": "20기",
+    "gen": "20",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1519,7 +1518,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-77",
     "name": "김은주",
-    "gen": "18기",
+    "gen": "18",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1535,7 +1534,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-78",
     "name": "박덕순",
-    "gen": "19기",
+    "gen": "19",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1551,7 +1550,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-79",
     "name": "엄효은",
-    "gen": "18기",
+    "gen": "18",
     "part": "알토",
     "basePart": "알토",
     "detailPart": "A2",
@@ -1583,7 +1582,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-81",
     "name": "구종회",
-    "gen": "15기",
+    "gen": "15",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1599,7 +1598,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-82",
     "name": "김종한",
-    "gen": "4기",
+    "gen": "4",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1615,7 +1614,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-83",
     "name": "남경진",
-    "gen": "19기",
+    "gen": "19",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1631,7 +1630,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-84",
     "name": "유희철",
-    "gen": "18기",
+    "gen": "18",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1647,7 +1646,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-85",
     "name": "윤지현",
-    "gen": "17기",
+    "gen": "17",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1663,7 +1662,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-86",
     "name": "이대건",
-    "gen": "19기",
+    "gen": "19",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1679,7 +1678,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-87",
     "name": "이도원",
-    "gen": "20기",
+    "gen": "20",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1695,7 +1694,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-88",
     "name": "이상언",
-    "gen": "20기",
+    "gen": "20",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1711,7 +1710,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-89",
     "name": "이상준",
-    "gen": "19기",
+    "gen": "19",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1727,7 +1726,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-90",
     "name": "전영호",
-    "gen": "1기",
+    "gen": "1",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1743,7 +1742,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-91",
     "name": "정헌",
-    "gen": "1기",
+    "gen": "1",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1759,7 +1758,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-92",
     "name": "조윤성",
-    "gen": "7기",
+    "gen": "7",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1775,7 +1774,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-93",
     "name": "최준",
-    "gen": "16기",
+    "gen": "16",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1791,7 +1790,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-94",
     "name": "한석범",
-    "gen": "4기",
+    "gen": "4",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1807,7 +1806,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-95",
     "name": "한승수",
-    "gen": "16기",
+    "gen": "16",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T1",
@@ -1823,7 +1822,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-96",
     "name": "강동현",
-    "gen": "9기",
+    "gen": "9",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1839,7 +1838,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-97",
     "name": "김석준",
-    "gen": "20기",
+    "gen": "20",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1855,7 +1854,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-98",
     "name": "박정준",
-    "gen": "16기",
+    "gen": "16",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1871,7 +1870,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-99",
     "name": "송영",
-    "gen": "5기",
+    "gen": "5",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1887,7 +1886,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-100",
     "name": "여성민",
-    "gen": "19기",
+    "gen": "19",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1903,7 +1902,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-101",
     "name": "유우근",
-    "gen": "1기",
+    "gen": "1",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1919,7 +1918,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-102",
     "name": "윤진성",
-    "gen": "18기",
+    "gen": "18",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1935,7 +1934,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-103",
     "name": "이민우",
-    "gen": "20기",
+    "gen": "20",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1951,7 +1950,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-104",
     "name": "이재욱",
-    "gen": "4기",
+    "gen": "4",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1967,7 +1966,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-105",
     "name": "이창욱",
-    "gen": "17기",
+    "gen": "17",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -1999,7 +1998,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-107",
     "name": "조강원",
-    "gen": "16기",
+    "gen": "16",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -2015,7 +2014,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-108",
     "name": "차지훈",
-    "gen": "18기",
+    "gen": "18",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -2031,7 +2030,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-109",
     "name": "한승환",
-    "gen": "20기",
+    "gen": "20",
     "part": "테너",
     "basePart": "테너",
     "detailPart": "T2",
@@ -2047,7 +2046,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-110",
     "name": "김경환",
-    "gen": "16기",
+    "gen": "16",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2063,7 +2062,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-111",
     "name": "김선기",
-    "gen": "6기",
+    "gen": "6",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2079,7 +2078,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-112",
     "name": "김영선",
-    "gen": "13기",
+    "gen": "13",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2095,7 +2094,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-113",
     "name": "김형진",
-    "gen": "11기",
+    "gen": "11",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2127,7 +2126,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-115",
     "name": "사제환",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2143,7 +2142,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-116",
     "name": "서정우",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2159,7 +2158,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-117",
     "name": "심병수",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2191,7 +2190,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-119",
     "name": "유원종",
-    "gen": "5기",
+    "gen": "5",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2207,7 +2206,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-120",
     "name": "이경환",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2223,7 +2222,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-121",
     "name": "이원배",
-    "gen": "5기",
+    "gen": "5",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2239,7 +2238,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-122",
     "name": "이재욱B",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2255,7 +2254,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-123",
     "name": "정승원",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2271,7 +2270,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-124",
     "name": "최경욱",
-    "gen": "15기",
+    "gen": "15",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2287,7 +2286,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-125",
     "name": "최태선",
-    "gen": "18기",
+    "gen": "18",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2319,7 +2318,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-127",
     "name": "홍진혁",
-    "gen": "16기",
+    "gen": "16",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B1",
@@ -2335,7 +2334,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-128",
     "name": "고태율",
-    "gen": "20기",
+    "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B2",
@@ -2351,7 +2350,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-129",
     "name": "김명훈",
-    "gen": "14기",
+    "gen": "14",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B2",
@@ -2367,7 +2366,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-130",
     "name": "김형택",
-    "gen": "1기",
+    "gen": "1",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B2",
@@ -2399,7 +2398,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-132",
     "name": "유문선",
-    "gen": "12기",
+    "gen": "12",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B2",
@@ -2431,7 +2430,7 @@ const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-134",
     "name": "박인화",
-    "gen": "19기",
+    "gen": "19",
     "part": "베이스",
     "basePart": "베이스",
     "detailPart": "B2",

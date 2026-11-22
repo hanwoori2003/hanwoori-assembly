@@ -151,7 +151,7 @@
         var isElecLocked = Boolean(elec.isLocked || elec.status === "closed");
 
         return {
-            sessionTitle: s.sessionTitle || "2026 삼성한우리합창단 정기총회 with ‘메리고잉 운영진’",
+            sessionTitle: s.sessionTitle || "2026 삼성한우리합창단 정기총회",
             quorum: {
                 totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : 127
             },
@@ -204,7 +204,23 @@
                 s.uploadedFileName = data.uploadedFileName;
             }
             if (Array.isArray(data.assemblySchedule)) {
-                s.assemblySchedule = deepClone(data.assemblySchedule);
+                var clonedSchedule = deepClone(data.assemblySchedule);
+                if (typeof global.migrateAssemblyScheduleItems === "function") {
+                    s.assemblySchedule = global.migrateAssemblyScheduleItems(clonedSchedule).items;
+                } else {
+                    s.assemblySchedule = clonedSchedule.map(function(item) {
+                        if (!item || typeof item !== "object") return item;
+                        var copy = Object.assign({}, item);
+                        var titleStr = String(copy.title || "");
+                        var isActivityReport =
+                            copy.id === "sch-2" ||
+                            (/활동\s*보고/.test(titleStr) && titleStr.indexOf("강평") === -1);
+                        if (isActivityReport && (copy.targetTab === "concert" || copy.targetTab === "sectionConcertReview" || copy.targetTab === "concertReview")) {
+                            copy.targetTab = "activity";
+                        }
+                        return copy;
+                    });
+                }
             }
             if (Array.isArray(data.annualEvents)) {
                 s.events = deepClone(data.annualEvents);

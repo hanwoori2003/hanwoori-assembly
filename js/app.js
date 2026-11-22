@@ -8,6 +8,7 @@ function renderAll() {
     renderExecutiveRosterTable();
     renderFullMemberRosterTable();
     renderEventsView();
+    if (typeof renderActivityView === "function") renderActivityView();
     renderConcertFeedbackView();
     renderCurrentBylawsView();
     renderFullSearchView();

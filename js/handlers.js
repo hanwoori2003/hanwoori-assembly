@@ -17,7 +17,7 @@ function switchMainTab(tabId, btnEl) {
         "concert": "concert",
         "sectionConcertReview": "concert",
         "concertReview": "concert",
-        "activity": "concert",
+        "activity": "activity",
         "election": "election",
         "winner": "winner",
         "admin": "admin"
@@ -29,6 +29,7 @@ function switchMainTab(tabId, btnEl) {
     // Hide all view panels (canonical + legacy aliases)
     const views = [
         "events",
+        "activity",
         "concert",
         "settlement",
         "voting",
@@ -224,18 +225,13 @@ function confirmExecPasswordLogin() {
     if (!m) return;
 
     // 인증 번호 검증:
-    // 일반 단원: 오직 본인의 고유 4자리 휴대폰 뒷자리 코드만 일치해야 로그인 허용 (마스터 암호 2003 불허)
-    // 운영진 단원: 본인의 휴대폰 뒷 4자리 또는 운영진 마스터 암호(2003) 모두 허용
+    // 운영진 및 일반 단원 모두 오직 본인의 고유 휴대폰 뒷 4자리 코드만 일치해야 로그인 허용
     const memberCode = String(m.code || "").trim();
-    const isCodeMatch = Boolean(memberCode && entered === memberCode);
-    const isMasterAdminMatch = Boolean(m.isExecutive && entered === ADMIN_PASSWORD_CODE);
-    const isValid = isCodeMatch || isMasterAdminMatch;
+    const isValid = Boolean(memberCode && entered === memberCode);
 
     if (!isValid) {
         if (err) {
-            err.textContent = m.isExecutive
-                ? "✕ 인증번호가 일치하지 않습니다. 휴대폰 뒷 4자리 또는 운영진 인증 암호를 입력해 주세요."
-                : "✕ 인증번호가 일치하지 않습니다. 본인 확인용 휴대폰 뒷 4자리를 정확히 입력해 주세요.";
+            err.textContent = "✕ 인증번호가 일치하지 않습니다. 본인 확인용 휴대폰 뒷 4자리를 정확히 입력해 주세요.";
             err.classList.remove("hidden");
         }
         showToast("인증번호가 일치하지 않습니다.");
@@ -243,8 +239,9 @@ function confirmExecPasswordLogin() {
     }
 
     appState.currentVoterId = m.id;
-    // 운영진인 경우 관리자 권한 부여
+    // 운영진인 경우 관리자 권한 부여 및 미리보기 상태 초기화
     appState.isAdminAuthenticated = Boolean(m.isExecutive);
+    appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
 
     closeAuthModal();
@@ -472,6 +469,7 @@ function saveScheduleModalItem() {
         : rawTargetTab;
     const defaultLabelMap = {
         "events": "정기총회 →",
+        "activity": "활동보고 보기 →",
         "concert": "강평·요약 보기 →",
         "settlement": "결산탭 →",
         "voting": "투표탭 →",

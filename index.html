@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>2026 삼성한우리합창단 정기총회 with ‘메리고잉 운영진’</title>
+    <title>2026 삼성한우리합창단 정기총회</title>
     <!-- Tailwind CSS 3.4.17 CDN -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.18" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.20" />
 </head>
 <body class="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
 
@@ -27,7 +27,6 @@
                     </div>
                     <div class="flex items-center gap-2 min-w-0">
                         <span class="font-extrabold text-sm sm:text-base text-white tracking-tight truncate">2026 삼성한우리합창단 정기총회</span>
-                        <span class="text-[10px] sm:text-[11px] text-indigo-300 font-semibold hidden md:inline truncate">MERRY-GOING HANWOORI</span>
                     </div>
                     <!-- Quorum Badge -->
                     <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300 shrink-0">
@@ -67,7 +66,11 @@
                         <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm cursor-pointer">
                             <span>📅 2026 정기총회</span>
                         </button>
-                        <!-- Tab 2: 연주회 강평 및 설문 -->
+                        <!-- Tab 2: 2026 활동보고 -->
+                        <button id="tabBtn-activity" type="button" onclick="switchMainTab('activity', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>📋 2026 활동보고</span>
+                        </button>
+                        <!-- Tab 3: 연주회 강평 및 설문 -->
                         <button id="tabBtn-concert" type="button" onclick="switchMainTab('concert', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
                             <span>🎷 연주회 강평 및 설문</span>
                         </button>
@@ -93,9 +96,9 @@
                         <button id="tabBtn-winner" type="button" onclick="switchMainTab('winner', this)" class="main-tab-btn shrink-0 hidden items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-amber-300 hover:text-white hover:bg-slate-800 border border-amber-500/30 cursor-pointer">
                             <span>🏆 단장 당선 공고</span>
                         </button>
-                        <!-- Admin Conditional Tab 2: 메리고잉 운영진 제어 -->
+                        <!-- Admin Conditional Tab 2: 운영진 제어 -->
                         <button id="tabBtn-admin" type="button" onclick="switchMainTab('admin', this)" class="main-tab-btn shrink-0 hidden items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-rose-300 hover:text-white hover:bg-slate-800 border border-rose-500/30 cursor-pointer">
-                            <span>⚙ 메리고잉 운영진 제어</span>
+                            <span>⚙ 운영진 제어</span>
                         </button>
                     </nav>
 
@@ -141,7 +144,7 @@
                             <span>●</span> 2026년도 정기총회 공식 의결 진행 중
                         </div>
                         <h2 class="text-xl sm:text-2xl font-black tracking-tight">2026 삼성한우리합창단 정기총회 공식 식순 및 안건</h2>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1">지휘: 박지훈 선생님 (안산시립합창단) · 반주: 김혜연 선생님 · 2026 메리고잉 운영진 18인</p>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">지휘: 박지훈 선생님 (안산시립합창단) · 반주: 김혜연 선생님 · 2026 운영진 18인</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <button type="button" onclick="switchMainTab('voting')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold shadow-sm transition">
@@ -165,23 +168,10 @@
                 <div id="assemblyScheduleListContainer" class="space-y-3"></div>
             </div>
 
-            <!-- Annual Schedule Timeline -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">2026년도 연간 주요 일정 및 행사 로드맵</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">2026년도 삼성한우리합창단 공식 행사 일정 및 활동 로드맵입니다.</p>
-                    </div>
-                    <!-- Dynamic admin header controls for annual events -->
-                    <div id="annualEventsAdminHeaderControls" class="flex items-center gap-2"></div>
-                </div>
-                <div id="annualEventsListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
-            </div>
-
             <!-- 2026 Steering Committee 18 Roster -->
             <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 class="text-base font-extrabold text-slate-900">2026 메리고잉 운영진 명단 (18인)</h3>
+                    <h3 class="text-base font-extrabold text-slate-900">2026 운영진 명단 (18인)</h3>
                     <span class="text-xs text-slate-500 font-semibold">단장: 이창욱 · 부단장: 한석범</span>
                 </div>
                 <div class="overflow-x-auto">
@@ -194,7 +184,6 @@
                                 <th class="py-2.5 px-3">기수</th>
                                 <th class="py-2.5 px-3">파트</th>
                                 <th class="py-2.5 px-3">소속사</th>
-                                <th class="py-2.5 px-3">이메일</th>
                             </tr>
                         </thead>
                         <tbody id="executiveRosterTableBody"></tbody>
@@ -204,7 +193,35 @@
         </section>
 
         <!-- ============================================================ -->
-        <!-- TAB 2: 연주회 강평 및 설문 (#view-concert) -->
+        <!-- TAB 2: 2026 활동보고 (#view-activity) -->
+        <!-- ============================================================ -->
+        <section id="view-activity" class="hidden space-y-6">
+            <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-950 via-slate-900 to-indigo-950 text-white shadow-md border border-sky-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 text-xs font-bold mb-2">
+                        <span>📋</span> 정기총회 공식 안건 제2호
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black">2026년도 활동보고 및 연간 주요 행사 로드맵</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1">2026년도 삼성한우리합창단 정기연습, 대외활동 및 연간 공식 행사 실적 보고입니다.</p>
+                </div>
+            </div>
+
+            <!-- Annual Schedule Timeline -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-900">2026년도 연간 주요 일정 및 행사 로드맵</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">2026년도 삼성한우리합창단 공식 행사 일정 및 활동 로드맵입니다.</p>
+                    </div>
+                    <!-- Dynamic admin header controls for annual events -->
+                    <div id="annualEventsAdminHeaderControls" class="flex items-center gap-2"></div>
+                </div>
+                <div id="annualEventsListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
+        </section>
+
+        <!-- ============================================================ -->
+        <!-- TAB 3: 연주회 강평 및 설문 (#view-concert) -->
         <!-- ============================================================ -->
         <section id="view-concert" class="hidden space-y-6">
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-900/90 via-slate-900 to-amber-950 text-white shadow-md border border-amber-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -278,7 +295,7 @@
                 <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
                     <span class="text-xs font-bold text-emerald-600">차기 이월 잔금</span>
                     <div id="settlementBalanceDisplay" class="text-2xl font-black text-emerald-700 mt-1">20,887,349원</div>
-                    <span class="text-[11px] text-emerald-600 font-semibold">2026 메리고잉 운영진 이관</span>
+                    <span class="text-[11px] text-emerald-600 font-semibold">2026 운영진 이관</span>
                 </div>
             </div>
 
@@ -435,7 +452,7 @@
                             <div id="singleCandAdminControls"></div>
                         </div>
                         <h3 id="singleCandName" class="text-xl font-black text-slate-900">이창욱 (17기 · 테너)</h3>
-                        <p id="singleCandPledge" class="text-xs sm:text-sm text-slate-600 leading-relaxed font-semibold">소통과 화합으로 함께 만드는 메리고잉 한우리! 제21회 정기연주회 성공 개최</p>
+                        <p id="singleCandPledge" class="text-xs sm:text-sm text-slate-600 leading-relaxed font-semibold">소통과 화합으로 함께 만드는 삼성한우리! 제21회 정기연주회 성공 개최</p>
                         <p id="singleCandCareer" class="text-xs text-slate-400">17기 입단 (Tenor 2) · 2024~2025 운영진 · IU 콘서트 및 방송 합창 참여</p>
                         <div id="myElectionVoteStatus" class="pt-1"></div>
                     </div>
@@ -532,13 +549,13 @@
                     <p id="winnerVoteSummary" class="text-xs text-slate-600 font-semibold">찬성 32표 (84%)로 당선 확정</p>
                 </div>
                 <p class="text-xs text-amber-100 max-w-xl mx-auto pt-2">
-                    2026년도 '메리고잉 한우리'를 이끌어갈 신임 단장과 함께 24년 전통의 삼성한우리합창단이 더욱 힘차게 도약합니다.
+                    2026년도 삼성한우리합창단을 이끌어갈 신임 단장과 함께 24년 전통의 삼성한우리합창단이 더욱 힘차게 도약합니다.
                 </p>
             </div>
         </section>
 
         <!-- ============================================================ -->
-        <!-- TAB 8: 메리고잉 운영진 제어 (#view-admin, Admin conditional) -->
+        <!-- TAB 8: 운영진 제어 (#view-admin, Admin conditional) -->
         <!-- ============================================================ -->
         <section id="view-admin" class="hidden space-y-6">
             <!-- Admin Center Banner -->
@@ -546,7 +563,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold mb-2">
-                            <span>⚙</span> 2026 메리고잉 운영진 전용 통합 제어 센터
+                            <span>⚙</span> 2026 운영진 전용 통합 제어 센터
                         </div>
                         <h2 class="text-xl sm:text-2xl font-black">운영진 데이터 편집 & 제어 센터</h2>
                         <p class="text-xs sm:text-sm text-slate-300 mt-1">
@@ -691,7 +708,7 @@
                 <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                     <div>
                         <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                            <span>👥</span> 2026 메리고잉 운영진 18인 명부 및 인증코드 관리
+                            <span>👥</span> 2026 운영진 18인 명부 및 인증코드 관리
                         </h3>
                         <p class="text-xs text-slate-500 mt-0.5">운영진 역할, 기수, 파트, 소속사 및 각 운영진의 본인인증 4자리 코드를 확인합니다.</p>
                     </div>
@@ -706,7 +723,6 @@
                                 <th class="py-2 px-3">기수</th>
                                 <th class="py-2 px-3">파트</th>
                                 <th class="py-2 px-3">소속사</th>
-                                <th class="py-2 px-3">이메일</th>
                                 <th class="py-2 px-3 text-center">인증코드</th>
                             </tr>
                         </thead>
@@ -806,13 +822,14 @@
                     <select id="selectScheduleTargetTab" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                         <option value="">(연결 없음)</option>
                         <option value="events">탭 1: 2026 정기총회 메인</option>
-                        <option value="concert">탭 2: 연주회 강평 및 설문</option>
-                        <option value="settlement">탭 3: 2026 결산 보고</option>
-                        <option value="voting">탭 4: 단칙 개정 찬반투표</option>
-                        <option value="election">탭 5: 단장 선거 투표</option>
-                        <option value="bylaws">탭 6: 현재 단칙 보기</option>
-                        <option value="winner">탭 7: 단장 당선 공고</option>
-                        <option value="admin">탭 8: 메리고잉 운영진 제어</option>
+                        <option value="activity">탭 2: 2026 활동보고</option>
+                        <option value="concert">탭 3: 연주회 강평 및 설문</option>
+                        <option value="settlement">탭 4: 2026 결산 보고</option>
+                        <option value="voting">탭 5: 단칙 개정 찬반투표</option>
+                        <option value="election">탭 6: 단장 선거 투표</option>
+                        <option value="bylaws">탭 7: 현재 단칙 보기</option>
+                        <option value="winner">탭 8: 단장 당선 공고</option>
+                        <option value="admin">탭 9: 운영진 제어</option>
                     </select>
                 </div>
             </div>
@@ -931,7 +948,7 @@
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">슬로건 및 핵심 공약</label>
-                    <textarea id="inputCandidatePledge" rows="3" placeholder="소통과 화합으로 함께 만드는 메리고잉 한우리! 제21회 정기연주회 성공 개최" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"></textarea>
+                    <textarea id="inputCandidatePledge" rows="3" placeholder="소통과 화합으로 함께 만드는 삼성한우리! 제21회 정기연주회 성공 개최" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-purple-500 outline-none"></textarea>
                 </div>
                 <div>
                     <label class="block font-bold text-slate-700 mb-1">소속 및 주요 경력</label>
@@ -1197,13 +1214,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.18"></script>
-    <script src="js/data-config.js?v=2026.18"></script>
-    <script src="js/firebase-config.js?v=2026.18"></script>
-    <script src="js/firebase-sync.js?v=2026.18"></script>
-    <script src="js/utils.js?v=2026.18"></script>
-    <script src="js/render.js?v=2026.18"></script>
-    <script src="js/handlers.js?v=2026.18"></script>
-    <script src="js/app.js?v=2026.18"></script>
+    <script src="js/data-members.js?v=2026.20"></script>
+    <script src="js/data-config.js?v=2026.20"></script>
+    <script src="js/firebase-config.js?v=2026.20"></script>
+    <script src="js/firebase-sync.js?v=2026.20"></script>
+    <script src="js/utils.js?v=2026.20"></script>
+    <script src="js/render.js?v=2026.20"></script>
+    <script src="js/handlers.js?v=2026.20"></script>
+    <script src="js/app.js?v=2026.20"></script>
 </body>
 </html>

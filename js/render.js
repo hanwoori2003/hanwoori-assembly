@@ -76,7 +76,7 @@ function renderHeaderStatus() {
                         '<span class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm font-black border border-amber-500/30 shadow-xs shrink-0">👑</span>' +
                         '<div>' +
                             '<div class="flex items-center gap-2">' +
-                                '<span class="text-xs sm:text-sm font-black text-amber-300">메리고잉 운영진 통합 퀵 컨트롤 바</span>' +
+                                '<span class="text-xs sm:text-sm font-black text-amber-300">운영진 통합 퀵 컨트롤 바</span>' +
                                 '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-amber-400 text-slate-950">ADMIN ACTIVE</span>' +
                             '</div>' +
                             '<p class="text-[11px] text-slate-300">총회 식순·단칙 개정안·단장 선거·명부 및 설정을 원클릭으로 총괄 제어합니다.</p>' +
@@ -116,7 +116,7 @@ function renderHeaderStatus() {
         navElec.textContent = appState.election.mode === "single" ? "단독 찬반" : "다자 경선";
     }
 
-    // 운영진 전용 탭 표시 제어 (단장 당선 공고, 메리고잉 운영진 제어)
+    // 운영진 전용 탭 표시 제어 (단장 당선 공고, 운영진 제어)
     const winnerBtn = document.getElementById("tabBtn-winner");
     if (winnerBtn) {
         if (isExec || appState.winnerPagePublic) {
@@ -156,13 +156,12 @@ function renderExecutiveRosterTable() {
                 (exec.subRole && exec.subRole !== '-' ? '<span class="text-slate-500 font-normal">(' + escapeHtml(exec.subRole) + ')</span>' : '') +
             '</td>' +
             '<td class="py-2.5 px-3 font-extrabold text-slate-900">' + escapeHtml(exec.name) + '</td>' +
-            '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(exec.gen) + '기</td>' +
+            '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(String(exec.gen || '').replace(/기+$/g, '')) + '</td>' +
             '<td class="py-2.5 px-3">' +
                 '<span class="font-semibold text-slate-700">' + escapeHtml(exec.part) + '</span>' +
                 (exec.detailPart ? '<span class="text-slate-400 text-[11px] ml-1">(' + escapeHtml(exec.detailPart) + ')</span>' : '') +
             '</td>' +
             '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(exec.company) + '</td>' +
-            '<td class="py-2.5 px-3 text-slate-500 text-[11px] font-mono">' + escapeHtml(exec.email) + '</td>' +
         '</tr>';
     });
     container.innerHTML = html;
@@ -188,7 +187,7 @@ function renderFullMemberRosterTable() {
         html += '<tr class="border-b border-slate-100 hover:bg-slate-50 transition text-xs">' +
             '<td class="py-2 px-3 text-center text-slate-400">' + (i + 1) + '</td>' +
             '<td class="py-2 px-3 font-bold text-slate-900">' + escapeHtml(m.name) + '</td>' +
-            '<td class="py-2 px-3 text-slate-600">' + escapeHtml(m.gen) + '</td>' +
+            '<td class="py-2 px-3 text-slate-600">' + escapeHtml(String(m.gen || '').replace(/기+$/g, '')) + '</td>' +
             '<td class="py-2 px-3">' +
                 '<span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 font-semibold text-[11px]">' + escapeHtml(m.part) + '</span>' +
             '</td>' +
@@ -260,7 +259,14 @@ function renderEventsView() {
         container.innerHTML = html || '<div class="text-center py-6 text-slate-400 text-xs">등록된 식순이 없습니다.</div>';
     }
 
-    // 3. 연간 행사 헤더 운영진 제어 버튼
+    // 3. 2026 활동보고 (연간 행사 로드맵) 렌더링 동기화
+    renderActivityView();
+}
+
+function renderActivityView() {
+    const isExec = (typeof isCurrentUserExecutive === "function") ? isCurrentUserExecutive() : Boolean(appState.isAdminAuthenticated);
+
+    // 1. 연간 행사 헤더 운영진 제어 버튼
     const evHeader = document.getElementById("annualEventsAdminHeaderControls");
     if (evHeader) {
         if (isExec) {
@@ -272,7 +278,7 @@ function renderEventsView() {
         }
     }
 
-    // 4. 연간 행사 목록 렌더링
+    // 2. 연간 행사 목록 렌더링
     const evCont = document.getElementById("annualEventsListContainer");
     if (evCont) {
         let evHtml = "";
@@ -1150,13 +1156,12 @@ function renderAdminView() {
                     (exec.subRole && exec.subRole !== '-' ? '<span class="text-slate-500 font-normal">(' + escapeHtml(exec.subRole) + ')</span>' : '') +
                 '</td>' +
                 '<td class="py-2.5 px-3 font-extrabold text-slate-900">' + escapeHtml(exec.name) + '</td>' +
-                '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(exec.gen) + '기</td>' +
+                '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(String(exec.gen || '').replace(/기+$/g, '')) + '</td>' +
                 '<td class="py-2.5 px-3">' +
                     '<span class="font-semibold text-slate-700">' + escapeHtml(exec.part) + '</span>' +
                     (exec.detailPart ? '<span class="text-slate-400 text-[11px] ml-1">(' + escapeHtml(exec.detailPart) + ')</span>' : '') +
                 '</td>' +
                 '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(exec.company) + '</td>' +
-                '<td class="py-2.5 px-3 text-slate-500 text-[11px] font-mono">' + escapeHtml(exec.email) + '</td>' +
                 '<td class="py-2.5 px-3 text-center font-mono text-[11px] text-slate-600">' +
                     '<span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200 font-bold text-slate-800">' + escapeHtml(exec.code || '-') + '</span>' +
                 '</td>' +
