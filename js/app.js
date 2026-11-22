@@ -4,6 +4,9 @@ let appState = getDefaultState();
 window.appState = appState;
 
 function renderAll() {
+    if (typeof renderAuthGate === "function") {
+        renderAuthGate();
+    }
     renderHeaderStatus();
     renderExecutiveRosterTable();
     renderFullMemberRosterTable();
@@ -121,9 +124,38 @@ function initTabsWheelScroll() {
     }, { passive: false });
 }
 
-window.addEventListener("DOMContentLoaded", function() {
+function restoreInitialViewState() {
     loadStateFromStorage();
-    renderAll();
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    if (voter) {
+        const isExec = (typeof isCurrentUserExecutive === "function")
+            ? isCurrentUserExecutive()
+            : Boolean(appState.isAdminAuthenticated);
+        let restoredTab = appState.activeTab || "events";
+        if (restoredTab === "admin" && !isExec) {
+            restoredTab = "events";
+        }
+        if (restoredTab === "winner" && !isExec && !appState.winnerPagePublic) {
+            restoredTab = "events";
+        }
+        switchMainTab(restoredTab, null, { skipScroll: true });
+    } else {
+        renderAll();
+        const nameInp = document.getElementById("loginNameInput");
+        const codeInp = document.getElementById("loginCodeInput");
+        const errEl = document.getElementById("loginErrorMsg");
+        if (nameInp) nameInp.value = "";
+        if (codeInp) codeInp.value = "";
+        if (errEl) {
+            errEl.textContent = "";
+            errEl.classList.add("hidden");
+        }
+    }
+}
+
+window.addEventListener("DOMContentLoaded", function() {
+    restoreInitialViewState();
+
     if (typeof window !== "undefined" &&
         window.FirebaseSync &&
         typeof window.FirebaseSync.init === "function") {
@@ -131,7 +163,7 @@ window.addEventListener("DOMContentLoaded", function() {
     }
     updateHeaderScrollShadow();
 
-        // Horizontal tabs drag-to-scroll, wheel scroll & responsive listeners
+    // Horizontal tabs drag-to-scroll, wheel scroll & responsive listeners
     initTabsDragToScroll();
     initTabsWheelScroll();
 

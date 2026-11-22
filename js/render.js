@@ -1,5 +1,30 @@
 // 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
 
+function renderAuthGate() {
+    const gate = document.getElementById("loginGateScreen");
+    const shell = document.getElementById("appShell");
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    if (!voter) {
+        if (gate) {
+            gate.classList.remove("hidden");
+            gate.classList.add("flex");
+        }
+        if (shell) {
+            shell.classList.add("hidden");
+            shell.classList.remove("flex");
+        }
+    } else {
+        if (gate) {
+            gate.classList.add("hidden");
+            gate.classList.remove("flex");
+        }
+        if (shell) {
+            shell.classList.remove("hidden");
+            shell.classList.add("flex");
+        }
+    }
+}
+
 function renderHeaderStatus() {
     const majority = getMajorityThreshold(appState.totalAttendees);
     const totalEl = document.getElementById("headerTotalAttendees");
@@ -88,19 +113,19 @@ function renderHeaderStatus() {
         if (isRealExec) {
             if (isExec) {
                 headerAdminBadgeContainer.innerHTML = 
-                    '<span class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[11px] sm:text-xs shadow-xs animate-pulse whitespace-nowrap">' +
+                    '<span class="hidden lg:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-xs animate-pulse whitespace-nowrap">' +
                         '<span>👑</span> <span>운영진 모드 ON</span>' +
                     '</span>' +
                     '<button type="button" onclick="toggleAdminPreviewMode()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600 text-[11px] sm:text-xs font-bold transition flex items-center gap-1 cursor-pointer whitespace-nowrap">' +
-                        '<span>👁️</span> <span class="hidden sm:inline">일반 단원</span> 미리보기' +
+                        '<span>👁️</span> <span class="hidden sm:inline">일반 단원</span> <span>미리보기</span>' +
                     '</button>';
             } else {
                 headerAdminBadgeContainer.innerHTML = 
-                    '<span class="inline-flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 font-bold text-[11px] sm:text-xs whitespace-nowrap">' +
+                    '<span class="hidden lg:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 font-bold text-xs whitespace-nowrap">' +
                         '<span>👁️</span> <span>단원 화면 미리보기 중</span>' +
                     '</span>' +
                     '<button type="button" onclick="toggleAdminPreviewMode()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[11px] sm:text-xs transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">' +
-                        '<span>👑</span> <span>운영진 모드로 복귀</span>' +
+                        '<span>👑</span> <span class="hidden sm:inline">운영진 모드로</span> <span>복귀</span>' +
                     '</button>';
             }
         } else {
@@ -191,19 +216,19 @@ function renderExecutiveRosterTable() {
     if (!container) return;
     let html = "";
     EXECUTIVE_ROSTER.forEach(function(exec, i) {
-        html += '<tr class="border-b border-slate-100 hover:bg-slate-50/80 transition text-xs">' +
-            '<td class="py-2.5 px-3 text-center text-slate-500 font-semibold">' + (i + 1) + '</td>' +
-            '<td class="py-2.5 px-3 font-bold text-slate-800">' +
+        html += '<tr class="border-b border-slate-100 hover:bg-slate-50/80 transition text-xs whitespace-nowrap">' +
+            '<td class="py-2.5 px-2.5 sm:px-3 text-center text-slate-500 font-semibold">' + (i + 1) + '</td>' +
+            '<td class="py-2.5 px-2.5 sm:px-3 font-bold text-slate-800">' +
                 '<span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-bold mr-1.5">' + escapeHtml(exec.role) + '</span>' +
                 (exec.subRole && exec.subRole !== '-' ? '<span class="text-slate-500 font-normal">(' + escapeHtml(exec.subRole) + ')</span>' : '') +
             '</td>' +
-            '<td class="py-2.5 px-3 font-extrabold text-slate-900">' + escapeHtml(exec.name) + '</td>' +
-            '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(String(exec.gen || '').replace(/기+$/g, '')) + '</td>' +
-            '<td class="py-2.5 px-3">' +
+            '<td class="py-2.5 px-2.5 sm:px-3 font-extrabold text-slate-900">' + escapeHtml(exec.name) + '</td>' +
+            '<td class="py-2.5 px-2.5 sm:px-3 text-slate-600">' + escapeHtml(String(exec.gen || '').replace(/기+$/g, '')) + '</td>' +
+            '<td class="py-2.5 px-2.5 sm:px-3">' +
                 '<span class="font-semibold text-slate-700">' + escapeHtml(exec.part) + '</span>' +
                 (exec.detailPart ? '<span class="text-slate-400 text-[11px] ml-1">(' + escapeHtml(exec.detailPart) + ')</span>' : '') +
             '</td>' +
-            '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(exec.company) + '</td>' +
+            '<td class="py-2.5 px-2.5 sm:px-3 text-slate-600">' + escapeHtml(exec.company) + '</td>' +
         '</tr>';
     });
     container.innerHTML = html;
@@ -274,7 +299,7 @@ function renderEventsView() {
                 ? normalizeScheduleTargetTab(item.targetTab)
                 : (item.targetTab === "sectionConcertReview" ? "concert" : (item.targetTab || ""));
             const jumpBtn = safeTargetTab
-                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition shrink-0 cursor-pointer">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
+                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="w-full sm:w-auto px-3 py-2 sm:py-1.5 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition shrink-0 cursor-pointer text-center">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
                 : '';
 
             const execControls = isExec
@@ -288,11 +313,11 @@ function renderEventsView() {
                 '<div class="flex items-start gap-3 min-w-0">' +
                     statusBadge +
                     '<div class="min-w-0">' +
-                        '<h4 class="text-sm font-extrabold text-slate-900 truncate">' + escapeHtml(item.title) + '</h4>' +
-                        '<p class="text-xs text-slate-600 mt-0.5 break-keep">' + escapeHtml(item.desc) + '</p>' +
+                        '<h4 class="text-sm font-extrabold text-slate-900 break-keep">' + escapeHtml(item.title) + '</h4>' +
+                        '<p class="text-xs text-slate-600 mt-0.5 break-keep leading-relaxed">' + escapeHtml(item.desc) + '</p>' +
                     '</div>' +
                 '</div>' +
-                '<div class="flex items-center gap-2 shrink-0 self-end sm:self-center">' +
+                '<div class="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">' +
                     jumpBtn +
                     execControls +
                 '</div>' +
@@ -334,9 +359,9 @@ function renderActivityView() {
 
             evHtml += '<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">' +
                 '<div class="min-w-0">' +
-                    '<div class="flex items-center gap-2">' +
-                        '<span class="font-extrabold text-xs text-indigo-900">' + escapeHtml(ev.title) + '</span>' +
-                        '<span class="text-[11px] text-slate-500 font-semibold">' + escapeHtml(ev.date) + '</span>' +
+                    '<div class="flex items-center flex-wrap gap-x-2 gap-y-0.5">' +
+                        '<span class="font-extrabold text-xs sm:text-sm text-indigo-900 break-keep">' + escapeHtml(ev.title) + '</span>' +
+                        '<span class="text-[11px] text-slate-500 font-semibold whitespace-nowrap">' + escapeHtml(ev.date) + '</span>' +
                     '</div>' +
                     '<p class="text-xs text-slate-600 mt-0.5">' + escapeHtml(ev.desc) + ' <span class="text-slate-400">(' + escapeHtml(ev.place) + ')</span></p>' +
                 '</div>' +
@@ -392,9 +417,9 @@ function renderConcertFeedbackView() {
         (survey.favoriteSongs || []).forEach(function(s, i) {
             const pct = Math.round((s.votes / 71) * 100);
             sHtml += '<div class="space-y-1">' +
-                '<div class="flex justify-between text-xs font-bold text-slate-800">' +
-                    '<span>' + (i + 1) + '. ' + escapeHtml(s.title) + '</span>' +
-                    '<span class="text-indigo-600">' + s.votes + '명 (' + pct + '%)</span>' +
+                '<div class="flex justify-between items-baseline gap-2 text-xs font-bold text-slate-800">' +
+                    '<span class="min-w-0 break-keep">' + (i + 1) + '. ' + escapeHtml(s.title) + '</span>' +
+                    '<span class="text-indigo-600 shrink-0 whitespace-nowrap">' + s.votes + '명 (' + pct + '%)</span>' +
                 '</div>' +
                 '<div class="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">' +
                     '<div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600" style="width: ' + pct + '%"></div>' +
@@ -433,7 +458,7 @@ function renderSettlementView() {
             html += '<tr class="border-b border-slate-100 text-xs">' +
                 '<td class="py-2.5 px-3 text-slate-500 font-semibold">' + (i + 1) + '</td>' +
                 '<td class="py-2.5 px-3 font-bold text-slate-900">' + escapeHtml(item.name) + '</td>' +
-                '<td class="py-2.5 px-3 text-right font-extrabold text-indigo-700">' + Number(item.amount).toLocaleString() + '원</td>' +
+                '<td class="py-2.5 px-2.5 sm:px-3 text-right font-extrabold text-indigo-700 whitespace-nowrap">' + Number(item.amount).toLocaleString() + '원</td>' +
                 '<td class="py-2.5 px-3 text-slate-500">' + escapeHtml(item.note) + '</td>' +
             '</tr>';
         });
@@ -447,7 +472,7 @@ function renderSettlementView() {
             html += '<tr class="border-b border-slate-100 text-xs">' +
                 '<td class="py-2.5 px-3 text-slate-500 font-semibold">' + (i + 1) + '</td>' +
                 '<td class="py-2.5 px-3 font-bold text-slate-900">' + escapeHtml(item.name) + '</td>' +
-                '<td class="py-2.5 px-3 text-right font-extrabold text-rose-700">' + Number(item.amount).toLocaleString() + '원</td>' +
+                '<td class="py-2.5 px-2.5 sm:px-3 text-right font-extrabold text-rose-700 whitespace-nowrap">' + Number(item.amount).toLocaleString() + '원</td>' +
                 '<td class="py-2.5 px-3 text-slate-500">' + escapeHtml(item.note) + '</td>' +
             '</tr>';
         });
@@ -647,8 +672,48 @@ function renderActiveVotingView() {
                     (isAbs ? 'bg-slate-800 text-white ring-2 ring-slate-400' : 'bg-slate-700 hover:bg-slate-600 text-white') + '">' +
                     '<span>-</span>' +
                     '<span>기권' + (isAbs ? ' (선택됨)' : '') + '</span>' +
-                '</button>';
+                '</button>' +
+                (myVote
+                    ? ('<button id="btnCancelAgendaVote" type="button" onclick="cancelAgendaVote(\'' + escapeHtml(ag.id) + '\')" class="col-span-3 min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 font-bold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5">' +
+                        '<span>↩️</span>' +
+                        '<span>투표 취소 (미투표로 되돌리기)</span>' +
+                    '</button>')
+                    : '');
         }
+    }
+
+    // Prev / Next Agenda Navigation Footer
+    const bottomNavEl = document.getElementById("agendaBottomNavContainer");
+    if (bottomNavEl) {
+        const agendasList = Array.isArray(appState.agendas) ? appState.agendas : [];
+        const totalCount = agendasList.length;
+        const currentIdx = agendasList.findIndex(function(a) { return a && a.id === ag.id; });
+        const hasPrev = currentIdx > 0;
+        const hasNext = currentIdx >= 0 && currentIdx < totalCount - 1;
+        const displayPos = (currentIdx >= 0 ? currentIdx + 1 : 1) + " / " + (totalCount || 1);
+
+        bottomNavEl.innerHTML =
+            '<button id="btnPrevAgenda" type="button" onclick="navigateAgendaStep(-1)" ' +
+                (hasPrev ? '' : 'disabled aria-disabled="true" ') +
+                'class="flex-1 sm:flex-initial min-h-[44px] px-3 sm:px-5 py-2.5 rounded-xl border text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-1.5 whitespace-nowrap ' +
+                (hasPrev
+                    ? 'bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 border-slate-300 shadow-xs cursor-pointer'
+                    : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-60') + '">' +
+                '<span>←</span>' +
+                '<span>이전 안건</span>' +
+            '</button>' +
+            '<span id="agendaBottomNavCounter" class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-extrabold tabular-nums shrink-0">' +
+                displayPos +
+            '</span>' +
+            '<button id="btnNextAgenda" type="button" onclick="navigateAgendaStep(1)" ' +
+                (hasNext ? '' : 'disabled aria-disabled="true" ') +
+                'class="flex-1 sm:flex-initial min-h-[44px] px-3 sm:px-5 py-2.5 rounded-xl border text-xs sm:text-sm font-extrabold transition flex items-center justify-center gap-1.5 whitespace-nowrap ' +
+                (hasNext
+                    ? 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white border-indigo-600 shadow-sm cursor-pointer'
+                    : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-60') + '">' +
+                '<span>다음 안건</span>' +
+                '<span>→</span>' +
+            '</button>';
     }
 }
 
@@ -831,7 +896,7 @@ function renderElectionView() {
                     (isSelected 
                         ? '<span class="px-3 py-1 rounded-lg text-xs font-extrabold bg-purple-100 text-purple-800 border border-purple-300">🔒 최종 선택 (확정)</span>'
                         : '<span class="px-3 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-400">🔒 투표 마감</span>') :
-                    ('<button type="button" onclick="voteElectionMulti(\'' + c.id + '\')" class="px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer ' +
+                    ('<button type="button" onclick="voteElectionMulti(\'' + c.id + '\')" class="w-full sm:w-auto min-h-[44px] sm:min-h-0 px-4 py-2 rounded-xl text-xs sm:text-sm font-extrabold transition cursor-pointer ' +
                         (isSelected ? 'bg-purple-600 text-white shadow-sm' : 'bg-slate-100 text-slate-700 hover:bg-purple-100') + '">' +
                         (isSelected ? '✓ 선택됨' : '투표하기') +
                     '</button>');
@@ -851,7 +916,7 @@ function renderElectionView() {
                         '<p class="text-xs text-slate-600 break-keep">' + escapeHtml(c.pledge) + '</p>' +
                         (c.career ? ('<p class="text-[11px] text-slate-400 break-keep">' + escapeHtml(c.career) + '</p>') : '') +
                     '</div>' +
-                    '<div class="flex items-center justify-between pt-2 border-t border-slate-100">' +
+                    '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-3 border-t border-slate-100">' +
                         '<span class="text-sm font-black text-slate-900">' + count + '표</span>' +
                         voteBtnHtml +
                     '</div>' +
@@ -933,7 +998,7 @@ function renderCurrentBylawsView() {
                 '</div>' +
                 execControls +
             '</div>' +
-            '<div class="text-xs text-slate-700 leading-relaxed whitespace-pre-line">' + highlightMatch(cl.content, q) + '</div>' +
+            '<div class="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line break-keep">' + highlightMatch(cl.content, q) + '</div>' +
             (cl.lastAmended ? '<div class="text-[11px] text-slate-400">비고: ' + escapeHtml(cl.lastAmended) + '</div>' : '') +
         '</div>';
     });
@@ -1195,7 +1260,7 @@ function renderAdminView() {
     if (execTbody) {
         let execHtml = "";
         EXECUTIVE_ROSTER.forEach(function(exec, i) {
-            execHtml += '<tr class="border-b border-slate-100 hover:bg-slate-50/80 transition text-xs">' +
+            execHtml += '<tr class="border-b border-slate-100 hover:bg-slate-50/80 transition text-xs whitespace-nowrap">' +
                 '<td class="py-2.5 px-3 text-center text-slate-500 font-semibold">' + (i + 1) + '</td>' +
                 '<td class="py-2.5 px-3 font-bold text-slate-800">' +
                     '<span class="px-2 py-0.5 rounded bg-rose-50 text-rose-700 font-bold mr-1.5 border border-rose-200">' + escapeHtml(exec.role) + '</span>' +

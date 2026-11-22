@@ -11,43 +11,98 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.22" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.24" />
 </head>
-<body class="min-h-screen flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
+<body class="min-h-[100dvh] flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
 
-    <!-- SINGLE UNIFIED STICKY HEADER (Row 1: ~44px compact title & voter, Row 2: 6 primary tabs + admin tabs) -->
+    <!-- ============================================================ -->
+    <!-- DEDICATED FULL-SCREEN LOGIN GATE PAGE (#loginGateScreen)     -->
+    <!-- ============================================================ -->
+    <div id="loginGateScreen" class="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 sm:p-8 border border-slate-100">
+            <!-- Choir Emblem & Title -->
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-indigo-500/30">
+                    ♫
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] font-extrabold mb-2.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    정단원 전용 인증 게이트
+                </span>
+                <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight break-keep">
+                    2026 삼성한우리합창단 정기총회
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-2 leading-relaxed break-keep">
+                    정단원 전용 페이지입니다. 이름과 휴대폰 뒷자리 4자리를 입력해 입장하세요.
+                </p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginGateForm" onsubmit="event.preventDefault(); handleSimpleLoginSubmit(event); return false;" class="space-y-4">
+                <div>
+                    <label for="loginNameInput" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">이름</label>
+                    <input id="loginNameInput" type="text" placeholder="예: 홍길동" autocomplete="name" class="w-full h-12 px-4 rounded-xl border border-slate-200 text-base text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white transition" />
+                </div>
+                <div>
+                    <label for="loginCodeInput" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">휴대폰 뒷자리 4자리</label>
+                    <input id="loginCodeInput" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리 (예: 1234)" autocomplete="one-time-code" class="w-full h-12 px-4 rounded-xl border border-slate-200 text-base font-mono tracking-widest text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white transition" />
+                </div>
+                <p id="loginErrorMsg" class="text-xs sm:text-sm text-rose-600 font-bold bg-rose-50 border border-rose-200 rounded-xl px-3.5 py-2.5 hidden"></p>
+                <button type="submit" onclick="event.preventDefault(); handleSimpleLoginSubmit(event);" class="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-base font-bold shadow-md shadow-indigo-600/20 transition cursor-pointer flex items-center justify-center">
+                    로그인하여 입장하기
+                </button>
+            </form>
+
+            <!-- Subtle Footer Note -->
+            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed break-keep">
+                    재적 정단원 134명 · 운영진 로그인 시 관리 메뉴가 자동 활성화됩니다.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MAIN APP SHELL (Hidden until regular member authenticates)   -->
+    <!-- ============================================================ -->
+    <div id="appShell" class="hidden min-h-[100dvh] flex-col">
+
+    <!-- SINGLE UNIFIED STICKY HEADER (Row 1: compact title & voter, Row 2: primary tabs + admin tabs) -->
     <header id="mainHeader" class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-md">
         <div class="max-w-7xl mx-auto px-3 sm:px-6">
-            <!-- Row 1: Compact ~44px height (Brand + Title + Quorum Badge & Current Voter Button) -->
-            <div class="flex items-center justify-between gap-3 h-11 border-b border-slate-800/80 text-xs">
+            <!-- Row 1: Responsive compact bar (fits 360px mobile & spacious PC) -->
+            <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 min-h-[44px] py-1.5 sm:py-0 sm:h-12 border-b border-slate-800/80 text-xs">
                 <!-- Left: Brand Icon + Title + Quorum Badge -->
                 <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                    <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
-                        ♫
+                    <div id="headerBrandHomeBtn" role="button" tabindex="0" onclick="switchMainTab('events')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); switchMainTab('events'); }" title="첫 페이지(2026 정기총회)로 이동" aria-label="2026 삼성한우리합창단 정기총회 첫 페이지로 이동" class="flex items-center gap-2 sm:gap-2.5 min-w-0 cursor-pointer hover:opacity-80 transition rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
+                            ♫
+                        </div>
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="font-extrabold text-[13px] sm:text-base text-white tracking-tight truncate sm:hidden">2026 삼성한우리 정기총회</span>
+                            <span class="font-extrabold text-sm sm:text-base text-white tracking-tight truncate hidden sm:inline">2026 삼성한우리합창단 정기총회</span>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2 min-w-0">
-                        <span class="font-extrabold text-sm sm:text-base text-white tracking-tight truncate">2026 삼성한우리합창단 정기총회</span>
-                    </div>
-                    <!-- Quorum Badge -->
-                    <div class="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300 shrink-0">
+                    <!-- Quorum Badge (visible on md+ to prevent 360px crowding) -->
+                    <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300 shrink-0">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span id="headerQuorumBadgeText">성원 <strong id="headerTotalAttendees" class="text-white font-bold">134명</strong></span>
-                        <span class="text-slate-500 hidden sm:inline">|</span>
-                        <span class="text-slate-400 hidden sm:inline">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">90표↑</strong></span>
+                        <span class="text-slate-500">|</span>
+                        <span class="text-slate-400">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">90표↑</strong></span>
                     </div>
                 </div>
 
-                <!-- Right: Login / Current Voter Badge + Logout -->
-                <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
-                    <div id="headerAdminModeBadgeContainer" class="flex items-center gap-1.5 sm:gap-2"></div>
-                    <button id="btnHeaderLogin" type="button" onclick="openVoterLoginModal()" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white transition text-xs font-bold cursor-pointer shadow-xs">
+                <!-- Right: Admin Preview + User Badge + Logout -->
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0 flex-wrap justify-end">
+                    <div id="headerAdminModeBadgeContainer" class="flex items-center gap-1 sm:gap-1.5"></div>
+                    <button id="btnHeaderLogin" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white transition text-xs font-bold cursor-pointer shadow-xs">
                         <span>🔐 로그인</span>
                     </button>
-                    <button id="btnHeaderVoter" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition text-xs font-medium cursor-pointer shadow-xs" title="다른 단원으로 로그인">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        <span id="headerVoterBadge" class="font-bold text-white truncate max-w-[130px] sm:max-w-none"></span>
+                    <button id="btnHeaderVoter" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition text-[11px] sm:text-xs font-medium cursor-pointer shadow-xs" title="현재 로그인된 단원">
+                        <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 shrink-0"></span>
+                        <span id="headerVoterBadge" class="font-bold text-white truncate max-w-[100px] sm:max-w-none"></span>
                     </button>
-                    <button id="btnHeaderLogout" type="button" onclick="logoutCurrentUser()" class="hidden items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-600 border border-slate-700 hover:border-rose-500 text-slate-300 hover:text-white transition text-xs font-bold cursor-pointer shadow-xs">
+                    <button id="btnHeaderLogout" type="button" onclick="logoutCurrentUser()" class="hidden items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-600 border border-slate-700 hover:border-rose-500 text-slate-300 hover:text-white transition text-[11px] sm:text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap">
                         <span>로그아웃</span>
                     </button>
                 </div>
@@ -132,7 +187,7 @@
     </header>
 
     <!-- MAIN APP CONTENT PANELS -->
-    <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main id="mainAppContainer" class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
 
         <!-- EXECUTIVE ADMIN QUICK ACTION BAR (Visible ONLY when isCurrentUserExecutive() is true) -->
         <div id="adminQuickActionBarContainer"></div>
@@ -152,7 +207,7 @@
                         <p class="text-xs sm:text-sm text-slate-300 mt-1">지휘: 박지훈 선생님 (안산시립합창단) · 반주: 김혜연 선생님 · 2026 운영진 18인</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
-                        <button type="button" onclick="switchMainTab('voting')" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-extrabold shadow-sm transition">
+                        <button type="button" onclick="switchMainTab('voting')" class="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-extrabold shadow-sm transition text-center cursor-pointer">
                             단칙 개정안 투표 바로가기 →
                         </button>
                     </div>
@@ -160,8 +215,8 @@
             </div>
 
             <!-- Official Assembly Schedule (식순 1~6번) -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div>
                         <h3 class="text-base font-extrabold text-slate-900">정기총회 공식 식순 및 안건 바로가기</h3>
                         <p class="text-xs text-slate-500 mt-0.5">총회 공식 안건을 순서대로 확인하고 해당 탭으로 즉시 이동하실 수 있습니다.</p>
@@ -174,21 +229,21 @@
             </div>
 
             <!-- 2026 Steering Committee 18 Roster -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-100 pb-3">
                     <h3 class="text-base font-extrabold text-slate-900">2026 운영진 명단 (18인)</h3>
                     <span class="text-xs text-slate-500 font-semibold">단장: 이창욱 · 부단장: 한석범</span>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="overflow-x-auto table-scroll-wrapper -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <table class="w-full min-w-[460px] text-left border-collapse">
                         <thead>
-                            <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-200">
-                                <th class="py-2.5 px-3 text-center">No</th>
-                                <th class="py-2.5 px-3">직책</th>
-                                <th class="py-2.5 px-3">이름</th>
-                                <th class="py-2.5 px-3">기수</th>
-                                <th class="py-2.5 px-3">파트</th>
-                                <th class="py-2.5 px-3">소속사</th>
+                            <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-200 whitespace-nowrap">
+                                <th class="py-2.5 px-2.5 sm:px-3 text-center">No</th>
+                                <th class="py-2.5 px-2.5 sm:px-3">직책</th>
+                                <th class="py-2.5 px-2.5 sm:px-3">이름</th>
+                                <th class="py-2.5 px-2.5 sm:px-3">기수</th>
+                                <th class="py-2.5 px-2.5 sm:px-3">파트</th>
+                                <th class="py-2.5 px-2.5 sm:px-3">소속사</th>
                             </tr>
                         </thead>
                         <tbody id="executiveRosterTableBody"></tbody>
@@ -212,8 +267,8 @@
             </div>
 
             <!-- Annual Schedule Timeline -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div>
                         <h3 class="text-base font-extrabold text-slate-900">2026년도 연간 주요 일정 및 행사 로드맵</h3>
                         <p class="text-xs text-slate-500 mt-0.5">2026년도 삼성한우리합창단 공식 행사 일정 및 활동 로드맵입니다.</p>
@@ -241,7 +296,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4" id="concertMetricsContainer"></div>
 
             <!-- Favorite Songs & Expectations Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <!-- Favorite Songs Ranking -->
                 <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
                     <h3 class="text-base font-extrabold text-slate-900">2026년 정기연주회 단원 최선호 연주곡 순위</h3>
@@ -307,16 +362,16 @@
             <!-- Revenue and Expense Tables -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <!-- Revenue Breakdown -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-3">
                     <h3 class="text-base font-extrabold text-slate-900">수입 세부 내역</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                    <div class="overflow-x-auto table-scroll-wrapper -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <table class="w-full min-w-[420px] text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-200">
-                                    <th class="py-2 px-3">No</th>
-                                    <th class="py-2 px-3">항목명</th>
-                                    <th class="py-2 px-3 text-right">금액</th>
-                                    <th class="py-2 px-3">비고</th>
+                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-200 whitespace-nowrap">
+                                    <th class="py-2 px-2.5 sm:px-3">No</th>
+                                    <th class="py-2 px-2.5 sm:px-3">항목명</th>
+                                    <th class="py-2 px-2.5 sm:px-3 text-right">금액</th>
+                                    <th class="py-2 px-2.5 sm:px-3">비고</th>
                                 </tr>
                             </thead>
                             <tbody id="settlementRevenueTableBody"></tbody>
@@ -325,16 +380,16 @@
                 </div>
 
                 <!-- Expense Breakdown -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-3">
                     <h3 class="text-base font-extrabold text-slate-900">지출 세부 내역</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                    <div class="overflow-x-auto table-scroll-wrapper -mx-4 px-4 sm:mx-0 sm:px-0">
+                        <table class="w-full min-w-[420px] text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-200">
-                                    <th class="py-2 px-3">No</th>
-                                    <th class="py-2 px-3">항목명</th>
-                                    <th class="py-2 px-3 text-right">금액</th>
-                                    <th class="py-2 px-3">비고</th>
+                                <tr class="bg-slate-50 text-slate-600 text-xs font-bold border-b border-slate-200 whitespace-nowrap">
+                                    <th class="py-2 px-2.5 sm:px-3">No</th>
+                                    <th class="py-2 px-2.5 sm:px-3">항목명</th>
+                                    <th class="py-2 px-2.5 sm:px-3 text-right">금액</th>
+                                    <th class="py-2 px-2.5 sm:px-3">비고</th>
                                 </tr>
                             </thead>
                             <tbody id="settlementExpenseTableBody"></tbody>
@@ -361,7 +416,7 @@
             </div>
 
             <!-- Active Agenda Card -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-5">
+            <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4 sm:space-y-5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
                     <div>
                         <div class="flex items-center gap-2">
@@ -373,7 +428,7 @@
                     </div>
                     <div class="flex flex-col sm:items-end gap-2 shrink-0">
                         <div id="activeAgendaAdminActions"></div>
-                        <div id="myVoteStatusNotice" class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-right"></div>
+                        <div id="myVoteStatusNotice" class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-left sm:text-right w-full sm:w-auto"></div>
                     </div>
                 </div>
 
@@ -397,7 +452,7 @@
 
                 <!-- Vote Count Board -->
                 <div class="p-4 rounded-xl bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-6 text-center">
+                    <div class="grid grid-cols-3 sm:flex sm:items-center gap-4 sm:gap-6 text-center">
                         <div>
                             <div class="text-[11px] text-emerald-400 font-bold">찬성</div>
                             <div id="activeAgendaApproveCount" class="text-2xl font-black text-emerald-400">0</div>
@@ -411,14 +466,14 @@
                             <div id="activeAgendaAbstainCount" class="text-2xl font-black text-slate-300">0</div>
                         </div>
                     </div>
-                    <div class="text-right text-xs text-slate-400 space-y-0.5">
+                    <div class="text-left sm:text-right text-xs text-slate-400 space-y-0.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800">
                         <div>현재 투표 참여: <strong id="activeAgendaTotalVoted" class="text-white">0</strong>명</div>
                         <div>가결 정족수(2/3): <strong id="activeAgendaPassThreshold" class="text-emerald-400">90</strong>표 이상 찬성 필요</div>
                     </div>
                 </div>
 
                 <!-- Voting Action Buttons -->
-                <div id="activeAgendaVotingButtonsContainer" class="grid grid-cols-3 gap-3 pt-2">
+                <div id="activeAgendaVotingButtonsContainer" class="grid grid-cols-3 gap-2 sm:gap-3 pt-2">
                     <button type="button" onclick="voteAgenda('approve')" class="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition shadow-sm cursor-pointer flex items-center justify-center gap-1.5">
                         <span>✓</span>
                         <span>찬성</span>
@@ -432,6 +487,9 @@
                         <span>기권</span>
                     </button>
                 </div>
+
+                <!-- Prev / Next Agenda Navigation Footer -->
+                <div id="agendaBottomNavContainer" class="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between gap-2 sm:gap-3"></div>
             </div>
         </section>
 
@@ -448,7 +506,7 @@
             <div id="electionAdminControlBarContainer"></div>
 
             <!-- Single Candidate Mode Box -->
-            <div id="electionSingleModeView" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-6">
+            <div id="electionSingleModeView" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5 sm:space-y-6">
                 <div class="flex flex-col md:flex-row items-center gap-6 border-b border-slate-100 pb-6 relative">
                     <img id="singleCandPhoto" src="assets/cand_1.jpg" alt="단장 후보" class="w-32 h-32 rounded-2xl object-cover shadow-md border-2 border-indigo-200 shrink-0" onerror="this.src='assets/cand_1.jpg'" />
                     <div class="space-y-2 text-center md:text-left min-w-0 flex-1">
@@ -480,7 +538,7 @@
                 </div>
 
                 <!-- Single Vote Buttons -->
-                <div id="singleElectionVoteButtonsContainer" class="grid grid-cols-3 gap-3">
+                <div id="singleElectionVoteButtonsContainer" class="grid grid-cols-3 gap-2 sm:gap-3">
                     <button type="button" onclick="voteElectionSingle('approve')" class="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm transition shadow-sm cursor-pointer">
                         후보 찬성
                     </button>
@@ -494,9 +552,9 @@
             </div>
 
             <!-- Multi Candidate Mode Box -->
-            <div id="electionMultiModeView" class="hidden bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div id="electionMultiModeView" class="hidden bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
                 <h3 class="text-base font-extrabold text-slate-900">단장 선거 다자 경선 후보자 목록</h3>
-                <div id="multiCandidatesGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                <div id="multiCandidatesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
         </section>
 
@@ -523,15 +581,15 @@
             <!-- Search and Filter Bar -->
             <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="flex items-center gap-2 overflow-x-auto no-scrollbar scrollbar-none py-1">
-                    <button type="button" onclick="appState.bylawViewerChapter='all'; renderCurrentBylawsView();" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-white">전체</button>
-                    <button type="button" onclick="appState.bylawViewerChapter='제1장'; renderCurrentBylawsView();" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">제1장 총칙</button>
-                    <button type="button" onclick="appState.bylawViewerChapter='제2장'; renderCurrentBylawsView();" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">제2장 단원</button>
-                    <button type="button" onclick="appState.bylawViewerChapter='제3장'; renderCurrentBylawsView();" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">제3장 조직</button>
-                    <button type="button" onclick="appState.bylawViewerChapter='제4장'; renderCurrentBylawsView();" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">제4장 총회</button>
-                    <button type="button" onclick="appState.bylawViewerChapter='제6장'; renderCurrentBylawsView();" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">제6장 재정</button>
+                    <button type="button" onclick="appState.bylawViewerChapter='all'; renderCurrentBylawsView();" class="shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-white cursor-pointer">전체</button>
+                    <button type="button" onclick="appState.bylawViewerChapter='제1장'; renderCurrentBylawsView();" class="shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">제1장 총칙</button>
+                    <button type="button" onclick="appState.bylawViewerChapter='제2장'; renderCurrentBylawsView();" class="shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">제2장 단원</button>
+                    <button type="button" onclick="appState.bylawViewerChapter='제3장'; renderCurrentBylawsView();" class="shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">제3장 조직</button>
+                    <button type="button" onclick="appState.bylawViewerChapter='제4장'; renderCurrentBylawsView();" class="shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">제4장 총회</button>
+                    <button type="button" onclick="appState.bylawViewerChapter='제6장'; renderCurrentBylawsView();" class="shrink-0 whitespace-nowrap px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 cursor-pointer">제6장 재정</button>
                 </div>
-                <div class="w-full sm:w-72">
-                    <input type="text" placeholder="단칙 키워드 또는 조항 검색 (예: 28조, 회비, 환불)" oninput="appState.bylawSearchQuery=this.value; renderCurrentBylawsView();" class="w-full px-3 py-1.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
+                <div class="w-full sm:w-80">
+                    <input type="text" placeholder="단칙 키워드 또는 조항 검색 (예: 28조, 회비, 환불)" oninput="appState.bylawSearchQuery=this.value; renderCurrentBylawsView();" class="w-full px-3.5 py-2.5 sm:py-2 rounded-xl border border-slate-200 text-base sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none" />
                 </div>
             </div>
 
@@ -718,17 +776,17 @@
                         <p class="text-xs text-slate-500 mt-0.5">운영진 역할, 기수, 파트, 소속사 및 각 운영진의 본인인증 4자리 코드를 확인합니다.</p>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+                <div class="overflow-x-auto table-scroll-wrapper -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <table class="w-full min-w-[520px] text-left border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600">
-                                <th class="py-2 px-3 text-center w-12">No</th>
-                                <th class="py-2 px-3">직책/역할</th>
-                                <th class="py-2 px-3">성명</th>
-                                <th class="py-2 px-3">기수</th>
-                                <th class="py-2 px-3">파트</th>
-                                <th class="py-2 px-3">소속사</th>
-                                <th class="py-2 px-3 text-center">인증코드</th>
+                            <tr class="border-b border-slate-200 bg-slate-50 text-[11px] font-bold text-slate-600 whitespace-nowrap">
+                                <th class="py-2 px-2.5 sm:px-3 text-center w-12">No</th>
+                                <th class="py-2 px-2.5 sm:px-3">직책/역할</th>
+                                <th class="py-2 px-2.5 sm:px-3">성명</th>
+                                <th class="py-2 px-2.5 sm:px-3">기수</th>
+                                <th class="py-2 px-2.5 sm:px-3">파트</th>
+                                <th class="py-2 px-2.5 sm:px-3">소속사</th>
+                                <th class="py-2 px-2.5 sm:px-3 text-center">인증코드</th>
                             </tr>
                         </thead>
                         <tbody id="adminExecutiveRosterTableBody"></tbody>
@@ -739,45 +797,21 @@
 
     </main>
 
-    <!-- ============================================================ -->
-    <!-- MODALS SECTION -->
-    <!-- ============================================================ -->
+    <!-- COMPACT FOOTER -->
+    <footer class="border-t border-slate-200 bg-white/80 py-4 px-4 text-center text-[11px] sm:text-xs text-slate-400">
+        2026 삼성한우리합창단 정기총회 공식 의결 시스템 · 재적 정단원 134명
+    </footer>
+    </div><!-- /#appShell -->
 
-    <!-- MODAL 1: 단원 로그인 (이름 + 휴대폰 뒷자리 4자리) -->
-    <div id="voterLoginModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full flex flex-col shadow-2xl overflow-hidden border border-slate-100">
-            <!-- Modal Header -->
-            <div class="p-5 border-b border-slate-100 flex items-center justify-between">
-                <div>
-                    <h3 class="text-base font-black text-slate-900">단원 로그인</h3>
-                    <p class="text-xs text-slate-500 mt-0.5">이름과 휴대폰 번호 뒷자리 4자리를 입력하세요.</p>
-                </div>
-                <button type="button" onclick="closeVoterLoginModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition cursor-pointer">✕</button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="voterLoginForm" onsubmit="event.preventDefault(); handleSimpleLoginSubmit(event); return false;" class="p-5 space-y-4">
-                <div>
-                    <label for="loginNameInput" class="block text-xs font-bold text-slate-700 mb-1.5">이름</label>
-                    <input id="loginNameInput" type="text" placeholder="예: 홍길동" autocomplete="name" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white" />
-                </div>
-                <div>
-                    <label for="loginCodeInput" class="block text-xs font-bold text-slate-700 mb-1.5">휴대폰 뒷자리 4자리</label>
-                    <input id="loginCodeInput" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리 (예: 1234)" autocomplete="one-time-code" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm font-mono tracking-widest text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white" />
-                </div>
-                <p id="loginErrorMsg" class="text-xs text-rose-600 font-bold bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 hidden"></p>
-                <button type="submit" onclick="event.preventDefault(); handleSimpleLoginSubmit(event);" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-extrabold shadow-sm transition cursor-pointer">
-                    로그인
-                </button>
-            </form>
-        </div>
-    </div>
+    <!-- ============================================================ -->
+    <!-- MODALS SECTION (Mobile-safe max-h-[90dvh] & scrollable body) -->
+    <!-- ============================================================ -->
 
     <!-- ============================================================ -->
     <!-- MODAL 2: 총회 식순 추가/수정 모달 (scheduleModal) -->
     <!-- ============================================================ -->
     <div id="scheduleModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-lg max-h-[90dvh] shadow-2xl overflow-hidden border border-slate-100 flex flex-col">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 id="scheduleModalTitle" class="text-base font-black text-slate-900">식순 항목 추가</h3>
@@ -846,7 +880,7 @@
     <!-- MODAL 3: 연간 행사 추가/수정 모달 (addEventModal) -->
     <!-- ============================================================ -->
     <div id="addEventModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-lg max-h-[90dvh] shadow-2xl overflow-hidden border border-slate-100 flex flex-col">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 id="eventModalTitle" class="text-base font-black text-slate-900">연간 행사 추가</h3>
@@ -895,7 +929,7 @@
     <!-- MODAL 4: 단장 후보자 추가/수정 모달 (candidateModal) -->
     <!-- ============================================================ -->
     <div id="candidateModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-lg max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 id="candidateModalTitle" class="text-base font-black text-slate-900">단장 후보자 정보 입력 / 수정</h3>
@@ -964,7 +998,7 @@
     <!-- MODAL 5: 단칙 개정안 추가/수정 모달 (agendaModal) -->
     <!-- ============================================================ -->
     <div id="agendaModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-xl max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 id="agendaModalTitle" class="text-base font-black text-slate-900">단칙 개정안 추가 / 수정</h3>
@@ -1027,7 +1061,7 @@
     <!-- MODAL 6: 단칙 조문 추가/수정 모달 (editClauseModal) -->
     <!-- ============================================================ -->
     <div id="editClauseModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-xl max-h-[90dvh] shadow-2xl overflow-hidden border border-slate-100 flex flex-col">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 id="clauseModalTitle" class="text-base font-black text-slate-900">단칙 조문 수정</h3>
@@ -1086,7 +1120,7 @@
     <!-- MODAL 7: 연주회 강평 및 설문 요약 수정 모달 (surveyModal) -->
     <!-- ============================================================ -->
     <div id="surveyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-lg max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 class="text-base font-black text-slate-900">제20회 연주회 강평 및 설문 요약 수정</h3>
@@ -1135,7 +1169,7 @@
     <!-- MODAL 8: 결산 보고 내역 수정 모달 (settlementModal) -->
     <!-- ============================================================ -->
     <div id="settlementModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-lg max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
                     <h3 class="text-base font-black text-slate-900">2026 회계 결산 내역 수정</h3>
@@ -1175,8 +1209,8 @@
     </div>
 
     <!-- MODAL 5: Cloud Sync Modal -->
-    <div id="cloudSyncModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+    <div id="cloudSyncModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-md max-h-[90dvh] overflow-y-auto p-5 sm:p-6 shadow-2xl space-y-4">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h3 class="text-base font-black text-slate-900">클라우드 동기화 및 백업 센터</h3>
                 <button type="button" onclick="closeCloudSyncModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold">✕</button>
@@ -1197,7 +1231,7 @@
     </div>
 
 <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toastBanner" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-900/95 text-white shadow-xl border border-slate-700 text-xs font-bold pointer-events-none transition-all">
+    <div id="toastBanner" class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:bottom-5 z-50 hidden items-center justify-center sm:justify-start gap-2 px-4 py-2.5 rounded-2xl bg-slate-900/95 text-white shadow-xl border border-slate-700 text-xs font-bold pointer-events-none transition-all">
         <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
         <span id="toastMessageText">안내 메시지</span>
     </div>
@@ -1207,13 +1241,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.22"></script>
-    <script src="js/data-config.js?v=2026.22"></script>
-    <script src="js/firebase-config.js?v=2026.22"></script>
-    <script src="js/firebase-sync.js?v=2026.22"></script>
-    <script src="js/utils.js?v=2026.22"></script>
-    <script src="js/render.js?v=2026.22"></script>
-    <script src="js/handlers.js?v=2026.22"></script>
-    <script src="js/app.js?v=2026.22"></script>
+    <script src="js/data-members.js?v=2026.24"></script>
+    <script src="js/data-config.js?v=2026.24"></script>
+    <script src="js/firebase-config.js?v=2026.24"></script>
+    <script src="js/firebase-sync.js?v=2026.24"></script>
+    <script src="js/utils.js?v=2026.24"></script>
+    <script src="js/render.js?v=2026.24"></script>
+    <script src="js/handlers.js?v=2026.24"></script>
+    <script src="js/app.js?v=2026.24"></script>
 </body>
 </html>

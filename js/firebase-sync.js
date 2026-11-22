@@ -186,6 +186,8 @@
         var s = getAppStateRef();
         if (!s) return;
 
+        var preservedTab = s.activeTab;
+        var preservedAgendaId = s.activeAgendaId;
         isApplyingRemoteUpdate = true;
         try {
 
@@ -337,9 +339,16 @@
                     };
                 });
 
-                if (!s.agendas.some(function(a) { return a.id === s.activeAgendaId; })) {
+                if (preservedAgendaId && s.agendas.some(function(a) { return a.id === preservedAgendaId; })) {
+                    s.activeAgendaId = preservedAgendaId;
+                } else if (!s.agendas.some(function(a) { return a.id === s.activeAgendaId; })) {
                     s.activeAgendaId = s.agendas[0].id;
                 }
+            }
+
+            // Never let incoming remote config overwrite user's local navigation state
+            if (preservedTab) {
+                s.activeTab = preservedTab;
             }
 
             status.lastSyncAt = new Date().toISOString();
@@ -358,6 +367,8 @@
         var s = getAppStateRef();
         if (!snapshot || !s) return;
 
+        var preservedTab = s.activeTab;
+        var preservedAgendaId = s.activeAgendaId;
         isApplyingRemoteUpdate = true;
         try {
             var newAgendaVotes = {};
@@ -417,6 +428,14 @@
                 s.election.singleVotes.memberVotes = deepClone(newSingleVotes);
                 s.election.multiMemberVotes = deepClone(newMultiVotes);
                 s.election.electionVoters = deepClone(electionVotersMap);
+            }
+
+            // Never let incoming live vote updates reset user's local tab or selected agenda
+            if (preservedTab) {
+                s.activeTab = preservedTab;
+            }
+            if (preservedAgendaId) {
+                s.activeAgendaId = preservedAgendaId;
             }
 
             status.lastSyncAt = new Date().toISOString();
@@ -616,6 +635,33 @@
     }
 
     /**
+     * 단칙 개정안 개별 투표 취소(삭제): hanwoori_2026_votes/agenda_${agendaId}_${safeMemberKey}
+     */
+    function deleteAgendaVoteFromCloud(agendaId, memberKey) {
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        if (!agendaId || !memberKey) {
+            return Promise.resolve({ skipped: true, reason: "invalid_args" });
+        }
+        var safeMemberKey = sanitizeKey(memberKey);
+        var docId = "agenda_" + sanitizeKey(agendaId) + "_" + safeMemberKey;
+        return db.collection(VOTES_COLLECTION).doc(docId).delete()
+            .then(function() {
+                if (cachedAgendaVotes[agendaId] && cachedAgendaVotes[agendaId][memberKey]) {
+                    delete cachedAgendaVotes[agendaId][memberKey];
+                }
+                status.lastSyncAt = new Date().toISOString();
+                return { ok: true, docId: docId, deleted: true };
+            })
+            .catch(function(err) {
+                status.error = err && err.message ? err.message : String(err);
+                notifyUiRefresh();
+                return { ok: false, error: status.error };
+            });
+    }
+
+    /**
      * 단장 선거 개별 투표 원자적 기록: hanwoori_2026_votes/election_${safeMemberKey}
      */
     function submitElectionVoteToCloud(memberKey, memberName, candidateId) {
@@ -702,6 +748,7 @@
         init: init,
         pushConfigToCloud: pushConfigToCloud,
         submitAgendaVoteToCloud: submitAgendaVoteToCloud,
+        deleteAgendaVoteFromCloud: deleteAgendaVoteFromCloud,
         submitElectionVoteToCloud: submitElectionVoteToCloud,
         resetVotesInCloud: resetVotesInCloud,
         getStatus: getStatus,

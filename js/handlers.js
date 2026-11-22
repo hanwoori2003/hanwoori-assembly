@@ -1,7 +1,21 @@
 // 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
 
-function switchMainTab(tabId, btnEl) {
+function updateNavigationHash() {
+    try {
+        if (typeof window === "undefined" || !window.history || typeof window.history.replaceState !== "function") return;
+        const tab = appState.activeTab || "events";
+        const targetHash = (tab === "voting" && appState.activeAgendaId)
+            ? ("#voting/" + encodeURIComponent(appState.activeAgendaId))
+            : ("#" + encodeURIComponent(tab));
+        if (window.location && window.location.hash !== targetHash) {
+            window.history.replaceState(null, "", targetHash);
+        }
+    } catch (e) {}
+}
+
+function switchMainTab(tabId, btnEl, options) {
     if (!tabId) return;
+    const opts = options || {};
 
     // Support both canonical and legacy alias names
     const cleanTabId = String(tabId).trim().replace(/^#/, "");
@@ -104,8 +118,15 @@ function switchMainTab(tabId, btnEl) {
         }, 50);
     }
 
+    if (!opts.skipPersist && typeof saveStateToStorage === "function") {
+        saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    }
+    updateNavigationHash();
+
     renderAll();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (!opts.skipScroll && typeof window !== "undefined" && typeof window.scrollTo === "function") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     // Update tabs scroll indicators (left/right fade)
     if (typeof updateTabsScrollIndicator === "function") {
@@ -163,10 +184,29 @@ function updateTabsScrollIndicator() {
 
 function openVoterLoginModal() {
     const modal = document.getElementById("voterLoginModal");
-    if (!modal) return;
     const nameInp = document.getElementById("loginNameInput");
     const codeInp = document.getElementById("loginCodeInput");
     const errEl = document.getElementById("loginErrorMsg");
+    if (!modal) {
+        // Full-screen Login Gate mode (#loginGateScreen)
+        if (typeof getCurrentVoter === "function" && getCurrentVoter()) {
+            showToast("다른 단원으로 로그인하려면 로그아웃 버튼을 눌러주세요.");
+            return;
+        }
+        if (typeof renderAuthGate === "function") {
+            renderAuthGate();
+        }
+        if (errEl) {
+            errEl.textContent = "";
+            errEl.classList.add("hidden");
+        }
+        if (nameInp) {
+            setTimeout(function() {
+                try { nameInp.focus(); } catch (e) {}
+            }, 60);
+        }
+        return;
+    }
     if (nameInp) nameInp.value = "";
     if (codeInp) codeInp.value = "";
     if (errEl) {
@@ -180,9 +220,10 @@ function openVoterLoginModal() {
 
 function closeVoterLoginModal() {
     const modal = document.getElementById("voterLoginModal");
-    if (!modal) return;
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
     const errEl = document.getElementById("loginErrorMsg");
     if (errEl) {
         errEl.textContent = "";
@@ -293,9 +334,19 @@ function handleSimpleLoginSubmit(evt) {
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
 
+    if (nameInp) nameInp.value = "";
+    if (codeInp) codeInp.value = "";
+    if (errEl) {
+        errEl.textContent = "";
+        errEl.classList.add("hidden");
+    }
+
     saveStateToStorage({ skipCloudConfigPush: true });
     closeVoterLoginModal();
-    renderAll();
+    switchMainTab("events");
+    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+        window.scrollTo(0, 0);
+    }
 
     if (matched.isExecutive) {
         showToast("👑 " + matched.name + " 운영진님 로그인되었습니다.");
@@ -311,13 +362,28 @@ function logoutCurrentUser() {
     appState.isAdminAuthenticated = false;
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
+    appState.activeTab = "events";
 
-    if (appState.activeTab === "admin" || (appState.activeTab === "winner" && !appState.winnerPagePublic)) {
-        switchMainTab("events");
+    const nameInp = document.getElementById("loginNameInput");
+    const codeInp = document.getElementById("loginCodeInput");
+    const errEl = document.getElementById("loginErrorMsg");
+    if (nameInp) nameInp.value = "";
+    if (codeInp) codeInp.value = "";
+    if (errEl) {
+        errEl.textContent = "";
+        errEl.classList.add("hidden");
     }
 
-    saveStateToStorage({ skipCloudConfigPush: true });
+    saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    try {
+        if (typeof window !== "undefined" && window.history && typeof window.history.replaceState === "function" && window.location) {
+            window.history.replaceState(null, "", window.location.pathname + window.location.search);
+        }
+    } catch (e) {}
     renderAll();
+    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+        window.scrollTo(0, 0);
+    }
     showToast("로그아웃되었습니다.");
 }
 
@@ -363,6 +429,46 @@ function voteAgenda(choice) {
     showToast("안건 " + agNo + "에 [" + labelMap[choice] + "] 투표를 완료했습니다.");
 }
 
+function cancelAgendaVote(agendaId) {
+    if (!appState.currentVoterId || !getCurrentVoter()) {
+        showToast("투표 취소는 로그인 후 이용할 수 있습니다.");
+        openVoterLoginModal();
+        return;
+    }
+    const ag = agendaId
+        ? (appState.agendas || []).find(function(a) { return a && a.id === agendaId; })
+        : getActiveAgenda();
+    if (!ag) return;
+    if (ag.isLocked || ag.locked || ag.status === "closed" || ag.status === "locked") {
+        showToast("🔒 본 안건은 투표가 마감되어 의결이 확정되었습니다 (취소 불가).");
+        return;
+    }
+    if (!ag.memberVotes || !ag.memberVotes[appState.currentVoterId]) {
+        return;
+    }
+
+    const voterId = appState.currentVoterId;
+    delete ag.memberVotes[voterId];
+    if (ag.voters && Object.prototype.hasOwnProperty.call(ag.voters, voterId)) {
+        delete ag.voters[voterId];
+    }
+    const updatedTallies = getAgendaTallies(ag);
+    ag.agree = Math.max(0, updatedTallies.approve);
+    ag.disagree = Math.max(0, updatedTallies.reject);
+    ag.abstain = Math.max(0, updatedTallies.abstain);
+
+    saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.deleteAgendaVoteFromCloud === "function") {
+        window.FirebaseSync.deleteAgendaVoteFromCloud(ag.id, voterId);
+    }
+    renderActiveVotingView();
+    renderAgendaStepper();
+    renderHeaderStatus();
+    showToast("투표가 취소되었습니다. (미투표 상태)");
+}
+
 function toggleAgendaLock(agendaId) {
     if (!agendaId) agendaId = appState.activeAgendaId;
     const ag = (appState.agendas || []).find(function(a) { return a.id === agendaId; });
@@ -394,8 +500,18 @@ function toggleAllAgendasLock(shouldLock) {
     );
 }
 
-function selectAgenda(agendaId) {
+function selectAgenda(agendaId, options) {
+    const opts = options || {};
+    if (!agendaId) return;
+    if (Array.isArray(appState.agendas) && appState.agendas.length > 0 &&
+        !appState.agendas.some(function(a) { return a && a.id === agendaId; })) {
+        return;
+    }
     appState.activeAgendaId = agendaId;
+    if (typeof saveStateToStorage === "function") {
+        saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    }
+    updateNavigationHash();
     renderAgendaStepper();
     renderActiveVotingView();
     renderHeaderStatus();
@@ -410,6 +526,32 @@ function selectAgenda(agendaId) {
             } catch (e) {}
         }
     }
+
+    // Scroll smoothly back to top of voting section when navigating via prev/next buttons
+    if (opts.scrollToVotingTop) {
+        const votingSection = document.getElementById("view-voting");
+        if (votingSection && typeof votingSection.scrollIntoView === "function") {
+            try {
+                votingSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            } catch (e) {
+                if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+            }
+        } else if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }
+}
+
+function navigateAgendaStep(delta) {
+    const agendas = Array.isArray(appState.agendas) ? appState.agendas : [];
+    if (agendas.length === 0) return;
+    const currentIdx = agendas.findIndex(function(a) { return a && a.id === appState.activeAgendaId; });
+    const safeIdx = currentIdx >= 0 ? currentIdx : 0;
+    const nextIdx = safeIdx + delta;
+    if (nextIdx < 0 || nextIdx >= agendas.length) return;
+    selectAgenda(agendas[nextIdx].id, { scrollToVotingTop: true });
 }
 
 function voteElectionSingle(choice) {

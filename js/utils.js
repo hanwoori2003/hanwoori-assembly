@@ -48,9 +48,11 @@ function migrateAssemblyScheduleItems(scheduleList) {
 
 function saveStateToStorage(options) {
     const opts = options || {};
+    const skipCloud = Boolean(opts.skipCloudConfigPush || opts.skipCloudPush);
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             totalAttendees: appState.totalAttendees,
+            activeTab: appState.activeTab || "events",
             activeAgendaId: appState.activeAgendaId,
             adminPreviewAsMember: appState.adminPreviewAsMember,
             uploadedFileName: appState.uploadedFileName,
@@ -69,13 +71,21 @@ function saveStateToStorage(options) {
             concertSurvey: appState.concertSurvey
         }));
     } catch (e) {}
-    if (!opts.skipCloudConfigPush &&
+    try {
+        if (typeof sessionStorage !== "undefined") {
+            sessionStorage.setItem(STORAGE_KEY + "_nav", JSON.stringify({
+                activeTab: appState.activeTab || "events",
+                activeAgendaId: appState.activeAgendaId || "ag-1"
+            }));
+        }
+    } catch (e) {}
+    if (!skipCloud &&
         typeof window !== "undefined" &&
         window.FirebaseSync &&
         typeof window.FirebaseSync.pushConfigToCloud === "function") {
         window.FirebaseSync.pushConfigToCloud(appState);
     }
-    if (typeof pushStateToCloudIfConnected === "function") {
+    if (!skipCloud && typeof pushStateToCloudIfConnected === "function") {
         pushStateToCloudIfConnected();
     }
 }
@@ -92,6 +102,7 @@ function loadStateFromStorage() {
                 appState.totalAttendees = (!isCurrentKey && parsed.totalAttendees === 127)
                     ? canonicalTotal
                     : (parsed.totalAttendees || canonicalTotal);
+                appState.activeTab = normalizeScheduleTargetTab(parsed.activeTab) || "events";
                 appState.activeAgendaId = parsed.activeAgendaId || "ag-1";
                 appState.adminPreviewAsMember = Boolean(parsed.adminPreviewAsMember);
                 appState.uploadedFileName = parsed.uploadedFileName || appState.uploadedFileName;
@@ -211,6 +222,52 @@ function loadStateFromStorage() {
                 if (parsed.concertSurvey) appState.concertSurvey = parsed.concertSurvey;
             }
         }
+        // Fallback to sessionStorage nav state if localStorage did not have it
+        try {
+            if (typeof sessionStorage !== "undefined") {
+                const rawNav = sessionStorage.getItem(STORAGE_KEY + "_nav");
+                if (rawNav) {
+                    const navParsed = JSON.parse(rawNav);
+                    if (navParsed && !appState.activeTab && navParsed.activeTab) {
+                        appState.activeTab = normalizeScheduleTargetTab(navParsed.activeTab) || "events";
+                    }
+                    if (navParsed && !appState.activeAgendaId && navParsed.activeAgendaId) {
+                        appState.activeAgendaId = navParsed.activeAgendaId;
+                    }
+                }
+            }
+        } catch (e) {}
+
+        // Honor explicit URL hash (e.g., #voting/ag-2, #voting/agenda-2, #activity, #settlement)
+        try {
+            if (typeof window !== "undefined" && window.location && window.location.hash) {
+                const rawHash = String(window.location.hash).replace(/^#/, "").trim();
+                if (rawHash) {
+                    const parts = rawHash.split("/");
+                    const hashTab = normalizeScheduleTargetTab(parts[0]);
+                    if (hashTab) {
+                        appState.activeTab = hashTab;
+                    }
+                    if (parts[1]) {
+                        const rawAg = parts[1].trim();
+                        const normalizedAg = rawAg.replace(/^agenda-(\d+)$/i, "ag-$1");
+                        if (Array.isArray(appState.agendas) && appState.agendas.some(function(a) { return a && a.id === normalizedAg; })) {
+                            appState.activeAgendaId = normalizedAg;
+                        } else if (Array.isArray(appState.agendas) && appState.agendas.some(function(a) { return a && a.id === rawAg; })) {
+                            appState.activeAgendaId = rawAg;
+                        }
+                    }
+                }
+            }
+        } catch (e) {}
+
+        if (!appState.activeTab) {
+            appState.activeTab = "events";
+        }
+        if (!Array.isArray(appState.agendas) || !appState.agendas.some(function(a) { return a && a.id === appState.activeAgendaId; })) {
+            appState.activeAgendaId = (appState.agendas && appState.agendas[0] && appState.agendas[0].id) ? appState.agendas[0].id : "ag-1";
+        }
+
         const savedUrl = localStorage.getItem(STORAGE_KEY + "_db_url");
         if (savedUrl) {
             cloudSyncUrl = savedUrl;
