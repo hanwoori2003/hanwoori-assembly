@@ -664,7 +664,9 @@ function cancelElectionVote() {
 }
 
 function resetAgendaVotesOnly() {
-    if (typeof confirm === "function" && !confirm("모든 단칙 개정안(12건)의 실시간 투표 기록을 0표로 초기화하시겠습니까?")) {
+    var totalCount = (appState.agendas || []).length || 12;
+    var confirmMsg = "⚠️ [주의] 모든 단칙 개정안(" + totalCount + "건)의 실시간 투표 기록을 0표로 완전히 초기화하시겠습니까?\n\n- 전체 안건의 찬성/반대/기권 모든 투표가 삭제됩니다.\n- Firebase 클라우드 및 모든 연결된 기기에서 실시간으로 0표 반영됩니다.\n- 이 작업은 취소할 수 없습니다.";
+    if (typeof confirm === "function" && !confirm(confirmMsg)) {
         return;
     }
     (appState.agendas || []).forEach(function(ag) {
@@ -688,6 +690,50 @@ function resetAgendaVotesOnly() {
         renderAll();
     }
     showToast("모든 단칙 개정안 투표가 0표로 초기화되었습니다.");
+}
+
+function resetSingleAgendaVotes(agendaId) {
+    if (!agendaId) {
+        var curAg = typeof getActiveAgenda === "function" ? getActiveAgenda() : null;
+        agendaId = curAg ? curAg.id : (appState && appState.activeAgendaId);
+    }
+    if (!agendaId) return;
+
+    var ag = (appState.agendas || []).find(function(a) { return a && a.id === agendaId; });
+    if (!ag) return;
+
+    var agNo = ag.no || ag.agendaNo || ag.number || "";
+    var agTitle = ag.title || ("안건 제" + agNo + "호");
+    var confirmMsg = "⚠️ [" + agTitle + "]의 실시간 투표 기록을 0표로 초기화하시겠습니까?\n\n- 본 안건에 참여한 모든 단원의 투표(찬성/반대/기권)가 삭제됩니다.\n- Firebase 클라우드 및 모든 기기에서 즉시 0표로 리셋됩니다.\n- 이 작업은 취소할 수 없습니다.";
+    if (typeof confirm === "function" && !confirm(confirmMsg)) {
+        return;
+    }
+
+    ag.baseApprove = 0;
+    ag.baseReject = 0;
+    ag.baseAbstain = 0;
+    ag.agree = 0;
+    ag.disagree = 0;
+    ag.abstain = 0;
+    ag.memberVotes = {};
+    ag.voters = {};
+
+    saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    if (typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.resetSingleAgendaVotesInCloud === "function") {
+        window.FirebaseSync.resetSingleAgendaVotesInCloud(agendaId);
+    }
+    if (typeof renderAll === "function") {
+        renderAll();
+    } else if (typeof renderActiveVotingView === "function") {
+        renderActiveVotingView();
+    }
+    showToast("[" + agTitle + "] 투표 기록이 0표로 초기화되었습니다.");
+}
+if (typeof window !== "undefined") {
+    window.resetAgendaVotesOnly = resetAgendaVotesOnly;
+    window.resetSingleAgendaVotes = resetSingleAgendaVotes;
 }
 
 function resetElectionVotesOnly() {

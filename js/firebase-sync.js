@@ -804,6 +804,50 @@
     }
 
     /**
+     * 특정 단칙 개정안(agenda_${agendaId}_*) 투표 문서만 선택 삭제 후 클린 config 반영
+     */
+    function resetSingleAgendaVotesInCloud(agendaId) {
+        if (!agendaId) {
+            return Promise.resolve({ skipped: true, reason: "invalid_agenda_id" });
+        }
+        if (cachedAgendaVotes[agendaId]) {
+            delete cachedAgendaVotes[agendaId];
+        }
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        var targetPrefix = "agenda_" + sanitizeKey(agendaId) + "_";
+        return db.collection(VOTES_COLLECTION).get()
+            .then(function(snapshot) {
+                var deletions = [];
+                if (snapshot && !snapshot.empty) {
+                    snapshot.forEach(function(doc) {
+                        var d = (doc && typeof doc.data === "function") ? doc.data() : null;
+                        var docId = (doc && doc.id) ? String(doc.id) : "";
+                        var isTargetDoc = (docId.indexOf(targetPrefix) === 0) || (d && d.type === "agenda" && (d.agendaId === agendaId || d.agendaNo === agendaId));
+                        if (!isTargetDoc) return;
+                        if (doc && doc.ref && typeof doc.ref.delete === "function") {
+                            deletions.push(doc.ref.delete());
+                        } else if (docId) {
+                            deletions.push(db.collection(VOTES_COLLECTION).doc(docId).delete());
+                        }
+                    });
+                }
+                return Promise.all(deletions).then(function() {
+                    status.lastSyncAt = new Date().toISOString();
+                    return pushConfigToCloud(getAppStateRef(), { force: true, immediate: true }).then(function() {
+                        return { ok: true, deleted: deletions.length };
+                    });
+                });
+            })
+            .catch(function(err) {
+                status.error = err && err.message ? err.message : String(err);
+                notifyUiRefresh();
+                return { ok: false, error: status.error };
+            });
+    }
+
+    /**
      * 단장 선거(election_*) 투표 문서만 선택 삭제 후 클린 config 반영
      */
     function resetElectionVotesInCloud() {
@@ -904,6 +948,7 @@
         submitElectionVoteToCloud: submitElectionVoteToCloud,
         deleteElectionVoteFromCloud: deleteElectionVoteFromCloud,
         resetAgendaVotesInCloud: resetAgendaVotesInCloud,
+        resetSingleAgendaVotesInCloud: resetSingleAgendaVotesInCloud,
         resetElectionVotesInCloud: resetElectionVotesInCloud,
         resetVotesInCloud: resetVotesInCloud,
         getStatus: getStatus,

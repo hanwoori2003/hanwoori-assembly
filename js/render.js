@@ -1,4 +1,4 @@
-// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
+﻿// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
 
 function renderAuthGate() {
     const gate = document.getElementById("loginGateScreen");
@@ -881,6 +881,9 @@ function renderActiveVotingView() {
                             '<button type="button" onclick="openAgendaModal()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-indigo-600 hover:bg-indigo-500 text-white shadow-xs transition flex items-center gap-1 cursor-pointer">' +
                                 '<span>+</span> 새 개정안 상정' +
                             '</button>' +
+                            '<button id="btnResetAllAgendaVotesTop" type="button" onclick="resetAgendaVotesOnly()" class="px-3 py-1.5 rounded-xl text-xs font-black bg-rose-700 hover:bg-rose-600 active:bg-rose-800 text-white shadow-xs transition flex items-center gap-1 cursor-pointer" title="모든 단칙 개정안(12건)의 투표 기록을 0표로 일괄 초기화합니다">' +
+                                '<span>🗑️</span> 투표 전체 초기화 (0표 리셋)' +
+                            '</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -902,9 +905,17 @@ function renderActiveVotingView() {
                     '</button>' +
                     '<button type="button" onclick="openAgendaModal(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer flex items-center gap-1">✎ 안건 수정</button>' +
                     '<button type="button" onclick="deleteAgenda(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer flex items-center gap-1">🗑️ 안건 삭제</button>' +
+                    '<button id="btnResetSingleAgendaVote" type="button" onclick="resetSingleAgendaVotes(\'' + ag.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 transition cursor-pointer flex items-center gap-1" title="현재 선택된 이 안건의 투표만 0표로 초기화합니다">' +
+                        '<span>↺</span> 이 안건 투표 초기화' +
+                    '</button>' +
                 '</div>';
         } else {
-            adminActionsEl.innerHTML = '';
+            adminActionsEl.innerHTML = 
+                '<div class="flex items-center gap-1.5 flex-wrap justify-end">' +
+                    '<button type="button" onclick="resetSingleAgendaVotes(\'' + ag.id + '\')" class="px-2 py-0.5 rounded text-[11px] font-medium text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition cursor-pointer flex items-center gap-1" title="운영진 인증 후 이 안건의 투표를 초기화합니다">' +
+                        '<span>↺</span> 투표 초기화' +
+                    '</button>' +
+                '</div>';
         }
     }
 
