@@ -176,8 +176,13 @@ function loadStateFromStorage() {
                     }
                 }
                 if (parsed.issues) appState.issues = parsed.issues;
-                if (parsed.events) appState.events = parsed.events;
                 let needsPersistMigration = !isCurrentKey;
+                if (Array.isArray(parsed.events) && parsed.events.length >= 10) {
+                    appState.events = parsed.events;
+                } else {
+                    appState.events = getDefaultState().events;
+                    needsPersistMigration = true;
+                }
                 if (Array.isArray(parsed.assemblySchedule) && parsed.assemblySchedule.length > 0) {
                     const legacyPattern = /(2025|164명|김형택|황태희|이효정|박다정|윤상목|이창욱|한석범|sectionConcertReview|활동 보고.*강평)/;
                     const hasLegacySchedule = !isCurrentKey || parsed.assemblySchedule.some(function(item) {
@@ -214,6 +219,7 @@ function loadStateFromStorage() {
                         parsed.currentVoterId = appState.currentVoterId;
                         parsed.hasExplicitLogin = appState.hasExplicitLogin;
                         parsed.isAdminAuthenticated = appState.isAdminAuthenticated;
+                        parsed.events = appState.events;
                         parsed.assemblySchedule = appState.assemblySchedule;
                         parsed.settlement = appState.settlement;
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));

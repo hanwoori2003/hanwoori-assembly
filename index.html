@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.24" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.25" />
 </head>
 <body class="min-h-[100dvh] flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
 
@@ -256,27 +256,72 @@
         <!-- TAB 2: 2026 활동보고 (#view-activity) -->
         <!-- ============================================================ -->
         <section id="view-activity" class="hidden space-y-6">
+            <!-- Header Banner -->
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-950 via-slate-900 to-indigo-950 text-white shadow-md border border-sky-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 text-xs font-bold mb-2">
                         <span>📋</span> 정기총회 공식 안건 제2호
                     </div>
-                    <h2 class="text-xl sm:text-2xl font-black">2026년도 활동보고 및 연간 주요 행사 로드맵</h2>
-                    <p class="text-xs sm:text-sm text-slate-300 mt-1">2026년도 삼성한우리합창단 정기연습, 대외활동 및 연간 공식 행사 실적 보고입니다.</p>
+                    <h2 class="text-xl sm:text-2xl font-black tracking-tight break-keep">2026년도 활동보고</h2>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1 break-keep">단원 현황, 주요 변화, 월별 활동 타임라인, 주요 성과 및 반성·과제, Special Thanks 보고입니다.</p>
                 </div>
             </div>
 
-            <!-- Annual Schedule Timeline -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
+            <!-- Section 1: 단원 현황 (파트별 & 기수별 현황) -->
+            <div id="activityMemberStatsSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                     <div>
-                        <h3 class="text-base font-extrabold text-slate-900">2026년도 연간 주요 일정 및 행사 로드맵</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">2026년도 삼성한우리합창단 공식 행사 일정 및 활동 로드맵입니다.</p>
+                        <h3 class="text-base font-extrabold text-slate-900">1. 단원 현황 (파트별 &amp; 기수별 현황)</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">활동보고 집계 기준 정단원 구성 및 파트·기수별 분포입니다.</p>
+                    </div>
+                    <span class="inline-flex items-center self-start sm:self-auto px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-extrabold">활동보고 집계 기준 164명</span>
+                </div>
+                <div id="activityMemberStatsContainer" class="space-y-5"></div>
+            </div>
+
+            <!-- Section 2: 한우리 주요 변화 (6가지) -->
+            <div id="activityMajorChangesSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-900">2. 한우리 주요 변화 (6가지)</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">운영 효율화 및 합창단 문화 개선을 위해 도입된 주요 변화 사항입니다.</p>
+                    </div>
+                </div>
+                <div id="activityMajorChangesContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+            </div>
+
+            <!-- Section 3: 월별 주요 활동 타임라인 ("올해를 회상하며...") -->
+            <div id="activityTimelineSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-900">3. 월별 주요 활동 타임라인 ("올해를 회상하며...")</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">신단·정단 모집부터 제20회 정기연주회, 엠티까지 연간 12대 주요 활동 기록입니다.</p>
                     </div>
                     <!-- Dynamic admin header controls for annual events -->
                     <div id="annualEventsAdminHeaderControls" class="flex items-center gap-2"></div>
                 </div>
                 <div id="annualEventsListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- Section 4: 주요 성과 & 반성 및 과제 -->
+            <div id="activityOutcomesSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
+                <div class="border-b border-slate-100 pb-3">
+                    <h3 class="text-base font-extrabold text-slate-900">4. 주요 성과 &amp; 반성 및 과제</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">한 해의 주요 성과와 차기 연도 개선 과제 요약입니다.</p>
+                </div>
+                <div id="activityOutcomesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- Section 5: Special Thanks to... (※ 각사 게시 도우미) -->
+            <div id="activitySpecialThanksSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-900">5. Special Thanks to...</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">한우리 합창단의 모든 행사와 무대를 함께 만들어주신 분들께 감사드립니다.</p>
+                    </div>
+                    <span class="inline-flex items-center self-start sm:self-auto px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold">※ 각사 게시 도우미</span>
+                </div>
+                <div id="activitySpecialThanksContainer"></div>
             </div>
         </section>
 
@@ -1241,13 +1286,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.24"></script>
-    <script src="js/data-config.js?v=2026.24"></script>
-    <script src="js/firebase-config.js?v=2026.24"></script>
-    <script src="js/firebase-sync.js?v=2026.24"></script>
-    <script src="js/utils.js?v=2026.24"></script>
-    <script src="js/render.js?v=2026.24"></script>
-    <script src="js/handlers.js?v=2026.24"></script>
-    <script src="js/app.js?v=2026.24"></script>
+    <script src="js/data-members.js?v=2026.25"></script>
+    <script src="js/data-config.js?v=2026.25"></script>
+    <script src="js/firebase-config.js?v=2026.25"></script>
+    <script src="js/firebase-sync.js?v=2026.25"></script>
+    <script src="js/utils.js?v=2026.25"></script>
+    <script src="js/render.js?v=2026.25"></script>
+    <script src="js/handlers.js?v=2026.25"></script>
+    <script src="js/app.js?v=2026.25"></script>
 </body>
 </html>

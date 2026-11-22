@@ -247,10 +247,15 @@
                     }
                 });
             }
-            if (Array.isArray(data.annualEvents)) {
-                s.events = deepClone(data.annualEvents);
-            } else if (Array.isArray(data.events)) {
-                s.events = deepClone(data.events);
+            var remoteEvents = Array.isArray(data.annualEvents)
+                ? data.annualEvents
+                : (Array.isArray(data.events) ? data.events : null);
+            if (remoteEvents && remoteEvents.length >= 10) {
+                s.events = deepClone(remoteEvents);
+            } else if (!Array.isArray(s.events) || s.events.length < 10) {
+                if (typeof global.getDefaultState === "function") {
+                    s.events = deepClone(global.getDefaultState().events);
+                }
             }
             if (data.settlement && typeof data.settlement === "object") {
                 s.settlement = deepClone(data.settlement);

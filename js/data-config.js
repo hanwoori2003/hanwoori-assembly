@@ -316,6 +316,203 @@ const INITIAL_AGENDAS = [
 
 // 2. 단칙(제1조~제32조), 단칙 개정안(12건), 단장 선거 후보자, 총회 식순 및 행사 초기 데이터 (js/data-config.js)
 
+// 2-B. 활동보고 데이터 (PDF Pages 5-34 기준)
+const ACTIVITY_REPORT_DATA = {
+    memberSummary: {
+        total: 164,
+        existing: 132,
+        newcomers: 32,
+        note: "활동보고 집계 기준"
+    },
+    partStats: [
+        {
+            part: "Soprano",
+            total: 46,
+            color: "rose",
+            subParts: [
+                { label: "S1", count: "19" },
+                { label: "S2", count: "27*" }
+            ]
+        },
+        {
+            part: "Alto",
+            total: 42,
+            color: "amber",
+            subParts: [
+                { label: "A1", count: "23" },
+                { label: "A2", count: "19" }
+            ]
+        },
+        {
+            part: "Tenor",
+            total: 39,
+            color: "sky",
+            subParts: [
+                { label: "T1", count: "20" },
+                { label: "T2", count: "19" }
+            ]
+        },
+        {
+            part: "Bass",
+            total: 37,
+            color: "indigo",
+            subParts: [
+                { label: "B1", count: "22" },
+                { label: "B2", count: "15*" }
+            ]
+        }
+    ],
+    generationHighlightBadge: "16~20기: 97명 (59%)",
+    generationStats: [
+        { gen: 1, label: "1기", count: 6, highlight: false },
+        { gen: 2, label: "2기", count: 3, highlight: false },
+        { gen: 3, label: "3기", count: 3, highlight: false },
+        { gen: 4, label: "4기", count: 10, highlight: false },
+        { gen: 5, label: "5기", count: 5, highlight: false },
+        { gen: 6, label: "6기", count: 4, highlight: false },
+        { gen: 7, label: "7기", count: 1, highlight: false },
+        { gen: 8, label: "8기", count: 3, highlight: false },
+        { gen: 9, label: "9기", count: 1, highlight: false },
+        { gen: 10, label: "10기", count: 4, highlight: false },
+        { gen: 11, label: "11기", count: 5, highlight: false },
+        { gen: 12, label: "12기", count: 4, highlight: false },
+        { gen: 13, label: "13기", count: 6, highlight: false },
+        { gen: 14, label: "14기", count: 5, highlight: false },
+        { gen: 15, label: "15기", count: 7, highlight: false },
+        { gen: 16, label: "16기", count: 14, highlight: true },
+        { gen: 17, label: "17기", count: 9, highlight: true },
+        { gen: 18, label: "18기", count: 21, highlight: true },
+        { gen: 19, label: "19기", count: 21, highlight: true },
+        { gen: 20, label: "20기", count: 32, highlight: true }
+    ],
+    majorChanges: [
+        { no: 1, title: "정단원 명부 작성", desc: "파트별 정단원 사진 명부 제작", icon: "📸" },
+        { no: 2, title: "연회비 인상", desc: "24년 40만원 → 42만원 (얼리버드 2만원 할인 시 40만원)", icon: "💳" },
+        { no: 3, title: "연습 지각 시간 변경", desc: "3시 15분 → 3시 5분", icon: "⏰" },
+        { no: 4, title: "악보 보관 X", desc: "악보 개인 지참, 개인연습 활용", icon: "🎼" },
+        { no: 5, title: "정기연주회 구성 변경", desc: "소곡(1부) ↔ 메인곡(2부)", icon: "🎭" },
+        { no: 6, title: "꽃보다 기부 캠페인", desc: "현장 기부금 모금 ↑, 꽃다발 보관 ↓", icon: "💐" }
+    ],
+    achievements: [
+        "베토벤 합창교향곡 ‘나인심포니’ 대곡 도전 및 완주",
+        "역대 최고 기부금 달성 및 기부 문화 확산 — 총 4,007만원 (삼성중공업 외 4개 관계사 2,388만, 꽃보다 기부 캠페인 1,283만, 단원 기부 동참 335만 등)",
+        "합창대제전 참가로 대외활동 영역 확대 (아마추어합창단이 프로합창단과 함께)",
+        "솔리스트 개별 섭외를 통한 비용 절감",
+        "전문 안무가 기용으로 공연 완성도 향상",
+        "오케스트라 비딩을 통한 합리적/투명한 선정 프로세스 구축 (비용절감 및 리허설 공간 확보)",
+        "각사 내부 홍보를 통한 기부금 및 그룹 차원의 관심/지원 확대 (이부진 사장 및 삼성전자 간식 후원)"
+    ],
+    reflections: [
+        "삼성서울병원 등 봉사공연 미실시",
+        "소규모 무대 부족 (합창대제전 참가했으나 전체가 참여하지는 못함)",
+        "단원 간 교류 활성화 부족 (봄소풍은 운동회로 대체), 홈커밍데이 미실시",
+        "26년 정기연주회 공연장 신청 필요"
+    ],
+    specialThanksNote: "※ 각사 게시 도우미",
+    specialThanks: [
+        { group: "운동회 TF (8)", members: "윤상목, 맹유나, 박은영, 오정현, 이경환, 이규민, 이지수, 최영웅" },
+        { group: "번역 지원", members: "고태율, 황금비, 전영호" },
+        { group: "안무 담당", members: "심병수, 최예진" },
+        { group: "사진촬영", members: "최철호" },
+        { group: "녹음/영상 지원", members: "박현섭, 정승재" },
+        { group: "간식 지원", members: "한석범, 노희종, 맹유나, 김서영" },
+        { group: "파트연습 지원", members: "박인화, 최지은, 구종회, 고우리, 노혜란" },
+        { group: "합창제 TF (9)", members: "민원경, 고대하, 구영민, 김민혁, 엄효은, 이지수, 이효정, 한다혜, 황태희" },
+        { group: "형님들 찬조 (21)", members: "김선기, 김용범, 김의섭, 김종한, 김형진, 남궁헌, 손원익, 유우근, 유원종, 유희철, 이재욱(B), 이재욱(T), 이종성, 이준한, 이창욱, 장우진, 전영호, 정헌, 조경민, 지재성, 최경욱" },
+        { group: "정기연주회 Staff (19)", members: "조강원, 구성모, 구종회, 김수진, 김유림, 박성경, 심기선, 양은혜, 유운선, 유하늘, 윤진성, 이장욱, 이진수, 정현석, 조아름, 지정운, 차윤지, 최철호, 홍진혁" },
+        { group: "엠티 TF (7)", members: "심병수, 이준한, 김서영, 정승원, 최예진, 박은영, 이경환" },
+        { group: "지휘자추천위원회", members: "조경민, 구영민, 권두인, 김성희, 김영선, 이종성" },
+        { group: "송년회 TF (13)", members: "고태율, 권두인, 김유정, 박채원, 박희주, 사제환, 신다해, 오정현, 윤지현, 이경환, 이규민, 이지수, 황금비" }
+    ]
+};
+
+const INITIAL_ANNUAL_EVENTS = [
+    {
+        "id": "ev-1",
+        "date": "2월",
+        "title": "신단/정단 모집",
+        "place": "서초사옥 3층 대강의실",
+        "desc": "신단 오디션 (2/15, 3/1 서초사옥 3층 대강의실) 및 정단원 모집"
+    },
+    {
+        "id": "ev-2",
+        "date": "3월 8일(토)",
+        "title": "개강",
+        "place": "서초사옥",
+        "desc": "신단 OT, 카페 신단 소개(파트별), 명찰 패용 캠페인(3월), 134명 출석 (\"스치면 인연, 스며들면 한우리\")"
+    },
+    {
+        "id": "ev-3",
+        "date": "4월",
+        "title": "MBTI 콘테스트",
+        "place": "서초사옥",
+        "desc": "MBTI 소모임 서초사옥 봄꽃 사진 콘테스트"
+    },
+    {
+        "id": "ev-4",
+        "date": "4월 19일(토)",
+        "title": "운동회",
+        "place": "송파구 실내체육관 (맥스체대입시 송파교육원)",
+        "desc": "송파구 실내체육관 (맥스체대입시 송파교육원) · 64명 참석"
+    },
+    {
+        "id": "ev-5",
+        "date": "5월 10일(토)",
+        "title": "스승의날 행사",
+        "place": "서초사옥",
+        "desc": "서초사옥 · 지휘자·반주자 선생님 감사 케이크 및 포토북 전달"
+    },
+    {
+        "id": "ev-6",
+        "date": "6월 12일(목)",
+        "title": "SDS 찬조공연",
+        "place": "판교 IT캠퍼스",
+        "desc": "판교 IT캠퍼스 · 13명 참가"
+    },
+    {
+        "id": "ev-7",
+        "date": "6월 12일(목)",
+        "title": "순천시립합창단 100회 연주회 (신승용 선생님)",
+        "place": "순천문화예술회관",
+        "desc": "순천문화예술회관 · 응원단 10명"
+    },
+    {
+        "id": "ev-8",
+        "date": "7월 19일(토)",
+        "title": "음악캠프 (1차)",
+        "place": "서초사옥",
+        "desc": "서초사옥 (13~19시) · 131명 참석"
+    },
+    {
+        "id": "ev-9",
+        "date": "9월 13일(토)",
+        "title": "음악캠프 (2차)",
+        "place": "서초사옥",
+        "desc": "서초사옥 (13~19시) · 120명 참석"
+    },
+    {
+        "id": "ev-10",
+        "date": "9월 25일(목)",
+        "title": "한국 합창대제전 참가",
+        "place": "전주시 한국소리문화의전당",
+        "desc": "전주시 한국소리문화의전당 · 50명 참가 + 응원단 10명"
+    },
+    {
+        "id": "ev-11",
+        "date": "10월 25일(토)",
+        "title": "제20회 정기연주회",
+        "place": "KBS홀",
+        "desc": "KBS홀 · 연주인원 140명, 오케스트라 57명, 솔리스트 4명, Staff 19명"
+    },
+    {
+        "id": "ev-12",
+        "date": "11월 14~15일",
+        "title": "엠티 (응답하라 한우리)",
+        "place": "경기 양평군 내친구의집 펜션",
+        "desc": "경기 양평군 내친구의집 펜션 · 47명 참석"
+    }
+];
+
 function getDefaultState() {
   return {
     sessionTitle: "2026 삼성한우리합창단 정기총회",
@@ -919,50 +1116,7 @@ function getDefaultState() {
         }
     ]
 },
-    events: [
-    {
-        "id": "ev-1",
-        "title": "2026 신입단원 오디션 및 OT",
-        "date": "2026년 2월 21일 ~ 3월 7일",
-        "place": "사당 한우리 연습실",
-        "desc": "신입 단원 선발 오디션(2차) 및 신단 오리엔테이션"
-    },
-    {
-        "id": "ev-2",
-        "title": "2026 정기연습 개강 및 첫 뒤풀이",
-        "date": "2026년 3월 7일 (토)",
-        "place": "사당 연습실 및 인근 회식장소",
-        "desc": "박지훈 지휘자 선생님 상견례 및 2026 정규 커리큘럼 개시"
-    },
-    {
-        "id": "ev-3",
-        "title": "2026 춘계 봄소풍 (친목 도모)",
-        "date": "2026년 5월 중",
-        "place": "수도권 야외공원 / 캠핑장",
-        "desc": "신·구단 교류 증진 및 파트별 팀빌딩 프로그램"
-    },
-    {
-        "id": "ev-4",
-        "title": "2026 하계 음악캠프 (Music Training)",
-        "date": "2026년 7월 ~ 8월 중",
-        "place": "삼성인재개발원 / 외부 연수원",
-        "desc": "정기연주회 메인곡 집중 마스터 클래스 및 파트별 발성 특훈"
-    },
-    {
-        "id": "ev-5",
-        "title": "제21회 삼성한우리합창단 정기연주회",
-        "date": "2026년 10월 ~ 11월 예정",
-        "place": "서울 주요 콘서트홀 (협의 중)",
-        "desc": "오케스트라 협연 및 140인 대합창 정기공연"
-    },
-    {
-        "id": "ev-6",
-        "title": "2026 송년의 밤 및 정기총회",
-        "date": "2026년 12월 첫째 주 토요일",
-        "place": "사당 한우리 홀",
-        "desc": "중창제, 2026 활동 결산 및 차기 단장 선출"
-    }
-],
+    events: JSON.parse(JSON.stringify(INITIAL_ANNUAL_EVENTS)),
     settlement: {
     "totalRevenue": 109910000,
     "totalExpense": 89022651,

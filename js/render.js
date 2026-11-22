@@ -332,8 +332,151 @@ function renderEventsView() {
 
 function renderActivityView() {
     const isExec = (typeof isCurrentUserExecutive === "function") ? isCurrentUserExecutive() : Boolean(appState.isAdminAuthenticated);
+    const report = (typeof ACTIVITY_REPORT_DATA !== "undefined" && ACTIVITY_REPORT_DATA) ? ACTIVITY_REPORT_DATA : null;
 
-    // 1. 연간 행사 헤더 운영진 제어 버튼
+    // ------------------------------------------------------------------
+    // Section 1: 단원 현황 (KPI + 파트별 현황 + 기수별 현황 바 차트)
+    // ------------------------------------------------------------------
+    const statsCont = document.getElementById("activityMemberStatsContainer");
+    if (statsCont && report) {
+        const ms = report.memberSummary || { total: 164, existing: 132, newcomers: 32, note: "활동보고 집계 기준" };
+        const partColors = {
+            rose: { bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-700", bar: "from-rose-500 to-pink-500", pill: "bg-white text-rose-700 border-rose-200" },
+            amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", bar: "from-amber-500 to-orange-500", pill: "bg-white text-amber-800 border-amber-200" },
+            sky: { bg: "bg-sky-50", border: "border-sky-200", text: "text-sky-700", bar: "from-sky-500 to-blue-500", pill: "bg-white text-sky-700 border-sky-200" },
+            indigo: { bg: "bg-indigo-50", border: "border-indigo-200", text: "text-indigo-700", bar: "from-indigo-500 to-violet-500", pill: "bg-white text-indigo-700 border-indigo-200" }
+        };
+
+        let kpiHtml =
+            '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
+                '<div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-200/80 shadow-2xs">' +
+                    '<div class="flex items-center justify-between gap-2">' +
+                        '<span class="text-xs font-bold text-indigo-700">총 정단원</span>' +
+                        '<span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-bold">' + escapeHtml(ms.note) + '</span>' +
+                    '</div>' +
+                    '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.total + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
+                    '<div class="text-[11px] text-slate-500 mt-0.5">기존 ' + ms.existing + '명 + 신입 ' + ms.newcomers + '명</div>' +
+                '</div>' +
+                '<div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200 shadow-2xs">' +
+                    '<span class="text-xs font-bold text-slate-600">기존단원</span>' +
+                    '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.existing + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
+                    '<div class="text-[11px] text-slate-500 mt-0.5">전체의 ' + Math.round((ms.existing / ms.total) * 100) + '%</div>' +
+                '</div>' +
+                '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs">' +
+                    '<span class="text-xs font-bold text-emerald-700">신입단원</span>' +
+                    '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>' +
+                    '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (20기 신규 합류)</div>' +
+                '</div>' +
+            '</div>';
+
+        // Part stats panel
+        let partsRowsHtml = "";
+        (report.partStats || []).forEach(function(p) {
+            const c = partColors[p.color] || partColors.indigo;
+            const pct = Math.round((p.total / ms.total) * 100);
+            const subBadges = (p.subParts || []).map(function(sp) {
+                return '<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border text-[11px] font-bold ' + c.pill + '">' +
+                    '<span>' + escapeHtml(sp.label) + '</span>' +
+                    '<span class="font-black">' + escapeHtml(sp.count) + '</span>' +
+                '</span>';
+            }).join("");
+
+            partsRowsHtml +=
+                '<div class="p-3 rounded-xl border ' + c.bg + ' ' + c.border + ' space-y-2">' +
+                    '<div class="flex items-center justify-between gap-2">' +
+                        '<div class="flex items-center gap-2">' +
+                            '<span class="text-sm font-black ' + c.text + '">' + escapeHtml(p.part) + '</span>' +
+                            '<span class="text-xs font-extrabold text-slate-900 tabular-nums">' + p.total + '명</span>' +
+                            '<span class="text-[11px] text-slate-500">(' + pct + '%)</span>' +
+                        '</div>' +
+                        '<div class="flex items-center gap-1.5">' + subBadges + '</div>' +
+                    '</div>' +
+                    '<div class="w-full h-2 rounded-full bg-white/80 overflow-hidden">' +
+                        '<div class="h-full rounded-full bg-gradient-to-r ' + c.bar + '" style="width:' + Math.min(100, Math.round((p.total / 50) * 100)) + '%"></div>' +
+                    '</div>' +
+                '</div>';
+        });
+
+        // Generation stats bar chart (1기~20기)
+        const genList = report.generationStats || [];
+        const maxGenCount = genList.reduce(function(mx, item) { return Math.max(mx, item.count); }, 1);
+        let genBarsHtml = "";
+        genList.forEach(function(g) {
+            const heightPx = Math.max(8, Math.round((g.count / maxGenCount) * 124));
+            const barClass = g.highlight
+                ? "bg-gradient-to-t from-indigo-600 via-violet-500 to-rose-500 shadow-sm"
+                : "bg-slate-300 hover:bg-slate-400";
+            const countClass = g.highlight ? "text-indigo-700 font-black" : "text-slate-500 font-bold";
+            const labelClass = g.highlight ? "text-rose-600 font-extrabold" : "text-slate-500 font-semibold";
+            const wrapBg = g.highlight ? "bg-indigo-50/70 rounded-lg px-0.5" : "";
+            genBarsHtml +=
+                '<div class="flex flex-col items-center justify-end flex-1 min-w-[26px] pt-2 pb-1 ' + wrapBg + '" title="' + escapeHtml(g.label) + ': ' + g.count + '명">' +
+                    '<span class="text-[10px] leading-none mb-1 tabular-nums ' + countClass + '">' + g.count + '</span>' +
+                    '<div class="w-4 sm:w-5 rounded-t-md transition-all ' + barClass + '" style="height:' + heightPx + 'px"></div>' +
+                    '<span class="text-[10px] mt-1.5 leading-none whitespace-nowrap ' + labelClass + '">' + g.gen + '기</span>' +
+                '</div>';
+        });
+
+        const panelsHtml =
+            '<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">' +
+                '<div class="lg:col-span-5 p-4 rounded-2xl bg-slate-50/60 border border-slate-200 space-y-3">' +
+                    '<div class="flex items-center justify-between">' +
+                        '<h4 class="text-sm font-extrabold text-slate-900">파트별 현황</h4>' +
+                        '<span class="text-[11px] text-slate-400 font-medium">* 세부 파트 기준</span>' +
+                    '</div>' +
+                    '<div class="space-y-2.5">' + partsRowsHtml + '</div>' +
+                '</div>' +
+                '<div class="lg:col-span-7 p-4 rounded-2xl bg-slate-50/60 border border-slate-200 flex flex-col justify-between space-y-3">' +
+                    '<div class="flex flex-wrap items-center justify-between gap-2">' +
+                        '<div>' +
+                            '<h4 class="text-sm font-extrabold text-slate-900">기수별 현황 (1기 ~ 20기)</h4>' +
+                            '<p class="text-[11px] text-slate-500 mt-0.5">최근 5개 기수(16~20기)가 전체 단원의 59%를 차지합니다.</p>' +
+                        '</div>' +
+                        '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-rose-500 text-white text-xs font-black shadow-xs whitespace-nowrap">' +
+                            escapeHtml(report.generationHighlightBadge || "16~20기: 97명 (59%)") +
+                        '</span>' +
+                    '</div>' +
+                    '<div class="overflow-x-auto pb-1 -mx-1 px-1">' +
+                        '<div class="min-w-[560px] h-[176px] flex items-end gap-1 pt-2 px-2 rounded-xl bg-white border border-slate-200/80">' +
+                            genBarsHtml +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="flex items-center justify-end gap-3 text-[11px] text-slate-500">' +
+                        '<span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (67명 · 41%)</span>' +
+                        '<span class="inline-flex items-center gap-1 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 (97명 · 59%)</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+
+        statsCont.innerHTML = kpiHtml + panelsHtml;
+    }
+
+    // ------------------------------------------------------------------
+    // Section 2: 한우리 주요 변화 (6가지)
+    // ------------------------------------------------------------------
+    const changesCont = document.getElementById("activityMajorChangesContainer");
+    if (changesCont && report) {
+        let chHtml = "";
+        (report.majorChanges || []).forEach(function(item) {
+            const numStr = item.no < 10 ? ("0" + item.no) : String(item.no);
+            chHtml +=
+                '<div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition shadow-2xs flex flex-col gap-2">' +
+                    '<div class="flex items-center justify-between gap-2">' +
+                        '<span class="inline-flex items-center gap-1.5 text-xs font-black text-indigo-700">' +
+                            '<span class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-[11px] font-black">' + numStr + '</span>' +
+                            '<span class="text-sm font-extrabold text-slate-900 break-keep">' + escapeHtml(item.title) + '</span>' +
+                        '</span>' +
+                        '<span class="text-base shrink-0">' + escapeHtml(item.icon || "✨") + '</span>' +
+                    '</div>' +
+                    '<p class="text-xs text-slate-600 leading-relaxed break-keep pl-7">' + escapeHtml(item.desc) + '</p>' +
+                '</div>';
+        });
+        changesCont.innerHTML = chHtml;
+    }
+
+    // ------------------------------------------------------------------
+    // Section 3: 월별 주요 활동 타임라인 ("올해를 회상하며...")
+    // ------------------------------------------------------------------
     const evHeader = document.getElementById("annualEventsAdminHeaderControls");
     if (evHeader) {
         if (isExec) {
@@ -345,11 +488,10 @@ function renderActivityView() {
         }
     }
 
-    // 2. 연간 행사 목록 렌더링
     const evCont = document.getElementById("annualEventsListContainer");
     if (evCont) {
         let evHtml = "";
-        (appState.events || []).forEach(function(ev) {
+        (appState.events || []).forEach(function(ev, idx) {
             const execControls = isExec
                 ? '<div class="flex items-center gap-1 shrink-0 pt-1 sm:pt-0">' +
                     '<button type="button" onclick="openEditEventModal(\'' + ev.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 hover:bg-indigo-50 text-indigo-700 border border-slate-200 hover:border-indigo-300 transition cursor-pointer">✎ 수정</button>' +
@@ -357,18 +499,96 @@ function renderActivityView() {
                   '</div>'
                 : '';
 
-            evHtml += '<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white transition flex flex-col sm:flex-row sm:items-center justify-between gap-2">' +
-                '<div class="min-w-0">' +
-                    '<div class="flex items-center flex-wrap gap-x-2 gap-y-0.5">' +
-                        '<span class="font-extrabold text-xs sm:text-sm text-indigo-900 break-keep">' + escapeHtml(ev.title) + '</span>' +
-                        '<span class="text-[11px] text-slate-500 font-semibold whitespace-nowrap">' + escapeHtml(ev.date) + '</span>' +
+            const descStr = String(ev.desc || "");
+            const placeStr = String(ev.place || "");
+            const showPlaceSuffix = placeStr && descStr.indexOf(placeStr) === -1;
+
+            evHtml += '<div class="p-3.5 sm:p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition flex flex-col sm:flex-row sm:items-start justify-between gap-2.5">' +
+                '<div class="flex items-start gap-2.5 min-w-0">' +
+                    '<span class="w-6 h-6 rounded-full bg-indigo-600 text-white text-[11px] font-black flex items-center justify-center shrink-0 mt-0.5 tabular-nums">' + (idx + 1) + '</span>' +
+                    '<div class="min-w-0">' +
+                        '<div class="flex items-center flex-wrap gap-1.5">' +
+                            '<span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 text-[11px] font-extrabold whitespace-nowrap">' + escapeHtml(ev.date) + '</span>' +
+                            '<span class="font-extrabold text-xs sm:text-sm text-slate-900 break-keep">' + escapeHtml(ev.title) + '</span>' +
+                        '</div>' +
+                        '<p class="text-xs text-slate-600 mt-1 leading-relaxed break-keep">' +
+                            escapeHtml(descStr) +
+                            (showPlaceSuffix ? ' <span class="text-slate-400">(' + escapeHtml(placeStr) + ')</span>' : '') +
+                        '</p>' +
                     '</div>' +
-                    '<p class="text-xs text-slate-600 mt-0.5">' + escapeHtml(ev.desc) + ' <span class="text-slate-400">(' + escapeHtml(ev.place) + ')</span></p>' +
                 '</div>' +
                 execControls +
             '</div>';
         });
-        evCont.innerHTML = evHtml || '<div class="text-center py-6 text-slate-400 text-xs">등록된 연간 행사가 없습니다.</div>';
+        evCont.innerHTML = evHtml || '<div class="text-center py-6 text-slate-400 text-xs col-span-full">등록된 연간 행사가 없습니다.</div>';
+    }
+
+    // ------------------------------------------------------------------
+    // Section 4: 주요 성과 & 반성 및 과제
+    // ------------------------------------------------------------------
+    const outCont = document.getElementById("activityOutcomesContainer");
+    if (outCont && report) {
+        const achItems = (report.achievements || []).map(function(txt) {
+            return '<li class="flex items-start gap-2 text-xs sm:text-[13px] text-slate-700 leading-relaxed break-keep">' +
+                '<span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">✓</span>' +
+                '<span>' + escapeHtml(txt) + '</span>' +
+            '</li>';
+        }).join("");
+
+        const refItems = (report.reflections || []).map(function(txt) {
+            return '<li class="flex items-start gap-2 text-xs sm:text-[13px] text-slate-700 leading-relaxed break-keep">' +
+                '<span class="w-4 h-4 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">!</span>' +
+                '<span>' + escapeHtml(txt) + '</span>' +
+            '</li>';
+        }).join("");
+
+        outCont.innerHTML =
+            '<div class="p-4 sm:p-5 rounded-2xl bg-emerald-50/50 border border-emerald-200/80 space-y-3">' +
+                '<div class="flex items-center justify-between border-b border-emerald-200/60 pb-2.5">' +
+                    '<h4 class="text-sm sm:text-base font-black text-emerald-900 flex items-center gap-1.5"><span>🏆</span> 주요 성과</h4>' +
+                    '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-extrabold">' + (report.achievements || []).length + '건</span>' +
+                '</div>' +
+                '<ul class="space-y-2.5">' + achItems + '</ul>' +
+            '</div>' +
+            '<div class="p-4 sm:p-5 rounded-2xl bg-amber-50/50 border border-amber-200/80 space-y-3">' +
+                '<div class="flex items-center justify-between border-b border-amber-200/60 pb-2.5">' +
+                    '<h4 class="text-sm sm:text-base font-black text-amber-900 flex items-center gap-1.5"><span>📌</span> 반성 및 과제</h4>' +
+                    '<span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-extrabold">' + (report.reflections || []).length + '건</span>' +
+                '</div>' +
+                '<ul class="space-y-2.5">' + refItems + '</ul>' +
+            '</div>';
+    }
+
+    // ------------------------------------------------------------------
+    // Section 5: Special Thanks to... (※ 각사 게시 도우미)
+    // ------------------------------------------------------------------
+    const stCont = document.getElementById("activitySpecialThanksContainer");
+    if (stCont && report) {
+        let rowsHtml = "";
+        (report.specialThanks || []).forEach(function(row, idx) {
+            rowsHtml +=
+                '<tr class="border-b border-slate-100 last:border-b-0 ' + (idx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white') + ' hover:bg-indigo-50/40 transition">' +
+                    '<td class="py-2.5 px-3 font-extrabold text-xs text-indigo-900 whitespace-nowrap align-top w-[160px] sm:w-[190px]">' +
+                        escapeHtml(row.group) +
+                    '</td>' +
+                    '<td class="py-2.5 px-3 text-xs text-slate-700 leading-relaxed break-keep">' +
+                        escapeHtml(row.members) +
+                    '</td>' +
+                '</tr>';
+        });
+
+        stCont.innerHTML =
+            '<div class="overflow-x-auto table-scroll-wrapper -mx-4 px-4 sm:mx-0 sm:px-0">' +
+                '<table class="w-full min-w-[520px] text-left border-collapse rounded-xl overflow-hidden border border-slate-200">' +
+                    '<thead>' +
+                        '<tr class="bg-slate-100 text-slate-700 text-xs font-extrabold border-b border-slate-200">' +
+                            '<th class="py-2.5 px-3 whitespace-nowrap">구분 / TF</th>' +
+                            '<th class="py-2.5 px-3">함께해주신 단원 (' + escapeHtml(report.specialThanksNote || "※ 각사 게시 도우미") + ')</th>' +
+                        '</tr>' +
+                    '</thead>' +
+                    '<tbody>' + rowsHtml + '</tbody>' +
+                '</table>' +
+            '</div>';
     }
 }
 
