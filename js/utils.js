@@ -55,6 +55,7 @@ function saveStateToStorage(options) {
             adminPreviewAsMember: appState.adminPreviewAsMember,
             uploadedFileName: appState.uploadedFileName,
             currentVoterId: appState.currentVoterId,
+            hasExplicitLogin: Boolean(appState.hasExplicitLogin),
             isAdminAuthenticated: appState.isAdminAuthenticated,
             members: appState.members,
             bylaws: appState.bylaws,
@@ -90,18 +91,32 @@ function loadStateFromStorage() {
                 appState.activeAgendaId = parsed.activeAgendaId || "ag-1";
                 appState.adminPreviewAsMember = Boolean(parsed.adminPreviewAsMember);
                 appState.uploadedFileName = parsed.uploadedFileName || appState.uploadedFileName;
-                appState.currentVoterId = parsed.currentVoterId || appState.currentVoterId;
-                appState.isAdminAuthenticated = Boolean(parsed.isAdminAuthenticated);
+                const hasExplicitLogin = Boolean(parsed.hasExplicitLogin);
+                if (parsed.currentVoterId === "mem-3" && !hasExplicitLogin) {
+                    appState.currentVoterId = null;
+                    appState.hasExplicitLogin = false;
+                    appState.isAdminAuthenticated = false;
+                    appState.adminPreviewAsMember = false;
+                } else {
+                    appState.currentVoterId = parsed.currentVoterId || null;
+                    appState.hasExplicitLogin = hasExplicitLogin;
+                    appState.isAdminAuthenticated = Boolean(appState.currentVoterId && parsed.isAdminAuthenticated);
+                }
                 if (Array.isArray(parsed.members) && parsed.members.length >= 100) {
-                    const codeMap = {};
+                    const rosterMap = {};
                     if (typeof FULL_MEMBER_ROSTER !== "undefined") {
                         FULL_MEMBER_ROSTER.forEach(function(fm) {
-                            codeMap[fm.id] = fm.code;
+                            rosterMap[fm.id] = fm;
                         });
                     }
                     parsed.members.forEach(function(pm) {
-                        if (codeMap[pm.id]) {
-                            pm.code = codeMap[pm.id];
+                        const fm = rosterMap[pm.id];
+                        if (fm) {
+                            pm.code = fm.code;
+                            if (Array.isArray(fm.altCodes)) pm.altCodes = fm.altCodes.slice();
+                            else delete pm.altCodes;
+                            if (Array.isArray(fm.altNames)) pm.altNames = fm.altNames.slice();
+                            else delete pm.altNames;
                         }
                         if (typeof pm.gen === "string") {
                             pm.gen = pm.gen.replace(/기+$/g, "");
@@ -486,7 +501,8 @@ function matchesSearch(itemTextArray, rawQuery) {
 }
 
 function getCurrentVoter() {
-    return appState.members.find(function(m) { return m.id === appState.currentVoterId; }) || appState.members[0];
+    if (!appState.currentVoterId) return null;
+    return (appState.members || []).find(function(m) { return m.id === appState.currentVoterId; }) || null;
 }
 
 function isCurrentUserExecutive() {

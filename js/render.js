@@ -7,12 +7,21 @@ function renderHeaderStatus() {
     const majEl = document.getElementById("headerMajorityThreshold");
     if (majEl) majEl.textContent = majority + "표↑";
 
-    const isExec = (typeof isCurrentUserExecutive === "function") ? isCurrentUserExecutive() : Boolean(appState.isAdminAuthenticated);
-    const isRealExec = (typeof isRealExecutiveAuthenticated === "function") ? isRealExecutiveAuthenticated() : isExec;
     const voter = getCurrentVoter();
-    const rolePrefix = isExec ? "👑운영진 · " : "";
-    const voterPartStr = voter.detailPart ? (voter.part + " · " + voter.detailPart) : voter.part;
-    const voterBadgeStr = rolePrefix + voter.name + " (" + voterPartStr + ")";
+    const isLoggedIn = Boolean(voter);
+    const isExec = isLoggedIn && ((typeof isCurrentUserExecutive === "function") ? isCurrentUserExecutive() : Boolean(appState.isAdminAuthenticated));
+    const isRealExec = isLoggedIn && ((typeof isRealExecutiveAuthenticated === "function") ? isRealExecutiveAuthenticated() : isExec);
+
+    let voterBadgeStr = "";
+    if (isLoggedIn) {
+        const voterPartStr = voter.detailPart ? (voter.part + " · " + voter.detailPart) : (voter.part || "");
+        if (voter.isExecutive && isRealExec) {
+            const roleLabel = (voter.role && voter.role !== "-") ? voter.role : voterPartStr;
+            voterBadgeStr = "👑 " + voter.name + " (" + roleLabel + ")";
+        } else {
+            voterBadgeStr = voter.name + " (" + voterPartStr + ")";
+        }
+    }
 
     if (typeof renderSyncStatusUI === "function") {
         renderSyncStatusUI();
@@ -28,17 +37,50 @@ function renderHeaderStatus() {
         }
     }
 
-    // 단일 헤더 투표자 배지 및 버튼 텍스트 업데이트
+    // 헤더 로그인 / 배지 / 로그아웃 버튼 표시 제어
+    const loginBtn = document.getElementById("btnHeaderLogin");
+    const voterBtn = document.getElementById("btnHeaderVoter");
+    const logoutBtn = document.getElementById("btnHeaderLogout");
     const badgeEl = document.getElementById("headerVoterBadge");
-    if (badgeEl) badgeEl.textContent = voterBadgeStr;
+
+    if (isLoggedIn) {
+        if (loginBtn) {
+            loginBtn.classList.add("hidden");
+            loginBtn.classList.remove("inline-flex");
+        }
+        if (voterBtn) {
+            voterBtn.classList.remove("hidden");
+            voterBtn.classList.add("inline-flex");
+        }
+        if (logoutBtn) {
+            logoutBtn.classList.remove("hidden");
+            logoutBtn.classList.add("inline-flex");
+        }
+        if (badgeEl) badgeEl.textContent = voterBadgeStr;
+    } else {
+        if (loginBtn) {
+            loginBtn.classList.remove("hidden");
+            loginBtn.classList.add("inline-flex");
+        }
+        if (voterBtn) {
+            voterBtn.classList.add("hidden");
+            voterBtn.classList.remove("inline-flex");
+        }
+        if (logoutBtn) {
+            logoutBtn.classList.add("hidden");
+            logoutBtn.classList.remove("inline-flex");
+        }
+        if (badgeEl) badgeEl.textContent = "";
+    }
 
     // 하위 호환성 ID 업데이트 (오류 방지)
+    const compatLabel = isLoggedIn ? voterBadgeStr : "로그인 필요";
     const b1 = document.getElementById("currentVoterBadgeText");
-    if (b1) b1.textContent = voterBadgeStr;
+    if (b1) b1.textContent = compatLabel;
     const b2 = document.getElementById("stickyVoterBadgeText");
-    if (b2) b2.textContent = voterBadgeStr;
+    if (b2) b2.textContent = compatLabel;
     const b3 = document.getElementById("miniHeaderMemberName");
-    if (b3) b3.textContent = voterBadgeStr;
+    if (b3) b3.textContent = compatLabel;
 
     // Header Admin Mode Badge & Preview Toggle
     const headerAdminBadgeContainer = document.getElementById("headerAdminModeBadgeContainer");
@@ -430,7 +472,7 @@ function renderAgendaStepper() {
     (appState.agendas || []).forEach(function(ag, i) {
         const isActive = ag.id === appState.activeAgendaId;
         const agNo = ag.no || ag.agendaNo || ag.number || (i + 1);
-        const hasVoted = Boolean((ag.memberVotes || {})[appState.currentVoterId]);
+        const hasVoted = Boolean(appState.currentVoterId && (ag.memberVotes || {})[appState.currentVoterId]);
         const isLocked = Boolean(ag.isLocked || ag.status === "closed" || ag.status === "locked");
         
         let statusBadge = "";
@@ -454,7 +496,7 @@ function renderActiveVotingView() {
     if (!ag) return;
     const isExec = isCurrentUserExecutive();
     const tallies = getAgendaTallies(ag);
-    const myVote = (ag.memberVotes || {})[appState.currentVoterId];
+    const myVote = appState.currentVoterId ? (ag.memberVotes || {})[appState.currentVoterId] : null;
     const isLocked = Boolean(ag.isLocked || ag.status === "closed" || ag.status === "locked");
     const agNo = ag.no || ag.agendaNo || ag.number || "";
 
@@ -715,7 +757,7 @@ function renderElectionView() {
         const absEl = document.getElementById("singleCandAbstainCount");
         if (absEl) absEl.textContent = tallies.abstain;
 
-        const myVote = (elec.singleVotes.memberVotes || {})[appState.currentVoterId];
+        const myVote = appState.currentVoterId ? (elec.singleVotes.memberVotes || {})[appState.currentVoterId] : null;
         const statusEl = document.getElementById("myElectionVoteStatus");
         const labelMap = { approve: "찬성", reject: "반대", abstain: "기권" };
         if (statusEl) {
@@ -773,7 +815,7 @@ function renderElectionView() {
         if (cardsCont) {
             let html = "";
             const activeCands = getActiveCandidates();
-            const myVote = (elec.multiMemberVotes || {})[appState.currentVoterId];
+            const myVote = appState.currentVoterId ? (elec.multiMemberVotes || {})[appState.currentVoterId] : null;
 
             activeCands.forEach(function(c) {
                 const count = (tallies.counts && tallies.counts[c.id] !== undefined) ? tallies.counts[c.id] : (c.baseVotes || 0);
@@ -1172,59 +1214,5 @@ function renderAdminView() {
 }
 
 function renderAuthModalMemberList() {
-    const container = document.getElementById("authMemberListGrid");
-    if (!container) return;
-    const activeAg = getActiveAgenda();
-    const votesMap = activeAg.memberVotes || {};
-    const fKey = appState.authModalFilter || "all";
-    const q = (appState.authModalSearch || "").trim().toLowerCase();
-
-    ["all", "exec", "소프라노", "알토", "테너", "베이스"].forEach(function(k) {
-        const btn = document.getElementById("btnAuthFilter-" + k);
-        if (!btn) return;
-        if (k === fKey) {
-            btn.className = "px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-slate-900 text-white";
-        } else {
-            btn.className = "px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-indigo-50";
-        }
-    });
-
-    const filtered = appState.members.filter(function(m) {
-        if (fKey === "exec" && !m.isExecutive) return false;
-        if (fKey !== "all" && fKey !== "exec" && m.basePart !== fKey) return false;
-        if (q) {
-            const hay = (m.name + " " + m.basePart + " " + m.part + " " + m.company).toLowerCase();
-            if (hay.indexOf(q) === -1) return false;
-        }
-        return true;
-    });
-
-    if (pendingExecMemberId) {
-        const pm = appState.members.find(function(x) { return x.id === pendingExecMemberId; });
-        const label = document.getElementById("execAuthTargetLabel");
-        if (pm && label) {
-            label.textContent = pm.name + " (" + pm.basePart + ") 단원 본인 확인 — 휴대폰 뒷 4자리 입력";
-        }
-    }
-
-    let html = "";
-    filtered.forEach(function(m) {
-        const isSelected = m.id === appState.currentVoterId;
-        const votedChoice = votesMap[m.id];
-        const statusBadge = votedChoice
-            ? '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 shrink-0">투표완료</span>'
-            : '';
-
-        html += '<button type="button" onclick="selectVoter(\'' + m.id + '\')" class="p-2.5 rounded-xl border text-left transition flex items-center justify-between gap-1 ' +
-            (isSelected ? 'border-2 border-indigo-600 bg-indigo-50/70' : 'border-slate-200 hover:bg-slate-50') + '">' +
-            '<div class="min-w-0">' +
-                '<div class="text-xs font-extrabold text-slate-900 truncate">' +
-                    escapeHtml(m.name) + ' <span class="text-slate-500 font-semibold">(' + escapeHtml(m.basePart) + ')</span>' +
-                '</div>' +
-                '<div class="text-[11px] text-slate-400 truncate">' + escapeHtml(m.company) + '</div>' +
-            '</div>' +
-            statusBadge +
-        '</button>';
-    });
-    container.innerHTML = html;
+    // v20: 134-member list modal replaced by clean [이름 + 휴대폰 뒷자리 4자리] login modal
 }

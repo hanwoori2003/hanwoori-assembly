@@ -297,7 +297,7 @@ const EXECUTIVE_ROSTER = [
   }
 ];
 
-// 2026 전체 단원 명부 (134명, 휴대폰 뒷 4자리 본인인증 코드 포함)
+// 2026 전체 단원 명부 (134명, 실제 휴대폰 뒷 4자리 본인인증 코드 포함)
 const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-1",
@@ -312,7 +312,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-1@samsung-hanwoori.org",
-    "code": "5123",
+    "code": "1324",
     "key": "김규연-소프라노"
   },
   {
@@ -328,7 +328,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-2@samsung-hanwoori.org",
-    "code": "2014",
+    "code": "1208",
     "key": "김다솔-소프라노"
   },
   {
@@ -360,7 +360,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-4@samsung-hanwoori.org",
-    "code": "1045",
+    "code": "7737",
     "key": "김지연-소프라노"
   },
   {
@@ -376,7 +376,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-5@samsung-hanwoori.org",
-    "code": "3012",
+    "code": "1511",
     "key": "박유란-소프라노"
   },
   {
@@ -392,7 +392,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-6@samsung-hanwoori.org",
-    "code": "2018",
+    "code": "2360",
     "key": "박채경-소프라노"
   },
   {
@@ -408,8 +408,11 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-7@samsung-hanwoori.org",
-    "code": "1829",
-    "key": "성지연-소프라노"
+    "code": "5546",
+    "key": "성지연-소프라노",
+    "altNames": [
+      "성지언"
+    ]
   },
   {
     "id": "mem-8",
@@ -424,7 +427,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-8@samsung-hanwoori.org",
-    "code": "1834",
+    "code": "4150",
     "key": "엄지예-소프라노"
   },
   {
@@ -440,7 +443,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-9@samsung-hanwoori.org",
-    "code": "0819",
+    "code": "3583",
     "key": "오정현-소프라노"
   },
   {
@@ -472,7 +475,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-11@samsung-hanwoori.org",
-    "code": "1856",
+    "code": "1707",
     "key": "이지수-소프라노"
   },
   {
@@ -504,7 +507,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-13@samsung-hanwoori.org",
-    "code": "1720",
+    "code": "6626",
     "key": "정솔이-소프라노"
   },
   {
@@ -520,7 +523,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-14@samsung-hanwoori.org",
-    "code": "1905",
+    "code": "0956",
     "key": "주슬기-소프라노"
   },
   {
@@ -552,7 +555,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-16@samsung-hanwoori.org",
-    "code": "1611",
+    "code": "4520",
     "key": "최유리-소프라노"
   },
   {
@@ -584,7 +587,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-18@samsung-hanwoori.org",
-    "code": "1622",
+    "code": "7904",
     "key": "강혜라-소프라노"
   },
   {
@@ -600,7 +603,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-19@samsung-hanwoori.org",
-    "code": "1831",
+    "code": "0468",
     "key": "구영민-소프라노"
   },
   {
@@ -616,7 +619,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-20@samsung-hanwoori.org",
-    "code": "1840",
+    "code": "8327",
     "key": "김서영-소프라노"
   },
   {
@@ -632,7 +635,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-21@samsung-hanwoori.org",
-    "code": "1912",
+    "code": "7710",
     "key": "김유정-소프라노"
   },
   {
@@ -648,8 +651,11 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-22@samsung-hanwoori.org",
-    "code": "2023",
-    "key": "김인해-소프라노"
+    "code": "3992",
+    "key": "김인해-소프라노",
+    "altNames": [
+      "김인애"
+    ]
   },
   {
     "id": "mem-23",
@@ -664,8 +670,11 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-23@samsung-hanwoori.org",
-    "code": "2101",
-    "key": "명지승-소프라노"
+    "code": "3754",
+    "key": "명지승-소프라노",
+    "altCodes": [
+      "3753"
+    ]
   },
   {
     "id": "mem-24",
@@ -680,7 +689,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-24@samsung-hanwoori.org",
-    "code": "1519",
+    "code": "3204",
     "key": "민나리-소프라노"
   },
   {
@@ -696,7 +705,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-25@samsung-hanwoori.org",
-    "code": "1328",
+    "code": "6505",
     "key": "박성경-소프라노"
   },
   {
@@ -712,7 +721,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-26@samsung-hanwoori.org",
-    "code": "2102",
+    "code": "4945",
     "key": "박소정-소프라노"
   },
   {
@@ -744,7 +753,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-28@samsung-hanwoori.org",
-    "code": "1414",
+    "code": "8701",
     "key": "박재영-소프라노"
   },
   {
@@ -760,7 +769,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-29@samsung-hanwoori.org",
-    "code": "1630",
+    "code": "4206",
     "key": "박채원-소프라노"
   },
   {
@@ -776,7 +785,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-30@samsung-hanwoori.org",
-    "code": "1524",
+    "code": "0212",
     "key": "박희주-소프라노"
   },
   {
@@ -792,7 +801,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-31@samsung-hanwoori.org",
-    "code": "0412",
+    "code": "2316",
     "key": "손유미-소프라노"
   },
   {
@@ -808,7 +817,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-32@samsung-hanwoori.org",
-    "code": "2103",
+    "code": "5761",
     "key": "신가영-소프라노"
   },
   {
@@ -840,7 +849,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-34@samsung-hanwoori.org",
-    "code": "1032",
+    "code": "7571",
     "key": "신혜선-소프라노"
   },
   {
@@ -856,7 +865,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-35@samsung-hanwoori.org",
-    "code": "1115",
+    "code": "5660",
     "key": "양지연-소프라노"
   },
   {
@@ -872,7 +881,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-36@samsung-hanwoori.org",
-    "code": "2044",
+    "code": "2839",
     "key": "이유정-소프라노"
   },
   {
@@ -888,7 +897,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-37@samsung-hanwoori.org",
-    "code": "0822",
+    "code": "7889",
     "key": "장규연-소프라노"
   },
   {
@@ -920,7 +929,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-39@samsung-hanwoori.org",
-    "code": "2055",
+    "code": "9908",
     "key": "최예진-소프라노"
   },
   {
@@ -936,8 +945,11 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-40@samsung-hanwoori.org",
-    "code": "0208",
-    "key": "황미아-소프라노"
+    "code": "8586",
+    "key": "황미아-소프라노",
+    "altNames": [
+      "횡미아"
+    ]
   },
   {
     "id": "mem-41",
@@ -952,7 +964,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-41@samsung-hanwoori.org",
-    "code": "1123",
+    "code": "6031",
     "key": "고우리-알토"
   },
   {
@@ -968,8 +980,11 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-42@samsung-hanwoori.org",
-    "code": "1134",
-    "key": "곽수일-알토"
+    "code": "3488",
+    "key": "곽수일-알토",
+    "altNames": [
+      "곽수임"
+    ]
   },
   {
     "id": "mem-43",
@@ -1000,7 +1015,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-44@samsung-hanwoori.org",
-    "code": "2104",
+    "code": "2281",
     "key": "권태희-알토"
   },
   {
@@ -1016,7 +1031,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-45@samsung-hanwoori.org",
-    "code": "2105",
+    "code": "0111",
     "key": "김다예-알토"
   },
   {
@@ -1032,7 +1047,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-46@samsung-hanwoori.org",
-    "code": "0518",
+    "code": "4845",
     "key": "노혜경-알토"
   },
   {
@@ -1080,7 +1095,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-49@samsung-hanwoori.org",
-    "code": "2106",
+    "code": "6972",
     "key": "박휘연-알토"
   },
   {
@@ -1096,7 +1111,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-50@samsung-hanwoori.org",
-    "code": "1923",
+    "code": "2139",
     "key": "서정원-알토"
   },
   {
@@ -1112,7 +1127,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-51@samsung-hanwoori.org",
-    "code": "2031",
+    "code": "3949",
     "key": "송주아-알토"
   },
   {
@@ -1128,7 +1143,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-52@samsung-hanwoori.org",
-    "code": "2107",
+    "code": "6809",
     "key": "안정은-알토"
   },
   {
@@ -1144,7 +1159,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-53@samsung-hanwoori.org",
-    "code": "0619",
+    "code": "1396",
     "key": "양현정-알토"
   },
   {
@@ -1160,7 +1175,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-54@samsung-hanwoori.org",
-    "code": "2108",
+    "code": "7812",
     "key": "유현주-알토"
   },
   {
@@ -1176,7 +1191,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-55@samsung-hanwoori.org",
-    "code": "2109",
+    "code": "6459",
     "key": "이아르미-알토"
   },
   {
@@ -1192,7 +1207,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-56@samsung-hanwoori.org",
-    "code": "1938",
+    "code": "5144",
     "key": "이원정-알토"
   },
   {
@@ -1208,7 +1223,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-57@samsung-hanwoori.org",
-    "code": "1845",
+    "code": "0540",
     "key": "이현주-알토"
   },
   {
@@ -1224,7 +1239,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-58@samsung-hanwoori.org",
-    "code": "2062",
+    "code": "6930",
     "key": "이효정-알토"
   },
   {
@@ -1240,7 +1255,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-59@samsung-hanwoori.org",
-    "code": "2110",
+    "code": "7489",
     "key": "임혜란-알토"
   },
   {
@@ -1256,7 +1271,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-60@samsung-hanwoori.org",
-    "code": "1429",
+    "code": "5815",
     "key": "조윤서-알토"
   },
   {
@@ -1272,7 +1287,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-61@samsung-hanwoori.org",
-    "code": "2077",
+    "code": "8697",
     "key": "최지은-알토"
   },
   {
@@ -1304,7 +1319,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-63@samsung-hanwoori.org",
-    "code": "0311",
+    "code": "7509",
     "key": "김내아-알토"
   },
   {
@@ -1320,7 +1335,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-64@samsung-hanwoori.org",
-    "code": "2111",
+    "code": "3891",
     "key": "김민아-알토"
   },
   {
@@ -1336,7 +1351,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-65@samsung-hanwoori.org",
-    "code": "1342",
+    "code": "5538",
     "key": "김예진-알토"
   },
   {
@@ -1352,7 +1367,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-66@samsung-hanwoori.org",
-    "code": "1645",
+    "code": "2098",
     "key": "김현경-알토"
   },
   {
@@ -1368,7 +1383,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-67@samsung-hanwoori.org",
-    "code": "2112",
+    "code": "2530",
     "key": "노소정-알토"
   },
   {
@@ -1384,7 +1399,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-68@samsung-hanwoori.org",
-    "code": "0425",
+    "code": "5640",
     "key": "노혜란-알토"
   },
   {
@@ -1400,7 +1415,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-69@samsung-hanwoori.org",
-    "code": "2113",
+    "code": "8519",
     "key": "손정아-알토"
   },
   {
@@ -1416,7 +1431,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-70@samsung-hanwoori.org",
-    "code": "1941",
+    "code": "3668",
     "key": "송우정-알토"
   },
   {
@@ -1432,7 +1447,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-71@samsung-hanwoori.org",
-    "code": "1652",
+    "code": "1053",
     "key": "안소담-알토"
   },
   {
@@ -1448,7 +1463,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-72@samsung-hanwoori.org",
-    "code": "1438",
+    "code": "2666",
     "key": "윤성아-알토"
   },
   {
@@ -1464,7 +1479,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-73@samsung-hanwoori.org",
-    "code": "0628",
+    "code": "0610",
     "key": "이은하-알토"
   },
   {
@@ -1480,7 +1495,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-74@samsung-hanwoori.org",
-    "code": "0439",
+    "code": "0375",
     "key": "채수경-알토"
   },
   {
@@ -1496,7 +1511,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-75@samsung-hanwoori.org",
-    "code": "1863",
+    "code": "7575",
     "key": "홍혜경-알토"
   },
   {
@@ -1512,7 +1527,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-76@samsung-hanwoori.org",
-    "code": "2091",
+    "code": "2901",
     "key": "황유빈-알토"
   },
   {
@@ -1528,7 +1543,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-77@samsung-hanwoori.org",
-    "code": "1872",
+    "code": "9445",
     "key": "김은주-알토"
   },
   {
@@ -1544,7 +1559,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-78@samsung-hanwoori.org",
-    "code": "1954",
+    "code": "8140",
     "key": "박덕순-알토"
   },
   {
@@ -1560,7 +1575,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-79@samsung-hanwoori.org",
-    "code": "1885",
+    "code": "7009",
     "key": "엄효은-알토"
   },
   {
@@ -1576,7 +1591,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-80@samsung-hanwoori.org",
-    "code": "2114",
+    "code": "0528",
     "key": "최서윤-알토"
   },
   {
@@ -1592,7 +1607,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-81@samsung-hanwoori.org",
-    "code": "1531",
+    "code": "4705",
     "key": "구종회-테너"
   },
   {
@@ -1608,7 +1623,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-82@samsung-hanwoori.org",
-    "code": "0447",
+    "code": "9881",
     "key": "김종한-테너"
   },
   {
@@ -1640,7 +1655,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-84@samsung-hanwoori.org",
-    "code": "1896",
+    "code": "7433",
     "key": "유희철-테너"
   },
   {
@@ -1672,7 +1687,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-86@samsung-hanwoori.org",
-    "code": "1973",
+    "code": "0222",
     "key": "이대건-테너"
   },
   {
@@ -1704,7 +1719,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-88@samsung-hanwoori.org",
-    "code": "2026",
+    "code": "4015",
     "key": "이상언-테너"
   },
   {
@@ -1720,7 +1735,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-89@samsung-hanwoori.org",
-    "code": "1984",
+    "code": "2291",
     "key": "이상준-테너"
   },
   {
@@ -1736,7 +1751,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-90@samsung-hanwoori.org",
-    "code": "0112",
+    "code": "2291",
     "key": "전영호-테너"
   },
   {
@@ -1752,7 +1767,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-91@samsung-hanwoori.org",
-    "code": "0123",
+    "code": "6019",
     "key": "정헌-테너"
   },
   {
@@ -1784,8 +1799,11 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-93@samsung-hanwoori.org",
-    "code": "1664",
-    "key": "최준-테너"
+    "code": "3510",
+    "key": "최준-테너",
+    "altNames": [
+      "최준녕"
+    ]
   },
   {
     "id": "mem-94",
@@ -1816,7 +1834,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-95@samsung-hanwoori.org",
-    "code": "1675",
+    "code": "9164",
     "key": "한승수-테너"
   },
   {
@@ -1832,7 +1850,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-96@samsung-hanwoori.org",
-    "code": "0915",
+    "code": "8809",
     "key": "강동현-테너"
   },
   {
@@ -1864,7 +1882,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-98@samsung-hanwoori.org",
-    "code": "1682",
+    "code": "8732",
     "key": "박정준-테너"
   },
   {
@@ -1880,7 +1898,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-99@samsung-hanwoori.org",
-    "code": "0524",
+    "code": "6786",
     "key": "송영-테너"
   },
   {
@@ -1896,7 +1914,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-100@samsung-hanwoori.org",
-    "code": "1991",
+    "code": "6842",
     "key": "여성민-테너"
   },
   {
@@ -1912,7 +1930,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-101@samsung-hanwoori.org",
-    "code": "0134",
+    "code": "9634",
     "key": "유우근-테너"
   },
   {
@@ -1928,7 +1946,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-102@samsung-hanwoori.org",
-    "code": "1817",
+    "code": "2121",
     "key": "윤진성-테너"
   },
   {
@@ -1944,7 +1962,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-103@samsung-hanwoori.org",
-    "code": "2037",
+    "code": "4637",
     "key": "이민우-테너"
   },
   {
@@ -1960,7 +1978,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-104@samsung-hanwoori.org",
-    "code": "0458",
+    "code": "3638",
     "key": "이재욱-테너"
   },
   {
@@ -1992,7 +2010,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-106@samsung-hanwoori.org",
-    "code": "2115",
+    "code": "5332",
     "key": "전성광-테너"
   },
   {
@@ -2024,7 +2042,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-108@samsung-hanwoori.org",
-    "code": "1828",
+    "code": "4306",
     "key": "차지훈-테너"
   },
   {
@@ -2040,7 +2058,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-109@samsung-hanwoori.org",
-    "code": "2048",
+    "code": "8070",
     "key": "한승환-테너"
   },
   {
@@ -2056,7 +2074,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-110@samsung-hanwoori.org",
-    "code": "1693",
+    "code": "2591",
     "key": "김경환-베이스"
   },
   {
@@ -2072,7 +2090,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-111@samsung-hanwoori.org",
-    "code": "0635",
+    "code": "6780",
     "key": "김선기-베이스"
   },
   {
@@ -2088,7 +2106,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-112@samsung-hanwoori.org",
-    "code": "1356",
+    "code": "2535",
     "key": "김영선-베이스"
   },
   {
@@ -2104,7 +2122,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-113@samsung-hanwoori.org",
-    "code": "1147",
+    "code": "5831",
     "key": "김형진-베이스"
   },
   {
@@ -2120,7 +2138,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-114@samsung-hanwoori.org",
-    "code": "2116",
+    "code": "0649",
     "key": "박현섭-베이스"
   },
   {
@@ -2168,7 +2186,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-117@samsung-hanwoori.org",
-    "code": "2060",
+    "code": "3051",
     "key": "심병수-베이스"
   },
   {
@@ -2184,7 +2202,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-118@samsung-hanwoori.org",
-    "code": "2117",
+    "code": "5499",
     "key": "심억수-베이스"
   },
   {
@@ -2200,7 +2218,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-119@samsung-hanwoori.org",
-    "code": "0539",
+    "code": "4647",
     "key": "유원종-베이스"
   },
   {
@@ -2232,7 +2250,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-121@samsung-hanwoori.org",
-    "code": "0548",
+    "code": "8439",
     "key": "이원배-베이스"
   },
   {
@@ -2248,8 +2266,11 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-122@samsung-hanwoori.org",
-    "code": "2071",
-    "key": "이재욱B-베이스"
+    "code": "7778",
+    "key": "이재욱B-베이스",
+    "altNames": [
+      "이재욱"
+    ]
   },
   {
     "id": "mem-123",
@@ -2264,7 +2285,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-123@samsung-hanwoori.org",
-    "code": "2082",
+    "code": "4893",
     "key": "정승원-베이스"
   },
   {
@@ -2280,7 +2301,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-124@samsung-hanwoori.org",
-    "code": "1542",
+    "code": "8499",
     "key": "최경욱-베이스"
   },
   {
@@ -2296,7 +2317,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-125@samsung-hanwoori.org",
-    "code": "1839",
+    "code": "3080",
     "key": "최태선-베이스"
   },
   {
@@ -2312,7 +2333,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-126@samsung-hanwoori.org",
-    "code": "2118",
+    "code": "7333",
     "key": "하종석-베이스"
   },
   {
@@ -2328,7 +2349,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-127@samsung-hanwoori.org",
-    "code": "1604",
+    "code": "7754",
     "key": "홍진혁-베이스"
   },
   {
@@ -2344,7 +2365,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-128@samsung-hanwoori.org",
-    "code": "2093",
+    "code": "4004",
     "key": "고태율-베이스"
   },
   {
@@ -2360,7 +2381,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-129@samsung-hanwoori.org",
-    "code": "1445",
+    "code": "8890",
     "key": "김명훈-베이스"
   },
   {
@@ -2376,7 +2397,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-130@samsung-hanwoori.org",
-    "code": "0145",
+    "code": "1937",
     "key": "김형택-베이스"
   },
   {
@@ -2392,7 +2413,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-131@samsung-hanwoori.org",
-    "code": "2119",
+    "code": "6782",
     "key": "박해운-베이스"
   },
   {
@@ -2424,7 +2445,7 @@ const FULL_MEMBER_ROSTER = [
     "role": "-",
     "subRole": "-",
     "email": "mem-133@samsung-hanwoori.org",
-    "code": "2120",
+    "code": "1010",
     "key": "이명욱-베이스"
   },
   {

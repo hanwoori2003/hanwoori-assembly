@@ -19,7 +19,6 @@ function renderAll() {
     renderWinnerView();
     renderSettlementView();
     renderAdminView();
-    renderAuthModalMemberList();
 }
 
 let toastTimer = null;

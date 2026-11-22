@@ -161,93 +161,131 @@ function updateTabsScrollIndicator() {
     }
 }
 
-function openAuthModal() {
-    const modal = document.getElementById("authModal");
+function openVoterLoginModal() {
+    const modal = document.getElementById("voterLoginModal");
     if (!modal) return;
-    appState.authModalFilter = "all";
-    appState.authModalSearch = "";
-    const inp = document.getElementById("inputAuthSearch");
-    if (inp) inp.value = "";
-    const box = document.getElementById("execPasswordAuthBox");
-    if (box) box.classList.add("hidden");
-    renderAuthModalMemberList();
+    const nameInp = document.getElementById("loginNameInput");
+    const codeInp = document.getElementById("loginCodeInput");
+    const errEl = document.getElementById("loginErrorMsg");
+    if (nameInp) nameInp.value = "";
+    if (codeInp) codeInp.value = "";
+    if (errEl) {
+        errEl.textContent = "";
+        errEl.classList.add("hidden");
+    }
     modal.classList.remove("hidden");
     modal.classList.add("flex");
+    if (nameInp) setTimeout(function() { nameInp.focus(); }, 60);
 }
 
-function closeAuthModal() {
-    const modal = document.getElementById("authModal");
+function closeVoterLoginModal() {
+    const modal = document.getElementById("voterLoginModal");
     if (!modal) return;
     modal.classList.add("hidden");
     modal.classList.remove("flex");
-    const box = document.getElementById("execPasswordAuthBox");
-    if (box) box.classList.add("hidden");
-}
-
-function setAuthModalFilter(k) {
-    appState.authModalFilter = k;
-    renderAuthModalMemberList();
-}
-
-function handleAuthSearchInput(e) {
-    appState.authModalSearch = e.target.value;
-    renderAuthModalMemberList();
-}
-
-function selectVoter(memberId) {
-    const m = appState.members.find(function(x) { return x.id === memberId; });
-    if (!m) return;
-
-    pendingExecMemberId = m.id;
-    const box = document.getElementById("execPasswordAuthBox");
-    const label = document.getElementById("execAuthTargetLabel");
-    const inp = document.getElementById("inputExecPassword");
-    const err = document.getElementById("execPasswordErrorMsg");
-
-    if (label) {
-        label.textContent = m.name + " (" + m.basePart + ") 단원 본인 확인 — 휴대폰 뒷 4자리 입력";
-    }
-    if (err) err.classList.add("hidden");
-    if (box) box.classList.remove("hidden");
-    if (inp) {
-        inp.placeholder = "본인 확인용 휴대폰 뒷 4자리를 입력하세요";
-        inp.value = "";
-        setTimeout(function() { inp.focus(); }, 60);
+    const errEl = document.getElementById("loginErrorMsg");
+    if (errEl) {
+        errEl.textContent = "";
+        errEl.classList.add("hidden");
     }
 }
 
-function confirmExecPasswordLogin() {
-    const inp = document.getElementById("inputExecPassword");
-    const err = document.getElementById("execPasswordErrorMsg");
-    const entered = (inp ? inp.value : "").trim();
+function openAuthModal() {
+    openVoterLoginModal();
+}
 
-    const m = appState.members.find(function(x) { return x.id === pendingExecMemberId; });
-    if (!m) return;
+function closeAuthModal() {
+    closeVoterLoginModal();
+}
 
-    // 인증 번호 검증:
-    // 운영진 및 일반 단원 모두 오직 본인의 고유 휴대폰 뒷 4자리 코드만 일치해야 로그인 허용
-    const memberCode = String(m.code || "").trim();
-    const isValid = Boolean(memberCode && entered === memberCode);
+function handleSimpleLoginSubmit(evt) {
+    if (evt && typeof evt.preventDefault === "function") {
+        evt.preventDefault();
+    }
+    const nameInp = document.getElementById("loginNameInput");
+    const codeInp = document.getElementById("loginCodeInput");
+    const errEl = document.getElementById("loginErrorMsg");
 
-    if (!isValid) {
-        if (err) {
-            err.textContent = "✕ 인증번호가 일치하지 않습니다. 본인 확인용 휴대폰 뒷 4자리를 정확히 입력해 주세요.";
-            err.classList.remove("hidden");
+    const enteredName = (nameInp ? nameInp.value : "").trim();
+    const enteredCode = (codeInp ? codeInp.value : "").trim();
+
+    function showLoginError(msg) {
+        if (errEl) {
+            errEl.textContent = msg;
+            errEl.classList.remove("hidden");
         }
-        showToast("인증번호가 일치하지 않습니다.");
-        return;
     }
 
-    appState.currentVoterId = m.id;
-    // 운영진인 경우 관리자 권한 부여 및 미리보기 상태 초기화
-    appState.isAdminAuthenticated = Boolean(m.isExecutive);
+    if (!enteredName || !enteredCode) {
+        showLoginError("이름과 휴대폰 뒷자리 4자리를 모두 입력해 주세요.");
+        return false;
+    }
+
+    if (!/^\d{4}$/.test(enteredCode)) {
+        showLoginError("휴대폰 뒷자리는 숫자 4자리로 입력해 주세요.");
+        return false;
+    }
+
+    const roster = (Array.isArray(appState.members) && appState.members.length > 0)
+        ? appState.members
+        : (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER : []);
+
+    const nameMatches = roster.filter(function(m) {
+        if (!m) return false;
+        if (m.name === enteredName) return true;
+        if (Array.isArray(m.altNames) && m.altNames.indexOf(enteredName) !== -1) return true;
+        return false;
+    });
+
+    if (nameMatches.length === 0) {
+        showLoginError("등록된 단원 이름이 아닙니다. 이름을 다시 확인해 주세요.");
+        return false;
+    }
+
+    const matched = nameMatches.find(function(m) {
+        const primaryCode = String(m.code || "").trim();
+        if (primaryCode && primaryCode === enteredCode) return true;
+        if (Array.isArray(m.altCodes) && m.altCodes.indexOf(enteredCode) !== -1) return true;
+        return false;
+    });
+
+    if (!matched) {
+        showLoginError("휴대폰 뒷자리 4자리가 일치하지 않습니다. 다시 확인해 주세요.");
+        return false;
+    }
+
+    appState.currentVoterId = matched.id;
+    appState.hasExplicitLogin = true;
+    appState.isAdminAuthenticated = Boolean(matched.isExecutive);
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
 
-    closeAuthModal();
+    saveStateToStorage({ skipCloudConfigPush: true });
+    closeVoterLoginModal();
+    renderAll();
+
+    if (matched.isExecutive) {
+        showToast("👑 " + matched.name + " 운영진님 로그인되었습니다.");
+    } else {
+        showToast(matched.name + "님 로그인되었습니다.");
+    }
+    return true;
+}
+
+function logoutCurrentUser() {
+    appState.currentVoterId = null;
+    appState.hasExplicitLogin = false;
+    appState.isAdminAuthenticated = false;
+    appState.adminPreviewAsMember = false;
+    pendingExecMemberId = null;
+
+    if (appState.activeTab === "admin" || (appState.activeTab === "winner" && !appState.winnerPagePublic)) {
+        switchMainTab("events");
+    }
+
     saveStateToStorage({ skipCloudConfigPush: true });
     renderAll();
-    showToast(m.name + " (" + m.basePart + ") 단원으로 로그인되었습니다.");
+    showToast("로그아웃되었습니다.");
 }
 
 function toggleProjectorMode() {
@@ -262,6 +300,11 @@ function toggleProjectorMode() {
 }
 
 function voteAgenda(choice) {
+    if (!appState.currentVoterId || !getCurrentVoter()) {
+        showToast("투표하려면 먼저 로그인해 주세요.");
+        openVoterLoginModal();
+        return;
+    }
     const ag = getActiveAgenda();
     if (!ag) return;
     if (ag.isLocked || ag.status === "closed" || ag.status === "locked") {
@@ -337,6 +380,11 @@ function selectAgenda(agendaId) {
 }
 
 function voteElectionSingle(choice) {
+    if (!appState.currentVoterId || !getCurrentVoter()) {
+        showToast("투표하려면 먼저 로그인해 주세요.");
+        openVoterLoginModal();
+        return;
+    }
     const elec = appState.election;
     if (!elec || !elec.singleVotes) return;
     if (elec.status === "closed" || elec.isLocked) {
@@ -360,6 +408,11 @@ function voteElectionSingle(choice) {
 }
 
 function voteElectionMulti(candId) {
+    if (!appState.currentVoterId || !getCurrentVoter()) {
+        showToast("투표하려면 먼저 로그인해 주세요.");
+        openVoterLoginModal();
+        return;
+    }
     const elec = appState.election;
     if (!elec) return;
     if (elec.status === "closed" || elec.isLocked) {
