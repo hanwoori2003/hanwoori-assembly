@@ -39,6 +39,11 @@ function switchMainTab(tabId, btnEl, options) {
 
     let canonicalTab = tabAliasMap[cleanTabId] || cleanTabId;
     appState.activeTab = canonicalTab;
+    try {
+        if (typeof document !== "undefined" && document.documentElement) {
+            document.documentElement.setAttribute("data-active-tab", canonicalTab);
+        }
+    } catch (e) {}
     
     // Hide all view panels (canonical + legacy aliases)
     const views = [
@@ -375,6 +380,12 @@ function logoutCurrentUser() {
     }
 
     saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+    try {
+        if (typeof document !== "undefined" && document.documentElement) {
+            document.documentElement.classList.remove("is-authenticated");
+            document.documentElement.removeAttribute("data-active-tab");
+        }
+    } catch (e) {}
     try {
         if (typeof window !== "undefined" && window.history && typeof window.history.replaceState === "function" && window.location) {
             window.history.replaceState(null, "", window.location.pathname + window.location.search);

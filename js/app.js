@@ -138,8 +138,20 @@ function restoreInitialViewState() {
         if (restoredTab === "winner" && !isExec && !appState.winnerPagePublic) {
             restoredTab = "events";
         }
+        try {
+            if (typeof document !== "undefined" && document.documentElement) {
+                document.documentElement.classList.add("is-authenticated");
+                document.documentElement.setAttribute("data-active-tab", restoredTab);
+            }
+        } catch (e) {}
         switchMainTab(restoredTab, null, { skipScroll: true });
     } else {
+        try {
+            if (typeof document !== "undefined" && document.documentElement) {
+                document.documentElement.classList.remove("is-authenticated");
+                document.documentElement.removeAttribute("data-active-tab");
+            }
+        } catch (e) {}
         renderAll();
         const nameInp = document.getElementById("loginNameInput");
         const codeInp = document.getElementById("loginCodeInput");

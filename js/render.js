@@ -5,6 +5,10 @@ function renderAuthGate() {
     const shell = document.getElementById("appShell");
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
     if (!voter) {
+        if (typeof document !== "undefined" && document.documentElement) {
+            document.documentElement.classList.remove("is-authenticated");
+            document.documentElement.removeAttribute("data-active-tab");
+        }
         if (gate) {
             gate.classList.remove("hidden");
             gate.classList.add("flex");
@@ -14,6 +18,12 @@ function renderAuthGate() {
             shell.classList.remove("flex");
         }
     } else {
+        if (typeof document !== "undefined" && document.documentElement) {
+            document.documentElement.classList.add("is-authenticated");
+            if (appState && appState.activeTab) {
+                document.documentElement.setAttribute("data-active-tab", appState.activeTab);
+            }
+        }
         if (gate) {
             gate.classList.add("hidden");
             gate.classList.remove("flex");
