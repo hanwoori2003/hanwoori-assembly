@@ -163,8 +163,16 @@ function loadStateFromStorage() {
                 let needsPersistMigration = !isCurrentKey;
                 const dynamicPassThreshold = getMajorityThreshold(appState.totalAttendees || canonicalTotal);
 
+                // Check if parsed agendas contains legacy mock agendas (e.g. 지휘자 임기)
+                const hasLegacyMockAgendas = Array.isArray(parsed.agendas) && parsed.agendas.some(function(ag) {
+                    return ag && ag.title && (ag.title.indexOf("지휘자 임기") !== -1 || ag.title.indexOf("대외활동 수익") !== -1 || ag.title.indexOf("제3-1호") !== -1);
+                });
+
                 // Normalize agendas & strip legacy sample baseline votes / [가결] tags
-                if (Array.isArray(parsed.agendas) && parsed.agendas.length > 0) {
+                if (hasLegacyMockAgendas || !Array.isArray(parsed.agendas) || parsed.agendas.length === 0) {
+                    appState.agendas = JSON.parse(JSON.stringify(INITIAL_AGENDAS));
+                    needsPersistMigration = true;
+                } else if (Array.isArray(parsed.agendas) && parsed.agendas.length > 0) {
                     appState.agendas = parsed.agendas.map(function(ag, idx) {
                         const no = ag.no || ag.agendaNo || ag.number || (idx + 1);
                         const isLocked = Boolean(ag.isLocked || ag.status === "closed" || ag.status === "locked");

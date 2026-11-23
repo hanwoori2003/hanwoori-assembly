@@ -879,6 +879,10 @@ function renderAgendaStepper() {
         }
     }
 
+    const headerTitle = document.getElementById("agendaListHeaderTitle");
+    if (headerTitle) {
+        headerTitle.textContent = "단칙 개정 상정 안건 목록 (총 " + (appState.agendas || []).length + "개 안건)";
+    }
     const container = document.getElementById("agendaStepperContainer");
     if (!container) return;
     let html = "";
