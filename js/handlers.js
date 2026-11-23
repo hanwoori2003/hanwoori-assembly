@@ -109,11 +109,19 @@ function switchMainTab(tabId, btnEl, options) {
         activeBtn.classList.remove("text-slate-300", "text-amber-300", "text-rose-300");
         activeBtn.classList.add("bg-indigo-600", "text-white", "font-bold", "shadow-sm");
 
-        // Auto-scroll active tab into view in the horizontal tabs container
+        // Auto-scroll active tab into view strictly inside horizontal tabs container (prevents window jitter)
         try {
-            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            const nav = document.getElementById("mainTabsNav");
+            if (nav && activeBtn) {
+                const navRect = nav.getBoundingClientRect();
+                const btnRect = activeBtn.getBoundingClientRect();
+                const targetLeft = nav.scrollLeft + (btnRect.left - navRect.left) - (navRect.width / 2) + (btnRect.width / 2);
+                nav.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+            } else {
+                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
         } catch (e) {
-            activeBtn.scrollIntoView(false);
+            try { activeBtn.scrollIntoView(false); } catch (e2) {}
         }
     }
 
