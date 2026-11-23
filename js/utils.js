@@ -165,7 +165,7 @@ function loadStateFromStorage() {
 
                 // Check if parsed agendas contains legacy mock agendas (e.g. 지휘자 임기)
                 const hasLegacyMockAgendas = Array.isArray(parsed.agendas) && parsed.agendas.some(function(ag) {
-                    return ag && ag.title && (ag.title.indexOf("지휘자 임기") !== -1 || ag.title.indexOf("대외활동 수익") !== -1 || ag.title.indexOf("제3-1호") !== -1 || (ag.id === "ag-2" && ag.afterText && ag.afterText.indexOf("50%이상") !== -1));
+                    return ag && ag.title && (ag.title.indexOf("지휘자 임기") !== -1 || ag.title.indexOf("대외활동 수익") !== -1 || ag.title.indexOf("제3-1호") !== -1 || (ag.id === "ag-2" && ag.afterText && (ag.afterText.indexOf("50%이상") !== -1 || ag.afterText.indexOf("최소 1시간 이상 참여") === -1)));
                 });
 
                 // Normalize agendas & strip legacy sample baseline votes / [가결] tags
