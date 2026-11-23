@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
@@ -11,12 +11,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.38" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.39" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <!-- App Shell Layout: Always visible for seamless assembly data browsing -->
+    <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 화면과 메인 셸의 자연스러운 전환 -->
     <style>
+        #loginGateScreen {
+            display: flex;
+        }
         #appShell {
+            display: none;
+        }
+        html.is-authenticated #loginGateScreen {
+            display: none !important;
+        }
+        html.is-authenticated #appShell {
             display: flex !important;
         }
     </style>
@@ -47,31 +57,25 @@
     </script>
 </head>
 <body class="min-h-[100dvh] flex flex-col font-sans antialiased text-slate-900 bg-slate-50 selection:bg-indigo-500 selection:text-white">
-
     <!-- ============================================================ -->
-    <!-- DEDICATED MEMBER AUTHENTICATION MODAL (#voterLoginModal)     -->
+    <!-- DEDICATED FULL-SCREEN LOGIN GATE PAGE (#loginGateScreen)     -->
     <!-- ============================================================ -->
-    <div id="voterLoginModal" class="fixed inset-0 z-50 hidden items-center justify-center px-4 py-6 bg-slate-950/75 backdrop-blur-sm overflow-y-auto" onclick="if(event.target===this) closeVoterLoginModal();" role="dialog" aria-modal="true" aria-label="단원 로그인 및 본인 인증">
-        <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-100 my-auto">
-            <!-- Close Button -->
-            <button type="button" onclick="closeVoterLoginModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-500 hover:text-slate-800 flex items-center justify-center transition cursor-pointer font-bold text-sm" title="닫기" aria-label="로그인 팝업 닫기">
-                ✕
-            </button>
-
+    <div id="loginGateScreen" class="min-h-[100dvh] flex flex-col items-center justify-center px-4 py-8 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-6 sm:p-8 border border-slate-100">
             <!-- Choir Emblem & Title -->
-            <div class="text-center mb-5 pr-6">
-                <div class="w-13 h-13 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-indigo-500/30">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 mx-auto mb-3.5 rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-indigo-500/30">
                     ♫
                 </div>
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] font-extrabold mb-1.5">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 text-[11px] font-extrabold mb-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     2026 삼성한우리합창단 정기총회
                 </span>
-                <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight break-keep">
-                    정단원 본인 확인 및 로그인
-                </h2>
+                <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight break-keep">
+                    정단원 전용 인증 게이트
+                </h1>
                 <p class="text-xs sm:text-sm text-slate-500 mt-1.5 leading-relaxed break-keep">
-                    사전 참석 조사 제출 및 안건·단장 선거 표결을 위한 단원 인증입니다.
+                    정단원 본인 확인 및 총회 참석·투표를 위한 로그인 화면입니다.
                 </p>
             </div>
 
@@ -108,20 +112,25 @@
                 </div>
                 <p id="loginErrorMsg" class="text-xs sm:text-sm text-rose-600 font-bold bg-rose-50 border border-rose-200 rounded-xl px-3.5 py-2.5 hidden"></p>
                 <button type="submit" onclick="event.preventDefault(); handleSimpleLoginSubmit(event);" class="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-base font-bold shadow-md shadow-indigo-600/20 transition cursor-pointer flex items-center justify-center gap-2">
-                    <span>🔐</span> 로그인 및 인증 완료
+                    <span>🔐</span> 로그인하여 입장하기
                 </button>
             </form>
 
-            <button type="button" onclick="closeVoterLoginModal()" class="w-full mt-3 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
-                <span>✕</span> 닫기 (비로그인 상태로 자료 둘러보기)
+            <button type="button" onclick="enterAsGuest()" class="w-full mt-3 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>👀</span> 총회 자료 및 성원 현황 둘러보기 (비로그인)
             </button>
+
+            <!-- Subtle Footer Note -->
+            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
+                <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed break-keep">
+                    재적 정단원 136명 · 운영진 로그인 시 관리 메뉴가 자동 활성화됩니다.
+                </p>
+            </div>
         </div>
     </div>
 
-    <!-- Hidden compatibility anchor -->
-    <div id="loginGateScreen" class="hidden"></div>
-    <!-- MAIN APP SHELL (Hidden until regular member authenticates)   -->
-    <!-- ============================================================ -->
+    <!-- Hidden voterLoginModal alias to support modal login inside app -->
+    <div id="voterLoginModal" class="hidden"></div>
     <div id="appShell" class="min-h-[100dvh] flex flex-col">
 
     <!-- SINGLE UNIFIED STICKY HEADER (Row 1: compact title & voter, Row 2: primary tabs + admin tabs) -->
@@ -1604,13 +1613,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.38"></script>
-    <script src="js/data-config.js?v=2026.38"></script>
-    <script src="js/firebase-config.js?v=2026.38"></script>
-    <script src="js/firebase-sync.js?v=2026.38"></script>
-    <script src="js/utils.js?v=2026.38"></script>
-    <script src="js/render.js?v=2026.38"></script>
-    <script src="js/handlers.js?v=2026.38"></script>
-    <script src="js/app.js?v=2026.38"></script>
+    <script src="js/data-members.js?v=2026.39"></script>
+    <script src="js/data-config.js?v=2026.39"></script>
+    <script src="js/firebase-config.js?v=2026.39"></script>
+    <script src="js/firebase-sync.js?v=2026.39"></script>
+    <script src="js/utils.js?v=2026.39"></script>
+    <script src="js/render.js?v=2026.39"></script>
+    <script src="js/handlers.js?v=2026.39"></script>
+    <script src="js/app.js?v=2026.39"></script>
 </body>
 </html>

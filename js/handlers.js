@@ -1,4 +1,4 @@
-﻿// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
+// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
 
 function updateNavigationHash() {
     try {
@@ -191,10 +191,20 @@ function updateTabsScrollIndicator() {
 }
 
 function openVoterLoginModal() {
-    const modal = document.getElementById("voterLoginModal");
-    if (modal) {
-        modal.classList.remove("hidden");
-        modal.classList.add("flex");
+    if (appState) appState.guestBrowsing = false;
+    if (typeof document !== "undefined" && document.documentElement) {
+        document.documentElement.classList.remove("is-authenticated");
+        document.documentElement.removeAttribute("data-active-tab");
+    }
+    const gate = document.getElementById("loginGateScreen");
+    const shell = document.getElementById("appShell");
+    if (gate) {
+        gate.classList.remove("hidden");
+        gate.classList.add("flex");
+    }
+    if (shell) {
+        shell.classList.add("hidden");
+        shell.classList.remove("flex");
     }
     if (typeof populateLoginMemberSelect === "function") {
         populateLoginMemberSelect();
@@ -213,7 +223,7 @@ function openVoterLoginModal() {
     if (nameInp) {
         setTimeout(function() {
             try { nameInp.focus(); } catch (e) {}
-        }, 60);
+        }, 80);
     }
 }
 
@@ -358,6 +368,7 @@ function handleSimpleLoginSubmit(evt) {
 function logoutCurrentUser() {
     appState.currentVoterId = null;
     appState.hasExplicitLogin = false;
+    appState.guestBrowsing = false;
     appState.isAdminAuthenticated = false;
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;

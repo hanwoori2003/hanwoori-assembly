@@ -1,36 +1,38 @@
-﻿// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
+// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
 
 function renderAuthGate() {
-    const modal = document.getElementById("voterLoginModal");
     const gate = document.getElementById("loginGateScreen");
     const shell = document.getElementById("appShell");
-    if (shell) {
-        shell.classList.remove("hidden");
-        shell.classList.add("flex");
-    }
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
-    if (voter) {
+    const isGuest = Boolean(appState && appState.guestBrowsing);
+
+    if (voter || isGuest) {
         if (typeof document !== "undefined" && document.documentElement) {
             document.documentElement.classList.add("is-authenticated");
             if (appState && appState.activeTab) {
                 document.documentElement.setAttribute("data-active-tab", appState.activeTab);
             }
         }
-        if (modal) {
-            modal.classList.add("hidden");
-            modal.classList.remove("flex");
-        }
         if (gate) {
             gate.classList.add("hidden");
             gate.classList.remove("flex");
+        }
+        if (shell) {
+            shell.classList.remove("hidden");
+            shell.classList.add("flex");
         }
     } else {
         if (typeof document !== "undefined" && document.documentElement) {
             document.documentElement.classList.remove("is-authenticated");
+            document.documentElement.removeAttribute("data-active-tab");
         }
         if (gate) {
-            gate.classList.add("hidden");
-            gate.classList.remove("flex");
+            gate.classList.remove("hidden");
+            gate.classList.add("flex");
+        }
+        if (shell) {
+            shell.classList.add("hidden");
+            shell.classList.remove("flex");
         }
     }
 }

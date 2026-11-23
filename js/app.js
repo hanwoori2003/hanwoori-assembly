@@ -1,4 +1,4 @@
-﻿// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
+// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
 
 let appState = getDefaultState();
 window.appState = appState;
@@ -152,11 +152,7 @@ function restoreInitialViewState() {
 
     try {
         if (typeof document !== "undefined" && document.documentElement) {
-            if (voter) {
-                document.documentElement.classList.add("is-authenticated");
-            } else {
-                document.documentElement.classList.remove("is-authenticated");
-            }
+            if (voter || (appState && appState.guestBrowsing)) { document.documentElement.classList.add("is-authenticated"); } else { document.documentElement.classList.remove("is-authenticated"); document.documentElement.removeAttribute("data-active-tab"); }
             document.documentElement.setAttribute("data-active-tab", targetTab);
         }
     } catch (e) {}
