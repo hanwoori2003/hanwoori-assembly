@@ -473,7 +473,7 @@ function renderActivityView() {
     // ------------------------------------------------------------------
     const statsCont = document.getElementById("activityMemberStatsContainer");
     if (statsCont && report) {
-        const ms = report.memberSummary || { total: 136, existing: 116, newcomers: 20, note: "활동보고 집계 기준" };
+        const ms = report.memberSummary || { total: 131, existing: 116, newcomers: 15, note: "정단원 131명 기준" };
         const partColors = {
             rose: { bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-700", bar: "from-rose-500 to-pink-500", pill: "bg-white text-rose-700 border-rose-200" },
             amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", bar: "from-amber-500 to-orange-500", pill: "bg-white text-amber-800 border-amber-200" },
@@ -489,17 +489,65 @@ function renderActivityView() {
                         '<span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-bold">' + escapeHtml(ms.note) + '</span>' +
                     '</div>' +
                     '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.total + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
-                    '<div class="text-[11px] text-slate-500 mt-0.5">기존 ' + ms.existing + '명 + 신입 ' + ms.newcomers + '명</div>' +
+                    '<div class="text-[11px] text-slate-500 mt-0.5">기존 ' + ms.existing + '명 + 신입 ' + ms.newcomers + '명 (무대 완주 정단원)</div>' +
                 '</div>' +
                 '<div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200 shadow-2xs">' +
                     '<span class="text-xs font-bold text-slate-600">기존단원</span>' +
                     '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.existing + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
-                    '<div class="text-[11px] text-slate-500 mt-0.5">전체의 ' + Math.round((ms.existing / ms.total) * 100) + '%</div>' +
+                    '<div class="text-[11px] text-slate-500 mt-0.5">전체의 ' + Math.round((ms.existing / ms.total) * 100) + '% (1~20기)</div>' +
                 '</div>' +
                 '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs">' +
-                    '<span class="text-xs font-bold text-emerald-700">신입단원</span>' +
+                    '<span class="text-xs font-bold text-emerald-700">신입단원 (21기)</span>' +
                     '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>' +
-                    '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (신입단원 20명 합류)</div>' +
+                    '<div class="text-[11px] text-emerald-600 mt-0.5">무대 완주 정단원 15명 인정 / 미참여 5명 예비신단 제외</div>' +
+                '</div>' +
+            '</div>';
+
+        // 21기 신단 정단원 인준 기준 및 예비신단(무대 미참여 5인) 안내 카드
+        let excludedNoticeHtml =
+            '<div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-300 shadow-xs space-y-3">' +
+                '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200 pb-2.5">' +
+                    '<div class="flex items-center gap-2">' +
+                        '<span class="text-base sm:text-lg">📢</span>' +
+                        '<h4 class="text-sm sm:text-base font-black text-amber-950">21기 신입단원 정단원 인준 기준 및 예비신단(무대 미참여 5명) 안내</h4>' +
+                    '</div>' +
+                    '<span class="px-2.5 py-1 rounded-full text-[11px] font-black bg-amber-200 text-amber-950 border border-amber-300 shrink-0 self-start sm:self-auto">단칙 무대출연 규정 적용</span>' +
+                '</div>' +
+                '<p class="text-xs sm:text-sm text-slate-700 leading-relaxed break-keep">' +
+                    '삼성한우리합창단 정단원 인준 규정상 <strong>‘정기연주회 무대에 서야 정식단원으로 인정’</strong>됩니다.<br class="hidden sm:inline" />' +
+                    '21기 신입단원 총 20명 중 무대를 완주한 <strong>15명만 2026년 공식 정단원(총회 의결권 보유)으로 최종 인준</strong>되었으며, 무대에 서지 못한 <strong>아래 5명은 예비신단으로 분류되어 이번 총회 의결 정단원 명부(총 131명)에서 제외</strong>되었습니다.' +
+                '</p>' +
+                '<div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-1 text-xs">' +
+                    '<div class="p-3 rounded-xl bg-white border border-amber-200 text-center shadow-2xs space-y-1">' +
+                        '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">알토 · A1</span>' +
+                        '<div class="font-black text-slate-900 text-sm">권태희</div>' +
+                        '<div class="text-[11px] text-slate-500">삼성바이오로직스</div>' +
+                        '<div class="mt-1 text-[10px] font-bold text-rose-600 bg-rose-50 rounded py-0.5">무대 미참여 (예비신단)</div>' +
+                    '</div>' +
+                    '<div class="p-3 rounded-xl bg-white border border-amber-200 text-center shadow-2xs space-y-1">' +
+                        '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">알토 · A1</span>' +
+                        '<div class="font-black text-slate-900 text-sm">김다예</div>' +
+                        '<div class="text-[11px] text-slate-500">삼성생명</div>' +
+                        '<div class="mt-1 text-[10px] font-bold text-rose-600 bg-rose-50 rounded py-0.5">무대 미참여 (예비신단)</div>' +
+                    '</div>' +
+                    '<div class="p-3 rounded-xl bg-white border border-amber-200 text-center shadow-2xs space-y-1">' +
+                        '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">알토 · A2</span>' +
+                        '<div class="font-black text-slate-900 text-sm">최서윤</div>' +
+                        '<div class="text-[11px] text-slate-500">삼성웰스토리</div>' +
+                        '<div class="mt-1 text-[10px] font-bold text-rose-600 bg-rose-50 rounded py-0.5">무대 미참여 (예비신단)</div>' +
+                    '</div>' +
+                    '<div class="p-3 rounded-xl bg-white border border-amber-200 text-center shadow-2xs space-y-1">' +
+                        '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-100 text-sky-800">테너 · T2</span>' +
+                        '<div class="font-black text-slate-900 text-sm">전성광</div>' +
+                        '<div class="text-[11px] text-slate-500">강북삼성병원</div>' +
+                        '<div class="mt-1 text-[10px] font-bold text-rose-600 bg-rose-50 rounded py-0.5">무대 미참여 (예비신단)</div>' +
+                    '</div>' +
+                    '<div class="p-3 rounded-xl bg-white border border-amber-200 text-center shadow-2xs space-y-1">' +
+                        '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-100 text-indigo-800">베이스 · B1</span>' +
+                        '<div class="font-black text-slate-900 text-sm">심억수</div>' +
+                        '<div class="text-[11px] text-slate-500">삼성전자</div>' +
+                        '<div class="mt-1 text-[10px] font-bold text-rose-600 bg-rose-50 rounded py-0.5">무대 미참여 (예비신단)</div>' +
+                    '</div>' +
                 '</div>' +
             '</div>';
 
@@ -606,7 +654,7 @@ function renderActivityView() {
             '<div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">' +
                 '<div class="flex items-center justify-between gap-2 flex-wrap">' +
                     '<div class="flex items-center gap-2">' +
-                        '<span class="text-sm font-black text-slate-900">📸 파트별 정단원 사진 명부 (8개 파트 · 136명)</span>' +
+                        '<span class="text-sm font-black text-slate-900">📸 파트별 정단원 사진 명부 (8개 파트 · 131명)</span>' +
                         '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200">클릭 시 확대</span>' +
                     '</div>' +
                     '<span class="text-[11px] text-slate-400">각 파트 카드를 클릭하면 상세 사진 명부가 크게 열립니다</span>' +
@@ -629,7 +677,7 @@ function renderActivityView() {
         });
         rosterGalleryHtml += '</div></div>';
 
-        statsCont.innerHTML = kpiHtml + panelsHtml + rosterGalleryHtml;
+        statsCont.innerHTML = kpiHtml + excludedNoticeHtml + panelsHtml + rosterGalleryHtml;
     }
 
     // ------------------------------------------------------------------
@@ -1827,8 +1875,8 @@ function renderAttendanceView() {
     const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
         ? FULL_MEMBER_ROSTER
         : (appState.members || []);
-    const totalMembers = roster.length || 136;
-    const quorumGoal = 91;
+    const totalMembers = roster.length || 131;
+    const quorumGoal = Math.ceil((totalMembers * 2) / 3);
 
     if (!appState.attendanceSurvey) {
         appState.attendanceSurvey = {
@@ -1942,7 +1990,7 @@ function renderAttendanceView() {
     // 5. Update Navbar Tab Badge
     const navBadge = document.getElementById("navBadgeAttendanceCount");
     if (navBadge) {
-        navBadge.textContent = quorumCount + "/91";
+        navBadge.textContent = quorumCount + "/" + (survey.quorumThreshold || 88);
         if (quorumMet) {
             navBadge.className = "px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold";
         } else {

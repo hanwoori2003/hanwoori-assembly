@@ -1,4 +1,4 @@
-// ============================================================================
+﻿// ============================================================================
 // Firebase Firestore 실시간 클라우드 동기화 모듈 (js/firebase-sync.js)
 // - Offline / Local Mode: Firebase 미설정 또는 CDN 미로드 시 100% localStorage 동작
 // - Live Cloud Mode:
@@ -125,7 +125,7 @@
                 baseReject: 0,
                 baseAbstain: 0,
                 voterTotal: 0,
-                passThreshold: Math.ceil(((typeof s.totalAttendees === "number" && s.totalAttendees > 0 ? s.totalAttendees : 136) * 2) / 3),
+                passThreshold: Math.ceil(((typeof s.totalAttendees === "number" && s.totalAttendees > 0 ? s.totalAttendees : 131) * 2) / 3),
                 isLocked: locked,
                 locked: locked,
                 status: locked ? "closed" : "voting"
@@ -154,9 +154,9 @@
         return {
             sessionTitle: s.sessionTitle || "2026 삼성한우리합창단 정기총회",
             quorum: {
-                totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 136)
+                totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 131)
             },
-            totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 136),
+            totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 131),
             winnerPagePublic: Boolean(s.winnerPagePublic),
             uploadedFileName: s.uploadedFileName || "",
             assemblySchedule: deepClone(Array.isArray(s.assemblySchedule) ? s.assemblySchedule : []),
@@ -176,8 +176,8 @@
             electionCandidates: electionCandidates,
             attendanceSurveyMeta: {
                 deadline: (s.attendanceSurvey && s.attendanceSurvey.deadline) || "2026년 12월 12일 23:59",
-                targetTotal: typeof s.totalAttendees === "number" ? s.totalAttendees : 136,
-                quorumThreshold: Math.ceil(((typeof s.totalAttendees === "number" ? s.totalAttendees : 136) * 2) / 3)
+                targetTotal: typeof s.totalAttendees === "number" ? s.totalAttendees : 131,
+                quorumThreshold: Math.ceil(((typeof s.totalAttendees === "number" ? s.totalAttendees : 131) * 2) / 3)
             },
             agendasMeta: agendasMeta,
             updatedAt: new Date().toISOString()
@@ -247,7 +247,7 @@
             if (Array.isArray(s.assemblySchedule)) {
                 s.assemblySchedule.forEach(function(item) {
                     if (item && typeof item.desc === "string" && item.desc.indexOf("164명") !== -1) {
-                        var officialCount = (canonicalRoster && canonicalRoster.length) ? canonicalRoster.length : 136;
+                        var officialCount = (canonicalRoster && canonicalRoster.length) ? canonicalRoster.length : 131;
                         var quorumTwoThirds = Math.ceil((officialCount * 2) / 3);
                         item.desc = "재적 정단원 " + officialCount + "명 기준 성원 확인 완료 (개회·의결정족수 2/3 기준 " + quorumTwoThirds + "명/" + quorumTwoThirds + "표↑)";
                     }
@@ -287,8 +287,8 @@
             if (data.attendanceSurveyMeta && typeof data.attendanceSurveyMeta === "object") {
                 if (!s.attendanceSurvey) s.attendanceSurvey = { votes: {} };
                 s.attendanceSurvey.deadline = data.attendanceSurveyMeta.deadline || "2026년 12월 12일 23:59";
-                s.attendanceSurvey.targetTotal = data.attendanceSurveyMeta.targetTotal || 136;
-                s.attendanceSurvey.quorumThreshold = data.attendanceSurveyMeta.quorumThreshold || 91;
+                s.attendanceSurvey.targetTotal = data.attendanceSurveyMeta.targetTotal || 131;
+                s.attendanceSurvey.quorumThreshold = data.attendanceSurveyMeta.quorumThreshold || 88;
                 if (!s.attendanceSurvey.votes) s.attendanceSurvey.votes = {};
             }
             if (data.concertSurvey && typeof data.concertSurvey === "object") {
@@ -360,7 +360,7 @@
                         else if (mergedVotes[mk] === "reject") disagreeCnt += 1;
                         else if (mergedVotes[mk] === "abstain") abstainCnt += 1;
                     });
-                    var dynamicTotalAtt = (typeof s.totalAttendees === "number" && s.totalAttendees > 0) ? s.totalAttendees : 136;
+                    var dynamicTotalAtt = (typeof s.totalAttendees === "number" && s.totalAttendees > 0) ? s.totalAttendees : 131;
                     return {
                         id: agId,
                         no: no,

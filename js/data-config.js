@@ -19,7 +19,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 91,
+        "passThreshold": 88,
         "memberVotes": {},
         "agendaNo": 1,
         "number": 1,
@@ -48,7 +48,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 91,
+        "passThreshold": 88,
         "memberVotes": {},
         "agendaNo": 2,
         "number": 2,
@@ -65,10 +65,11 @@ const INITIAL_AGENDAS = [
 // 2-B. 활동보고 데이터 (PDF Pages 5-34 기준)
 const ACTIVITY_REPORT_DATA = {
     memberSummary: {
-        total: 136,
+        total: 131,
         existing: 116,
-        newcomers: 20,
-        note: "활동보고 집계 기준"
+        newcomers: 15,
+        excludedNewcomers: 5,
+        note: "정단원 131명 (21기 무대 완주 15명 인정 / 미참여 5명 제외)"
     },
     partStats: [
         {
@@ -82,33 +83,33 @@ const ACTIVITY_REPORT_DATA = {
         },
         {
             part: "Alto",
-            total: 40,
+            total: 37,
             color: "amber",
             subParts: [
-                { label: "A1", count: "22", photo: "assets/roster/alto_1.jpg", title: "Alto I 사진 명부 (22명)" },
-                { label: "A2", count: "18", photo: "assets/roster/alto_2.jpg", title: "Alto II 사진 명부 (18명)" }
+                { label: "A1", count: "20", photo: "assets/roster/alto_1.jpg", title: "Alto I 사진 명부 (20명, 미참여 2명 제외)" },
+                { label: "A2", count: "17", photo: "assets/roster/alto_2.jpg", title: "Alto II 사진 명부 (17명, 미참여 1명 제외)" }
             ]
         },
         {
             part: "Tenor",
-            total: 29,
+            total: 28,
             color: "sky",
             subParts: [
                 { label: "T1", count: "15", photo: "assets/roster/tenor_1.jpg", title: "Tenor I 사진 명부 (15명)" },
-                { label: "T2", count: "14", photo: "assets/roster/tenor_2.jpg", title: "Tenor II 사진 명부 (14명)" }
+                { label: "T2", count: "13", photo: "assets/roster/tenor_2.jpg", title: "Tenor II 사진 명부 (13명, 미참여 1명 제외)" }
             ]
         },
         {
             part: "Bass",
-            total: 27,
+            total: 26,
             color: "indigo",
             subParts: [
-                { label: "B1", count: "18", photo: "assets/roster/bass_1.jpg", title: "Bass I 사진 명부 (18명)" },
+                { label: "B1", count: "17", photo: "assets/roster/bass_1.jpg", title: "Bass I 사진 명부 (17명, 미참여 1명 제외)" },
                 { label: "B2", count: "9", photo: "assets/roster/bass_2.jpg", title: "Bass II 사진 명부 (9명)" }
             ]
         }
     ],
-    generationHighlightBadge: "16~20기 및 신입: 88명 (65%)",
+    generationHighlightBadge: "16~20기 및 신입: 83명 (63%)",
     generationStats: [
         { gen: 1, label: "1기", count: 5, highlight: false },
         { gen: 2, label: "2기", count: 3, highlight: false },
@@ -130,8 +131,19 @@ const ACTIVITY_REPORT_DATA = {
         { gen: 18, label: "18기", count: 14, highlight: true },
         { gen: 19, label: "19기", count: 14, highlight: true },
         { gen: 20, label: "20기", count: 19, highlight: true },
-        { gen: "신입", label: "신입", count: 20, highlight: true }
+        { gen: "신입", label: "신입(21기)", count: 15, highlight: true }
     ],
+    excludedMembersInfo: {
+        title: "21기 예비신단 중 정단원 미인정 인원 (5명)",
+        reason: "한우리 단칙 및 정단원 인준 요건: 정기연주회 무대 출연 필수 (무대 미참여로 예비신단 분류)",
+        members: [
+            { name: "권태희", part: "알토", detailPart: "A1", company: "삼성바이오로직스" },
+            { name: "최서윤", part: "알토", detailPart: "A2", company: "삼성웰스토리" },
+            { name: "김다예", part: "알토", detailPart: "A1", company: "삼성생명" },
+            { name: "전성광", part: "테너", detailPart: "T2", company: "강북삼성병원" },
+            { name: "심억수", part: "베이스", detailPart: "B1", company: "삼성전자" }
+        ]
+    },
     majorChanges: [
         { no: 1, title: "정단원 명부 작성", desc: "파트별 정단원 사진 명부 8종 제작 완료", icon: "📸", photo: "assets/roster/bass_1.jpg" },
         { no: 2, title: "연회비 인상", desc: "24년 40만원 → 42만원 (얼리버드 2만원 할인 시 40만원)", icon: "💳" },
@@ -275,8 +287,8 @@ const INITIAL_ANNUAL_EVENTS = [
 function getDefaultState() {
   return {
     sessionTitle: "2026 삼성한우리합창단 정기총회",
-    totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 136),
-    activeTab: "attendance",
+    totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 131),
+    activeTab: "events",
     activeAgendaId: "ag-1",
     adminPreviewAsMember: false,
     projectorMode: false,
@@ -289,10 +301,10 @@ function getDefaultState() {
       {
         id: "sch-1",
         title: "1. 개회 및 성원 보고",
-        desc: "재적 정단원 136명 기준 성원 확인 (개회·의결정족수 2/3 기준 91명/91표↑, 현장+위임)",
+        desc: "재적 정단원 131명 기준 성원 확인 (개회·의결정족수 2/3 기준 88명/88표↑, 현장+위임)",
         status: "진행중",
-        targetTab: "attendance",
-        btnLabel: "참석·위임 현황 →"
+        targetTab: "events",
+        btnLabel: ""
       },
     {
         "id": "sch-2",
@@ -885,8 +897,8 @@ function getDefaultState() {
     "balance": 20887349,
     "revenueItems": [
         {
-            "name": "2026 정기연회비 (정단원 136명 기준)",
-            "amount": 53600000,
+            "name": "2026 정기연회비 (정단원 131명 기준)",
+            "amount": 52400000,
             "note": "1인당 40만원 일괄 납부"
         },
         {
@@ -940,8 +952,8 @@ function getDefaultState() {
 },
     attendanceSurvey: {
         deadline: "2026년 12월 12일 23:59",
-        targetTotal: 136,
-        quorumThreshold: 91,
+        targetTotal: 131,
+        quorumThreshold: 88,
         votes: {}
     },
     concertSurvey: {

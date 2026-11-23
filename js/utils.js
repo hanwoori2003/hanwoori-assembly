@@ -1,4 +1,4 @@
-// 3. 유틸리티, 로컬 스토리지 관리, 득표 집계, 검색 헬퍼 및 DOCX/TXT 단칙 파서 (js/utils.js)
+﻿// 3. 유틸리티, 로컬 스토리지 관리, 득표 집계, 검색 헬퍼 및 DOCX/TXT 단칙 파서 (js/utils.js)
 
 function normalizeScheduleTargetTab(rawTab) {
     if (!rawTab) return "";
@@ -127,13 +127,13 @@ function saveStateToStorage(options) {
 function loadStateFromStorage() {
     try {
         const canonicalRoster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : [];
-        const canonicalTotal = canonicalRoster.length || 136;
+        const canonicalTotal = canonicalRoster.length || 131;
         const isCurrentKey = Boolean(localStorage.getItem(STORAGE_KEY));
         const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v15") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.bylaws)) {
-                appState.totalAttendees = (!isCurrentKey && (parsed.totalAttendees === 127 || parsed.totalAttendees === 113 || parsed.totalAttendees === 134))
+                appState.totalAttendees = (!isCurrentKey && (parsed.totalAttendees === 127 || parsed.totalAttendees === 113 || parsed.totalAttendees === 136 || parsed.totalAttendees === 134))
                     ? canonicalTotal
                     : (parsed.totalAttendees || canonicalTotal);
                 appState.activeTab = normalizeScheduleTargetTab(parsed.activeTab) || "events";
@@ -332,8 +332,8 @@ function loadStateFromStorage() {
                 } else if (typeof getDefaultState === 'function') {
                     appState.attendanceSurvey = (getDefaultState().attendanceSurvey) || {
                         deadline: '2026년 12월 12일 23:59',
-                        targetTotal: 136,
-                        quorumThreshold: 91,
+                        targetTotal: 131,
+                        quorumThreshold: 88,
                         votes: {}
                     };
                 }
@@ -609,7 +609,7 @@ function getAgendaTallies(agenda) {
     const totalVoted = approve + reject + abstain;
     const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER.length
-        : 136;
+        : 131;
     const baseTotal = (typeof appState !== "undefined" && appState && typeof appState.totalAttendees === "number" && appState.totalAttendees > 0)
         ? appState.totalAttendees
         : fallbackTotal;
@@ -771,7 +771,7 @@ function getElectionTallies() {
     const elec = appState.election || {};
     const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER.length
-        : 136;
+        : 131;
     const basePool = (elec.totalVoters && elec.totalVoters > 0)
         ? elec.totalVoters
         : ((typeof appState !== "undefined" && appState && appState.totalAttendees > 0) ? appState.totalAttendees : fallbackTotal);

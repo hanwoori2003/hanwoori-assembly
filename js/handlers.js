@@ -1,4 +1,4 @@
-// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
+﻿// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
 
 function updateNavigationHash() {
     try {
@@ -1937,8 +1937,8 @@ function voteAttendanceSurvey(choice) {
     if (!appState.attendanceSurvey) {
         appState.attendanceSurvey = {
             deadline: "2026년 12월 12일 23:59",
-            targetTotal: 136,
-            quorumThreshold: 91,
+            targetTotal: 131,
+            quorumThreshold: 88,
             votes: {}
         };
     }
@@ -2009,7 +2009,7 @@ function copyUnansweredAttendanceMembers() {
     });
 
     if (unanswered.length === 0) {
-        showToast("🎉 모든 단원(136명)의 참석 조사가 완료되었습니다!");
+        showToast("🎉 모든 단원(131명)의 참석 조사가 완료되었습니다!");
         return;
     }
 
@@ -2021,7 +2021,7 @@ function copyUnansweredAttendanceMembers() {
     });
 
     let msg = "[삼성한우리합창단 2026 정기총회 참석·위임 사전조사 미응답 단원 안내]\n\n";
-    msg += "단칙 제20조 제2항에 따라 총회 개회를 위해서는 재적 정단원 136명 중 2/3 이상(91명)의 출석(현장 또는 쉐도우보팅 위임)이 필수적입니다.\n\n";
+    msg += "단칙 제20조 제2항에 따라 총회 개회를 위해서는 재적 정단원 131명 중 2/3 이상(88명)의 출석(현장 또는 쉐도우보팅 위임)이 필수적입니다.\n\n";
     msg += "원활한 총회 성원을 위해 아래 링크에서 [현장 참석] 또는 [쉐도우보팅 참여] 여부를 꼭 체크해 주시기 바랍니다!\n\n";
     msg += "⏳ 미응답 단원 (총 " + unanswered.length + "명):\n";
 
@@ -2090,21 +2090,21 @@ function copyAttendanceSummaryReport() {
     });
 
     const quorumTotal = onsite + shadow;
-    const goal = 91;
+    const goal = 88;
     const rate = Math.round((quorumTotal / goal) * 100);
 
     let msg = "[2026 삼성한우리합창단 정기총회 성원 현황 브리핑]\n\n";
-    msg += "• 재적 정단원: 136명\n";
-    msg += "• 개회 정족수 목표: 91명 이상 (2/3)\n";
+    msg += "• 재적 정단원: 131명\n";
+    msg += "• 개회 정족수 목표: 88명 이상 (2/3)\n";
     msg += "• 현재 성원 인정 합계: " + quorumTotal + "명 (" + rate + "% 달성)\n\n";
     msg += "세부 집계:\n";
-    msg += " 1. 🏢 현장 참석: " + onsite + "명 (" + Math.round((onsite / 136) * 100) + "%)\n";
-    msg += " 2. 🤝 쉐도우보팅(위임): " + shadow + "명 (" + Math.round((shadow / 136) * 100) + "%)\n";
+    msg += " 1. 🏢 현장 참석: " + onsite + "명 (" + Math.round((onsite / 131) * 100) + "%)\n";
+    msg += " 2. 🤝 쉐도우보팅(위임): " + shadow + "명 (" + Math.round((shadow / 131) * 100) + "%)\n";
     msg += " 3. ❌ 전체 불참: " + absent + "명\n";
     msg += " 4. ⏳ 미응답: " + pending + "명\n\n";
 
     if (quorumTotal >= goal) {
-        msg += "✅ 총회 개회 정족수(91명) 충족 완료!";
+        msg += "✅ 총회 개회 정족수(88명) 충족 완료!";
     } else {
         msg += "⚠️ 개회 정족수 달성까지 앞으로 " + (goal - quorumTotal) + "명 추가 출석(현장 또는 위임)이 필요합니다.";
     }

@@ -1,4 +1,4 @@
-// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
+﻿// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
 
 let appState = getDefaultState();
 window.appState = appState;
@@ -132,7 +132,7 @@ function restoreInitialViewState() {
         ? isCurrentUserExecutive()
         : Boolean(appState.isAdminAuthenticated);
 
-    let targetTab = "attendance";
+    let targetTab = "events";
     if (typeof window !== "undefined" && window.location && window.location.hash) {
         const hashVal = window.location.hash.replace("#", "").toLowerCase().trim();
         const validTabs = ["attendance", "events", "reports", "settlement", "bylaws", "election", "charter", "admin", "winner"];
