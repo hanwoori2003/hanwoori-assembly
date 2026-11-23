@@ -124,13 +124,13 @@ function saveStateToStorage(options) {
 function loadStateFromStorage() {
     try {
         const canonicalRoster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : [];
-        const canonicalTotal = canonicalRoster.length || 134;
+        const canonicalTotal = canonicalRoster.length || 136;
         const isCurrentKey = Boolean(localStorage.getItem(STORAGE_KEY));
         const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v15") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.bylaws)) {
-                appState.totalAttendees = (!isCurrentKey && parsed.totalAttendees === 127)
+                appState.totalAttendees = (!isCurrentKey && (parsed.totalAttendees === 127 || parsed.totalAttendees === 113 || parsed.totalAttendees === 134))
                     ? canonicalTotal
                     : (parsed.totalAttendees || canonicalTotal);
                 appState.activeTab = normalizeScheduleTargetTab(parsed.activeTab) || "events";
@@ -595,7 +595,7 @@ function getAgendaTallies(agenda) {
     const totalVoted = approve + reject + abstain;
     const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER.length
-        : 134;
+        : 136;
     const baseTotal = (typeof appState !== "undefined" && appState && typeof appState.totalAttendees === "number" && appState.totalAttendees > 0)
         ? appState.totalAttendees
         : fallbackTotal;
@@ -757,7 +757,7 @@ function getElectionTallies() {
     const elec = appState.election || {};
     const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER.length
-        : 134;
+        : 136;
     const basePool = (elec.totalVoters && elec.totalVoters > 0)
         ? elec.totalVoters
         : ((typeof appState !== "undefined" && appState && appState.totalAttendees > 0) ? appState.totalAttendees : fallbackTotal);

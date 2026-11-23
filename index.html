@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.31" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.32" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <style>
@@ -91,7 +91,7 @@
             <!-- Subtle Footer Note -->
             <div class="mt-6 pt-4 border-t border-slate-100 text-center">
                 <p class="text-[11px] sm:text-xs text-slate-400 leading-relaxed break-keep">
-                    재적 정단원 134명 · 운영진 로그인 시 관리 메뉴가 자동 활성화됩니다.
+                    재적 정단원 136명 · 운영진 로그인 시 관리 메뉴가 자동 활성화됩니다.
                 </p>
             </div>
         </div>
@@ -121,9 +121,9 @@
                     <!-- Quorum Badge (visible on md+ to prevent 360px crowding) -->
                     <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300 shrink-0">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span id="headerQuorumBadgeText">성원 <strong id="headerTotalAttendees" class="text-white font-bold">134명</strong></span>
+                        <span id="headerQuorumBadgeText">성원 <strong id="headerTotalAttendees" class="text-white font-bold">136명</strong></span>
                         <span class="text-slate-500">|</span>
-                        <span class="text-slate-400">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">90표↑</strong></span>
+                        <span class="text-slate-400">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">91표↑</strong></span>
                     </div>
                 </div>
 
@@ -239,7 +239,7 @@
                             <span>●</span> 2026년도 정기총회 공식 의결 진행 중
                         </div>
                         <h2 class="text-xl sm:text-2xl font-black tracking-tight">2026 삼성한우리합창단 정기총회 공식 식순 및 안건</h2>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1">지휘: 박지훈 선생님 (안산시립합창단) · 반주: 김혜연 선생님 · 2026 운영진 18인</p>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1">지휘: 박지훈 선생님 · 반주: 김혜연 선생님 · 2026 운영진 18인</p>
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <button type="button" onclick="switchMainTab('voting')" class="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-extrabold shadow-sm transition text-center cursor-pointer">
@@ -798,10 +798,10 @@
                     </h3>
                     <div class="space-y-3 text-xs">
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">총회 참석 총원 설정 (재적 정단원 <span id="adminOfficialMemberCountSpan">134</span>명 · 현재: <span id="adminCurrentAttendeesSpan">134</span>명)</label>
+                            <label class="block font-bold text-slate-700 mb-1">총회 참석 총원 설정 (재적 정단원 <span id="adminOfficialMemberCountSpan">136</span>명 · 현재: <span id="adminCurrentAttendeesSpan">136</span>명)</label>
                             <div class="flex items-center gap-2">
-                                <input type="number" id="adminInputTotalAttendees" value="134" class="w-32 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold" />
-                                <button type="button" onclick="appState.totalAttendees=parseInt(document.getElementById('adminInputTotalAttendees').value)||(typeof FULL_MEMBER_ROSTER!=='undefined'?FULL_MEMBER_ROSTER.length:134); saveStateToStorage(); renderAll(); showToast('성원 총원이 변경되었습니다.');" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer">
+                                <input type="number" id="adminInputTotalAttendees" value="136" class="w-32 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold" />
+                                <button type="button" onclick="appState.totalAttendees=parseInt(document.getElementById('adminInputTotalAttendees').value)||(typeof FULL_MEMBER_ROSTER!=='undefined'?FULL_MEMBER_ROSTER.length:136); saveStateToStorage(); renderAll(); showToast('성원 총원이 변경되었습니다.');" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer">
                                     반영
                                 </button>
                             </div>
@@ -893,7 +893,7 @@
 
     <!-- COMPACT FOOTER -->
     <footer class="border-t border-slate-200 bg-white/80 py-4 px-4 text-center text-[11px] sm:text-xs text-slate-400">
-        2026 삼성한우리합창단 정기총회 공식 의결 시스템 · 재적 정단원 134명
+        2026 삼성한우리합창단 정기총회 공식 의결 시스템 · 재적 정단원 136명
     </footer>
     </div><!-- /#appShell -->
 
@@ -1311,7 +1311,7 @@
             </div>
             <div id="cloudSyncModalStatus"></div>
             <p class="text-xs text-slate-600 leading-relaxed">
-                Firebase 설정 시 모든 운영진 편집과 134명 단원 투표가 실시간 동기화되며, 미설정 시 브라우저 로컬 스토리지에 자동 보관됩니다.
+                Firebase 설정 시 모든 운영진 편집과 136명 단원 투표가 실시간 동기화되며, 미설정 시 브라우저 로컬 스토리지에 자동 보관됩니다.
             </p>
             <div class="space-y-2">
                 <button type="button" onclick="manualPushConfigToCloud()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold transition cursor-pointer">
@@ -1350,13 +1350,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.31"></script>
-    <script src="js/data-config.js?v=2026.31"></script>
-    <script src="js/firebase-config.js?v=2026.31"></script>
-    <script src="js/firebase-sync.js?v=2026.31"></script>
-    <script src="js/utils.js?v=2026.31"></script>
-    <script src="js/render.js?v=2026.31"></script>
-    <script src="js/handlers.js?v=2026.31"></script>
-    <script src="js/app.js?v=2026.31"></script>
+    <script src="js/data-members.js?v=2026.32"></script>
+    <script src="js/data-config.js?v=2026.32"></script>
+    <script src="js/firebase-config.js?v=2026.32"></script>
+    <script src="js/firebase-sync.js?v=2026.32"></script>
+    <script src="js/utils.js?v=2026.32"></script>
+    <script src="js/render.js?v=2026.32"></script>
+    <script src="js/handlers.js?v=2026.32"></script>
+    <script src="js/app.js?v=2026.32"></script>
 </body>
 </html>

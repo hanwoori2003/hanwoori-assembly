@@ -124,7 +124,7 @@
                 baseReject: 0,
                 baseAbstain: 0,
                 voterTotal: 0,
-                passThreshold: Math.ceil(((typeof s.totalAttendees === "number" && s.totalAttendees > 0 ? s.totalAttendees : 134) * 2) / 3),
+                passThreshold: Math.ceil(((typeof s.totalAttendees === "number" && s.totalAttendees > 0 ? s.totalAttendees : 136) * 2) / 3),
                 isLocked: locked,
                 locked: locked,
                 status: locked ? "closed" : "voting"
@@ -153,9 +153,9 @@
         return {
             sessionTitle: s.sessionTitle || "2026 삼성한우리합창단 정기총회",
             quorum: {
-                totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 134)
+                totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 136)
             },
-            totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 134),
+            totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 136),
             winnerPagePublic: Boolean(s.winnerPagePublic),
             uploadedFileName: s.uploadedFileName || "",
             assemblySchedule: deepClone(Array.isArray(s.assemblySchedule) ? s.assemblySchedule : []),
@@ -241,7 +241,7 @@
             if (Array.isArray(s.assemblySchedule)) {
                 s.assemblySchedule.forEach(function(item) {
                     if (item && typeof item.desc === "string" && item.desc.indexOf("164명") !== -1) {
-                        var officialCount = (canonicalRoster && canonicalRoster.length) ? canonicalRoster.length : 134;
+                        var officialCount = (canonicalRoster && canonicalRoster.length) ? canonicalRoster.length : 136;
                         var quorumTwoThirds = Math.ceil((officialCount * 2) / 3);
                         item.desc = "재적 정단원 " + officialCount + "명 기준 성원 확인 완료 (개회·의결정족수 2/3 기준 " + quorumTwoThirds + "명/" + quorumTwoThirds + "표↑)";
                     }
@@ -347,7 +347,7 @@
                         else if (mergedVotes[mk] === "reject") disagreeCnt += 1;
                         else if (mergedVotes[mk] === "abstain") abstainCnt += 1;
                     });
-                    var dynamicTotalAtt = (typeof s.totalAttendees === "number" && s.totalAttendees > 0) ? s.totalAttendees : 134;
+                    var dynamicTotalAtt = (typeof s.totalAttendees === "number" && s.totalAttendees > 0) ? s.totalAttendees : 136;
                     return {
                         id: agId,
                         no: no,

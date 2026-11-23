@@ -19,7 +19,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 90,
+        "passThreshold": 91,
         "memberVotes": {},
         "agendaNo": 1,
         "number": 1,
@@ -48,7 +48,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 90,
+        "passThreshold": 91,
         "memberVotes": {},
         "agendaNo": 2,
         "number": 2,
@@ -275,7 +275,7 @@ const INITIAL_ANNUAL_EVENTS = [
 function getDefaultState() {
   return {
     sessionTitle: "2026 삼성한우리합창단 정기총회",
-    totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134),
+    totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 136),
     activeTab: "events",
     activeAgendaId: "ag-1",
     adminPreviewAsMember: false,
@@ -289,7 +289,7 @@ function getDefaultState() {
     {
         "id": "sch-1",
         "title": "1. 개회 및 성원 보고",
-        "desc": "재적 정단원 134명 기준 성원 확인 완료 (개회·의결정족수 2/3 기준 90명/90표↑)",
+        "desc": "재적 정단원 136명 기준 성원 확인 완료 (개회·의결정족수 2/3 기준 91명/91표↑)",
         "status": "완료",
         "targetTab": "",
         "btnLabel": "성원확인"
@@ -884,7 +884,7 @@ function getDefaultState() {
     "balance": 20887349,
     "revenueItems": [
         {
-            "name": "2026 정기연회비 (정단원 134명 기준)",
+            "name": "2026 정기연회비 (정단원 136명 기준)",
             "amount": 53600000,
             "note": "1인당 40만원 일괄 납부"
         },

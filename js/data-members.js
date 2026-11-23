@@ -1,5 +1,5 @@
-// 1. 운영진(18명) 및 공식 정단원 명부(134명) 데이터 (js/data-members.js)
-const STORAGE_KEY = "hanwoori_choir_assembly_2026_state_v16";
+// 1. 운영진(18명) 및 공식 정단원 명부(136명) 데이터 (js/data-members.js)
+const STORAGE_KEY = "hanwoori_choir_assembly_2026_state_v17";
 let cloudSyncUrl = "";
 let cloudSyncTimer = null;
 let pendingExecMemberId = null;
@@ -89,7 +89,7 @@ const EXECUTIVE_ROSTER = [
   },
   {
     "id": "mem-85",
-    "name": "윤지현",
+    "name": "윤지헌",
     "gen": "17",
     "part": "테너",
     "basePart": "테너",
@@ -101,7 +101,7 @@ const EXECUTIVE_ROSTER = [
     "subRole": "-",
     "email": "mem-85@samsung-hanwoori.org",
     "code": "8532",
-    "key": "윤지현-테너"
+    "key": "윤지헌-테너"
   },
   {
     "id": "mem-38",
@@ -297,7 +297,7 @@ const EXECUTIVE_ROSTER = [
   }
 ];
 
-// 2026 공식 정단원 명부 (134명, 실제 휴대폰 뒷 4자리 본인인증 코드 포함)
+// 2026 공식 정단원 명부 (136명, 실제 휴대폰 뒷 4자리 본인인증 코드 포함)
 const FULL_MEMBER_ROSTER = [
   {
     "id": "mem-1",
@@ -1628,7 +1628,7 @@ const FULL_MEMBER_ROSTER = [
   },
   {
     "id": "mem-85",
-    "name": "윤지현",
+    "name": "윤지헌",
     "gen": "17",
     "part": "테너",
     "basePart": "테너",
@@ -1640,7 +1640,7 @@ const FULL_MEMBER_ROSTER = [
     "subRole": "-",
     "email": "mem-85@samsung-hanwoori.org",
     "code": "8532",
-    "key": "윤지현-테너"
+    "key": "윤지헌-테너"
   },
   {
     "id": "mem-86",
@@ -2463,5 +2463,38 @@ const FULL_MEMBER_ROSTER = [
     "email": "mem-141@samsung-hanwoori.org",
     "code": "3379",
     "key": "이철규-베이스"
+  }
+  ,
+  {
+    "id": "mem-135",
+    "name": "이윤정",
+    "gen": "12",
+    "part": "소프라노",
+    "basePart": "소프라노",
+    "detailPart": "S1",
+    "company": "삼성전자",
+    "groupType": "samsung",
+    "isExecutive": false,
+    "role": "-",
+    "subRole": "-",
+    "email": "mem-135@samsung-hanwoori.org",
+    "code": "7721",
+    "key": "이윤정-소프라노"
+  },
+  {
+    "id": "mem-136",
+    "name": "유운선",
+    "gen": "12",
+    "part": "베이스",
+    "basePart": "베이스",
+    "detailPart": "B2",
+    "company": "삼성SDI",
+    "groupType": "samsung",
+    "isExecutive": false,
+    "role": "-",
+    "subRole": "-",
+    "email": "mem-136@samsung-hanwoori.org",
+    "code": "8832",
+    "key": "유운선-베이스"
   }
 ];
