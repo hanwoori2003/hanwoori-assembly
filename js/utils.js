@@ -1,4 +1,4 @@
-﻿// 3. 유틸리티, 로컬 스토리지 관리, 득표 집계, 검색 헬퍼 및 DOCX/TXT 단칙 파서 (js/utils.js)
+// 3. 유틸리티, 로컬 스토리지 관리, 득표 집계, 검색 헬퍼 및 DOCX/TXT 단칙 파서 (js/utils.js)
 
 function normalizeScheduleTargetTab(rawTab) {
     if (!rawTab) return "";

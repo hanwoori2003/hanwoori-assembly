@@ -109,7 +109,7 @@ const ACTIVITY_REPORT_DATA = {
             ]
         }
     ],
-    generationHighlightBadge: "16~20기 및 신입: 83명 (63%)",
+    generationHighlightBadge: "16~20기 및 21기(신단): 83명 (63%)",
     generationStats: [
         { gen: 1, label: "1기", count: 5, highlight: false },
         { gen: 2, label: "2기", count: 3, highlight: false },
@@ -131,7 +131,7 @@ const ACTIVITY_REPORT_DATA = {
         { gen: 18, label: "18기", count: 14, highlight: true },
         { gen: 19, label: "19기", count: 14, highlight: true },
         { gen: 20, label: "20기", count: 19, highlight: true },
-        { gen: "신입", label: "신입(21기)", count: 15, highlight: true }
+        { gen: 21, label: "21기(신단)", count: 15, highlight: true }
     ],
     excludedMembersInfo: {
         title: "21기 예비신단 중 정단원 미인정 인원 (5명)",

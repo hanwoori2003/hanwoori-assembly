@@ -1,4 +1,4 @@
-﻿// 1. 운영진(18명) 및 공식 정단원 명부(131명) 데이터 (js/data-members.js)
+// 1. 운영진(18명) 및 공식 정단원 명부(131명) 데이터 (js/data-members.js)
 const STORAGE_KEY = "hanwoori_choir_assembly_2026_state_v17";
 let cloudSyncUrl = "";
 let cloudSyncTimer = null;
