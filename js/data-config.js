@@ -286,9 +286,14 @@ function getDefaultState() {
     bylawSearchQuery: "",
     winnerPagePublic: false,
     assemblySchedule: [
-    {
-        "id": "sch-1",`r`n        "title": "1. 개회 및 성원 보고",`r`n        "desc": "재적 정단원 136명 기준 성원 확인 (개회·의결정족수 2/3 기준 91명/91표↑, 현장+위임)",`r`n        "status": "진행중",`r`n        "targetTab": "attendance",`r`n        "btnLabel": "참석·위임 현황 →"
-    },
+      {
+        id: "sch-1",
+        title: "1. 개회 및 성원 보고",
+        desc: "재적 정단원 136명 기준 성원 확인 (개회·의결정족수 2/3 기준 91명/91표↑, 현장+위임)",
+        status: "진행중",
+        targetTab: "attendance",
+        btnLabel: "참석·위임 현황 →"
+      },
     {
         "id": "sch-2",
         "title": "2. 2026년 활동보고",
