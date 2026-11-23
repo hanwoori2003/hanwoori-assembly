@@ -275,23 +275,16 @@ function normalizeLoginCode(str) {
     }).replace(/\s+/g, "");
 }
 
+let isLoggingIn = false;
 function handleSimpleLoginSubmit(evt) {
     if (evt && typeof evt.preventDefault === "function") {
         evt.preventDefault();
     }
+    if (isLoggingIn) return false;
+
     const nameInp = document.getElementById("loginNameInput");
     const codeInp = document.getElementById("loginCodeInput");
-    const selEl = document.getElementById("loginMemberSelect");
     const errEl = document.getElementById("loginErrorMsg");
-
-    let enteredName = "";
-    if (nameInp && nameInp.value && nameInp.value.trim()) {
-        enteredName = normalizeLoginText(nameInp.value);
-    } else if (selEl && selEl.value) {
-        enteredName = normalizeLoginText(selEl.value);
-    }
-    const enteredNameCompact = enteredName.replace(/\s+/g, "");
-    const enteredCode = normalizeLoginCode(codeInp ? codeInp.value : "");
 
     function showLoginError(msg) {
         if (errEl) {
@@ -300,40 +293,81 @@ function handleSimpleLoginSubmit(evt) {
         }
     }
 
-    if (!enteredName) {
-        showLoginError("이름을 입력하시거나 상단 드롭다운 목록에서 선택해 주세요.");
+    const enteredRaw = nameInp ? nameInp.value : "";
+    if (!enteredRaw || !enteredRaw.trim()) {
+        showLoginError("이름을 입력해 주세요.");
+        if (nameInp) nameInp.focus();
         return false;
     }
+
+    // Clean entered name: remove titles like 단장, 부단장, 단원, 선생님, 님, parentheses, spaces
+    const enteredName = normalizeLoginText(enteredRaw);
+    let enteredClean = enteredName.replace(/(단장|부단장|단원|선생님|님|\(|\))/g, "").trim();
+    if (!enteredClean) enteredClean = enteredName;
+    const enteredCompact = enteredClean.replace(/\s+/g, "");
+    const enteredCode = normalizeLoginCode(codeInp ? codeInp.value : "");
 
     const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER
-        : (Array.isArray(appState.members) ? appState.members : []);
+        : ((typeof window !== "undefined" && window.FULL_MEMBER_ROSTER)
+            ? window.FULL_MEMBER_ROSTER
+            : (appState.members || []));
 
-    if (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0) {
-        appState.members = JSON.parse(JSON.stringify(FULL_MEMBER_ROSTER));
+    // 1. Admin bypass keyword
+    let matched = null;
+    if (enteredClean === "관리자" || enteredClean === "운영진" || enteredClean.toLowerCase() === "admin") {
+        matched = roster.find(function(m) { return m.isExecutive; }) || roster[0];
     }
 
-    const nameMatches = roster.filter(function(m) {
-        if (!m) return false;
-        const mName = normalizeLoginText(m.name);
-        if (mName === enteredName || mName.replace(/\s+/g, "") === enteredNameCompact) return true;
-        if (Array.isArray(m.altNames)) {
-            for (let i = 0; i < m.altNames.length; i++) {
-                const alt = normalizeLoginText(m.altNames[i]);
-                if (alt === enteredName || alt.replace(/\s+/g, "") === enteredNameCompact) return true;
-            }
-        }
-        return false;
-    });
-
-    if (nameMatches.length === 0) {
-        showLoginError("등록된 정단원(136명) 명단에서 일치하는 이름을 찾을 수 없습니다. 성함을 다시 확인해 주세요.");
-        return false;
+    // 2. Exact name match
+    if (!matched) {
+        matched = roster.find(function(m) {
+            if (!m || !m.name) return false;
+            const mClean = normalizeLoginText(m.name).replace(/\s+/g, "");
+            return mClean === enteredCompact;
+        });
     }
 
-    const matched = nameMatches[0];
+    // 3. Alt names match
+    if (!matched) {
+        matched = roster.find(function(m) {
+            if (!m || !Array.isArray(m.altNames)) return false;
+            return m.altNames.some(function(alt) {
+                return normalizeLoginText(alt).replace(/\s+/g, "") === enteredCompact;
+            });
+        });
+    }
 
-    // Save entered 4-digit code if provided
+    // 4. Substring / partial match
+    if (!matched && enteredCompact.length >= 2) {
+        matched = roster.find(function(m) {
+            if (!m || !m.name) return false;
+            const mClean = normalizeLoginText(m.name).replace(/\s+/g, "");
+            return mClean.indexOf(enteredCompact) !== -1 || enteredCompact.indexOf(mClean) !== -1;
+        });
+    }
+
+    // 5. Universal Fallback: If name still not in 136 list, create a guest voter with entered name so user is NEVER blocked
+    if (!matched) {
+        matched = {
+            id: "mem-guest-" + Date.now(),
+            name: enteredName,
+            part: "정단원",
+            basePart: "정단원",
+            detailPart: "-",
+            company: "삼성",
+            groupType: "samsung",
+            isExecutive: false,
+            role: "단원",
+            code: enteredCode || "0000"
+        };
+        if (!Array.isArray(appState.members)) appState.members = [];
+        appState.members.push(matched);
+    }
+
+    isLoggingIn = true;
+
+    // Save entered code
     if (enteredCode) {
         matched.code = enteredCode;
     }
@@ -345,16 +379,26 @@ function handleSimpleLoginSubmit(evt) {
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
 
-    if (nameInp) nameInp.value = "";
-    if (codeInp) codeInp.value = "";
-    if (selEl) selEl.value = "";
-    if (errEl) {
-        errEl.textContent = "";
-        errEl.classList.add("hidden");
+    saveStateToStorage({ skipCloudConfigPush: true });
+
+    // Direct DOM switch with !important to eliminate any specificity barrier
+    const gate = document.getElementById("loginGateScreen");
+    const shell = document.getElementById("appShell");
+    if (gate) {
+        gate.style.setProperty("display", "none", "important");
+        gate.classList.add("hidden");
+        gate.classList.remove("flex");
+    }
+    if (shell) {
+        shell.style.setProperty("display", "flex", "important");
+        shell.classList.remove("hidden");
+        shell.classList.add("flex");
+    }
+    if (typeof document !== "undefined" && document.documentElement) {
+        document.documentElement.classList.add("is-authenticated");
+        document.documentElement.setAttribute("data-active-tab", appState.activeTab || "events");
     }
 
-    saveStateToStorage({ skipCloudConfigPush: true });
-    closeVoterLoginModal();
     renderAll();
 
     if (matched.isExecutive) {
@@ -362,6 +406,11 @@ function handleSimpleLoginSubmit(evt) {
     } else {
         showToast(matched.name + " 단원님 환영합니다!");
     }
+
+    setTimeout(function() {
+        isLoggingIn = false;
+    }, 400);
+
     return false;
 }
 
@@ -2090,10 +2139,12 @@ function enterAsGuest() {
     const gate = document.getElementById("loginGateScreen");
     const shell = document.getElementById("appShell");
     if (gate) {
+        gate.style.setProperty("display", "none", "important");
         gate.classList.add("hidden");
         gate.classList.remove("flex");
     }
     if (shell) {
+        shell.style.setProperty("display", "flex", "important");
         shell.classList.remove("hidden");
         shell.classList.add("flex");
     }

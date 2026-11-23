@@ -2498,3 +2498,8 @@ const FULL_MEMBER_ROSTER = [
     "key": "유운선-베이스"
   }
 ];
+if (typeof window !== "undefined") {
+  window.FULL_MEMBER_ROSTER = FULL_MEMBER_ROSTER;
+  window.EXECUTIVE_ROSTER = EXECUTIVE_ROSTER;
+  window.STORAGE_KEY = STORAGE_KEY;
+}

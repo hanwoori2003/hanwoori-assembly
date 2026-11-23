@@ -14,10 +14,12 @@ function renderAuthGate() {
             }
         }
         if (gate) {
+            gate.style.setProperty("display", "none", "important");
             gate.classList.add("hidden");
             gate.classList.remove("flex");
         }
         if (shell) {
+            shell.style.setProperty("display", "flex", "important");
             shell.classList.remove("hidden");
             shell.classList.add("flex");
         }
@@ -27,10 +29,12 @@ function renderAuthGate() {
             document.documentElement.removeAttribute("data-active-tab");
         }
         if (gate) {
+            gate.style.setProperty("display", "flex", "important");
             gate.classList.remove("hidden");
             gate.classList.add("flex");
         }
         if (shell) {
+            shell.style.setProperty("display", "none", "important");
             shell.classList.add("hidden");
             shell.classList.remove("flex");
         }

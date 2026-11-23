@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.39" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.40" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <!-- App Shell Layout: Always visible for seamless assembly data browsing -->
@@ -79,39 +79,22 @@
                 </p>
             </div>
 
-            <!-- Fast Dropdown Selector (1-Click Easy Selection for 136 members) -->
-            <div class="mb-4 bg-slate-50 border border-slate-200/80 rounded-2xl p-3.5">
-                <label for="loginMemberSelect" class="block text-xs font-bold text-indigo-900 mb-1.5 flex items-center justify-between">
-                    <span>⚡ 1초 간편 선택 (136명 정단원 명부)</span>
-                    <span class="text-[10px] text-indigo-600 font-medium">파트순 정렬</span>
-                </label>
-                <select id="loginMemberSelect" onchange="handleLoginSelectChange(this)" class="w-full h-11 px-3 rounded-xl border border-indigo-200 text-sm font-medium text-slate-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none transition cursor-pointer">
-                    <option value="">-- 내 이름 직접 선택하기 --</option>
-                </select>
-                <p class="text-[11px] text-slate-400 mt-1">※ 목록에서 이름을 선택하시면 성함이 자동 입력됩니다.</p>
-            </div>
-
-            <div class="relative flex items-center justify-center my-3">
-                <div class="border-t border-slate-200 w-full"></div>
-                <span class="bg-white px-2.5 text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">또는 직접 입력</span>
-            </div>
-
-            <!-- Login Form -->
+            <!-- Login Form (Direct Button Action, No Duplicate Submits) -->
             <form id="loginGateForm" onsubmit="event.preventDefault(); handleSimpleLoginSubmit(event); return false;" class="space-y-4">
                 <div>
                     <label for="loginNameInput" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">이름</label>
-                    <input id="loginNameInput" type="text" placeholder="예: 홍길동" autocomplete="name" class="w-full h-12 px-4 rounded-xl border border-slate-200 text-base text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white transition" />
+                    <input id="loginNameInput" type="text" placeholder="예: 홍길동" autocomplete="name" onkeydown="if(event.key==='Enter'){event.preventDefault();handleSimpleLoginSubmit(event);}" class="w-full h-12 px-4 rounded-xl border border-slate-200 text-base text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white transition" />
                 </div>
                 <div>
                     <label for="loginCodeInput" class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 flex items-center justify-between">
                         <span>휴대폰 뒷자리 4자리</span>
                         <span class="text-[11px] font-medium text-slate-400">자유 입력 (본인 확인용)</span>
                     </label>
-                    <input id="loginCodeInput" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리 (예: 1234 또는 0000)" autocomplete="one-time-code" class="w-full h-12 px-4 rounded-xl border border-slate-200 text-base font-mono tracking-widest text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white transition" />
+                    <input id="loginCodeInput" type="password" inputmode="numeric" maxlength="4" placeholder="숫자 4자리 (예: 1234 또는 0000)" autocomplete="one-time-code" onkeydown="if(event.key==='Enter'){event.preventDefault();handleSimpleLoginSubmit(event);}" class="w-full h-12 px-4 rounded-xl border border-slate-200 text-base font-mono tracking-widest text-slate-900 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none bg-white transition" />
                     <p class="text-[11px] text-slate-400 mt-1">※ 본인 성함과 일치하면 즉시 인증되며, 입력하신 번호가 확인용 핀번호로 등록됩니다.</p>
                 </div>
                 <p id="loginErrorMsg" class="text-xs sm:text-sm text-rose-600 font-bold bg-rose-50 border border-rose-200 rounded-xl px-3.5 py-2.5 hidden"></p>
-                <button type="submit" onclick="event.preventDefault(); handleSimpleLoginSubmit(event);" class="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-base font-bold shadow-md shadow-indigo-600/20 transition cursor-pointer flex items-center justify-center gap-2">
+                <button id="btnSubmitLoginGate" type="button" onclick="handleSimpleLoginSubmit(event);" class="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white text-base font-bold shadow-md shadow-indigo-600/20 transition cursor-pointer flex items-center justify-center gap-2">
                     <span>🔐</span> 로그인하여 입장하기
                 </button>
             </form>
@@ -1613,13 +1596,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.39"></script>
-    <script src="js/data-config.js?v=2026.39"></script>
-    <script src="js/firebase-config.js?v=2026.39"></script>
-    <script src="js/firebase-sync.js?v=2026.39"></script>
-    <script src="js/utils.js?v=2026.39"></script>
-    <script src="js/render.js?v=2026.39"></script>
-    <script src="js/handlers.js?v=2026.39"></script>
-    <script src="js/app.js?v=2026.39"></script>
+    <script src="js/data-members.js?v=2026.40"></script>
+    <script src="js/data-config.js?v=2026.40"></script>
+    <script src="js/firebase-config.js?v=2026.40"></script>
+    <script src="js/firebase-sync.js?v=2026.40"></script>
+    <script src="js/utils.js?v=2026.40"></script>
+    <script src="js/render.js?v=2026.40"></script>
+    <script src="js/handlers.js?v=2026.40"></script>
+    <script src="js/app.js?v=2026.40"></script>
 </body>
 </html>
