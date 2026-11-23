@@ -1,28 +1,36 @@
-﻿// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
+// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
 
 let appState = getDefaultState();
 window.appState = appState;
 
 function renderAll() {
-    if (typeof renderAuthGate === "function") {
-        renderAuthGate();
+    function safeCall(fn, name) {
+        if (typeof fn === "function") {
+            try {
+                fn();
+            } catch (err) {
+                console.error("renderAll sub-render failed (" + name + "):", err);
+            }
+        }
     }
-    renderHeaderStatus();
-    renderExecutiveRosterTable();
-    renderFullMemberRosterTable();
-    renderEventsView();
-    if (typeof renderAttendanceView === "function") renderAttendanceView();
-    if (typeof renderActivityView === "function") renderActivityView();
-    renderConcertFeedbackView();
-    renderCurrentBylawsView();
-    renderFullSearchView();
-    renderDrawerSearchResults();
-    renderAgendaStepper();
-    renderActiveVotingView();
-    renderElectionView();
-    renderWinnerView();
-    renderSettlementView();
-    renderAdminView();
+
+    safeCall(renderAuthGate, "renderAuthGate");
+    safeCall(renderHeaderStatus, "renderHeaderStatus");
+    safeCall(renderExecutiveRosterTable, "renderExecutiveRosterTable");
+    safeCall(renderFullMemberRosterTable, "renderFullMemberRosterTable");
+    safeCall(renderEventsView, "renderEventsView");
+    safeCall(renderAttendanceView, "renderAttendanceView");
+    safeCall(renderActivityView, "renderActivityView");
+    safeCall(renderConcertFeedbackView, "renderConcertFeedbackView");
+    safeCall(renderCurrentBylawsView, "renderCurrentBylawsView");
+    safeCall(renderFullSearchView, "renderFullSearchView");
+    safeCall(renderDrawerSearchResults, "renderDrawerSearchResults");
+    safeCall(renderAgendaStepper, "renderAgendaStepper");
+    safeCall(renderActiveVotingView, "renderActiveVotingView");
+    safeCall(renderElectionView, "renderElectionView");
+    safeCall(renderWinnerView, "renderWinnerView");
+    safeCall(renderSettlementView, "renderSettlementView");
+    safeCall(renderAdminView, "renderAdminView");
 }
 
 let toastTimer = null;

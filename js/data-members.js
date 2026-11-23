@@ -8,8 +8,7 @@ let pendingPhotoCandidateId = null;
 // 2026 삼성한우리합창단 운영진 18인 명단 (원본 순서 유지)
 const EXECUTIVE_ROSTER = [
   {
-    "id": "mem-105",
-    "name": "이창욱",
+    "id": "mem-100",`r`n    "name": "이창욱",
     "gen": "17",
     "part": "테너",
     "basePart": "테너",
@@ -19,13 +18,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "단장",
     "subRole": "-",
-    "email": "mem-105@samsung-hanwoori.org",
+    "email": "mem-100@samsung-hanwoori.org",
     "code": "6696",
     "key": "이창욱-테너"
   },
   {
-    "id": "mem-94",
-    "name": "한석범",
+    "id": "mem-87",`r`n    "name": "한석범",
     "gen": "4",
     "part": "테너",
     "basePart": "테너",
@@ -35,13 +33,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "부단장",
     "subRole": "-",
-    "email": "mem-94@samsung-hanwoori.org",
+    "email": "mem-87@samsung-hanwoori.org",
     "code": "5493",
     "key": "한석범-테너"
   },
   {
-    "id": "mem-17",
-    "name": "황금비",
+    "id": "mem-16",`r`n    "name": "황금비",
     "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -51,13 +48,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "기획총무",
     "subRole": "-",
-    "email": "mem-17@samsung-hanwoori.org",
+    "email": "mem-16@samsung-hanwoori.org",
     "code": "6674",
     "key": "황금비-소프라노"
   },
   {
-    "id": "mem-97",
-    "name": "김석준",
+    "id": "mem-92",`r`n    "name": "김석준",
     "gen": "20",
     "part": "테너",
     "basePart": "테너",
@@ -67,13 +63,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "기획총무",
     "subRole": "-",
-    "email": "mem-97@samsung-hanwoori.org",
+    "email": "mem-92@samsung-hanwoori.org",
     "code": "2918",
     "key": "김석준-테너"
   },
   {
-    "id": "mem-120",
-    "name": "이경환",
+    "id": "mem-113",`r`n    "name": "이경환",
     "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
@@ -83,13 +78,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "기획총무",
     "subRole": "-",
-    "email": "mem-120@samsung-hanwoori.org",
+    "email": "mem-113@samsung-hanwoori.org",
     "code": "1115",
     "key": "이경환-베이스"
   },
   {
-    "id": "mem-85",
-    "name": "윤지헌",
+    "id": "mem-80",`r`n    "name": "윤지헌",
     "gen": "17",
     "part": "테너",
     "basePart": "테너",
@@ -99,13 +93,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "인사",
     "subRole": "-",
-    "email": "mem-85@samsung-hanwoori.org",
+    "email": "mem-80@samsung-hanwoori.org",
     "code": "8532",
     "key": "윤지헌-테너"
   },
   {
-    "id": "mem-38",
-    "name": "최소혜",
+    "id": "mem-37",`r`n    "name": "최소혜",
     "gen": "19",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -115,7 +108,7 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "인사",
     "subRole": "-",
-    "email": "mem-38@samsung-hanwoori.org",
+    "email": "mem-37@samsung-hanwoori.org",
     "code": "9968",
     "key": "최소혜-소프라노"
   },
@@ -136,8 +129,7 @@ const EXECUTIVE_ROSTER = [
     "key": "김유림-소프라노"
   },
   {
-    "id": "mem-15",
-    "name": "차윤지",
+    "id": "mem-14",`r`n    "name": "차윤지",
     "gen": "16",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -147,13 +139,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "문화홍보",
     "subRole": "-",
-    "email": "mem-15@samsung-hanwoori.org",
+    "email": "mem-14@samsung-hanwoori.org",
     "code": "8216",
     "key": "차윤지-소프라노"
   },
   {
-    "id": "mem-12",
-    "name": "장수민",
+    "id": "mem-11",`r`n    "name": "장수민",
     "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -163,13 +154,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "문화홍보",
     "subRole": "-",
-    "email": "mem-12@samsung-hanwoori.org",
+    "email": "mem-11@samsung-hanwoori.org",
     "code": "8914",
     "key": "장수민-소프라노"
   },
   {
-    "id": "mem-48",
-    "name": "박다정",
+    "id": "mem-45",`r`n    "name": "박다정",
     "gen": "19",
     "part": "알토",
     "basePart": "알토",
@@ -179,13 +169,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "회계",
     "subRole": "-",
-    "email": "mem-48@samsung-hanwoori.org",
+    "email": "mem-45@samsung-hanwoori.org",
     "code": "2898",
     "key": "박다정-알토"
   },
   {
-    "id": "mem-33",
-    "name": "신다해",
+    "id": "mem-32",`r`n    "name": "신다해",
     "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -195,13 +184,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "파트장",
     "subRole": "소프라노",
-    "email": "mem-33@samsung-hanwoori.org",
+    "email": "mem-32@samsung-hanwoori.org",
     "code": "0483",
     "key": "신다해-소프라노"
   },
   {
-    "id": "mem-27",
-    "name": "박은영",
+    "id": "mem-26",`r`n    "name": "박은영",
     "gen": "14",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -211,13 +199,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "파트장",
     "subRole": "소프라노",
-    "email": "mem-27@samsung-hanwoori.org",
+    "email": "mem-26@samsung-hanwoori.org",
     "code": "1020",
     "key": "박은영-소프라노"
   },
   {
-    "id": "mem-47",
-    "name": "문지원",
+    "id": "mem-44",`r`n    "name": "문지원",
     "gen": "17",
     "part": "알토",
     "basePart": "알토",
@@ -227,13 +214,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "파트장",
     "subRole": "알토",
-    "email": "mem-47@samsung-hanwoori.org",
+    "email": "mem-44@samsung-hanwoori.org",
     "code": "4517",
     "key": "문지원-알토"
   },
   {
-    "id": "mem-43",
-    "name": "권보미",
+    "id": "mem-42",`r`n    "name": "권보미",
     "gen": "18",
     "part": "알토",
     "basePart": "알토",
@@ -243,13 +229,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "파트장",
     "subRole": "알토",
-    "email": "mem-43@samsung-hanwoori.org",
+    "email": "mem-42@samsung-hanwoori.org",
     "code": "8078",
     "key": "권보미-알토"
   },
   {
-    "id": "mem-107",
-    "name": "조강원",
+    "id": "mem-101",`r`n    "name": "조강원",
     "gen": "16",
     "part": "테너",
     "basePart": "테너",
@@ -259,13 +244,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "파트장",
     "subRole": "테너",
-    "email": "mem-107@samsung-hanwoori.org",
+    "email": "mem-101@samsung-hanwoori.org",
     "code": "0120",
     "key": "조강원-테너"
   },
   {
-    "id": "mem-134",
-    "name": "박인화",
+    "id": "mem-127",`r`n    "name": "박인화",
     "gen": "19",
     "part": "베이스",
     "basePart": "베이스",
@@ -275,13 +259,12 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "파트장",
     "subRole": "베이스",
-    "email": "mem-134@samsung-hanwoori.org",
+    "email": "mem-127@samsung-hanwoori.org",
     "code": "9790",
     "key": "박인화-베이스"
   },
   {
-    "id": "mem-115",
-    "name": "사제환",
+    "id": "mem-110",`r`n    "name": "사제환",
     "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
@@ -291,7 +274,7 @@ const EXECUTIVE_ROSTER = [
     "isExecutive": true,
     "role": "파트장",
     "subRole": "베이스",
-    "email": "mem-115@samsung-hanwoori.org",
+    "email": "mem-110@samsung-hanwoori.org",
     "code": "8836",
     "key": "사제환-베이스"
   }

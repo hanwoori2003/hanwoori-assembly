@@ -1,4 +1,4 @@
-﻿// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
+// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
 
 function renderAuthGate() {
     const gate = document.getElementById("loginGateScreen");
@@ -371,10 +371,15 @@ function renderFullMemberRosterTable() {
     const fKey = appState.rosterPartFilter || "all";
     const q = (appState.rosterSearchQuery || "").trim().toLowerCase();
 
-    const filtered = appState.members.filter(function(m) {
+    const rosterPool = (appState && Array.isArray(appState.members) && appState.members.length > 0)
+        ? appState.members
+        : ((typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : []);
+
+    const filtered = rosterPool.filter(function(m) {
+        if (!m) return false;
         if (fKey !== "all" && m.basePart !== fKey) return false;
         if (q) {
-            const hay = (m.name + " " + m.part + " " + m.company + " " + m.gen).toLowerCase();
+            const hay = ((m.name || "") + " " + (m.part || "") + " " + (m.company || "") + " " + (m.gen || "")).toLowerCase();
             if (hay.indexOf(q) === -1) return false;
         }
         return true;

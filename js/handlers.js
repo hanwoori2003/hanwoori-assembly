@@ -1,4 +1,4 @@
-﻿// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
+// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
 
 function updateNavigationHash() {
     try {
@@ -320,25 +320,54 @@ function handleSimpleLoginSubmit(evt) {
         : ((typeof window !== "undefined" && window.FULL_MEMBER_ROSTER)
             ? window.FULL_MEMBER_ROSTER
             : (appState.members || []));
+    const execRoster = (typeof EXECUTIVE_ROSTER !== "undefined" && Array.isArray(EXECUTIVE_ROSTER)) ? EXECUTIVE_ROSTER : [];
+    const prelimRoster = (typeof PRELIMINARY_EXCLUDED_MEMBERS !== "undefined" && Array.isArray(PRELIMINARY_EXCLUDED_MEMBERS)) ? PRELIMINARY_EXCLUDED_MEMBERS : [];
+
+    // Candidate search pools: 1. FULL_MEMBER_ROSTER, 2. EXECUTIVE_ROSTER, 3. PRELIMINARY_EXCLUDED_MEMBERS
+    const combinedCandidates = roster.concat(execRoster);
 
     // 1. Admin bypass keyword
     let matched = null;
     if (enteredClean === "관리자" || enteredClean === "운영진" || enteredClean.toLowerCase() === "admin") {
-        matched = roster.find(function(m) { return m.isExecutive; }) || roster[0];
+        matched = execRoster.find(function(m) { return m.isExecutive; }) || roster.find(function(m) { return m.isExecutive; }) || roster[0];
     }
 
     // 2. Exact name match
     if (!matched) {
-        matched = roster.find(function(m) {
+        matched = combinedCandidates.find(function(m) {
             if (!m || !m.name) return false;
             const mClean = normalizeLoginText(m.name).replace(/\s+/g, "");
             return mClean === enteredCompact;
         });
     }
 
-    // 3. Alt names match
+    // 3. Preliminary excluded members check (e.g. 권태희, 최서윤, 김다예, 심억수, 전성광)
     if (!matched) {
-        matched = roster.find(function(m) {
+        const prelimMatched = prelimRoster.find(function(p) {
+            if (!p || !p.name) return false;
+            const pClean = normalizeLoginText(p.name).replace(/\s+/g, "");
+            return pClean === enteredCompact;
+        });
+        if (prelimMatched) {
+            matched = {
+                id: "mem-prelim-" + Date.now(),
+                name: prelimMatched.name,
+                gen: prelimMatched.gen || "21기",
+                part: prelimMatched.part || "정단원",
+                basePart: prelimMatched.part || "정단원",
+                detailPart: prelimMatched.detailPart || "-",
+                company: prelimMatched.company || "삼성",
+                groupType: "samsung",
+                isExecutive: false,
+                role: "예비신단",
+                code: enteredCode || "0000"
+            };
+        }
+    }
+
+    // 4. Alt names match
+    if (!matched) {
+        matched = combinedCandidates.find(function(m) {
             if (!m || !Array.isArray(m.altNames)) return false;
             return m.altNames.some(function(alt) {
                 return normalizeLoginText(alt).replace(/\s+/g, "") === enteredCompact;
@@ -346,16 +375,16 @@ function handleSimpleLoginSubmit(evt) {
         });
     }
 
-    // 4. Substring / partial match
+    // 5. Substring / partial match
     if (!matched && enteredCompact.length >= 2) {
-        matched = roster.find(function(m) {
+        matched = combinedCandidates.find(function(m) {
             if (!m || !m.name) return false;
             const mClean = normalizeLoginText(m.name).replace(/\s+/g, "");
             return mClean.indexOf(enteredCompact) !== -1 || enteredCompact.indexOf(mClean) !== -1;
         });
     }
 
-    // 5. Universal Fallback: If name still not in 136 list, create a guest voter with entered name so user is NEVER blocked
+    // 6. Universal Fallback: If name still not in lists, create a guest voter with entered name so user is NEVER blocked
     if (!matched) {
         matched = {
             id: "mem-guest-" + Date.now(),
@@ -369,67 +398,77 @@ function handleSimpleLoginSubmit(evt) {
             role: "단원",
             code: enteredCode || "0000"
         };
-        if (!Array.isArray(appState.members)) appState.members = [];
+    }
+
+    if (!Array.isArray(appState.members)) appState.members = [];
+    if (!appState.members.some(function(m) { return m && m.id === matched.id; })) {
         appState.members.push(matched);
     }
 
     isLoggingIn = true;
+    try {
+        // Save entered code
+        if (enteredCode) {
+            matched.code = enteredCode;
+        }
 
-    // Save entered code
-    if (enteredCode) {
-        matched.code = enteredCode;
+        appState.currentVoterId = matched.id;
+        appState.currentVoterName = matched.name;
+        appState.hasExplicitLogin = true;
+        appState.guestBrowsing = false;
+        appState.isAdminAuthenticated = Boolean(matched.isExecutive);
+        appState.adminPreviewAsMember = false;
+        pendingExecMemberId = null;
+
+        saveStateToStorage({ skipCloudConfigPush: true });
+
+        // Direct DOM switch with !important to eliminate any specificity barrier
+        const gate = document.getElementById("loginGateScreen");
+        const shell = document.getElementById("appShell");
+        if (gate) {
+            gate.style.setProperty("display", "none", "important");
+            gate.classList.add("hidden");
+            gate.classList.remove("flex");
+        }
+        if (shell) {
+            shell.style.setProperty("display", "flex", "important");
+            shell.classList.remove("hidden");
+            shell.classList.add("flex");
+        }
+        if (typeof document !== "undefined" && document.documentElement) {
+            document.documentElement.classList.add("is-authenticated");
+            document.documentElement.setAttribute("data-active-tab", appState.activeTab || "events");
+        }
+
+        renderAll();
+
+        if (matched.isExecutive) {
+            showToast("👑 " + matched.name + " 운영진님 로그인되었습니다.");
+        } else if (matched.role === "예비신단") {
+            showToast("👋 " + matched.name + " 단원님(예비신단) 환영합니다!");
+        } else {
+            showToast(matched.name + " 단원님 환영합니다!");
+        }
+    } catch (loginErr) {
+        console.error("Login process error:", loginErr);
+    } finally {
+        setTimeout(function() {
+            isLoggingIn = false;
+        }, 100);
     }
-
-    appState.currentVoterId = matched.id;
-    appState.hasExplicitLogin = true;
-    appState.guestBrowsing = false;
-    appState.isAdminAuthenticated = Boolean(matched.isExecutive);
-    appState.adminPreviewAsMember = false;
-    pendingExecMemberId = null;
-
-    saveStateToStorage({ skipCloudConfigPush: true });
-
-    // Direct DOM switch with !important to eliminate any specificity barrier
-    const gate = document.getElementById("loginGateScreen");
-    const shell = document.getElementById("appShell");
-    if (gate) {
-        gate.style.setProperty("display", "none", "important");
-        gate.classList.add("hidden");
-        gate.classList.remove("flex");
-    }
-    if (shell) {
-        shell.style.setProperty("display", "flex", "important");
-        shell.classList.remove("hidden");
-        shell.classList.add("flex");
-    }
-    if (typeof document !== "undefined" && document.documentElement) {
-        document.documentElement.classList.add("is-authenticated");
-        document.documentElement.setAttribute("data-active-tab", appState.activeTab || "events");
-    }
-
-    renderAll();
-
-    if (matched.isExecutive) {
-        showToast("👑 " + matched.name + " 운영진님 로그인되었습니다.");
-    } else {
-        showToast(matched.name + " 단원님 환영합니다!");
-    }
-
-    setTimeout(function() {
-        isLoggingIn = false;
-    }, 400);
 
     return false;
 }
 
 function logoutCurrentUser() {
     appState.currentVoterId = null;
+    appState.currentVoterName = "";
     appState.hasExplicitLogin = false;
     appState.guestBrowsing = false;
     appState.isAdminAuthenticated = false;
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
-    appState.activeTab = "attendance";
+    appState.activeTab = "events";
 
     const nameInp = document.getElementById("loginNameInput");
     const codeInp = document.getElementById("loginCodeInput");

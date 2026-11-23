@@ -90,6 +90,7 @@ function saveStateToStorage(options) {
             adminPreviewAsMember: appState.adminPreviewAsMember,
             uploadedFileName: appState.uploadedFileName,
             currentVoterId: appState.currentVoterId,
+            currentVoterName: appState.currentVoterName || "",
             hasExplicitLogin: Boolean(appState.hasExplicitLogin),
             isAdminAuthenticated: appState.isAdminAuthenticated,
             members: appState.members,
@@ -143,19 +144,26 @@ function loadStateFromStorage() {
                 const hasExplicitLogin = Boolean(parsed.hasExplicitLogin);
                 if (parsed.currentVoterId === "mem-3" && !hasExplicitLogin) {
                     appState.currentVoterId = null;
+                    appState.currentVoterName = "";
                     appState.hasExplicitLogin = false;
                     appState.isAdminAuthenticated = false;
                     appState.adminPreviewAsMember = false;
                 } else {
                     appState.currentVoterId = parsed.currentVoterId || null;
+                    appState.currentVoterName = parsed.currentVoterName || "";
                     appState.hasExplicitLogin = hasExplicitLogin;
                     appState.isAdminAuthenticated = Boolean(appState.currentVoterId && parsed.isAdminAuthenticated);
                 }
                 // ALWAYS enforce canonical FULL_MEMBER_ROSTER so stale localStorage codes/members never override official roster
                 if (canonicalRoster.length > 0) {
                     appState.members = JSON.parse(JSON.stringify(canonicalRoster));
-                    if (appState.currentVoterId && !canonicalRoster.some(function(fm) { return fm.id === appState.currentVoterId; })) {
+                    const isKnownVoter = canonicalRoster.some(function(fm) { return fm && fm.id === appState.currentVoterId; }) ||
+                        ((typeof EXECUTIVE_ROSTER !== "undefined" && Array.isArray(EXECUTIVE_ROSTER)) ? EXECUTIVE_ROSTER.some(function(em) { return em && em.id === appState.currentVoterId; }) : false) ||
+                        (String(appState.currentVoterId || "").indexOf("mem-guest-") === 0) ||
+                        Boolean(appState.currentVoterName);
+                    if (appState.currentVoterId && !isKnownVoter) {
                         appState.currentVoterId = null;
+                        appState.currentVoterName = "";
                         appState.hasExplicitLogin = false;
                         appState.isAdminAuthenticated = false;
                         appState.adminPreviewAsMember = false;
@@ -682,11 +690,34 @@ function matchesSearch(itemTextArray, rawQuery) {
 }
 
 function getCurrentVoter() {
-    if (!appState.currentVoterId) return null;
-    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
-        ? FULL_MEMBER_ROSTER
-        : (appState.members || []);
-    return roster.find(function(m) { return m.id === appState.currentVoterId; }) || null;
+    if (!appState || !appState.currentVoterId) return null;
+    const fullList = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : [];
+    const execList = (typeof EXECUTIVE_ROSTER !== "undefined" && Array.isArray(EXECUTIVE_ROSTER)) ? EXECUTIVE_ROSTER : [];
+    const stateList = (appState && Array.isArray(appState.members)) ? appState.members : [];
+
+    // 1. Direct ID match across all lists
+    let found = fullList.find(function(m) { return m && m.id === appState.currentVoterId; });
+    if (!found) found = execList.find(function(m) { return m && m.id === appState.currentVoterId; });
+    if (!found) found = stateList.find(function(m) { return m && m.id === appState.currentVoterId; });
+
+    // 2. Fallback: if name is known or guest ID, synthesize voter object so user is NEVER bounced out
+    if (!found && (appState.currentVoterName || String(appState.currentVoterId).indexOf("mem-guest-") === 0)) {
+        found = {
+            id: appState.currentVoterId,
+            name: appState.currentVoterName || "단원",
+            part: "정단원",
+            basePart: "정단원",
+            detailPart: "-",
+            company: "삼성",
+            groupType: "samsung",
+            isExecutive: false,
+            role: "단원",
+            code: "0000"
+        };
+        if (!Array.isArray(appState.members)) appState.members = [];
+        appState.members.push(found);
+    }
+    return found || null;
 }
 
 function isCurrentUserExecutive() {
