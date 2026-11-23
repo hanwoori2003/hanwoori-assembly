@@ -4,7 +4,8 @@ function renderAuthGate() {
     const gate = document.getElementById("loginGateScreen");
     const shell = document.getElementById("appShell");
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
-    if (!voter) {
+    const isGuest = Boolean(appState && appState.guestBrowsing);
+    if (!voter && !isGuest) {
         if (typeof document !== "undefined" && document.documentElement) {
             document.documentElement.classList.remove("is-authenticated");
             document.documentElement.removeAttribute("data-active-tab");
@@ -2097,7 +2098,7 @@ function renderAttendanceRosterList(roster, votes) {
         else pending++;
     });
 
-    const activeF = currentAttendanceFilter || "all";
+    const activeF = (typeof currentAttendanceFilter !== "undefined") ? currentAttendanceFilter : ((typeof window.currentAttendanceFilter !== "undefined") ? window.currentAttendanceFilter : "all");
 
     // 1. Render Filter Buttons
     const filters = [
@@ -2124,9 +2125,10 @@ function renderAttendanceRosterList(roster, votes) {
         if (activeF === "absent" && v !== "absent") return false;
         if (activeF === "pending" && Boolean(v)) return false;
 
-        if (currentAttendanceSearch) {
+        const searchQ = (typeof currentAttendanceSearch !== "undefined") ? currentAttendanceSearch : ((typeof window.currentAttendanceSearch !== "undefined") ? window.currentAttendanceSearch : "");
+        if (searchQ) {
             const haystack = (m.name + " " + m.part + " " + m.gen + " " + (m.company || "")).toLowerCase();
-            if (haystack.indexOf(currentAttendanceSearch) === -1) return false;
+            if (haystack.indexOf(searchQ) === -1) return false;
         }
         return true;
     });

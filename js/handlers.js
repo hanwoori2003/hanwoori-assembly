@@ -50,6 +50,7 @@ function switchMainTab(tabId, btnEl, options) {
     // Hide all view panels (canonical + legacy aliases)
     const views = [
         "events",
+        "attendance",
         "activity",
         "concert",
         "settlement",
@@ -2078,4 +2079,28 @@ function fallbackCopyText(text, successToastMsg) {
         showToast("⚠️ 클립보드 복사 실패: 수동으로 복사해 주세요.");
     }
     document.body.removeChild(ta);
+}
+function enterAsGuest() {
+    if (appState) appState.guestBrowsing = true;
+    if (typeof document !== "undefined" && document.documentElement) {
+        document.documentElement.classList.add("is-authenticated");
+    }
+    const gate = document.getElementById("loginGateScreen");
+    const shell = document.getElementById("appShell");
+    if (gate) {
+        gate.classList.add("hidden");
+        gate.classList.remove("flex");
+    }
+    if (shell) {
+        shell.classList.remove("hidden");
+        shell.classList.add("flex");
+    }
+    renderAll();
+    showToast("👀 게스트 열람 모드로 입장했습니다. 투표 시 본인 로그인이 필요합니다.");
+}
+
+function openMemberLoginModal() {
+    if (typeof openVoterLoginModal === "function") {
+        openVoterLoginModal();
+    }
 }

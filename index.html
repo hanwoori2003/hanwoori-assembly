@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.36" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.37" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <style>
@@ -27,6 +27,7 @@
         (function() {
             try {
                 var keys = [
+                    "hanwoori_choir_assembly_2026_state_v17",
                     "hanwoori_choir_assembly_2026_state_v16",
                     "hanwoori_choir_assembly_2026_state_v15",
                     "hanwoori_choir_assembly_2026_state_v12",
@@ -87,6 +88,9 @@
                     로그인하여 입장하기
                 </button>
             </form>
+            <button type="button" onclick="enterAsGuest()" class="w-full mt-3 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <span>👀</span> 총회 자료 및 성원 현황 둘러보기 (비로그인)
+            </button>
 
             <!-- Subtle Footer Note -->
             <div class="mt-6 pt-4 border-t border-slate-100 text-center">
@@ -1582,13 +1586,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.36"></script>
-    <script src="js/data-config.js?v=2026.36"></script>
-    <script src="js/firebase-config.js?v=2026.36"></script>
-    <script src="js/firebase-sync.js?v=2026.36"></script>
-    <script src="js/utils.js?v=2026.36"></script>
-    <script src="js/render.js?v=2026.36"></script>
-    <script src="js/handlers.js?v=2026.36"></script>
-    <script src="js/app.js?v=2026.36"></script>
+    <script src="js/data-members.js?v=2026.37"></script>
+    <script src="js/data-config.js?v=2026.37"></script>
+    <script src="js/firebase-config.js?v=2026.37"></script>
+    <script src="js/firebase-sync.js?v=2026.37"></script>
+    <script src="js/utils.js?v=2026.37"></script>
+    <script src="js/render.js?v=2026.37"></script>
+    <script src="js/handlers.js?v=2026.37"></script>
+    <script src="js/app.js?v=2026.37"></script>
 </body>
 </html>
