@@ -588,15 +588,46 @@
             <div id="electionSingleModeView" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5 sm:space-y-6">
                 <div class="flex flex-col md:flex-row items-center gap-6 border-b border-slate-100 pb-6 relative">
                     <img id="singleCandPhoto" src="assets/cand_1.jpg" alt="단장 후보" class="w-32 h-32 rounded-2xl object-cover shadow-md border-2 border-indigo-200 shrink-0" onerror="this.src='assets/cand_1.jpg'" />
-                    <div class="space-y-2 text-center md:text-left min-w-0 flex-1">
+                    <div class="space-y-4 text-center md:text-left min-w-0 flex-1">
                         <div class="flex items-center gap-2 justify-center md:justify-start">
                             <span class="px-2.5 py-1 rounded-full bg-purple-100 text-purple-800 text-xs font-extrabold">단독 출마 후보</span>
                             <div id="singleCandAdminControls"></div>
                         </div>
-                        <h3 id="singleCandName" class="text-xl font-black text-slate-900">이창욱 (17기 · 테너)</h3>
-                        <p id="singleCandPledge" class="text-xs sm:text-sm text-slate-600 leading-relaxed font-semibold">소통과 화합으로 함께 만드는 삼성한우리! 제21회 정기연주회 성공 개최</p>
-                        <p id="singleCandCareer" class="text-xs text-slate-400">17기 입단 (Tenor 2) · 2024~2025 운영진 · IU 콘서트 및 방송 합창 참여</p>
-                        <div id="myElectionVoteStatus" class="pt-1"></div>
+                        <div>
+                            <h3 id="singleCandName" class="text-xl sm:text-2xl font-black text-slate-900">이창욱 (17기 · 테너)</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">2026 삼성한우리합창단 차기 단장 입후보</p>
+                        </div>
+
+                        <!-- 추천인 추천사 -->
+                        <div class="p-4 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 text-left text-xs sm:text-sm text-slate-800 space-y-1.5 shadow-2xs">
+                            <div class="flex items-center gap-1.5 font-black text-amber-900 text-xs">
+                                <span>💬</span>
+                                <span>추천인 추천사</span>
+                            </div>
+                            <p class="leading-relaxed text-slate-700 italic pl-2.5 border-l-2 border-amber-400">
+                                “올해 단장직을 맡으시며 매사 성실하고 책임감 있는 태도로 합창단 운영의 중심을 잡아주셨고, 단원들을 세심하게 아우르며 합창단을 위해 헌신적으로 애써주시는 모습에 깊은 인상을 받았습니다. 그동안 쌓아오신 노하우와 리더십으로 내년에도 든든하게 이끌어 주신다면 더할 나위 없이 좋을 것 같습니다.”
+                            </p>
+                        </div>
+
+                        <!-- 핵심 출마 공약 -->
+                        <div class="space-y-2 text-left">
+                            <div class="flex items-center gap-1.5 text-xs font-black text-indigo-900">
+                                <span>🎯</span>
+                                <span>핵심 출마 공약</span>
+                            </div>
+                            <div id="singleCandPledgeContainer" class="grid grid-cols-1 gap-2 text-xs"></div>
+                        </div>
+
+                        <!-- 주요 활동 약력 -->
+                        <div class="space-y-2 text-left">
+                            <div class="flex items-center gap-1.5 text-xs font-black text-slate-700">
+                                <span>📜</span>
+                                <span>주요 활동 약력</span>
+                            </div>
+                            <div id="singleCandCareerContainer" class="grid grid-cols-1 gap-2 text-xs"></div>
+                        </div>
+
+                        <div id="myElectionVoteStatus" class="pt-2"></div>
                     </div>
                 </div>
 

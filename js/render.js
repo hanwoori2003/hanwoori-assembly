@@ -1196,12 +1196,63 @@ function renderElectionView() {
         if (cand) {
             const nameEl = document.getElementById("singleCandName");
             if (nameEl) nameEl.textContent = cand.name + " (" + cand.gen + " · " + cand.part + ")";
-            const pledgeEl = document.getElementById("singleCandPledge");
-            if (pledgeEl) pledgeEl.textContent = cand.pledge;
-            const careerEl = document.getElementById("singleCandCareer");
-            if (careerEl) careerEl.textContent = cand.career;
             const imgEl = document.getElementById("singleCandPhoto");
             if (imgEl && cand.photo) imgEl.src = cand.photo;
+
+            // Render Pledges as cleanly separated cards
+            const pledgeCont = document.getElementById("singleCandPledgeContainer");
+            if (pledgeCont) {
+                let pledgeItems = [];
+                if (Array.isArray(cand.pledge)) {
+                    pledgeItems = cand.pledge;
+                } else if (typeof cand.pledge === "string") {
+                    pledgeItems = cand.pledge.split(/\n+/).map(function(s){ return s.trim(); }).filter(Boolean);
+                    if (pledgeItems.length <= 1) {
+                        pledgeItems = cand.pledge.split(/(?=\d+\.\s*)/).map(function(s){ return s.trim(); }).filter(Boolean);
+                    }
+                }
+                if (pledgeItems.length === 0) {
+                    pledgeItems = [
+                        "‘메리고잉 한우리’를 주제로 기수·파트·지역을 아우르는 열린 소통 및 소모임 활성화",
+                        "지휘자 박지훈 선생님과 함께하는 밀도 높은 정기연습 및 파트별 발성 클리닉 운영",
+                        "대외활동 수익의 투명한 재정 귀속(제26조·제27조)과 단원 복지·역량 강화 워크샵 확대"
+                    ];
+                }
+                pledgeCont.innerHTML = pledgeItems.map(function(item, idx) {
+                    const cleanText = item.replace(/^\d+\.\s*/, "").replace(/안산시립합창단\s*/g, "").trim();
+                    const num = idx + 1;
+                    return '<div class="p-3 rounded-xl bg-indigo-50/80 border border-indigo-100 flex items-start gap-2.5">' +
+                        '<span class="w-5 h-5 rounded-full bg-indigo-600 text-white font-black text-[11px] flex items-center justify-center shrink-0 mt-0.5">' + num + '</span>' +
+                        '<p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">' + cleanText + '</p>' +
+                    '</div>';
+                }).join('');
+            }
+
+            // Render Career as cleanly separated bullet cards
+            const careerCont = document.getElementById("singleCandCareerContainer");
+            if (careerCont) {
+                let careerItems = [];
+                if (Array.isArray(cand.career)) {
+                    careerItems = cand.career;
+                } else if (typeof cand.career === "string") {
+                    careerItems = cand.career.split(/[,\n]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+                }
+                if (careerItems.length === 0) {
+                    careerItems = [
+                        "삼성한우리합창단 17기 테너(T2) 입단 및 정단원 활동",
+                        "제18회 · 제19회 · 제20회(여의도 KBS홀 베토벤 합창교향곡) 정기연주회 연속 출연 (단칙 제11조 제3항 피선거권 충족)",
+                        "삼성한우리합창단 운영진 역임 및 파트 화합·연습 지원 주도",
+                        "2026 메리고잉 한우리 18인 운영진 조각 및 지휘자 박지훈 선생님 초빙 추진"
+                    ];
+                }
+                careerCont.innerHTML = careerItems.map(function(item) {
+                    const cleanText = item.replace(/안산시립합창단\s*/g, "").trim();
+                    return '<div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-2.5">' +
+                        '<span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">✓</span>' +
+                        '<p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-medium">' + cleanText + '</p>' +
+                    '</div>';
+                }).join('');
+            }
 
             // Single candidate admin buttons (수정 / 삭제)
             const adminSingleBtnEl = document.getElementById("singleCandAdminControls");
