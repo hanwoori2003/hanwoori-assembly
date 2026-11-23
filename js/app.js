@@ -1,4 +1,4 @@
-// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
+﻿// 6. 앱 상태(appState) 초기화, 통합 렌더링(renderAll), 토스트 알림 및 초기 구동 모듈 (js/app.js)
 
 let appState = getDefaultState();
 window.appState = appState;
@@ -128,41 +128,43 @@ function initTabsWheelScroll() {
 function restoreInitialViewState() {
     loadStateFromStorage();
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
-    if (voter) {
-        const isExec = (typeof isCurrentUserExecutive === "function")
-            ? isCurrentUserExecutive()
-            : Boolean(appState.isAdminAuthenticated);
-        let restoredTab = appState.activeTab || "events";
-        if (restoredTab === "admin" && !isExec) {
-            restoredTab = "events";
+    const isExec = (typeof isCurrentUserExecutive === "function")
+        ? isCurrentUserExecutive()
+        : Boolean(appState.isAdminAuthenticated);
+
+    let targetTab = "attendance";
+    if (typeof window !== "undefined" && window.location && window.location.hash) {
+        const hashVal = window.location.hash.replace("#", "").toLowerCase().trim();
+        const validTabs = ["attendance", "events", "reports", "settlement", "bylaws", "election", "charter", "admin", "winner"];
+        if (validTabs.indexOf(hashVal) !== -1) {
+            targetTab = hashVal;
         }
-        if (restoredTab === "winner" && !isExec && !appState.winnerPagePublic) {
-            restoredTab = "events";
-        }
-        try {
-            if (typeof document !== "undefined" && document.documentElement) {
+    } else if (appState.activeTab) {
+        targetTab = appState.activeTab;
+    }
+
+    if (targetTab === "admin" && !isExec) {
+        targetTab = "events";
+    }
+    if (targetTab === "winner" && !isExec && !appState.winnerPagePublic) {
+        targetTab = "events";
+    }
+
+    try {
+        if (typeof document !== "undefined" && document.documentElement) {
+            if (voter) {
                 document.documentElement.classList.add("is-authenticated");
-                document.documentElement.setAttribute("data-active-tab", restoredTab);
-            }
-        } catch (e) {}
-        switchMainTab(restoredTab, null, { skipScroll: true });
-    } else {
-        try {
-            if (typeof document !== "undefined" && document.documentElement) {
+            } else {
                 document.documentElement.classList.remove("is-authenticated");
-                document.documentElement.removeAttribute("data-active-tab");
             }
-        } catch (e) {}
-        renderAll();
-        const nameInp = document.getElementById("loginNameInput");
-        const codeInp = document.getElementById("loginCodeInput");
-        const errEl = document.getElementById("loginErrorMsg");
-        if (nameInp) nameInp.value = "";
-        if (codeInp) codeInp.value = "";
-        if (errEl) {
-            errEl.textContent = "";
-            errEl.classList.add("hidden");
+            document.documentElement.setAttribute("data-active-tab", targetTab);
         }
+    } catch (e) {}
+
+    switchMainTab(targetTab, null, { skipScroll: true });
+    renderAll();
+    if (typeof populateLoginMemberSelect === "function") {
+        populateLoginMemberSelect();
     }
 }
 

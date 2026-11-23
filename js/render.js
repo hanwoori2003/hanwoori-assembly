@@ -1,39 +1,76 @@
-// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
+﻿// 4. DOM 렌더링 및 UI 바인딩 모듈 (js/render.js)
 
 function renderAuthGate() {
+    const modal = document.getElementById("voterLoginModal");
     const gate = document.getElementById("loginGateScreen");
     const shell = document.getElementById("appShell");
+    if (shell) {
+        shell.classList.remove("hidden");
+        shell.classList.add("flex");
+    }
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
-    const isGuest = Boolean(appState && appState.guestBrowsing);
-    if (!voter && !isGuest) {
-        if (typeof document !== "undefined" && document.documentElement) {
-            document.documentElement.classList.remove("is-authenticated");
-            document.documentElement.removeAttribute("data-active-tab");
-        }
-        if (gate) {
-            gate.classList.remove("hidden");
-            gate.classList.add("flex");
-        }
-        if (shell) {
-            shell.classList.add("hidden");
-            shell.classList.remove("flex");
-        }
-    } else {
+    if (voter) {
         if (typeof document !== "undefined" && document.documentElement) {
             document.documentElement.classList.add("is-authenticated");
             if (appState && appState.activeTab) {
                 document.documentElement.setAttribute("data-active-tab", appState.activeTab);
             }
         }
+        if (modal) {
+            modal.classList.add("hidden");
+            modal.classList.remove("flex");
+        }
         if (gate) {
             gate.classList.add("hidden");
             gate.classList.remove("flex");
         }
-        if (shell) {
-            shell.classList.remove("hidden");
-            shell.classList.add("flex");
+    } else {
+        if (typeof document !== "undefined" && document.documentElement) {
+            document.documentElement.classList.remove("is-authenticated");
+        }
+        if (gate) {
+            gate.classList.add("hidden");
+            gate.classList.remove("flex");
         }
     }
+}
+
+function populateLoginMemberSelect() {
+    const sel = document.getElementById("loginMemberSelect");
+    if (!sel) return;
+    if (sel.options && sel.options.length > 1) return;
+
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
+        ? FULL_MEMBER_ROSTER
+        : (appState.members || []);
+
+    const parts = [
+        { key: "소프라노", label: "소프라노 (Soprano)" },
+        { key: "알토", label: "알토 (Alto)" },
+        { key: "테너", label: "테너 (Tenor)" },
+        { key: "베이스", label: "베이스 (Bass)" }
+    ];
+
+    parts.forEach(function(p) {
+        const groupEl = document.createElement("optgroup");
+        groupEl.label = p.label;
+        const membersInPart = roster.filter(function(m) {
+            return (m.part || "").indexOf(p.key) !== -1 || (m.basePart || "").indexOf(p.key) !== -1;
+        });
+        membersInPart.sort(function(a, b) {
+            return (a.name || "").localeCompare(b.name || "", "ko");
+        });
+        membersInPart.forEach(function(m) {
+            const opt = document.createElement("option");
+            opt.value = m.name;
+            opt.textContent = m.name + " (" + (m.detailPart || m.part || "") + (m.gen ? " · " + m.gen + "기" : "") + (m.role && m.role !== "-" ? " · " + m.role : "") + ")";
+            opt.dataset.memberId = m.id;
+            groupEl.appendChild(opt);
+        });
+        if (groupEl.children.length > 0) {
+            sel.appendChild(groupEl);
+        }
+    });
 }
 
 function renderHeaderStatus() {

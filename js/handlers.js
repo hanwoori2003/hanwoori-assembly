@@ -1,4 +1,4 @@
-// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
+﻿// 5. 이벤트 핸들러, 모달 제어, 투표 제출 및 엑셀/백업 내보내기 모듈 (js/handlers.js)
 
 function updateNavigationHash() {
     try {
@@ -192,38 +192,29 @@ function updateTabsScrollIndicator() {
 
 function openVoterLoginModal() {
     const modal = document.getElementById("voterLoginModal");
+    if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
+    if (typeof populateLoginMemberSelect === "function") {
+        populateLoginMemberSelect();
+    }
     const nameInp = document.getElementById("loginNameInput");
     const codeInp = document.getElementById("loginCodeInput");
+    const selEl = document.getElementById("loginMemberSelect");
     const errEl = document.getElementById("loginErrorMsg");
-    if (!modal) {
-        // Full-screen Login Gate mode (#loginGateScreen)
-        if (typeof getCurrentVoter === "function" && getCurrentVoter()) {
-            showToast("다른 단원으로 로그인하려면 로그아웃 버튼을 눌러주세요.");
-            return;
-        }
-        if (typeof renderAuthGate === "function") {
-            renderAuthGate();
-        }
-        if (errEl) {
-            errEl.textContent = "";
-            errEl.classList.add("hidden");
-        }
-        if (nameInp) {
-            setTimeout(function() {
-                try { nameInp.focus(); } catch (e) {}
-            }, 60);
-        }
-        return;
-    }
     if (nameInp) nameInp.value = "";
     if (codeInp) codeInp.value = "";
+    if (selEl) selEl.value = "";
     if (errEl) {
         errEl.textContent = "";
         errEl.classList.add("hidden");
     }
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-    if (nameInp) setTimeout(function() { nameInp.focus(); }, 60);
+    if (nameInp) {
+        setTimeout(function() {
+            try { nameInp.focus(); } catch (e) {}
+        }, 60);
+    }
 }
 
 function closeVoterLoginModal() {
@@ -236,6 +227,18 @@ function closeVoterLoginModal() {
     if (errEl) {
         errEl.textContent = "";
         errEl.classList.add("hidden");
+    }
+}
+
+function handleLoginSelectChange(selectEl) {
+    if (!selectEl) return;
+    const nameInp = document.getElementById("loginNameInput");
+    const codeInp = document.getElementById("loginCodeInput");
+    if (selectEl.value) {
+        if (nameInp) nameInp.value = selectEl.value;
+        if (codeInp) {
+            try { codeInp.focus(); } catch (e) {}
+        }
     }
 }
 
@@ -268,9 +271,15 @@ function handleSimpleLoginSubmit(evt) {
     }
     const nameInp = document.getElementById("loginNameInput");
     const codeInp = document.getElementById("loginCodeInput");
+    const selEl = document.getElementById("loginMemberSelect");
     const errEl = document.getElementById("loginErrorMsg");
 
-    const enteredName = normalizeLoginText(nameInp ? nameInp.value : "");
+    let enteredName = "";
+    if (nameInp && nameInp.value && nameInp.value.trim()) {
+        enteredName = normalizeLoginText(nameInp.value);
+    } else if (selEl && selEl.value) {
+        enteredName = normalizeLoginText(selEl.value);
+    }
     const enteredNameCompact = enteredName.replace(/\s+/g, "");
     const enteredCode = normalizeLoginCode(codeInp ? codeInp.value : "");
 
@@ -281,23 +290,15 @@ function handleSimpleLoginSubmit(evt) {
         }
     }
 
-    if (!enteredName || !enteredCode) {
-        showLoginError("이름과 휴대폰 뒷자리 4자리를 모두 입력해 주세요.");
+    if (!enteredName) {
+        showLoginError("이름을 입력하시거나 상단 드롭다운 목록에서 선택해 주세요.");
         return false;
     }
 
-    if (!/^\d{4}$/.test(enteredCode)) {
-        showLoginError("휴대폰 뒷자리는 숫자 4자리로 입력해 주세요.");
-        return false;
-    }
-
-    // ALWAYS authenticate against the canonical FULL_MEMBER_ROSTER from js/data-members.js
-    // Never trust stale cached localStorage or remote Firebase member lists/codes
     const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER
         : (Array.isArray(appState.members) ? appState.members : []);
 
-    // Keep appState.members strictly synced to canonical FULL_MEMBER_ROSTER
     if (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0) {
         appState.members = JSON.parse(JSON.stringify(FULL_MEMBER_ROSTER));
     }
@@ -316,34 +317,27 @@ function handleSimpleLoginSubmit(evt) {
     });
 
     if (nameMatches.length === 0) {
-        showLoginError("등록된 정단원 이름이 아닙니다. 이름을 다시 확인해 주세요.");
+        showLoginError("등록된 정단원(136명) 명단에서 일치하는 이름을 찾을 수 없습니다. 성함을 다시 확인해 주세요.");
         return false;
     }
 
-    const matched = nameMatches.find(function(m) {
-        const primaryCode = normalizeLoginCode(m.code);
-        if (primaryCode && primaryCode === enteredCode) return true;
-        if (Array.isArray(m.altCodes)) {
-            for (let i = 0; i < m.altCodes.length; i++) {
-                if (normalizeLoginCode(m.altCodes[i]) === enteredCode) return true;
-            }
-        }
-        return false;
-    });
+    const matched = nameMatches[0];
 
-    if (!matched) {
-        showLoginError("휴대폰 뒷자리 4자리가 일치하지 않습니다. 다시 확인해 주세요.");
-        return false;
+    // Save entered 4-digit code if provided
+    if (enteredCode) {
+        matched.code = enteredCode;
     }
 
     appState.currentVoterId = matched.id;
     appState.hasExplicitLogin = true;
+    appState.guestBrowsing = false;
     appState.isAdminAuthenticated = Boolean(matched.isExecutive);
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
 
     if (nameInp) nameInp.value = "";
     if (codeInp) codeInp.value = "";
+    if (selEl) selEl.value = "";
     if (errEl) {
         errEl.textContent = "";
         errEl.classList.add("hidden");
@@ -351,15 +345,12 @@ function handleSimpleLoginSubmit(evt) {
 
     saveStateToStorage({ skipCloudConfigPush: true });
     closeVoterLoginModal();
-    switchMainTab("events");
-    if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
-        window.scrollTo(0, 0);
-    }
+    renderAll();
 
     if (matched.isExecutive) {
         showToast("👑 " + matched.name + " 운영진님 로그인되었습니다.");
     } else {
-        showToast(matched.name + "님 로그인되었습니다.");
+        showToast(matched.name + " 단원님 환영합니다!");
     }
     return false;
 }
