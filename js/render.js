@@ -501,12 +501,12 @@ function renderActivityView() {
                     '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.existing + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
                     '<div class="text-[11px] text-slate-500 mt-0.5">전체의 ' + Math.round((ms.existing / ms.total) * 100) + '% (1~20기)</div>' +
                 '</div>' +
-                '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs">
-                    <span class="text-xs font-bold text-emerald-700">신입단원 · 21기(신단)</span>
-                    <div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>
-                    <div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (무대 출연 정단원 15명)</div>
-                </div>
-            </div>';
+                '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs">' +
+                    '<span class="text-xs font-bold text-emerald-700">신입단원 · 21기(신단)</span>' +
+                    '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>' +
+                    '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (무대 출연 정단원 15명)</div>' +
+                '</div>' +
+            '</div>';
 
         // Part stats panel
         let partsRowsHtml = "";

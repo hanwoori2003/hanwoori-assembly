@@ -8,7 +8,8 @@ let pendingPhotoCandidateId = null;
 // 2026 삼성한우리합창단 운영진 18인 명단 (원본 순서 유지)
 const EXECUTIVE_ROSTER = [
   {
-    "id": "mem-100",`r`n    "name": "이창욱",
+    "id": "mem-100",
+    "name": "이창욱",
     "gen": "17",
     "part": "테너",
     "basePart": "테너",
@@ -23,7 +24,8 @@ const EXECUTIVE_ROSTER = [
     "key": "이창욱-테너"
   },
   {
-    "id": "mem-87",`r`n    "name": "한석범",
+    "id": "mem-87",
+    "name": "한석범",
     "gen": "4",
     "part": "테너",
     "basePart": "테너",
@@ -38,7 +40,8 @@ const EXECUTIVE_ROSTER = [
     "key": "한석범-테너"
   },
   {
-    "id": "mem-16",`r`n    "name": "황금비",
+    "id": "mem-16",
+    "name": "황금비",
     "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -53,7 +56,8 @@ const EXECUTIVE_ROSTER = [
     "key": "황금비-소프라노"
   },
   {
-    "id": "mem-92",`r`n    "name": "김석준",
+    "id": "mem-92",
+    "name": "김석준",
     "gen": "20",
     "part": "테너",
     "basePart": "테너",
@@ -68,7 +72,8 @@ const EXECUTIVE_ROSTER = [
     "key": "김석준-테너"
   },
   {
-    "id": "mem-113",`r`n    "name": "이경환",
+    "id": "mem-113",
+    "name": "이경환",
     "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
@@ -83,7 +88,8 @@ const EXECUTIVE_ROSTER = [
     "key": "이경환-베이스"
   },
   {
-    "id": "mem-80",`r`n    "name": "윤지헌",
+    "id": "mem-80",
+    "name": "윤지헌",
     "gen": "17",
     "part": "테너",
     "basePart": "테너",
@@ -98,7 +104,8 @@ const EXECUTIVE_ROSTER = [
     "key": "윤지헌-테너"
   },
   {
-    "id": "mem-37",`r`n    "name": "최소혜",
+    "id": "mem-37",
+    "name": "최소혜",
     "gen": "19",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -129,7 +136,8 @@ const EXECUTIVE_ROSTER = [
     "key": "김유림-소프라노"
   },
   {
-    "id": "mem-14",`r`n    "name": "차윤지",
+    "id": "mem-14",
+    "name": "차윤지",
     "gen": "16",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -144,7 +152,8 @@ const EXECUTIVE_ROSTER = [
     "key": "차윤지-소프라노"
   },
   {
-    "id": "mem-11",`r`n    "name": "장수민",
+    "id": "mem-11",
+    "name": "장수민",
     "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -159,7 +168,8 @@ const EXECUTIVE_ROSTER = [
     "key": "장수민-소프라노"
   },
   {
-    "id": "mem-45",`r`n    "name": "박다정",
+    "id": "mem-45",
+    "name": "박다정",
     "gen": "19",
     "part": "알토",
     "basePart": "알토",
@@ -174,7 +184,8 @@ const EXECUTIVE_ROSTER = [
     "key": "박다정-알토"
   },
   {
-    "id": "mem-32",`r`n    "name": "신다해",
+    "id": "mem-32",
+    "name": "신다해",
     "gen": "17",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -189,7 +200,8 @@ const EXECUTIVE_ROSTER = [
     "key": "신다해-소프라노"
   },
   {
-    "id": "mem-26",`r`n    "name": "박은영",
+    "id": "mem-26",
+    "name": "박은영",
     "gen": "14",
     "part": "소프라노",
     "basePart": "소프라노",
@@ -204,7 +216,8 @@ const EXECUTIVE_ROSTER = [
     "key": "박은영-소프라노"
   },
   {
-    "id": "mem-44",`r`n    "name": "문지원",
+    "id": "mem-44",
+    "name": "문지원",
     "gen": "17",
     "part": "알토",
     "basePart": "알토",
@@ -219,7 +232,8 @@ const EXECUTIVE_ROSTER = [
     "key": "문지원-알토"
   },
   {
-    "id": "mem-42",`r`n    "name": "권보미",
+    "id": "mem-42",
+    "name": "권보미",
     "gen": "18",
     "part": "알토",
     "basePart": "알토",
@@ -234,7 +248,8 @@ const EXECUTIVE_ROSTER = [
     "key": "권보미-알토"
   },
   {
-    "id": "mem-101",`r`n    "name": "조강원",
+    "id": "mem-101",
+    "name": "조강원",
     "gen": "16",
     "part": "테너",
     "basePart": "테너",
@@ -249,7 +264,8 @@ const EXECUTIVE_ROSTER = [
     "key": "조강원-테너"
   },
   {
-    "id": "mem-127",`r`n    "name": "박인화",
+    "id": "mem-127",
+    "name": "박인화",
     "gen": "19",
     "part": "베이스",
     "basePart": "베이스",
@@ -264,7 +280,8 @@ const EXECUTIVE_ROSTER = [
     "key": "박인화-베이스"
   },
   {
-    "id": "mem-110",`r`n    "name": "사제환",
+    "id": "mem-110",
+    "name": "사제환",
     "gen": "20",
     "part": "베이스",
     "basePart": "베이스",
