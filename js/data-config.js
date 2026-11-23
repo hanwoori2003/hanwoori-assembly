@@ -276,7 +276,7 @@ function getDefaultState() {
   return {
     sessionTitle: "2026 삼성한우리합창단 정기총회",
     totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 136),
-    activeTab: "events",
+    activeTab: "attendance",
     activeAgendaId: "ag-1",
     adminPreviewAsMember: false,
     projectorMode: false,

@@ -79,7 +79,7 @@ function switchMainTab(tabId, btnEl, options) {
     }
     if (!targetEl) {
         canonicalTab = "events";
-        appState.activeTab = "events";
+        appState.activeTab = "attendance";
         targetEl = document.getElementById("view-events");
     }
     if (targetEl) targetEl.classList.remove("hidden");
@@ -421,7 +421,7 @@ function logoutCurrentUser() {
     appState.isAdminAuthenticated = false;
     appState.adminPreviewAsMember = false;
     pendingExecMemberId = null;
-    appState.activeTab = "events";
+    appState.activeTab = "attendance";
 
     const nameInp = document.getElementById("loginNameInput");
     const codeInp = document.getElementById("loginCodeInput");

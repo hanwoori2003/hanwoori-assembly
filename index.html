@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.41" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.42" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <!-- App Shell Layout: Always visible for seamless assembly data browsing -->
@@ -123,7 +123,7 @@
             <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 min-h-[44px] py-1.5 sm:py-0 sm:h-12 border-b border-slate-800/80 text-xs">
                 <!-- Left: Brand Icon + Title + Quorum Badge -->
                 <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                    <div id="headerBrandHomeBtn" role="button" tabindex="0" onclick="switchMainTab('events')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); switchMainTab('events'); }" title="첫 페이지(2026 정기총회)로 이동" aria-label="2026 삼성한우리합창단 정기총회 첫 페이지로 이동" class="flex items-center gap-2 sm:gap-2.5 min-w-0 cursor-pointer hover:opacity-80 transition rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                    <div id="headerBrandHomeBtn" role="button" tabindex="0" onclick="switchMainTab('attendance')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); switchMainTab('attendance'); }" title="첫 페이지(2026 정기총회)로 이동" aria-label="2026 삼성한우리합창단 정기총회 첫 페이지로 이동" class="flex items-center gap-2 sm:gap-2.5 min-w-0 cursor-pointer hover:opacity-80 transition rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                         <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
                             ♫
                         </div>
@@ -171,14 +171,14 @@
 
                     <!-- Horizontal scrollable tabs container -->
                     <nav id="mainTabsNav" class="tabs-scroll-container flex-1 min-w-0 flex flex-nowrap items-center gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap py-1 scroll-smooth cursor-grab select-none" aria-label="메인 탭 내비게이션">
-                        <!-- Tab 1: 2026 정기총회 -->
-                        <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm cursor-pointer">
-                            <span>📅 2026 정기총회</span>
-                        </button>
-                        <!-- Tab: 총회 참석 및 위임 조사 -->
-                        <button id="tabBtn-attendance" type="button" onclick="switchMainTab('attendance', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                        <!-- Tab 1: 총회 참석 및 위임 조사 (제1순위 메인 탭) -->
+                        <button id="tabBtn-attendance" type="button" onclick="switchMainTab('attendance', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm cursor-pointer">
                             <span>📋 총회 참석·위임 조사</span>
                             <span id="navBadgeAttendanceCount" class="px-1.5 py-0.2 rounded text-[10px] bg-slate-700/50 text-slate-300 border border-slate-600/40 font-semibold">0/91</span>
+                        </button>
+                        <!-- Tab 2: 2026 정기총회 -->
+                        <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>📅 2026 정기총회</span>
                         </button>
                         <!-- Tab 2: 2026 활동보고 -->
                         <button id="tabBtn-activity" type="button" onclick="switchMainTab('activity', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
@@ -249,7 +249,7 @@
         <!-- ============================================================ -->
         <!-- TAB 1: 2026 정기총회 메인 허브 (#view-events) -->
         <!-- ============================================================ -->
-        <section id="view-events" class="space-y-6">
+        <section id="view-events" class="hidden space-y-6">
             <!-- Summary Banner -->
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white shadow-md border border-indigo-800/40">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -307,7 +307,7 @@
         <!-- ============================================================ -->
         <!-- TAB: 2026 총회 참석 여부 및 의결권 위임(쉐도우보팅) 사전 조사 (#view-attendance) -->
         <!-- ============================================================ -->
-        <section id="view-attendance" class="hidden space-y-6">
+        <section id="view-attendance" class="space-y-6">
             <!-- Header Banner -->
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 text-white shadow-md border border-emerald-800/40">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -1596,13 +1596,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.41"></script>
-    <script src="js/data-config.js?v=2026.41"></script>
-    <script src="js/firebase-config.js?v=2026.41"></script>
-    <script src="js/firebase-sync.js?v=2026.41"></script>
-    <script src="js/utils.js?v=2026.41"></script>
-    <script src="js/render.js?v=2026.41"></script>
-    <script src="js/handlers.js?v=2026.41"></script>
-    <script src="js/app.js?v=2026.41"></script>
+    <script src="js/data-members.js?v=2026.42"></script>
+    <script src="js/data-config.js?v=2026.42"></script>
+    <script src="js/firebase-config.js?v=2026.42"></script>
+    <script src="js/firebase-sync.js?v=2026.42"></script>
+    <script src="js/utils.js?v=2026.42"></script>
+    <script src="js/render.js?v=2026.42"></script>
+    <script src="js/handlers.js?v=2026.42"></script>
+    <script src="js/app.js?v=2026.42"></script>
 </body>
 </html>
