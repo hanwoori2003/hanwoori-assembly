@@ -1770,3 +1770,416 @@ function renderAdminView() {
 function renderAuthModalMemberList() {
     // v20: 134-member list modal replaced by clean [이름 + 휴대폰 뒷자리 4자리] login modal
 }
+
+
+// ============================================================
+// 2026 정기총회 참석·위임 사전 조사 뷰 렌더러
+// ============================================================
+
+function renderAttendanceView() {
+    const viewEl = document.getElementById("view-attendance");
+    if (!viewEl) return;
+
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
+        ? FULL_MEMBER_ROSTER
+        : (appState.members || []);
+    const totalMembers = roster.length || 136;
+    const quorumGoal = 91;
+
+    if (!appState.attendanceSurvey) {
+        appState.attendanceSurvey = {
+            deadline: "2026년 12월 12일 23:59",
+            targetTotal: totalMembers,
+            quorumThreshold: quorumGoal,
+            votes: {}
+        };
+    }
+    const votes = appState.attendanceSurvey.votes || {};
+
+    let onsiteCount = 0;
+    let shadowCount = 0;
+    let absentCount = 0;
+    let pendingCount = 0;
+
+    roster.forEach(function(m) {
+        const v = votes[m.id];
+        if (v === "onsite") onsiteCount++;
+        else if (v === "shadow") shadowCount++;
+        else if (v === "absent") absentCount++;
+        else pendingCount++;
+    });
+
+    const quorumCount = onsiteCount + shadowCount;
+    const quorumPercent = Math.min(100, Math.round((quorumCount / quorumGoal) * 100));
+    const quorumMet = quorumCount >= quorumGoal;
+
+    // 1. Update Header Status Badge
+    const headerBadge = document.getElementById("attHeaderBadgeStatus");
+    if (headerBadge) {
+        if (quorumMet) {
+            headerBadge.className = "px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs font-black flex items-center gap-1.5";
+            headerBadge.innerHTML = '<span>🎉</span> 개회 정족수 충족 (' + quorumCount + '/' + quorumGoal + '명)';
+        } else {
+            const needed = quorumGoal - quorumCount;
+            headerBadge.className = "px-3 py-1.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 text-xs font-black flex items-center gap-1.5";
+            headerBadge.innerHTML = '<span>⚠️</span> 성원까지 ' + needed + '명 필요 (' + quorumCount + '/' + quorumGoal + '명)';
+        }
+    }
+
+    // 2. Update Quorum Goal Displays
+    const countDisplay = document.getElementById("attQuorumCountDisplay");
+    if (countDisplay) countDisplay.textContent = quorumCount;
+
+    const rateDisplay = document.getElementById("attQuorumRateDisplay");
+    if (rateDisplay) {
+        rateDisplay.textContent = quorumPercent + "%";
+        if (quorumMet) {
+            rateDisplay.className = "text-xs font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 ml-1";
+        } else {
+            rateDisplay.className = "text-xs font-extrabold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 ml-1";
+        }
+    }
+
+    const progBar = document.getElementById("attQuorumProgressBar");
+    if (progBar) {
+        progBar.style.width = Math.min(100, (quorumCount / quorumGoal) * 100) + "%";
+        if (quorumMet) {
+            progBar.className = "h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full transition-all duration-500";
+        } else {
+            progBar.className = "h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500";
+        }
+    }
+
+    const progStatusText = document.getElementById("attQuorumProgressStatusText");
+    if (progStatusText) {
+        if (quorumMet) {
+            progStatusText.className = "font-bold text-emerald-600";
+            progStatusText.textContent = "개회 정족수 충족 완료 (" + quorumCount + "명 / " + quorumGoal + "명)";
+        } else {
+            progStatusText.className = "font-bold text-indigo-600";
+            progStatusText.textContent = "현재 " + quorumCount + "명 (달성률 " + quorumPercent + "%)";
+        }
+    }
+
+    // 3. Update 4 Stats Grid
+    const statOnsite = document.getElementById("attStatCountOnsite");
+    if (statOnsite) statOnsite.textContent = onsiteCount;
+    const rateOnsite = document.getElementById("attStatRateOnsite");
+    if (rateOnsite) rateOnsite.textContent = "(" + Math.round((onsiteCount / totalMembers) * 100) + "%)";
+
+    const statShadow = document.getElementById("attStatCountShadow");
+    if (statShadow) statShadow.textContent = shadowCount;
+    const rateShadow = document.getElementById("attStatRateShadow");
+    if (rateShadow) rateShadow.textContent = "(" + Math.round((shadowCount / totalMembers) * 100) + "%)";
+
+    const statAbsent = document.getElementById("attStatCountAbsent");
+    if (statAbsent) statAbsent.textContent = absentCount;
+    const rateAbsent = document.getElementById("attStatRateAbsent");
+    if (rateAbsent) rateAbsent.textContent = "(" + Math.round((absentCount / totalMembers) * 100) + "%)";
+
+    const statPending = document.getElementById("attStatCountPending");
+    if (statPending) statPending.textContent = pendingCount;
+    const ratePending = document.getElementById("attStatRatePending");
+    if (ratePending) ratePending.textContent = "(" + Math.round((pendingCount / totalMembers) * 100) + "%)";
+
+    // 4. Update Quorum Callout Banner
+    const callout = document.getElementById("attQuorumCalloutBanner");
+    if (callout) {
+        if (quorumMet) {
+            callout.className = "p-4 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-900 flex items-center gap-3";
+            callout.innerHTML = '<span class="text-2xl">🎉</span><div><h4 class="font-extrabold text-sm sm:text-base text-emerald-950">정기총회 개회 정족수(91명) 충족 완료!</h4><p class="text-xs sm:text-sm text-emerald-800 mt-0.5">현장 참석(' + onsiteCount + '명) 및 쉐도우보팅 위임(' + shadowCount + '명)으로 총 ' + quorumCount + '명이 성원되어 단칙 제20조 제2항에 따른 총회 개회 및 의결 요건을 완벽히 달성하였습니다.</p></div>';
+        } else {
+            const diff = quorumGoal - quorumCount;
+            callout.className = "p-4 rounded-xl border border-amber-200 bg-amber-50/90 text-amber-950 flex items-center gap-3";
+            callout.innerHTML = '<span class="text-2xl">📢</span><div><h4 class="font-extrabold text-sm sm:text-base text-amber-950">개회 정족수 달성까지 앞으로 ' + diff + '명의 출석이 더 필요합니다</h4><p class="text-xs sm:text-sm text-amber-800 mt-0.5">총회 당일 직접 참석이 어려우신 단원님께서는 <strong>쉐도우 보팅(의결권 위임)</strong>에 참여해 주시면 성원 인원으로 즉시 인정됩니다.</p></div>';
+        }
+    }
+
+    // 5. Update Navbar Tab Badge
+    const navBadge = document.getElementById("navBadgeAttendanceCount");
+    if (navBadge) {
+        navBadge.textContent = quorumCount + "/91";
+        if (quorumMet) {
+            navBadge.className = "px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold";
+        } else {
+            navBadge.className = "px-1.5 py-0.2 rounded text-[10px] bg-slate-700/50 text-slate-300 border border-slate-600/40 font-semibold";
+        }
+    }
+
+    // 6. Render Member Voting Action Card
+    renderAttendanceVotingBox();
+
+    // 7. Render Executive Tools
+    renderAttendanceExecutiveTools(roster, votes, onsiteCount, shadowCount, absentCount, pendingCount);
+
+    // 8. Render Roster List & Filter
+    renderAttendanceRosterList(roster, votes);
+}
+
+function renderAttendanceVotingBox() {
+    const container = document.getElementById("attVotingActionContainer");
+    if (!container) return;
+
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    const votes = (appState.attendanceSurvey && appState.attendanceSurvey.votes) || {};
+    const myChoice = voter ? votes[voter.id] : null;
+
+    if (!voter) {
+        container.innerHTML = `
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                <div class="flex items-center gap-3 text-left">
+                    <span class="text-2xl">👤</span>
+                    <div>
+                        <h4 class="text-sm font-extrabold text-slate-900">단원 본인 로그인 후 참석 여부를 선택해 주세요</h4>
+                        <p class="text-xs text-slate-500 mt-0.5">삼성한우리합창단 정단원 본인 확인을 거쳐 현장 참석 또는 의결권 위임을 제출하실 수 있습니다.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="openMemberLoginModal()" class="shrink-0 w-full sm:w-auto px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs sm:text-sm shadow-sm transition cursor-pointer">
+                    단원 로그인하기 →
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    const choiceBadge = myChoice === "onsite"
+        ? '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-indigo-100 text-indigo-800 border border-indigo-200">🏢 현장 참석 (제출완료)</span>'
+        : myChoice === "shadow"
+        ? '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">🤝 쉐도우보팅 위임 (제출완료)</span>'
+        : myChoice === "absent"
+        ? '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-100 text-rose-800 border border-rose-200">❌ 전체 불참 (제출완료)</span>'
+        : '<span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-200 animate-pulse">⏳ 미응답 (선택 필요)</span>';
+
+    const cardOnsiteClass = myChoice === "onsite"
+        ? "border-2 border-indigo-600 bg-indigo-50/70 shadow-sm ring-2 ring-indigo-500/20"
+        : "border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/20 bg-white";
+
+    const cardShadowClass = myChoice === "shadow"
+        ? "border-2 border-emerald-600 bg-emerald-50/70 shadow-sm ring-2 ring-emerald-500/20"
+        : "border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50/20 bg-white";
+
+    const cardAbsentClass = myChoice === "absent"
+        ? "border-2 border-rose-600 bg-rose-50/70 shadow-sm ring-2 ring-rose-500/20"
+        : "border border-slate-200 hover:border-rose-300 hover:bg-rose-50/20 bg-white";
+
+    container.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-black text-slate-900">${voter.name} 단원님 (${voter.gen}기 ${voter.part})</span>
+                    ${voter.isExecutive ? '<span class="px-1.5 py-0.2 rounded text-[10px] bg-amber-100 text-amber-800 font-bold border border-amber-200">운영진</span>' : ''}
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">총회 당일 참석 가능 여부를 아래 3가지 중 1개 선택해 주십시오.</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500 font-semibold">현재 상태:</span>
+                ${choiceBadge}
+                ${myChoice ? '<button type="button" onclick="cancelAttendanceSurveyVote()" class="px-2 py-1 rounded-lg text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 transition cursor-pointer" title="응답 초기화">초기화</button>' : ''}
+            </div>
+        </div>
+
+        <!-- 3 Interactive Choice Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-1">
+            <!-- Choice 1: On-site -->
+            <div onclick="voteAttendanceSurvey('onsite')" class="p-4 rounded-xl cursor-pointer transition-all duration-200 flex flex-col justify-between ${cardOnsiteClass}">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xl">🏢</span>
+                        ${myChoice === "onsite" ? '<span class="text-xs font-black text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full flex items-center gap-1">✓ 나의 선택</span>' : '<span class="text-xs font-semibold text-slate-400">선택하기</span>'}
+                    </div>
+                    <h4 class="text-sm font-extrabold text-slate-900">1. 현장 직접 참석</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        2026년 12월 13일 정기총회 현장에 직접 참석하여 활동 보고 청취 및 단칙 개정·단장 선거 투표에 참여합니다.
+                    </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded">성원 인정 (단칙 제20조 ②)</span>
+                    <span class="text-xs font-extrabold ${myChoice === "onsite" ? 'text-indigo-700' : 'text-slate-400'}">선택</span>
+                </div>
+            </div>
+
+            <!-- Choice 2: Shadow Voting -->
+            <div onclick="voteAttendanceSurvey('shadow')" class="p-4 rounded-xl cursor-pointer transition-all duration-200 flex flex-col justify-between ${cardShadowClass}">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xl">🤝</span>
+                        ${myChoice === "shadow" ? '<span class="text-xs font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">✓ 나의 선택</span>' : '<span class="text-xs font-semibold text-slate-400">선택하기</span>'}
+                    </div>
+                    <h4 class="text-sm font-extrabold text-slate-900">2. 현장 불참 / 쉐도우보팅 참여</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        현장엔 불참하나 총회 성원을 위해 의결권을 위임하며, 출석 단원들의 투표 결과에 따라 비례 표결하는 '쉐도우 보팅'에 동의합니다.
+                    </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">성원 인정 (단칙 제20조 ⑤)</span>
+                    <span class="text-xs font-extrabold ${myChoice === "shadow" ? 'text-emerald-700' : 'text-slate-400'}">선택</span>
+                </div>
+            </div>
+
+            <!-- Choice 3: Absent -->
+            <div onclick="voteAttendanceSurvey('absent')" class="p-4 rounded-xl cursor-pointer transition-all duration-200 flex flex-col justify-between ${cardAbsentClass}">
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xl">❌</span>
+                        ${myChoice === "absent" ? '<span class="text-xs font-black text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full flex items-center gap-1">✓ 나의 선택</span>' : '<span class="text-xs font-semibold text-slate-400">선택하기</span>'}
+                    </div>
+                    <h4 class="text-sm font-extrabold text-slate-900">3. 전체 불참</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">
+                        부득이한 사정으로 현장 참석 및 의결권 위임(쉐도우보팅)에 모두 참여하지 않습니다. (총회 개회 정족수에서 제외됩니다)
+                    </p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded">정족수 미산입</span>
+                    <span class="text-xs font-extrabold ${myChoice === "absent" ? 'text-rose-700' : 'text-slate-400'}">선택</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function renderAttendanceExecutiveTools(roster, votes, onsite, shadow, absent, pending) {
+    const container = document.getElementById("attExecutiveToolsContainer");
+    if (!container) return;
+
+    const isExec = (typeof isCurrentUserExecutive === "function")
+        ? isCurrentUserExecutive()
+        : Boolean(appState.isAdminAuthenticated);
+
+    if (!isExec) {
+        container.classList.add("hidden");
+        return;
+    }
+
+    container.classList.remove("hidden");
+    container.innerHTML = `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold">운영진 전용</span>
+                    <h3 class="text-base font-extrabold text-white">총회 성원 관리 및 단원 독려 도구</h3>
+                </div>
+                <p class="text-xs text-slate-400 mt-0.5">단원들에게 카카오톡 공지 시 원클릭으로 명단을 복사하여 발송할 수 있습니다.</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400">미응답 단원: <strong class="text-amber-400">${pending}명</strong></span>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+            <button type="button" onclick="copyUnansweredAttendanceMembers()" class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+                <span>📋</span> 미응답 단원 명단 카톡 복사 (${pending}명)
+            </button>
+            <button type="button" onclick="copyOnsiteAttendanceMembers()" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+                <span>🏢</span> 현장 참석자 명단 카톡 복사 (${onsite}명)
+            </button>
+            <button type="button" onclick="copyAttendanceSummaryReport()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-xs transition flex items-center gap-1.5 cursor-pointer">
+                <span>📊</span> 성원 집계 요약 복사
+            </button>
+        </div>
+    `;
+}
+
+function renderAttendanceRosterList(roster, votes) {
+    const filterContainer = document.getElementById("attRosterFilterButtons");
+    const listContainer = document.getElementById("attRosterListContainer");
+    if (!filterContainer || !listContainer) return;
+
+    let onsite = 0;
+    let shadow = 0;
+    let absent = 0;
+    let pending = 0;
+
+    roster.forEach(function(m) {
+        const v = votes[m.id];
+        if (v === "onsite") onsite++;
+        else if (v === "shadow") shadow++;
+        else if (v === "absent") absent++;
+        else pending++;
+    });
+
+    const activeF = currentAttendanceFilter || "all";
+
+    // 1. Render Filter Buttons
+    const filters = [
+        { key: "all", label: "전체 (" + roster.length + ")" },
+        { key: "onsite", label: "🏢 현장 (" + onsite + ")" },
+        { key: "shadow", label: "🤝 쉐도우 (" + shadow + ")" },
+        { key: "absent", label: "❌ 불참 (" + absent + ")" },
+        { key: "pending", label: "⏳ 미응답 (" + pending + ")" }
+    ];
+
+    filterContainer.innerHTML = filters.map(function(f) {
+        const isActive = activeF === f.key;
+        const cls = isActive
+            ? "px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-xs cursor-pointer"
+            : "px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition cursor-pointer";
+        return '<button type="button" onclick="setAttendanceFilter(\'' + f.key + '\')" class="' + cls + '">' + f.label + '</button>';
+    }).join("");
+
+    // 2. Filter Members
+    const filtered = roster.filter(function(m) {
+        const v = votes[m.id];
+        if (activeF === "onsite" && v !== "onsite") return false;
+        if (activeF === "shadow" && v !== "shadow") return false;
+        if (activeF === "absent" && v !== "absent") return false;
+        if (activeF === "pending" && Boolean(v)) return false;
+
+        if (currentAttendanceSearch) {
+            const haystack = (m.name + " " + m.part + " " + m.gen + " " + (m.company || "")).toLowerCase();
+            if (haystack.indexOf(currentAttendanceSearch) === -1) return false;
+        }
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        listContainer.innerHTML = '<div class="py-8 text-center text-xs text-slate-400">조건에 일치하는 단원이 없습니다.</div>';
+        return;
+    }
+
+    // 3. Render Table
+    let tableHtml = `
+        <table class="w-full text-left border-collapse text-xs">
+            <thead>
+                <tr class="border-b border-slate-200 bg-slate-50/70 text-slate-500 font-bold">
+                    <th class="py-2.5 px-3">단원 성명</th>
+                    <th class="py-2.5 px-3">기수 / 파트</th>
+                    <th class="py-2.5 px-3">소속사</th>
+                    <th class="py-2.5 px-3 text-right">참석 조사 응답</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+    `;
+
+    filtered.forEach(function(m) {
+        const v = votes[m.id];
+        let statusBadge = '';
+        if (v === "onsite") {
+            statusBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 font-bold text-[11px] border border-indigo-200">🏢 현장 참석</span>';
+        } else if (v === "shadow") {
+            statusBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px] border border-emerald-200">🤝 쉐도우보팅(위임)</span>';
+        } else if (v === "absent") {
+            statusBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold text-[11px] border border-rose-200">❌ 전체 불참</span>';
+        } else {
+            statusBadge = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-500 font-medium text-[11px] border border-slate-200">⏳ 미응답</span>';
+        }
+
+        tableHtml += `
+            <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="py-2.5 px-3 font-bold text-slate-900">
+                    ${m.name}
+                    ${m.isExecutive ? '<span class="ml-1 px-1 py-0.2 rounded text-[9px] bg-amber-100 text-amber-800 font-bold">운영진</span>' : ''}
+                </td>
+                <td class="py-2.5 px-3 text-slate-600 font-medium">${m.gen}기 · <span class="font-bold text-slate-700">${m.part}</span></td>
+                <td class="py-2.5 px-3 text-slate-500">${m.company || '-'}</td>
+                <td class="py-2.5 px-3 text-right">${statusBadge}</td>
+            </tr>
+        `;
+    });
+
+    tableHtml += `
+            </tbody>
+        </table>
+    `;
+
+    listContainer.innerHTML = tableHtml;
+}

@@ -11,6 +11,7 @@ function renderAll() {
     renderExecutiveRosterTable();
     renderFullMemberRosterTable();
     renderEventsView();
+    if (typeof renderAttendanceView === "function") renderAttendanceView();
     if (typeof renderActivityView === "function") renderActivityView();
     renderConcertFeedbackView();
     renderCurrentBylawsView();

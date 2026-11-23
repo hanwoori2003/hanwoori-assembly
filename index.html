@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.35" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.36" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <style>
@@ -161,6 +161,11 @@
                         <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm cursor-pointer">
                             <span>📅 2026 정기총회</span>
                         </button>
+                        <!-- Tab: 총회 참석 및 위임 조사 -->
+                        <button id="tabBtn-attendance" type="button" onclick="switchMainTab('attendance', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                            <span>📋 총회 참석·위임 조사</span>
+                            <span id="navBadgeAttendanceCount" class="px-1.5 py-0.2 rounded text-[10px] bg-slate-700/50 text-slate-300 border border-slate-600/40 font-semibold">0/91</span>
+                        </button>
                         <!-- Tab 2: 2026 활동보고 -->
                         <button id="tabBtn-activity" type="button" onclick="switchMainTab('activity', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
                             <span>📋 2026 활동보고</span>
@@ -285,7 +290,203 @@
                 </div>
             </div>
         </section>
+        <!-- ============================================================ -->
+        <!-- TAB: 2026 총회 참석 여부 및 의결권 위임(쉐도우보팅) 사전 조사 (#view-attendance) -->
+        <!-- ============================================================ -->
+        <section id="view-attendance" class="hidden space-y-6">
+            <!-- Header Banner -->
+            <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 text-white shadow-md border border-emerald-800/40">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="space-y-1.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold">
+                                <span>📋</span> 정기총회 공식 식순 제1호 성원 확인 사전조사
+                            </span>
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-800/80 text-slate-300 border border-slate-700/60 text-xs">
+                                📅 조사 기한: 2026년 12월 12일 23:59까지
+                            </span>
+                        </div>
+                        <h2 class="text-xl sm:text-2xl font-black tracking-tight break-keep">
+                            2026 정기총회 참석 여부 및 의결권 위임(쉐도우보팅) 사전 조사
+                        </h2>
+                        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed break-keep">
+                            단칙 제20조(정기총회) 제2항에 의거, 정기총회 개최를 위해서는 정단원 2/3 이상(<span class="text-emerald-300 font-bold">총 136명 중 91명 이상</span>)의 출석이 필수적입니다.
+                            현장 출석과 더불어 제5항에 따른 <span class="text-indigo-300 font-bold underline decoration-indigo-400">‘쉐도우 보팅(의결권 위임)’</span> 역시 출석(성원)으로 산입됩니다.
+                        </p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row md:flex-col items-start md:items-end gap-2 shrink-0">
+                        <div id="attHeaderBadgeStatus" class="px-3 py-1.5 rounded-xl bg-slate-800/90 border border-slate-700 text-xs font-bold text-slate-200">
+                            집계 중...
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Quorum Achievement Goal Progress Card -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-5">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <h3 class="text-base sm:text-lg font-black text-slate-900">정기총회 개회 정족수 달성 현황</h3>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                            개회 정족수: 재적 정단원 136명 중 2/3 이상 = <span class="font-bold text-slate-800">91명 이상</span> (현장 참석 + 쉐도우보팅 위임 합산)
+                        </p>
+                    </div>
+                    <div class="flex items-baseline gap-2 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200/80">
+                        <span class="text-xs text-slate-500 font-semibold">현재 성원 충족:</span>
+                        <span id="attQuorumCountDisplay" class="text-xl sm:text-2xl font-black text-indigo-600">0</span>
+                        <span class="text-sm font-bold text-slate-600">/ 91명</span>
+                        <span id="attQuorumRateDisplay" class="text-xs font-extrabold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 ml-1">0%</span>
+                    </div>
+                </div>
+
+                <!-- Visual Progress Bar -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs font-semibold text-slate-600">
+                        <span>성원 진행률 (목표 91명)</span>
+                        <span id="attQuorumProgressStatusText" class="font-bold text-indigo-600">집계 중</span>
+                    </div>
+                    <div class="relative w-full h-5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                        <div id="attQuorumProgressBar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[11px] text-slate-400">
+                        <span>0명</span>
+                        <span class="font-bold text-slate-600">개회 정족수 91명 (67%)</span>
+                        <span>총 136명 (100%)</span>
+                    </div>
+                </div>
+
+                <!-- 4 Statistics Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                    <!-- Stat 1: On-site -->
+                    <div class="p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-100/90 text-left">
+                        <div class="flex items-center justify-between text-xs font-bold text-indigo-900 mb-1">
+                            <span>🏢 현장 참석</span>
+                            <span class="px-1.5 py-0.5 rounded text-[10px] bg-indigo-200/60 text-indigo-800">성원 인정</span>
+                        </div>
+                        <div class="flex items-baseline gap-1.5">
+                            <span id="attStatCountOnsite" class="text-2xl font-black text-indigo-700">0</span>
+                            <span class="text-xs font-semibold text-slate-600">명</span>
+                            <span id="attStatRateOnsite" class="text-xs text-indigo-600 font-bold ml-auto">(0%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2: Shadow Voting -->
+                    <div class="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-100/90 text-left">
+                        <div class="flex items-center justify-between text-xs font-bold text-emerald-900 mb-1">
+                            <span>🤝 쉐도우보팅(위임)</span>
+                            <span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-200/60 text-emerald-800">성원 인정</span>
+                        </div>
+                        <div class="flex items-baseline gap-1.5">
+                            <span id="attStatCountShadow" class="text-2xl font-black text-emerald-700">0</span>
+                            <span class="text-xs font-semibold text-slate-600">명</span>
+                            <span id="attStatRateShadow" class="text-xs text-emerald-600 font-bold ml-auto">(0%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3: Full Absence -->
+                    <div class="p-3.5 rounded-xl bg-rose-50/70 border border-rose-100/90 text-left">
+                        <div class="flex items-center justify-between text-xs font-bold text-rose-900 mb-1">
+                            <span>❌ 전체 불참</span>
+                            <span class="px-1.5 py-0.5 rounded text-[10px] bg-rose-200/60 text-rose-800">미인정</span>
+                        </div>
+                        <div class="flex items-baseline gap-1.5">
+                            <span id="attStatCountAbsent" class="text-2xl font-black text-rose-700">0</span>
+                            <span class="text-xs font-semibold text-slate-600">명</span>
+                            <span id="attStatRateAbsent" class="text-xs text-rose-600 font-bold ml-auto">(0%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Stat 4: Unanswered -->
+                    <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-left">
+                        <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                            <span>⏳ 미응답</span>
+                            <span class="px-1.5 py-0.5 rounded text-[10px] bg-slate-200 text-slate-700">확인 필요</span>
+                        </div>
+                        <div class="flex items-baseline gap-1.5">
+                            <span id="attStatCountPending" class="text-2xl font-black text-slate-700">136</span>
+                            <span class="text-xs font-semibold text-slate-600">명</span>
+                            <span id="attStatRatePending" class="text-xs text-slate-500 font-bold ml-auto">(100%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Callout Banner -->
+                <div id="attQuorumCalloutBanner" class="p-4 rounded-xl border flex items-center gap-3">
+                    <!-- Dynamic callout injected by renderAttendanceView -->
+                </div>
+            </div>
+
+            <!-- Member Interactive Attendance Voting Box -->
+            <div id="attVotingActionContainer" class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+                <!-- Dynamically rendered by renderAttendanceView() -->
+            </div>
+
+            <!-- Bylaw Notice & Guidance Accordion -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+                    <span class="text-lg">📜</span>
+                    <h3 class="text-base font-extrabold text-slate-900">정기총회 단칙 규정 및 쉐도우보팅(의결권 위임) 안내</h3>
+                </div>
+
+                <div class="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80 space-y-2">
+                        <h4 class="font-bold text-slate-900 text-xs sm:text-sm flex items-center gap-1.5">
+                            <span class="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 font-extrabold text-[11px]">단칙 제20조</span>
+                            정기총회
+                        </h4>
+                        <ul class="space-y-1.5 pl-1 text-slate-600">
+                            <li><strong class="text-slate-800">① (개최시기)</strong> 본 합창단의 정기총회는 운영진에서 정한 해당년도 마지막 공식 일정이 끝나기 전 1개월 이내에 개최한다.</li>
+                            <li><strong class="text-slate-800">② (개최정족수)</strong> 정기총회를 개최하기 위해서는 <span class="text-indigo-700 font-bold underline">정단원 2/3 이상의 출석</span>을 충족해야 한다. (총 136명 중 <span class="font-bold text-indigo-700">91명 이상</span>)</li>
+                            <li><strong class="text-slate-800">③ (안건)</strong> 정기총회에서는 사업보고 및 결산공고, 단칙개정, 선거 등을 실시하며 기타 본 합창단의 주요사항에 대하여 토의 의결한다.</li>
+                            <li><strong class="text-slate-800">⑤ (의결권위임)</strong> 정단원이 부득이한 사정에 의한 불참 시 단장의 동의를 얻어 투표권한을 위임할 수 있으며 투표결과에 따라 비례 표결하는 <span class="text-emerald-700 font-bold underline">‘쉐도우 보팅 (Shadow Voting)’</span> 방식을 따른다. (* 쉐도우 보팅 진행 단장 확인 완료)</li>
+                        </ul>
+                    </div>
+
+                    <!-- 당부 말씀 Box -->
+                    <div class="bg-amber-50/80 rounded-xl p-4 border border-amber-200/80 space-y-1.5">
+                        <h4 class="font-extrabold text-amber-900 text-xs sm:text-sm flex items-center gap-1.5">
+                            <span>💡</span> 운영진 당부 말씀
+                        </h4>
+                        <p class="text-amber-800 break-keep">
+                            총회 당일 정족수 <strong>91명</strong>이 채워지지 못하면 단칙상 총회 개회를 진행하지 못하는 불상사가 발생할 수 있습니다.<br />
+                            이러한 상황을 방지하기 위해 당일 부득이하게 현장 참석이 어려우신 단원님께서는 <strong>최대한 쉐도우 보팅(의결권 위임)으로 사전 신청</strong>을 부탁드립니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Executive Quick Management & Copy Tools (Visible for Executives) -->
+            <div id="attExecutiveToolsContainer" class="hidden bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md border border-slate-800 space-y-4">
+                <!-- Dynamically populated if executive -->
+            </div>
+
+            <!-- Full Roster Attendance Status Table / Filter -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="text-base font-extrabold text-slate-900">전체 단원 136인 응답 현황</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">파트별 전체 단원의 사전 참석 및 위임 여부를 실시간으로 확인하실 수 있습니다.</p>
+                    </div>
+                    <div id="attRosterFilterButtons" class="flex flex-wrap items-center gap-1.5">
+                        <!-- Filter buttons rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- Search Input within Roster -->
+                <div class="relative">
+                    <input id="attRosterSearchInput" type="text" oninput="filterAttendanceSearch(this.value)" placeholder="단원 이름, 파트(S1, A2 등), 기수로 검색..." class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" />
+                    <span class="absolute left-3 top-2.5 text-slate-400 text-xs">🔍</span>
+                </div>
+
+                <!-- Table Container -->
+                <div id="attRosterListContainer" class="overflow-x-auto">
+                    <!-- Populated dynamically by renderAttendanceView -->
+                </div>
+            </div>
+        </section>
         <!-- ============================================================ -->
         <!-- TAB 2: 2026 활동보고 (#view-activity) -->
         <!-- ============================================================ -->
@@ -1381,13 +1582,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.35"></script>
-    <script src="js/data-config.js?v=2026.35"></script>
-    <script src="js/firebase-config.js?v=2026.35"></script>
-    <script src="js/firebase-sync.js?v=2026.35"></script>
-    <script src="js/utils.js?v=2026.35"></script>
-    <script src="js/render.js?v=2026.35"></script>
-    <script src="js/handlers.js?v=2026.35"></script>
-    <script src="js/app.js?v=2026.35"></script>
+    <script src="js/data-members.js?v=2026.36"></script>
+    <script src="js/data-config.js?v=2026.36"></script>
+    <script src="js/firebase-config.js?v=2026.36"></script>
+    <script src="js/firebase-sync.js?v=2026.36"></script>
+    <script src="js/utils.js?v=2026.36"></script>
+    <script src="js/render.js?v=2026.36"></script>
+    <script src="js/handlers.js?v=2026.36"></script>
+    <script src="js/app.js?v=2026.36"></script>
 </body>
 </html>

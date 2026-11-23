@@ -31,7 +31,8 @@
 
     // 메모리 캐시: config 스냅샷이 votes 스냅샷보다 나중에 도착하더라도 투표 집계 유지
     var cachedAgendaVotes = {};         // { [agendaId]: { [memberKey]: choice } }
-    var cachedSingleElectionVotes = {}; // { [memberKey]: "approve"|"reject"|"abstain" }
+    var cachedSingleElectionVotes = {};
+    var cachedAttendanceVotes = {}; // { [memberKey]: "approve"|"reject"|"abstain" }
     var cachedMultiElectionVotes = {};  // { [memberKey]: candidateId }
 
     function getAppStateRef() {
@@ -173,6 +174,11 @@
                 abstain: 0
             },
             electionCandidates: electionCandidates,
+            attendanceSurveyMeta: {
+                deadline: (s.attendanceSurvey && s.attendanceSurvey.deadline) || "2026년 12월 12일 23:59",
+                targetTotal: typeof s.totalAttendees === "number" ? s.totalAttendees : 136,
+                quorumThreshold: Math.ceil(((typeof s.totalAttendees === "number" ? s.totalAttendees : 136) * 2) / 3)
+            },
             agendasMeta: agendasMeta,
             updatedAt: new Date().toISOString()
         };
@@ -277,6 +283,13 @@
             }
             if (data.settlement && typeof data.settlement === "object") {
                 s.settlement = deepClone(data.settlement);
+            }
+            if (data.attendanceSurveyMeta && typeof data.attendanceSurveyMeta === "object") {
+                if (!s.attendanceSurvey) s.attendanceSurvey = { votes: {} };
+                s.attendanceSurvey.deadline = data.attendanceSurveyMeta.deadline || "2026년 12월 12일 23:59";
+                s.attendanceSurvey.targetTotal = data.attendanceSurveyMeta.targetTotal || 136;
+                s.attendanceSurvey.quorumThreshold = data.attendanceSurveyMeta.quorumThreshold || 91;
+                if (!s.attendanceSurvey.votes) s.attendanceSurvey.votes = {};
             }
             if (data.concertSurvey && typeof data.concertSurvey === "object") {
                 s.concertSurvey = deepClone(data.concertSurvey);
@@ -415,6 +428,7 @@
             var newAgendaVotes = {};
             var newSingleVotes = {};
             var newMultiVotes = {};
+            var newAttendanceVotes = {};
             var electionVotersMap = {};
 
             snapshot.forEach(function(doc) {
@@ -426,6 +440,8 @@
                         newAgendaVotes[d.agendaId] = {};
                     }
                     newAgendaVotes[d.agendaId][d.memberKey] = d.choice;
+                } else if (d.type === "attendance" && d.memberKey && d.choice) {
+                    newAttendanceVotes[d.memberKey] = d.choice;
                 } else if (d.type === "election" && d.memberKey) {
                     var val = d.candidateId || d.choice;
                     if (!val) return;
@@ -440,6 +456,10 @@
 
             cachedAgendaVotes = newAgendaVotes;
             cachedSingleElectionVotes = newSingleVotes;
+            cachedAttendanceVotes = newAttendanceVotes;
+            if (!s.attendanceSurvey) s.attendanceSurvey = { votes: {} };
+            if (!s.attendanceSurvey.votes) s.attendanceSurvey.votes = {};
+            Object.assign(s.attendanceSurvey.votes, newAttendanceVotes);
             cachedMultiElectionVotes = newMultiVotes;
 
             // 각 안건의 memberVotes 및 집계 보조 필드 업데이트
@@ -939,6 +959,22 @@
     function isApplyingRemote() {
         return isApplyingRemoteUpdate;
     }
+
+        function pushAttendanceVoteToCloud(memberKey, choice) {
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        var safeKey = sanitizeKey(memberKey);
+        var docId = "attendance_" + safeKey;
+        var votesRef = db.collection(VOTES_COLLECTION);
+        return votesRef.doc(docId).set({
+            type: "attendance",
+            memberKey: String(memberKey),
+            choice: String(choice),
+            updatedAt: new Date().toISOString()
+        });
+    }
+    global.pushAttendanceVoteToCloud = pushAttendanceVoteToCloud;
 
     global.FirebaseSync = {
         init: init,

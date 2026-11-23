@@ -4,6 +4,8 @@ function normalizeScheduleTargetTab(rawTab) {
     if (!rawTab) return "";
     const trimmed = String(rawTab).trim().replace(/^#/, "");
     const aliasMap = {
+        "attendance": "attendance",
+        "survey": "attendance",
         "sectionConcertReview": "concert",
         "concertReview": "concert",
         "activity": "activity",
@@ -99,7 +101,8 @@ function saveStateToStorage(options) {
             assemblySchedule: appState.assemblySchedule,
             winnerPagePublic: appState.winnerPagePublic,
             settlement: appState.settlement,
-            concertSurvey: appState.concertSurvey
+            concertSurvey: appState.concertSurvey,
+            attendanceSurvey: appState.attendanceSurvey
         }));
     } catch (e) {}
     try {
@@ -323,6 +326,17 @@ function loadStateFromStorage() {
                     } catch (e) {}
                 }
                 if (parsed.concertSurvey) appState.concertSurvey = parsed.concertSurvey;
+                if (parsed.attendanceSurvey && typeof parsed.attendanceSurvey === 'object') {
+                    appState.attendanceSurvey = parsed.attendanceSurvey;
+                    if (!appState.attendanceSurvey.votes) appState.attendanceSurvey.votes = {};
+                } else if (typeof getDefaultState === 'function') {
+                    appState.attendanceSurvey = (getDefaultState().attendanceSurvey) || {
+                        deadline: '2026년 12월 12일 23:59',
+                        targetTotal: 136,
+                        quorumThreshold: 91,
+                        votes: {}
+                    };
+                }
             }
         }
         // Fallback to sessionStorage nav state if localStorage did not have it

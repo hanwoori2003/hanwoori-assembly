@@ -28,6 +28,8 @@ function switchMainTab(tabId, btnEl, options) {
         "viewRules": "bylaws",
         "search": "bylaws",
         "events": "events",
+        "attendance": "attendance",
+        "survey": "attendance",
         "concert": "concert",
         "sectionConcertReview": "concert",
         "concertReview": "concert",
@@ -1848,4 +1850,232 @@ if (typeof document !== "undefined" && typeof document.addEventListener === "fun
             }
         }
     });
+}
+
+
+// ============================================================
+// 2026 정기총회 참석·위임 사전 조사 핸들러
+// ============================================================
+
+let currentAttendanceFilter = "all";
+let currentAttendanceSearch = "";
+
+function voteAttendanceSurvey(choice) {
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    if (!voter || !appState.currentVoterId) {
+        showToast("⚠️ 단원 본인 확인(로그인) 후 참석 여부를 선택해 주세요.");
+        if (typeof openMemberLoginModal === "function") {
+            openMemberLoginModal();
+        }
+        return;
+    }
+
+    if (choice !== "onsite" && choice !== "shadow" && choice !== "absent") {
+        return;
+    }
+
+    if (!appState.attendanceSurvey) {
+        appState.attendanceSurvey = {
+            deadline: "2026년 12월 12일 23:59",
+            targetTotal: 136,
+            quorumThreshold: 91,
+            votes: {}
+        };
+    }
+    if (!appState.attendanceSurvey.votes) {
+        appState.attendanceSurvey.votes = {};
+    }
+
+    appState.attendanceSurvey.votes[appState.currentVoterId] = choice;
+
+    if (typeof saveStateToStorage === "function") {
+        saveStateToStorage();
+    }
+    if (typeof pushAttendanceVoteToCloud === "function") {
+        pushAttendanceVoteToCloud(appState.currentVoterId, choice);
+    }
+
+    renderAll();
+
+    if (choice === "onsite") {
+        showToast("🏢 " + voter.name + " 단원님의 '현장 참석' 응답이 완료되었습니다. (성원 1명 산입)");
+    } else if (choice === "shadow") {
+        showToast("🤝 " + voter.name + " 단원님의 '현장 불참 / 쉐도우보팅(의결권 위임)' 응답이 완료되었습니다. (성원 1명 산입)");
+    } else if (choice === "absent") {
+        showToast("❌ " + voter.name + " 단원님의 '전체 불참' 응답이 저장되었습니다.");
+    }
+}
+
+function cancelAttendanceSurveyVote() {
+    const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+    if (!voter || !appState.currentVoterId || !appState.attendanceSurvey || !appState.attendanceSurvey.votes) {
+        return;
+    }
+    delete appState.attendanceSurvey.votes[appState.currentVoterId];
+
+    if (typeof saveStateToStorage === "function") {
+        saveStateToStorage();
+    }
+    if (typeof pushAttendanceVoteToCloud === "function") {
+        pushAttendanceVoteToCloud(appState.currentVoterId, "");
+    }
+
+    renderAll();
+    showToast("↩️ " + voter.name + " 단원님의 참석 여부 응답이 취소되었습니다.");
+}
+
+function setAttendanceFilter(filterKey) {
+    currentAttendanceFilter = filterKey || "all";
+    if (typeof renderAttendanceView === "function") {
+        renderAttendanceView();
+    }
+}
+
+function filterAttendanceSearch(query) {
+    currentAttendanceSearch = (query || "").trim().toLowerCase();
+    if (typeof renderAttendanceView === "function") {
+        renderAttendanceView();
+    }
+}
+
+function copyUnansweredAttendanceMembers() {
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
+        ? FULL_MEMBER_ROSTER
+        : (appState.members || []);
+    const votes = (appState.attendanceSurvey && appState.attendanceSurvey.votes) || {};
+
+    const unanswered = roster.filter(function(m) {
+        return !votes[m.id];
+    });
+
+    if (unanswered.length === 0) {
+        showToast("🎉 모든 단원(136명)의 참석 조사가 완료되었습니다!");
+        return;
+    }
+
+    const byPart = {};
+    unanswered.forEach(function(m) {
+        const p = m.part || "기타";
+        if (!byPart[p]) byPart[p] = [];
+        byPart[p].push(m.name + "(" + m.gen + "기)");
+    });
+
+    let msg = "[삼성한우리합창단 2026 정기총회 참석·위임 사전조사 미응답 단원 안내]\n\n";
+    msg += "단칙 제20조 제2항에 따라 총회 개회를 위해서는 재적 정단원 136명 중 2/3 이상(91명)의 출석(현장 또는 쉐도우보팅 위임)이 필수적입니다.\n\n";
+    msg += "원활한 총회 성원을 위해 아래 링크에서 [현장 참석] 또는 [쉐도우보팅 참여] 여부를 꼭 체크해 주시기 바랍니다!\n\n";
+    msg += "⏳ 미응답 단원 (총 " + unanswered.length + "명):\n";
+
+    ["S1", "S2", "A1", "A2", "T1", "T2", "B1", "B2"].forEach(function(partKey) {
+        if (byPart[partKey] && byPart[partKey].length > 0) {
+            msg += "• " + partKey + " (" + byPart[partKey].length + "명): " + byPart[partKey].join(", ") + "\n";
+        }
+    });
+
+    msg += "\n👉 사전 참석·위임 조사 바로가기:\nhttps://hanwoori2003.github.io/hanwoori-assembly/#attendance";
+
+    copyTextToClipboard(msg, "📋 미응답 단원 " + unanswered.length + "명 명단(카톡용)이 복사되었습니다!");
+}
+
+function copyOnsiteAttendanceMembers() {
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
+        ? FULL_MEMBER_ROSTER
+        : (appState.members || []);
+    const votes = (appState.attendanceSurvey && appState.attendanceSurvey.votes) || {};
+
+    const onsiteList = roster.filter(function(m) {
+        return votes[m.id] === "onsite";
+    });
+
+    if (onsiteList.length === 0) {
+        showToast("ℹ️ 현재 현장 참석으로 응답한 단원이 없습니다.");
+        return;
+    }
+
+    const byPart = {};
+    onsiteList.forEach(function(m) {
+        const p = m.part || "기타";
+        if (!byPart[p]) byPart[p] = [];
+        byPart[p].push(m.name + "(" + m.gen + "기)");
+    });
+
+    let msg = "[삼성한우리합창단 2026 정기총회 현장 참석 예정 단원 명단]\n\n";
+    msg += "🏢 총 현장 참석 인원: " + onsiteList.length + "명\n\n";
+
+    ["S1", "S2", "A1", "A2", "T1", "T2", "B1", "B2"].forEach(function(partKey) {
+        if (byPart[partKey] && byPart[partKey].length > 0) {
+            msg += "• " + partKey + " (" + byPart[partKey].length + "명): " + byPart[partKey].join(", ") + "\n";
+        }
+    });
+
+    copyTextToClipboard(msg, "🏢 현장 참석자 " + onsiteList.length + "명 명단이 클립보드에 복사되었습니다!");
+}
+
+function copyAttendanceSummaryReport() {
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
+        ? FULL_MEMBER_ROSTER
+        : (appState.members || []);
+    const votes = (appState.attendanceSurvey && appState.attendanceSurvey.votes) || {};
+
+    let onsite = 0;
+    let shadow = 0;
+    let absent = 0;
+    let pending = 0;
+
+    roster.forEach(function(m) {
+        const v = votes[m.id];
+        if (v === "onsite") onsite++;
+        else if (v === "shadow") shadow++;
+        else if (v === "absent") absent++;
+        else pending++;
+    });
+
+    const quorumTotal = onsite + shadow;
+    const goal = 91;
+    const rate = Math.round((quorumTotal / goal) * 100);
+
+    let msg = "[2026 삼성한우리합창단 정기총회 성원 현황 브리핑]\n\n";
+    msg += "• 재적 정단원: 136명\n";
+    msg += "• 개회 정족수 목표: 91명 이상 (2/3)\n";
+    msg += "• 현재 성원 인정 합계: " + quorumTotal + "명 (" + rate + "% 달성)\n\n";
+    msg += "세부 집계:\n";
+    msg += " 1. 🏢 현장 참석: " + onsite + "명 (" + Math.round((onsite / 136) * 100) + "%)\n";
+    msg += " 2. 🤝 쉐도우보팅(위임): " + shadow + "명 (" + Math.round((shadow / 136) * 100) + "%)\n";
+    msg += " 3. ❌ 전체 불참: " + absent + "명\n";
+    msg += " 4. ⏳ 미응답: " + pending + "명\n\n";
+
+    if (quorumTotal >= goal) {
+        msg += "✅ 총회 개회 정족수(91명) 충족 완료!";
+    } else {
+        msg += "⚠️ 개회 정족수 달성까지 앞으로 " + (goal - quorumTotal) + "명 추가 출석(현장 또는 위임)이 필요합니다.";
+    }
+
+    copyTextToClipboard(msg, "📊 정기총회 성원 현황 요약이 복사되었습니다!");
+}
+
+function copyTextToClipboard(text, successToastMsg) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        navigator.clipboard.writeText(text).then(function() {
+            showToast(successToastMsg);
+        }).catch(function() {
+            fallbackCopyText(text, successToastMsg);
+        });
+    } else {
+        fallbackCopyText(text, successToastMsg);
+    }
+}
+
+function fallbackCopyText(text, successToastMsg) {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+        document.execCommand("copy");
+        showToast(successToastMsg);
+    } catch (e) {
+        showToast("⚠️ 클립보드 복사 실패: 수동으로 복사해 주세요.");
+    }
+    document.body.removeChild(ta);
 }

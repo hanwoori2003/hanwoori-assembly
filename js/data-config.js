@@ -287,12 +287,7 @@ function getDefaultState() {
     winnerPagePublic: false,
     assemblySchedule: [
     {
-        "id": "sch-1",
-        "title": "1. 개회 및 성원 보고",
-        "desc": "재적 정단원 136명 기준 성원 확인 완료 (개회·의결정족수 2/3 기준 91명/91표↑)",
-        "status": "완료",
-        "targetTab": "",
-        "btnLabel": "성원확인"
+        "id": "sch-1",`r`n        "title": "1. 개회 및 성원 보고",`r`n        "desc": "재적 정단원 136명 기준 성원 확인 (개회·의결정족수 2/3 기준 91명/91표↑, 현장+위임)",`r`n        "status": "진행중",`r`n        "targetTab": "attendance",`r`n        "btnLabel": "참석·위임 현황 →"
     },
     {
         "id": "sch-2",
@@ -938,6 +933,12 @@ function getDefaultState() {
         }
     ]
 },
+    attendanceSurvey: {
+        deadline: "2026년 12월 12일 23:59",
+        targetTotal: 136,
+        quorumThreshold: 91,
+        votes: {}
+    },
     concertSurvey: {
     "respondentCount": 71,
     "regularConcertRate": 87.4,
