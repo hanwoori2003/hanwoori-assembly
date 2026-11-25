@@ -716,7 +716,7 @@ function renderActivityView() {
                     '<thead>' +
                         '<tr class="bg-slate-100 text-slate-700 text-xs font-extrabold border-b border-slate-200">' +
                             '<th class="py-2.5 px-3 whitespace-nowrap">구분 / TF</th>' +
-                            '<th class="py-2.5 px-3">함께해주신 단원 (' + escapeHtml(report.specialThanksNote || "※ 각사 게시 도우미") + ')</th>' +
+                            '<th class="py-2.5 px-3">함께해주신 단원' + (report.specialThanksNote ? (' (' + escapeHtml(report.specialThanksNote) + ')') : '') + '</th>' +
                         '</tr>' +
                     '</thead>' +
                     '<tbody>' + rowsHtml + '</tbody>' +
