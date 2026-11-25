@@ -1063,7 +1063,7 @@ function renderConcertFeedbackView() {
     html += renderCommentAccordion('comm-sec4-good', '제21회 정기연주회 공연 - 좋았던 점', s4Comm.concertGood || [], '🎉', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
     html += renderCommentAccordion('comm-sec4-imp', '제21회 정기연주회 공연 - 아쉬운 점 및 건의사항', s4Comm.concertImprovement || [], '💡', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
     html += renderCommentAccordion('comm-sec4-prog', '연주 프로그램 및 선호 연주곡 단원 의견', s4Comm.programAndGeneral || [], '🎵', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', false);
-    html += renderCommentAccordion('comm-sec4-hall', '공연장(광운대 동해문화예술관) 시설 및 무대 환경 의견', s4Comm.hall || [], '🏛️', 'bg-slate-200 text-slate-800', 'bg-slate-50', 'border-slate-200', false);
+    html += renderCommentAccordion('comm-sec4-hall', '공연장(인재개발원 콘서트홀) 시설 및 무대 환경 의견', s4Comm.hall || [], '🏛️', 'bg-slate-200 text-slate-800', 'bg-slate-50', 'border-slate-200', false);
     html += renderCommentAccordion('comm-sec4-choreo', '섭외 안무가 관련 단원 평가 의견', s4Comm.choreographer || [], '💃', 'bg-pink-100 text-pink-800', 'bg-pink-50/50', 'border-pink-200', false);
     html += renderCommentAccordion('comm-sec4-orch', '협연 오케스트라 & 라퓨즈 플레이어즈 의견', s4Comm.orchestra || [], '🎻', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', false);
     html += renderCommentAccordion('comm-sec4-aud', '초대 관객 호응 & 대외 홍보물 단원 의견', s4Comm.audienceAndPromo || [], '📣', 'bg-violet-100 text-violet-800', 'bg-violet-50/50', 'border-violet-200', false);
