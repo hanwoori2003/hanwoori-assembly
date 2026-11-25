@@ -331,9 +331,12 @@
                     if (c && typeof c === "object") c.baseVotes = 0;
                     return c;
                 });
-                if (s.election.candidates.length > 0 && s.election.candidates[0].name === "이창욱") {
-                    var defaultCand1 = (typeof getDefaultState === "function") ? getDefaultState().election.candidates[0] : null;
-                    if (defaultCand1) s.election.candidates[0] = deepClone(defaultCand1);
+                if (s.election.candidates.length > 0) {
+                    var c0 = s.election.candidates[0];
+                    if (c0.name === "이창욱" || (typeof c0.career === "string" && c0.career.indexOf("타 합창단") !== -1)) {
+                        var defaultCand1 = (typeof getDefaultState === "function") ? getDefaultState().election.candidates[0] : null;
+                        if (defaultCand1) s.election.candidates[0] = deepClone(defaultCand1);
+                    }
                 }
             }
             if (!s.election.singleVotes) {

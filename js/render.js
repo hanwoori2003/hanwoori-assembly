@@ -1279,7 +1279,8 @@ function renderElectionView() {
             // Render Recommendation (추천인 추천사)
             const recomEl = document.getElementById("singleCandRecommendation");
             if (recomEl) {
-                const recomText = cand.recommendation || "타 합창단 단장을 역임하신 경험이 있으며, 본 합창단에서도 부단장으로 활동하시며 리더십과 운영 역량을 보여주셨습니다. 합창단에 대한 애정과 책임감이 크고, 풍부한 경험을 바탕으로 우리 합창단을 안정적으로 이끌어 가실 적임자라고 생각합니다.";
+                const rawRecom = cand.recommendation || "삼성 디지털시티 합창단 단장을 역임하신 경험이 있으며, 본 합창단에서도 부단장으로 활동하시며 리더십과 운영 역량을 보여주셨습니다. 합창단에 대한 애정과 책임감이 크고, 풍부한 경험을 바탕으로 우리 합창단을 안정적으로 이끌어 가실 적임자라고 생각합니다.";
+                const recomText = rawRecom.replace(/타 합창단/g, "삼성 디지털시티 합창단");
                 recomEl.textContent = "“" + recomText.replace(/^[“"\s]+|[”"\s]+$/g, "") + "”";
             }
 
@@ -1343,12 +1344,12 @@ function renderElectionView() {
                         "2018년 삼성한우리합창단 15기 베이스(B1) 입단 및 정단원 활동",
                         "정기연주회 총 7회 출연 (단칙 제11조 제3항 피선거권 요건 충족)",
                         "2020년 삼성한우리합창단 부단장 역임 (운영진 리더십 역량 검증)",
-                        "타 합창단 단장 역임 (풍부한 합창단 운영 및 통솔 경험 보유)",
+                        "삼성 디지털시티 합창단 단장 역임 (풍부한 합창단 운영 및 통솔 경험 보유)",
                         "2027년 삼성한우리합창단 신임 단장 단독 입후보"
                     ];
                 }
                 careerCont.innerHTML = careerItems.map(function(item) {
-                    const cleanText = item.replace(/안산시립합창단\s*/g, "").trim();
+                    const cleanText = item.replace(/안산시립합창단\s*/g, "").replace(/타 합창단/g, "삼성 디지털시티 합창단").trim();
                     return '<div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-start gap-2.5">' +
                         '<span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">✓</span>' +
                         '<p class="text-xs sm:text-[13px] text-slate-700 leading-relaxed font-medium">' + cleanText + '</p>' +
