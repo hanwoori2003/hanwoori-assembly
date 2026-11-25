@@ -658,7 +658,7 @@ function renderActivityView() {
     }
 
     // ------------------------------------------------------------------
-    // Section 2: 한우리 주요 변화 (6가지)
+    // Section 2: 한우리 주요 변화
     // ------------------------------------------------------------------
     const changesCont = document.getElementById("activityMajorChangesContainer");
     if (changesCont && report) {
@@ -669,23 +669,23 @@ function renderActivityView() {
             if (item.photo) {
                 const cap = (item.title || "") + (item.desc ? (" · " + item.desc) : "");
                 photoThumbHtml =
-                    '<div class="mt-1 pl-7">' +
-                        '<div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-white cursor-zoom-in shadow-2xs">' +
-                            '<img src="' + escapeHtml(item.photo) + '" alt="' + escapeHtml(cap) + '" loading="lazy" onclick="openPhotoLightbox(\'' + escapeJsSingle(item.photo) + '\', \'' + escapeJsSingle(cap) + '\')" class="w-full aspect-video object-cover transition-transform duration-200 group-hover:scale-[1.03]" />' +
+                    '<div class="mt-2 pl-7">' +
+                        '<div class="relative group rounded-xl overflow-hidden border border-slate-200 bg-slate-900/5 cursor-zoom-in shadow-2xs flex items-center justify-center h-64 sm:h-72">' +
+                            '<img src="' + escapeHtml(item.photo) + '" alt="' + escapeHtml(cap) + '" loading="lazy" onclick="openPhotoLightbox(\'' + escapeJsSingle(item.photo) + '\', \'' + escapeJsSingle(cap) + '\')" class="max-h-full max-w-full object-contain transition-transform duration-200 group-hover:scale-[1.02]" />' +
                             '<span class="pointer-events-none absolute bottom-1.5 right-1.5 px-2 py-0.5 rounded-md bg-slate-900/70 text-white text-[10px] font-bold backdrop-blur-xs">🔍 크게 보기</span>' +
                         '</div>' +
                     '</div>';
             }
             chHtml +=
-                '<div class="p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition shadow-2xs flex flex-col gap-2">' +
+                '<div class="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-indigo-300 transition shadow-2xs flex flex-col gap-2">' +
                     '<div class="flex items-center justify-between gap-2">' +
                         '<span class="inline-flex items-center gap-1.5 text-xs font-black text-indigo-700">' +
                             '<span class="w-6 h-6 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center text-[11px] font-black">' + numStr + '</span>' +
-                            '<span class="text-sm font-extrabold text-slate-900 break-keep">' + escapeHtml(item.title) + '</span>' +
+                            '<span class="text-sm sm:text-base font-extrabold text-slate-900 break-keep">' + escapeHtml(item.title) + '</span>' +
                         '</span>' +
-                        '<span class="text-base shrink-0">' + escapeHtml(item.icon || "✨") + '</span>' +
+                        '<span class="text-lg shrink-0">' + escapeHtml(item.icon || "✨") + '</span>' +
                     '</div>' +
-                    '<p class="text-xs text-slate-600 leading-relaxed break-keep pl-7">' + escapeHtml(item.desc) + '</p>' +
+                    '<p class="text-xs sm:text-sm text-slate-600 leading-relaxed break-keep pl-7">' + escapeHtml(item.desc) + '</p>' +
                     photoThumbHtml +
                 '</div>';
         });

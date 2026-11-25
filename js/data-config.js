@@ -232,12 +232,20 @@ const ACTIVITY_REPORT_DATA = {
         ]
     },
     majorChanges: [
-        { no: 1, title: "정단원 명부 작성", desc: "파트별 정단원 사진 명부 8종 제작 완료", icon: "📸", photo: "assets/roster/bass_1.jpg" },
-        { no: 2, title: "연회비 인상", desc: "24년 40만원 → 42만원 (얼리버드 2만원 할인 시 40만원)", icon: "💳" },
-        { no: 3, title: "연습 지각 시간 변경", desc: "3시 15분 → 3시 5분", icon: "⏰" },
-        { no: 4, title: "악보 보관 X", desc: "악보 개인 지참, 개인연습 활용", icon: "🎼" },
-        { no: 5, title: "정기연주회 구성 변경", desc: "소곡(1부) ↔ 메인곡(2부)", icon: "🎭" },
-        { no: 6, title: "꽃보다 기부 캠페인", desc: "현장 기부금 모금 ↑, 꽃다발 보관 ↓", icon: "💐" }
+        {
+            no: 1,
+            title: "공지방 운영을 통한 주간공지",
+            desc: "단원 전용 카카오톡 공지방을 체계적으로 운영하여, 매주 정기연습 시간·장소, 한글 가사/명찰 착용, 파트별 회식 일정, New 출석체크 방식 및 연습 에티켓을 한눈에 파악할 수 있는 주간 공지 카드뉴스로 사전 안내",
+            icon: "📢",
+            photo: "assets/activity/notice_weekly.jpg"
+        },
+        {
+            no: 2,
+            title: "출석 구글폼 활용",
+            desc: "모바일 환경에 최적화된 온라인 구글 설문 폼(Google Forms) 정기연습 출석부를 전면 도입하여, 매 연습마다 파트별 단원 출석 현황을 실시간으로 집계하고 투명하고 체계적인 출석 관리 시스템 구축",
+            icon: "📋",
+            photo: "assets/activity/attendance_googleform.jpg"
+        }
     ],
     achievements: [
         "베토벤 합창교향곡 ‘나인심포니’ 대곡 도전 및 완주",
