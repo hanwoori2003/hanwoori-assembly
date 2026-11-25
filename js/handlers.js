@@ -1646,11 +1646,11 @@ function openSurveyModal() {
     const respInp = document.getElementById("inputSurveyRespondents");
     const songsInp = document.getElementById("inputSurveyFavoriteSongs");
 
-    if (regInp) regInp.value = survey.regularConcertRate || 87.4;
-    if (progInp) progInp.value = survey.programRate || 87.4;
-    if (hallInp) hallInp.value = survey.hallRate || 97.2;
-    if (audInp) audInp.value = survey.audienceRate || 91.6;
-    if (respInp) respInp.value = survey.respondentCount || 71;
+    if (regInp) regInp.value = survey.regularConcertRate || 88.6;
+    if (progInp) progInp.value = survey.programRate || 78.6;
+    if (hallInp) hallInp.value = survey.hallRate || 74.3;
+    if (audInp) audInp.value = survey.audienceRate || 97.1;
+    if (respInp) respInp.value = survey.respondentCount || 70;
 
     if (songsInp) {
         songsInp.value = (survey.favoriteSongs || []).map(function(s) {
@@ -1670,11 +1670,11 @@ function closeSurveyModal() {
 }
 
 function saveSurveyModal() {
-    const reg = parseFloat(document.getElementById("inputSurveyRegular") ? document.getElementById("inputSurveyRegular").value : 87.4) || 87.4;
-    const prog = parseFloat(document.getElementById("inputSurveyProgram") ? document.getElementById("inputSurveyProgram").value : 87.4) || 87.4;
-    const hall = parseFloat(document.getElementById("inputSurveyHall") ? document.getElementById("inputSurveyHall").value : 97.2) || 97.2;
-    const aud = parseFloat(document.getElementById("inputSurveyAudience") ? document.getElementById("inputSurveyAudience").value : 91.6) || 91.6;
-    const resp = parseInt(document.getElementById("inputSurveyRespondents") ? document.getElementById("inputSurveyRespondents").value : 71, 10) || 71;
+    const reg = parseFloat(document.getElementById("inputSurveyRegular") ? document.getElementById("inputSurveyRegular").value : 88.6) || 88.6;
+    const prog = parseFloat(document.getElementById("inputSurveyProgram") ? document.getElementById("inputSurveyProgram").value : 78.6) || 78.6;
+    const hall = parseFloat(document.getElementById("inputSurveyHall") ? document.getElementById("inputSurveyHall").value : 74.3) || 74.3;
+    const aud = parseFloat(document.getElementById("inputSurveyAudience") ? document.getElementById("inputSurveyAudience").value : 97.1) || 97.1;
+    const resp = parseInt(document.getElementById("inputSurveyRespondents") ? document.getElementById("inputSurveyRespondents").value : 70, 10) || 70;
 
     const songsRaw = (document.getElementById("inputSurveyFavoriteSongs") ? document.getElementById("inputSurveyFavoriteSongs").value : "").trim();
     const favoriteSongs = [];
