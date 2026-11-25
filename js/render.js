@@ -787,14 +787,10 @@ function renderConcertFeedbackView() {
     const isExec = isCurrentUserExecutive();
     const commentsData = (typeof CONCERT_SURVEY_COMMENTS !== "undefined") ? CONCERT_SURVEY_COMMENTS : {};
 
-    // 1. Admin Actions
+    // 1. Admin Actions (설문 데이터는 구글 폼 공식 전수 집계로 고정 유지)
     const concertAdminEl = document.getElementById("concertAdminActions");
     if (concertAdminEl) {
-        if (isExec) {
-            concertAdminEl.innerHTML = '<button type="button" onclick="openSurveyModal()" class="px-3.5 py-2 rounded-xl text-xs font-black bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-sm transition flex items-center gap-1.5 cursor-pointer"><span>✎</span> 설문 요약 수정</button>';
-        } else {
-            concertAdminEl.innerHTML = '';
-        }
+        concertAdminEl.innerHTML = '';
     }
 
     // 2. Top 4 Core KPI Metrics
