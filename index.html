@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.51" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.52" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <!-- App Shell Layout: Always visible for seamless assembly data browsing -->
@@ -190,7 +190,7 @@
                         <!-- Tab 4: 단칙 개정 찬반투표 -->
                         <button id="tabBtn-voting" type="button" onclick="switchMainTab('voting', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
                             <span>☑ 단칙 개정 찬반투표</span>
-                            <span id="navBadgeAgendaProgress" class="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">1/12</span>
+                            <span id="navBadgeAgendaProgress" class="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">1/6</span>
                         </button>
                         <!-- Tab 5: 단장 선거 투표 -->
                         <button id="tabBtn-election" type="button" onclick="switchMainTab('election', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
@@ -499,7 +499,7 @@
         <!-- ============================================================ -->
         <!-- TAB 2: 2026 활동보고 (#view-activity) -->
         <!-- ============================================================ -->
-        <section id="view-activity" class="hidden space-y-6">
+        <section id="view-activity" class="hidden space-y-6 min-w-0 max-w-full overflow-x-hidden">
             <!-- Header Banner -->
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-950 via-slate-900 to-indigo-950 text-white shadow-md border border-sky-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
@@ -1617,13 +1617,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.51"></script>
-    <script src="js/data-config.js?v=2026.51"></script>
-    <script src="js/firebase-config.js?v=2026.51"></script>
-    <script src="js/firebase-sync.js?v=2026.51"></script>
-    <script src="js/utils.js?v=2026.51"></script>
-    <script src="js/render.js?v=2026.51"></script>
-    <script src="js/handlers.js?v=2026.51"></script>
-    <script src="js/app.js?v=2026.51"></script>
+    <script src="js/data-members.js?v=2026.52"></script>
+    <script src="js/data-config.js?v=2026.52"></script>
+    <script src="js/firebase-config.js?v=2026.52"></script>
+    <script src="js/firebase-sync.js?v=2026.52"></script>
+    <script src="js/utils.js?v=2026.52"></script>
+    <script src="js/render.js?v=2026.52"></script>
+    <script src="js/handlers.js?v=2026.52"></script>
+    <script src="js/app.js?v=2026.52"></script>
 </body>
 </html>
