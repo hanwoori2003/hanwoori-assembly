@@ -443,8 +443,16 @@ function renderEventsView() {
                 : '';
 
             const jumpBtn = safeTargetTab
-                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="' + (execControls ? 'flex-1 sm:flex-initial sm:w-auto ' : 'w-full sm:w-auto ') + 'px-3.5 py-2 sm:py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center min-w-0 shadow-2xs">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
+                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="w-full sm:w-auto block px-3.5 py-2 sm:py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center truncate shadow-2xs">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
                 : '';
+
+            let actionsHtml = "";
+            if (jumpBtn || execControls) {
+                actionsHtml = '<div class="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 min-w-0 shrink-0">' +
+                    (jumpBtn ? '<div class="flex-1 sm:flex-initial min-w-0">' + jumpBtn + '</div>' : '') +
+                    (execControls || '') +
+                '</div>';
+            }
 
             html += '<div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0 max-w-full overflow-hidden">' +
                 '<div class="flex items-start gap-3 min-w-0 flex-1">' +
@@ -454,10 +462,7 @@ function renderEventsView() {
                         '<p class="text-xs text-slate-600 mt-0.5 break-keep leading-relaxed">' + escapeHtml(item.desc) + '</p>' +
                     '</div>' +
                 '</div>' +
-                '<div class="flex items-center gap-2 w-full sm:w-auto sm:justify-end shrink-0 min-w-0">' +
-                    jumpBtn +
-                    execControls +
-                '</div>' +
+                actionsHtml +
             '</div>';
         });
         container.innerHTML = html || '<div class="text-center py-6 text-slate-400 text-xs">등록된 식순이 없습니다.</div>';
@@ -489,23 +494,27 @@ function renderActivityView() {
 
         let kpiHtml =
             '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
-                '<div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-200/80 shadow-2xs">' +
-                    '<div class="flex items-center justify-between gap-2">' +
-                        '<span class="text-xs font-bold text-indigo-700">총 정단원</span>' +
-                        '<span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 text-[10px] font-bold">' + escapeHtml(ms.note) + '</span>' +
+                '<div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-white border border-indigo-200/80 shadow-2xs flex flex-col justify-between">' +
+                    '<div>' +
+                        '<div class="text-xs font-bold text-indigo-700 whitespace-nowrap">총 정단원</div>' +
+                        '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.total + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
+                        '<div class="text-[11px] text-slate-500 mt-0.5 font-medium">기존 ' + ms.existing + '명 + 신입 ' + ms.newcomers + '명</div>' +
                     '</div>' +
-                    '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.total + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
-                    '<div class="text-[11px] text-slate-500 mt-0.5">기존 ' + ms.existing + '명 + 신입 ' + ms.newcomers + '명</div>' +
+                    (ms.note ? '<div class="pt-2 mt-2 border-t border-indigo-100 text-[10.5px] text-indigo-600 leading-snug break-keep">' + escapeHtml(ms.note) + '</div>' : '') +
                 '</div>' +
-                '<div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200 shadow-2xs">' +
-                    '<span class="text-xs font-bold text-slate-600">기존단원</span>' +
-                    '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.existing + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
-                    '<div class="text-[11px] text-slate-500 mt-0.5">전체의 ' + Math.round((ms.existing / ms.total) * 100) + '% (1~20기)</div>' +
+                '<div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200 shadow-2xs flex flex-col justify-between">' +
+                    '<div>' +
+                        '<span class="text-xs font-bold text-slate-600 whitespace-nowrap">기존단원</span>' +
+                        '<div class="text-2xl sm:text-3xl font-black text-slate-900 mt-1.5 tabular-nums">' + ms.existing + '<span class="text-sm font-bold text-slate-500 ml-0.5">명</span></div>' +
+                        '<div class="text-[11px] text-slate-500 mt-0.5">전체의 ' + Math.round((ms.existing / ms.total) * 100) + '% (1~20기)</div>' +
+                    '</div>' +
                 '</div>' +
-                '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs">' +
-                    '<span class="text-xs font-bold text-emerald-700">신입단원 · 21기(신단)</span>' +
-                    '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>' +
-                    '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (무대 출연 정단원 15명)</div>' +
+                '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs flex flex-col justify-between">' +
+                    '<div>' +
+                        '<span class="text-xs font-bold text-emerald-700 whitespace-nowrap">신입단원 · 21기(신단)</span>' +
+                        '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>' +
+                        '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (무대 출연 정단원 15명)</div>' +
+                    '</div>' +
                 '</div>' +
             '</div>';
 
@@ -587,17 +596,21 @@ function renderActivityView() {
                             escapeHtml(report.generationHighlightBadge || "16~20기 및 21기(신단): 83명 (63%)") +
                         '</span>' +
                     '</div>' +
-                    '<div class="overflow-x-auto pb-1 max-w-full -mx-1 px-1">' +
-                        '<div class="min-w-[620px] h-[176px] flex items-end gap-1.5 pt-2 px-2.5 rounded-xl bg-white border border-slate-200/80">' +
-                            genBarsHtml +
+                    '<div class="w-full min-w-0 rounded-xl bg-white border border-slate-200/80 p-2.5 sm:p-3 shadow-2xs">' +
+                        '<div class="overflow-x-auto pb-1 max-w-full scrollbar-thin">' +
+                            '<div class="min-w-[540px] h-[172px] flex items-end gap-1 pt-2 px-1">' +
+                                genBarsHtml +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-100 sm:hidden">' +
+                            '<span>◀ 1기</span>' +
+                            '<span class="text-indigo-600 font-bold">← 좌우로 스크롤 →</span>' +
+                            '<span>21기(신단) ▶</span>' +
                         '</div>' +
                     '</div>' +
                     '<div class="flex items-center justify-end gap-3 text-xs text-slate-500 flex-wrap pt-1">' +
                         '<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (48명 · 37%)</span>' +
                         '<span class="inline-flex items-center gap-1.5 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 및 21기(신단) (83명 · 63%)</span>' +
-                    '</div>' +
-                    '<div class="pt-2.5 mt-0.5 border-t border-slate-200/70 text-xs text-slate-400 leading-relaxed tracking-normal">' +
-                        '<span>※ <strong>21기(신단)</strong>는 무대 출연 정단원 기준 15명 집계 (무대 미참여 5명 제외: 권태희, 최서윤, 김다예, 심억수, 전성광)</span>' +
                     '</div>' +
                 '</div>' +
             '</div>';
@@ -617,9 +630,9 @@ function renderActivityView() {
         let rosterGalleryHtml =
             '<div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">' +
                 '<div class="flex items-center justify-between gap-2 flex-wrap">' +
-                    '<div class="flex items-center gap-2">' +
-                        '<span class="text-sm font-black text-slate-900">📸 파트별 정단원 사진 명부 (8개 파트 · 131명)</span>' +
-                        '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200">클릭 시 확대</span>' +
+                    '<div class="flex items-center gap-2 min-w-0">' +
+                        '<span class="text-sm font-black text-slate-900 break-keep">📸 파트별 정단원 사진 명부 (8개 파트 · 131명)</span>' +
+                        '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap shrink-0">클릭 시 확대</span>' +
                     '</div>' +
                     '<span class="text-[11px] text-slate-400">각 파트 카드를 클릭하면 상세 사진 명부가 크게 열립니다</span>' +
                 '</div>' +
@@ -1093,9 +1106,12 @@ function renderActiveVotingView() {
             }
         } else {
             if (myVote) {
-                myVoteEl.innerHTML = '<span class="text-xs font-bold text-indigo-700">✓ 본인 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong>로 의결권을 행사하셨습니다.</span>';
+                myVoteEl.innerHTML = '<div class="flex items-center justify-between gap-2 flex-wrap">' +
+                    '<span class="text-xs font-bold text-indigo-700">✓ 본인 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong>로 의결권을 행사하셨습니다.</span>' +
+                    '<button type="button" onclick="cancelAgendaVote(\'' + escapeHtml(ag.id) + '\')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 border border-rose-300 font-extrabold text-[11px] transition cursor-pointer flex items-center gap-1 shadow-2xs">↩️ 투표 취소</button>' +
+                '</div>';
             } else {
-                myVoteEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">아직 본 안건에 투표하지 않으셨습니다. 아래 버튼을 눌러 투표하세요.</span>';
+                myVoteEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">아직 본 안건에 투표하지 않으셨습니다. 아래 버튼을 눌러 투표하세요. (선택한 항목을 다시 누르면 취소됩니다)</span>';
             }
         }
     }
@@ -1133,9 +1149,9 @@ function renderActiveVotingView() {
                     '<span>기권' + (isAbs ? ' (선택됨)' : '') + '</span>' +
                 '</button>' +
                 (myVote
-                    ? ('<button id="btnCancelAgendaVote" type="button" onclick="cancelAgendaVote(\'' + escapeHtml(ag.id) + '\')" class="col-span-3 min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 font-bold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5">' +
+                    ? ('<button id="btnCancelAgendaVote" type="button" onclick="cancelAgendaVote(\'' + escapeHtml(ag.id) + '\')" class="col-span-3 min-h-[46px] py-2.5 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 border-2 border-rose-200 font-extrabold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs">' +
                         '<span>↩️</span>' +
-                        '<span>투표 취소 (미투표로 되돌리기)</span>' +
+                        '<span>본인 투표 취소 (미투표 상태로 되돌리기)</span>' +
                     '</button>')
                     : '');
         }
@@ -1195,9 +1211,14 @@ function renderElectionView() {
                             '<span class="text-sm font-black text-amber-300">👑 단장 선거 총괄 제어 대시보드</span>' +
                             '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950">운영진 모드</span>' +
                         '</div>' +
-                        '<button type="button" onclick="openCandidateModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white shadow-sm transition flex items-center gap-1.5 self-start sm:self-auto cursor-pointer">' +
-                            '<span>+</span> 단장 후보자 등록' +
-                        '</button>' +
+                        '<div class="flex items-center gap-2 flex-wrap">' +
+                            '<button type="button" onclick="openCandidateModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer">' +
+                                '<span>+</span> 단장 후보자 등록' +
+                            '</button>' +
+                            '<button id="btnResetAllElectionVotesTop" type="button" onclick="resetElectionVotesOnly()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-rose-700 hover:bg-rose-600 active:bg-rose-800 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer" title="단장 선거의 모든 실시간 투표 기록을 0표로 초기화합니다">' +
+                                '<span>🗑️</span> 단장 투표 초기화 (0표 리셋)' +
+                            '</button>' +
+                        '</div>' +
                     '</div>' +
                     '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">' +
                         '<!-- 1) 선거 방식 전환 스위치 -->' +
@@ -1369,9 +1390,12 @@ function renderElectionView() {
                 }
             } else {
                 if (myVote) {
-                    statusEl.innerHTML = '<span class="text-xs font-bold text-purple-700">✓ 단장 선거 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong></span>';
+                    statusEl.innerHTML = '<div class="flex items-center justify-between gap-2 flex-wrap">' +
+                        '<span class="text-xs font-bold text-purple-700">✓ 단장 선거 투표 완료: <strong class="underline">' + (labelMap[myVote] || myVote) + '</strong></span>' +
+                        '<button type="button" onclick="cancelElectionVote()" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 border border-rose-300 font-extrabold text-[11px] transition cursor-pointer flex items-center gap-1 shadow-2xs">↩️ 투표 취소</button>' +
+                    '</div>';
                 } else {
-                    statusEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">아직 단장 선거에 투표하지 않으셨습니다. 아래 버튼을 눌러 투표하세요.</span>';
+                    statusEl.innerHTML = '<span class="text-xs font-semibold text-slate-500">아직 단장 선거에 투표하지 않으셨습니다. 아래 버튼을 눌러 투표하세요. (선택한 항목을 다시 누르면 취소됩니다)</span>';
                 }
             }
         }
@@ -1406,9 +1430,9 @@ function renderElectionView() {
                         '기권' + (isAbs ? ' (선택됨)' : '') +
                     '</button>' +
                     (myVote
-                        ? ('<button id="btnCancelElectionVoteSingle" type="button" onclick="cancelElectionVote()" class="col-span-3 min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 font-bold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5">' +
+                        ? ('<button id="btnCancelElectionVoteSingle" type="button" onclick="cancelElectionVote()" class="col-span-3 min-h-[46px] py-2.5 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 border-2 border-rose-200 font-extrabold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs">' +
                             '<span>↩️</span>' +
-                            '<span>투표 취소 (미투표로 되돌리기)</span>' +
+                            '<span>본인 투표 취소 (미투표 상태로 되돌리기)</span>' +
                         '</button>')
                         : '');
             }
@@ -1477,12 +1501,13 @@ function renderElectionView() {
                         '</div>';
                 } else if (myVote) {
                     multiFooter.innerHTML =
-                        '<div class="p-3 rounded-xl bg-purple-50 border border-purple-200 text-xs font-bold text-purple-800 flex items-center justify-between gap-2">' +
+                        '<div class="p-3 rounded-xl bg-purple-50 border border-purple-200 text-xs font-bold text-purple-800 flex items-center justify-between gap-2 flex-wrap">' +
                             '<span>✓ 단장 선거 투표 완료: <strong class="underline">' + escapeHtml(selectedCand ? selectedCand.name : myVote) + '</strong></span>' +
+                            '<button type="button" onclick="cancelElectionVote()" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 font-extrabold text-[11px] transition cursor-pointer flex items-center gap-1 shadow-2xs">↩️ 투표 취소</button>' +
                         '</div>' +
-                        '<button id="btnCancelElectionVoteMulti" type="button" onclick="cancelElectionVote()" class="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 border border-slate-300 font-bold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5">' +
+                        '<button id="btnCancelElectionVoteMulti" type="button" onclick="cancelElectionVote()" class="w-full min-h-[46px] py-2.5 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 border-2 border-rose-200 font-extrabold text-xs sm:text-sm transition cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs">' +
                             '<span>↩️</span>' +
-                            '<span>투표 취소 (미투표로 되돌리기)</span>' +
+                            '<span>본인 투표 취소 (미투표 상태로 되돌리기)</span>' +
                         '</button>';
                 } else {
                     multiFooter.innerHTML = '';

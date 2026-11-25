@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.52" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.53" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <!-- App Shell Layout: Always visible for seamless assembly data browsing -->
@@ -120,9 +120,9 @@
     <header id="mainHeader" class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-md">
         <div class="max-w-7xl mx-auto px-3 sm:px-6">
             <!-- Row 1: Responsive compact bar (fits 360px mobile & spacious PC) -->
-            <div class="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5 min-h-[44px] py-1.5 sm:py-0 sm:h-12 border-b border-slate-800/80 text-xs">
+            <div class="flex items-center justify-between gap-x-2 gap-y-1.5 min-h-[44px] py-1.5 sm:py-0 sm:h-12 border-b border-slate-800/80 text-xs w-full">
                 <!-- Left: Brand Icon + Title + Quorum Badge -->
-                <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink">
                     <div id="headerBrandHomeBtn" role="button" tabindex="0" onclick="switchMainTab('events')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); switchMainTab('events'); }" title="첫 페이지(2026 정기총회)로 이동" aria-label="2026 삼성한우리합창단 정기총회 첫 페이지로 이동" class="flex items-center gap-2 sm:gap-2.5 min-w-0 cursor-pointer hover:opacity-80 transition rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                         <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
                             ♫
@@ -141,17 +141,17 @@
                     </div>
                 </div>
 
-                <!-- Right: Admin Preview + User Badge + Logout -->
-                <div class="flex items-center gap-1 sm:gap-2 shrink-0 flex-wrap justify-end">
+                <!-- Right: Admin Preview + User Badge + Logout (Logout pinned to right edge) -->
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0 justify-end ml-auto">
                     <div id="headerAdminModeBadgeContainer" class="flex items-center gap-1 sm:gap-1.5"></div>
-                    <button id="btnHeaderLogin" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white transition text-xs font-bold cursor-pointer shadow-xs">
+                    <button id="btnHeaderLogin" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white transition text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap ml-auto sm:ml-0">
                         <span>🔐 로그인</span>
                     </button>
-                    <button id="btnHeaderVoter" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition text-[11px] sm:text-xs font-medium cursor-pointer shadow-xs" title="현재 로그인된 단원">
+                    <button id="btnHeaderVoter" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition text-[11px] sm:text-xs font-medium cursor-pointer shadow-xs shrink-0" title="현재 로그인된 단원">
                         <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 shrink-0"></span>
-                        <span id="headerVoterBadge" class="font-bold text-white truncate max-w-[100px] sm:max-w-none"></span>
+                        <span id="headerVoterBadge" class="font-bold text-white truncate max-w-[85px] sm:max-w-none"></span>
                     </button>
-                    <button id="btnHeaderLogout" type="button" onclick="logoutCurrentUser()" class="hidden items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-600 border border-slate-700 hover:border-rose-500 text-slate-300 hover:text-white transition text-[11px] sm:text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap">
+                    <button id="btnHeaderLogout" type="button" onclick="logoutCurrentUser()" class="hidden items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-600 border border-slate-700 hover:border-rose-500 text-slate-300 hover:text-white transition text-[11px] sm:text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap ml-auto shrink-0">
                         <span>로그아웃</span>
                     </button>
                 </div>
@@ -544,6 +544,27 @@
                     <!-- Dynamic admin header controls for annual events -->
                     <div id="annualEventsAdminHeaderControls" class="flex items-center gap-2"></div>
                 </div>
+
+                <!-- 2026 활동 회상 영상 플레이어 ("올해를 회상하며...") -->
+                <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 border border-indigo-900/60 shadow-md text-white space-y-3">
+                    <div class="flex items-center justify-between gap-2 flex-wrap">
+                        <div class="flex items-center gap-2 min-w-0">
+                            <span class="w-7 h-7 rounded-lg bg-indigo-600/30 text-indigo-400 flex items-center justify-center text-sm font-black border border-indigo-500/30 shrink-0">🎬</span>
+                            <div class="min-w-0">
+                                <h4 class="text-xs sm:text-sm font-extrabold text-white truncate">2026 한우리 활동 회상 영상</h4>
+                                <p class="text-[11px] text-slate-400 truncate">올해를 회상하며 — 2026년 정기연습, 연주회 및 주요 순간 기록</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 text-[10px] sm:text-[11px] font-bold shrink-0 whitespace-nowrap">🎥 전체 화면 재생 가능</span>
+                    </div>
+                    <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-black shadow-inner border border-slate-800">
+                        <video id="activityRetrospectiveVideo" controls preload="metadata" playsinline class="w-full h-full object-contain">
+                            <source src="assets/activity/2026_Hanuri_Choir_Final2.mp4" type="video/mp4">
+                            브라우저가 비디오 재생을 지원하지 않습니다.
+                        </video>
+                    </div>
+                </div>
+
                 <div id="annualEventsListContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
             </div>
 
@@ -1617,13 +1638,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.52"></script>
-    <script src="js/data-config.js?v=2026.52"></script>
-    <script src="js/firebase-config.js?v=2026.52"></script>
-    <script src="js/firebase-sync.js?v=2026.52"></script>
-    <script src="js/utils.js?v=2026.52"></script>
-    <script src="js/render.js?v=2026.52"></script>
-    <script src="js/handlers.js?v=2026.52"></script>
-    <script src="js/app.js?v=2026.52"></script>
+    <script src="js/data-members.js?v=2026.53"></script>
+    <script src="js/data-config.js?v=2026.53"></script>
+    <script src="js/firebase-config.js?v=2026.53"></script>
+    <script src="js/firebase-sync.js?v=2026.53"></script>
+    <script src="js/utils.js?v=2026.53"></script>
+    <script src="js/render.js?v=2026.53"></script>
+    <script src="js/handlers.js?v=2026.53"></script>
+    <script src="js/app.js?v=2026.53"></script>
 </body>
 </html>

@@ -524,6 +524,13 @@ function voteAgenda(choice) {
     }
     if (!ag.memberVotes) ag.memberVotes = {};
 
+    // Toggle cancellation if clicking the same choice again
+    const currentVote = ag.memberVotes[appState.currentVoterId];
+    if (currentVote === choice) {
+        cancelAgendaVote(ag.id);
+        return;
+    }
+
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
     const voterName = voter ? voter.name : "";
     ag.memberVotes[appState.currentVoterId] = choice;
@@ -681,6 +688,13 @@ function voteElectionSingle(choice) {
     if (!elec.singleVotes.memberVotes) elec.singleVotes.memberVotes = {};
     if (!elec.memberVotes) elec.memberVotes = {};
 
+    // Toggle cancellation if clicking the same choice again
+    const currentVote = elec.singleVotes.memberVotes[appState.currentVoterId];
+    if (currentVote === choice) {
+        cancelElectionVote();
+        return;
+    }
+
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
     const voterName = voter ? voter.name : "";
     elec.singleVotes.memberVotes[appState.currentVoterId] = choice;
@@ -710,6 +724,13 @@ function voteElectionMulti(candId) {
     }
     if (!elec.multiMemberVotes) elec.multiMemberVotes = {};
     if (!elec.memberVotes) elec.memberVotes = {};
+
+    // Toggle cancellation if clicking the same candidate again
+    const currentVote = elec.multiMemberVotes[appState.currentVoterId];
+    if (currentVote === candId) {
+        cancelElectionVote();
+        return;
+    }
 
     const voter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
     const voterName = voter ? voter.name : "";

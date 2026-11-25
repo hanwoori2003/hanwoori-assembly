@@ -185,7 +185,7 @@ const ACTIVITY_REPORT_DATA = {
         existing: 116,
         newcomers: 15,
         excludedNewcomers: 5,
-        note: "정단원 131명 (21기 무대 완주 15명 인정 / 미참여 5명 제외)"
+        note: "정단원 131명 (21기 무대연주 15명 진행) / 미참여 5명 제외"
     },
     partStats: [
         {
