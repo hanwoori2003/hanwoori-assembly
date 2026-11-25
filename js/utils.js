@@ -174,14 +174,37 @@ function loadStateFromStorage() {
                 let needsPersistMigration = !isCurrentKey;
                 const dynamicPassThreshold = getMajorityThreshold(appState.totalAttendees || canonicalTotal);
 
-                // Check if parsed agendas contains legacy mock agendas (e.g. 지휘자 임기)
-                const hasLegacyMockAgendas = Array.isArray(parsed.agendas) && parsed.agendas.some(function(ag) {
-                    return ag && ag.title && (ag.title.indexOf("지휘자 임기") !== -1 || ag.title.indexOf("대외활동 수익") !== -1 || ag.title.indexOf("제3-1호") !== -1 || (ag.id === "ag-2" && ag.afterText && (ag.afterText.indexOf("50%이상") !== -1 || ag.afterText.indexOf("최소 1시간 이상 참여") === -1)));
-                });
+                // Check if parsed agendas contains legacy mock agendas or needs migration to 4 official agendas
+                const hasLegacyMockAgendas = Array.isArray(parsed.agendas) && (
+                    parsed.agendas.length < 4 ||
+                    parsed.agendas.some(function(ag) {
+                        return ag && ag.title && (
+                            ag.title.indexOf("지휘자 임기") !== -1 ||
+                            ag.title.indexOf("대외활동 수익") !== -1 ||
+                            ag.title.indexOf("연습 출석") !== -1 ||
+                            ag.title.indexOf("제3-1호") !== -1
+                        );
+                    })
+                );
 
                 // Normalize agendas & strip legacy sample baseline votes / [가결] tags
                 if (hasLegacyMockAgendas || !Array.isArray(parsed.agendas) || parsed.agendas.length === 0) {
+                    const existingVotesByArticle = {};
+                    if (Array.isArray(parsed.agendas)) {
+                        parsed.agendas.forEach(function(ag) {
+                            const key = ag.targetArticle || ag.articleNo || ag.id;
+                            if (key && ag.memberVotes) {
+                                existingVotesByArticle[key] = ag.memberVotes;
+                            }
+                        });
+                    }
                     appState.agendas = JSON.parse(JSON.stringify(INITIAL_AGENDAS));
+                    appState.agendas.forEach(function(ag) {
+                        const key = ag.targetArticle || ag.articleNo || ag.id;
+                        if (existingVotesByArticle[key]) {
+                            ag.memberVotes = existingVotesByArticle[key];
+                        }
+                    });
                     needsPersistMigration = true;
                 } else if (Array.isArray(parsed.agendas) && parsed.agendas.length > 0) {
                     appState.agendas = parsed.agendas.map(function(ag, idx) {

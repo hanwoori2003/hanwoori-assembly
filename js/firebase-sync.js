@@ -341,7 +341,21 @@
             }
 
             // 안건 메타데이터 병합 (기존 또는 클라우드 캐시된 memberVotes 보존)
-            if (Array.isArray(data.agendasMeta) && data.agendasMeta.length > 0) {
+            var remoteAgendasMeta = Array.isArray(data.agendasMeta) ? data.agendasMeta : [];
+            var isRemoteAgendasStale = remoteAgendasMeta.length < (typeof INITIAL_AGENDAS !== "undefined" ? INITIAL_AGENDAS.length : 4) ||
+                remoteAgendasMeta.some(function(ag) {
+                    return ag && ag.title && (
+                        ag.title.indexOf("지휘자 임기") !== -1 ||
+                        ag.title.indexOf("대외활동 수익") !== -1 ||
+                        ag.title.indexOf("연습 출석") !== -1 ||
+                        ag.title.indexOf("제3-1호") !== -1
+                    );
+                });
+            if (isRemoteAgendasStale && typeof INITIAL_AGENDAS !== "undefined") {
+                remoteAgendasMeta = INITIAL_AGENDAS;
+            }
+
+            if (remoteAgendasMeta.length > 0) {
                 var existingVotesByAgenda = {};
                 (s.agendas || []).forEach(function(ag) {
                     if (ag && ag.id) {
@@ -349,7 +363,7 @@
                     }
                 });
 
-                s.agendas = data.agendasMeta.map(function(meta, idx) {
+                s.agendas = remoteAgendasMeta.map(function(meta, idx) {
                     var agId = meta.id || ("ag-" + (idx + 1));
                     var locked = Boolean(meta.isLocked || meta.locked || meta.status === "closed" || meta.status === "locked");
                     var mergedVotes = Object.assign(
