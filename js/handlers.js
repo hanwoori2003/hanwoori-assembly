@@ -613,9 +613,10 @@ function toggleAllAgendasLock(shouldLock) {
     });
     saveStateToStorage();
     renderAll();
+    const agendaCount = (appState.agendas && appState.agendas.length) ? appState.agendas.length : 6;
     showToast(target
-        ? "🔒 12개 모든 단칙 개정안 투표가 공식 마감(잠금)되었습니다."
-        : "🔓 12개 모든 단칙 개정안 투표가 재개되었습니다."
+        ? "🔒 " + agendaCount + "개 모든 단칙 개정안 투표가 공식 마감(잠금)되었습니다."
+        : "🔓 " + agendaCount + "개 모든 단칙 개정안 투표가 재개되었습니다."
     );
 }
 

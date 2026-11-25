@@ -443,13 +443,13 @@ function renderEventsView() {
                 : '';
 
             const jumpBtn = safeTargetTab
-                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="w-full sm:w-auto block px-3.5 py-2 sm:py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center truncate shadow-2xs">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
+                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center whitespace-nowrap shadow-2xs">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
                 : '';
 
             let actionsHtml = "";
             if (jumpBtn || execControls) {
-                actionsHtml = '<div class="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 min-w-0 shrink-0">' +
-                    (jumpBtn ? '<div class="flex-1 sm:flex-initial min-w-0">' + jumpBtn + '</div>' : '') +
+                actionsHtml = '<div class="flex items-center justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 min-w-0">' +
+                    jumpBtn +
                     (execControls || '') +
                 '</div>';
             }
@@ -629,10 +629,10 @@ function renderActivityView() {
 
         let rosterGalleryHtml =
             '<div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">' +
-                '<div class="flex items-center justify-between gap-2 flex-wrap">' +
-                    '<div class="flex items-center gap-2 min-w-0">' +
-                        '<span class="text-sm font-black text-slate-900 break-keep">📸 파트별 정단원 사진 명부 (8개 파트 · 131명)</span>' +
-                        '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap shrink-0">클릭 시 확대</span>' +
+                '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">' +
+                    '<div class="flex items-center justify-between sm:justify-start gap-2">' +
+                        '<h4 class="text-sm font-black text-slate-900 break-keep">📸 파트별 정단원 사진 명부 <span class="text-xs font-bold text-slate-500">(8개 파트 · 131명)</span></h4>' +
+                        '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap shrink-0">클릭 시 확대</span>' +
                     '</div>' +
                     '<span class="text-[11px] text-slate-400">각 파트 카드를 클릭하면 상세 사진 명부가 크게 열립니다</span>' +
                 '</div>' +

@@ -74,6 +74,14 @@ function migrateAssemblyScheduleItems(scheduleList) {
             copy.targetTab = nextTarget;
             changed = true;
         }
+        if (copy.id === "sch-1" && (String(copy.desc || "").indexOf("136명") !== -1 || String(copy.desc || "").indexOf("164명") !== -1)) {
+            copy.desc = "재적 정단원 131명 기준 성원 확인 (개회·의결정족수 2/3 기준 88명/88표↑, 현장+위임)";
+            changed = true;
+        }
+        if (copy.id === "sch-5" && (String(copy.desc || "").indexOf("12개") !== -1 || String(copy.desc || "").indexOf("지휘자 임기") !== -1 || String(copy.desc || "").indexOf("대외수익") !== -1)) {
+            copy.desc = "운영진 회비 감면(제13조 5항), 연습 출석 인정(제22조 2항), 정단원 자격 및 기수(제4조 1항), 단장 피선거권 명칭(제11조 3항), 환불 규정 준단원(제28조 3항) 등 단칙 개정안 총 6개 안건 전자투표 및 의결";
+            changed = true;
+        }
         return copy;
     });
     return { items: migrated, changed: changed };
@@ -176,15 +184,21 @@ function loadStateFromStorage() {
 
                 // Check if parsed agendas contains legacy mock agendas or needs migration to 6 official agendas
                 const hasLegacyMockAgendas = Array.isArray(parsed.agendas) && (
-                    parsed.agendas.length < 6 ||
+                    parsed.agendas.length !== 6 ||
                     parsed.agendas.some(function(ag) {
                         return ag && ag.title && (
                             ag.title.indexOf("지휘자 임기") !== -1 ||
                             ag.title.indexOf("대외활동 수익") !== -1 ||
                             ag.title.indexOf("제3-1호") !== -1 ||
-                            ag.title.indexOf("보궐선출") !== -1
+                            ag.title.indexOf("보궐선출") !== -1 ||
+                            ag.title.indexOf("대외수익") !== -1 ||
+                            ag.title.indexOf("12개") !== -1
                         );
-                    })
+                    }) ||
+                    !parsed.agendas.some(function(ag) { return ag && (ag.id === "ag-3" || ag.no === 3) && String(ag.targetArticle || ag.title || "").indexOf("4조") !== -1; }) ||
+                    !parsed.agendas.some(function(ag) { return ag && (ag.id === "ag-4" || ag.no === 4) && String(ag.targetArticle || ag.title || "").indexOf("11조") !== -1; }) ||
+                    !parsed.agendas.some(function(ag) { return ag && (ag.id === "ag-5" || ag.no === 5) && String(ag.targetArticle || ag.title || "").indexOf("13조") !== -1; }) ||
+                    !parsed.agendas.some(function(ag) { return ag && (ag.id === "ag-6" || ag.no === 6) && String(ag.targetArticle || ag.title || "").indexOf("28조") !== -1; })
                 );
 
                 // Normalize agendas & strip legacy sample baseline votes / [가결] tags
@@ -319,7 +333,7 @@ function loadStateFromStorage() {
                     needsPersistMigration = true;
                 }
                 if (Array.isArray(parsed.assemblySchedule) && parsed.assemblySchedule.length > 0) {
-                    const legacyPattern = /(2025|164명|김형택|황태희|이효정|박다정|윤상목|이창욱|한석범|sectionConcertReview|활동 보고.*강평)/;
+                    const legacyPattern = /(2025|164명|136명|91명|12개|지휘자\s*임기|대외수익|김형택|황태희|이효정|박다정|윤상목|이창욱|한석범|sectionConcertReview|활동 보고.*강평)/;
                     const hasLegacySchedule = !isCurrentKey || parsed.assemblySchedule.some(function(item) {
                         if (!item || typeof item !== "object") return true;
                         return legacyPattern.test(String(item.title || "") + " " + String(item.desc || "") + " " + String(item.targetTab || ""));
