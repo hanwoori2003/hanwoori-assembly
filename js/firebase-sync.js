@@ -304,7 +304,11 @@
                 if (!s.attendanceSurvey.votes) s.attendanceSurvey.votes = {};
             }
             if (data.concertSurvey && typeof data.concertSurvey === "object") {
-                s.concertSurvey = deepClone(data.concertSurvey);
+                if (data.concertSurvey.basicInfo && data.concertSurvey.recruitmentAndActivity) {
+                    s.concertSurvey = deepClone(data.concertSurvey);
+                } else if (typeof initialAppState !== "undefined" && initialAppState.concertSurvey) {
+                    s.concertSurvey = deepClone(initialAppState.concertSurvey);
+                }
             }
             if (Array.isArray(data.bylaws)) {
                 s.bylaws = deepClone(data.bylaws);

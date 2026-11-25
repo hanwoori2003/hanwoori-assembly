@@ -378,7 +378,11 @@ function loadStateFromStorage() {
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
                     } catch (e) {}
                 }
-                if (parsed.concertSurvey) appState.concertSurvey = parsed.concertSurvey;
+                if (parsed.concertSurvey && parsed.concertSurvey.basicInfo && parsed.concertSurvey.recruitmentAndActivity) {
+                    appState.concertSurvey = parsed.concertSurvey;
+                } else if (typeof initialAppState !== "undefined" && initialAppState.concertSurvey) {
+                    appState.concertSurvey = JSON.parse(JSON.stringify(initialAppState.concertSurvey));
+                }
                 if (parsed.attendanceSurvey && typeof parsed.attendanceSurvey === 'object') {
                     appState.attendanceSurvey = parsed.attendanceSurvey;
                     if (!appState.attendanceSurvey.votes) appState.attendanceSurvey.votes = {};

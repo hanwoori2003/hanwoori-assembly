@@ -725,10 +725,67 @@ function renderActivityView() {
     }
 }
 
+window.toggleConcertComments = function(id) {
+    const el = document.getElementById(id);
+    const txt = document.getElementById('toggle-text-' + id);
+    if (!el) return;
+    if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        if (txt) txt.textContent = '접기 ▲';
+    } else {
+        el.classList.add('hidden');
+        if (txt) txt.textContent = '펼쳐보기 ▼';
+    }
+};
+
+function renderCommentAccordion(id, title, comments, icon, badgeColor, bgTint, borderTint, defaultExpanded) {
+    const list = Array.isArray(comments) ? comments : [];
+    const cleanList = list.filter(function(c) {
+        const t = String(c || "").trim();
+        return t && t !== "-" && t !== "없음" && t !== "없습니다" && t !== "없습니다.";
+    });
+    if (!cleanList.length) return "";
+
+    let itemsHtml = "";
+    cleanList.forEach(function(item, idx) {
+        itemsHtml += 
+            '<div class="p-3 rounded-xl bg-white/95 border ' + borderTint + ' text-xs text-slate-700 leading-relaxed shadow-2xs break-keep">' +
+                '<div class="flex items-start gap-2">' +
+                    '<span class="text-slate-400 font-mono text-[10px] shrink-0 mt-0.5">#' + (idx + 1) + '</span>' +
+                    '<div class="flex-1 whitespace-pre-line">' + escapeHtml(item) + '</div>' +
+                '</div>' +
+            '</div>';
+    });
+
+    const isExp = Boolean(defaultExpanded);
+    return '<div class="mt-3 rounded-2xl ' + bgTint + ' border ' + borderTint + ' p-3.5 sm:p-4 space-y-3">' +
+        '<div class="flex items-center justify-between cursor-pointer select-none" onclick="toggleConcertComments(\'' + id + '\')">' +
+            '<div class="flex items-center gap-2 flex-wrap">' +
+                '<span class="text-base shrink-0">' + icon + '</span>' +
+                '<h4 class="text-xs sm:text-sm font-extrabold text-slate-900">' + escapeHtml(title) + '</h4>' +
+                '<span class="px-2 py-0.5 rounded-full text-[10px] font-black ' + badgeColor + '">' + cleanList.length + '개 단원 의견</span>' +
+            '</div>' +
+            '<button type="button" class="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer shrink-0">' +
+                '<span id="toggle-text-' + id + '">' + (isExp ? '접기 ▲' : '펼쳐보기 ▼') + '</span>' +
+            '</button>' +
+        '</div>' +
+        '<div id="' + id + '" class="space-y-2 max-h-72 overflow-y-auto pr-1 ' + (isExp ? '' : 'hidden') + '">' +
+            itemsHtml +
+        '</div>' +
+    '</div>';
+}
+
 function renderConcertFeedbackView() {
-    const survey = appState.concertSurvey;
+    let survey = appState.concertSurvey;
+    if (!survey || !survey.basicInfo) {
+        if (typeof initialAppState !== "undefined" && initialAppState.concertSurvey) {
+            survey = JSON.parse(JSON.stringify(initialAppState.concertSurvey));
+            appState.concertSurvey = survey;
+        }
+    }
     if (!survey) return;
     const isExec = isCurrentUserExecutive();
+    const commentsData = (typeof CONCERT_SURVEY_COMMENTS !== "undefined") ? CONCERT_SURVEY_COMMENTS : {};
 
     // 1. Admin Actions
     const concertAdminEl = document.getElementById("concertAdminActions");
@@ -880,7 +937,7 @@ function renderConcertFeedbackView() {
     });
     html +=     '</div>' +
                 '<div class="space-y-2 pt-2">' +
-                    '<h4 class="text-xs font-extrabold text-slate-700">단원 코멘트</h4>';
+                    '<h4 class="text-xs font-extrabold text-slate-700">단원 코멘트 요약</h4>';
     (rAct.comments || []).forEach(function(c) {
         html += '<div class="p-3 rounded-xl bg-purple-50/50 border border-purple-100 text-xs text-slate-700 flex gap-2">' +
             '<span class="text-purple-600 font-bold shrink-0">💬</span>' +
@@ -889,8 +946,13 @@ function renderConcertFeedbackView() {
     });
     html +=     '</div>' +
             '</div>' +
-        '</div>' +
-    '</div>';
+        '</div>';
+
+    const s2Comm = commentsData.recruitmentAndActivity || {};
+    html += renderCommentAccordion('comm-sec2-good', '합창단 활동 전반 - 좋았던 점', s2Comm.generalGood || [], '💚', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
+    html += renderCommentAccordion('comm-sec2-imp', '합창단 활동 전반 - 아쉬운 점 및 건의사항', s2Comm.generalImprovement || [], '💡', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += renderCommentAccordion('comm-sec2-social', '친목 활동(소풍/뒤풀이) 및 신단·정단 모집 단원 의견', s2Comm.socialAndRecruit || [], '👥', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', false);
+    html += '</div>';
 
     // ==========================================
     // SECTION 3: 정기 연습 및 캠프 만족도
@@ -937,8 +999,12 @@ function renderConcertFeedbackView() {
     });
     html +=     '</ul>' +
             '</div>' +
-        '</div>' +
-    '</div>';
+        '</div>';
+
+    const s3Comm = commentsData.practiceAndCamp || {};
+    html += renderCommentAccordion('comm-sec3-camp', '하계 음악캠프 만족도 단원 의견', s3Comm.camp || [], '🏕️', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
+    html += renderCommentAccordion('comm-sec3-prac', '정기·추가 연습 및 보조도구(영상/음원/노트) 단원 의견', s3Comm.practice || [], '🎼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', false);
+    html += '</div>';
 
     // ==========================================
     // SECTION 4: 제21회 정기 연주회 공연 만족도
@@ -995,8 +1061,17 @@ function renderConcertFeedbackView() {
     });
     html +=     '</div>' +
             '</div>' +
-        '</div>' +
-    '</div>';
+        '</div>';
+
+    const s4Comm = commentsData.concertPerformance || {};
+    html += renderCommentAccordion('comm-sec4-good', '제21회 정기연주회 공연 - 좋았던 점', s4Comm.concertGood || [], '🎉', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += renderCommentAccordion('comm-sec4-imp', '제21회 정기연주회 공연 - 아쉬운 점 및 건의사항', s4Comm.concertImprovement || [], '💡', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
+    html += renderCommentAccordion('comm-sec4-prog', '연주 프로그램 및 선호 연주곡 단원 의견', s4Comm.programAndGeneral || [], '🎵', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', false);
+    html += renderCommentAccordion('comm-sec4-hall', '공연장(광운대 동해문화예술관) 시설 및 무대 환경 의견', s4Comm.hall || [], '🏛️', 'bg-slate-200 text-slate-800', 'bg-slate-50', 'border-slate-200', false);
+    html += renderCommentAccordion('comm-sec4-choreo', '섭외 안무가 관련 단원 평가 의견', s4Comm.choreographer || [], '💃', 'bg-pink-100 text-pink-800', 'bg-pink-50/50', 'border-pink-200', false);
+    html += renderCommentAccordion('comm-sec4-orch', '협연 오케스트라 & 라퓨즈 플레이어즈 의견', s4Comm.orchestra || [], '🎻', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', false);
+    html += renderCommentAccordion('comm-sec4-aud', '초대 관객 호응 & 대외 홍보물 단원 의견', s4Comm.audienceAndPromo || [], '📣', 'bg-violet-100 text-violet-800', 'bg-violet-50/50', 'border-violet-200', false);
+    html += '</div>';
 
     // ==========================================
     // SECTION 5: 정기 연주회 복장 의견 (Hot Topic)
@@ -1052,7 +1127,11 @@ function renderConcertFeedbackView() {
             '<span class="break-keep">' + escapeHtml(cm) + '</span>' +
         '</div>';
     });
-    html += '</div></div>';
+    html += '</div>';
+
+    const s5Comm = commentsData.costumeOpinions || {};
+    html += renderCommentAccordion('comm-sec5-cost', '정기연주회 단복 및 복장 전환 관련 단원 의견 전수', s5Comm.costume || [], '👔', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
+    html += '</div>';
 
     // ==========================================
     // SECTION 6: 2027년 기대 연주 활동
@@ -1113,8 +1192,12 @@ function renderConcertFeedbackView() {
                 '<span class="font-extrabold text-indigo-900">선호 연주곡 및 희망 장르:</span>' +
                 '<p class="text-slate-700 mt-1 leading-relaxed">' + escapeHtml(exp27.genres || '한국 서정가곡, 리드미컬한 합창곡, 정통 클래식 마스터피스, 영화 OST 및 대중가요 편곡') + '</p>' +
             '</div>' +
-        '</div>' +
-    '</div>';
+        '</div>';
+
+    const s6Comm = commentsData.expectations2027Detail || {};
+    html += renderCommentAccordion('comm-sec6-venue', '2027 단원 선호 연주 장소 단원 의견 전수', s6Comm.venues || [], '🏛️', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', true);
+    html += renderCommentAccordion('comm-sec6-song', '2027 희망 연주곡 및 활동 제안 단원 의견 전수', s6Comm.songsAndActivities || [], '🎼', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
+    html += '</div>';
 
     // ==========================================
     // SECTION 7: 리더십 평가 및 2027년 활동 희망
@@ -1172,8 +1255,14 @@ function renderConcertFeedbackView() {
         '<div class="p-4 rounded-2xl bg-teal-50/50 border border-teal-100 text-xs text-slate-700 leading-relaxed">' +
             '❤️ <span class="font-bold text-teal-900">단원 총평 감사 메시지:</span> ' +
             escapeHtml(ldr27.execFeedback || '한 해 동안 헌신적으로 봉사해준 이창욱 단장님과 운영진, 파트장님들의 노고에 깊이 감사드립니다. 차기 최경욱 예비단장님께도 큰 기대를 보냅니다.') +
-        '</div>' +
-    '</div>';
+        '</div>';
+
+    const s7Comm = commentsData.leadershipAndNextYear || {};
+    html += renderCommentAccordion('comm-sec7-cond', '지휘자 선생님께 드리는 감사와 제언', s7Comm.conductor || [], '🎶', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
+    html += renderCommentAccordion('comm-sec7-acc', '반주자 선생님께 드리는 감사와 제언', s7Comm.accompanist || [], '🎹', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', true);
+    html += renderCommentAccordion('comm-sec7-exec', '2026 운영진 평가 (잘한 점, 아쉬운 점, 감사 인사)', s7Comm.executive || [], '💼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', true);
+    html += renderCommentAccordion('comm-sec7-free', '최경욱 차기 예비단장님 응원 & 한우리 추가 자유 의견', s7Comm.freeAndCheer || [], '💌', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += '</div>';
 
     secCont.innerHTML = html;
 }
