@@ -174,35 +174,33 @@ function loadStateFromStorage() {
                 let needsPersistMigration = !isCurrentKey;
                 const dynamicPassThreshold = getMajorityThreshold(appState.totalAttendees || canonicalTotal);
 
-                // Check if parsed agendas contains legacy mock agendas or needs migration to 4 official agendas
+                // Check if parsed agendas contains legacy mock agendas or needs migration to 6 official agendas
                 const hasLegacyMockAgendas = Array.isArray(parsed.agendas) && (
-                    parsed.agendas.length < 4 ||
+                    parsed.agendas.length < 6 ||
                     parsed.agendas.some(function(ag) {
                         return ag && ag.title && (
                             ag.title.indexOf("지휘자 임기") !== -1 ||
                             ag.title.indexOf("대외활동 수익") !== -1 ||
-                            ag.title.indexOf("연습 출석") !== -1 ||
-                            ag.title.indexOf("제3-1호") !== -1
+                            ag.title.indexOf("제3-1호") !== -1 ||
+                            ag.title.indexOf("보궐선출") !== -1
                         );
                     })
                 );
 
                 // Normalize agendas & strip legacy sample baseline votes / [가결] tags
                 if (hasLegacyMockAgendas || !Array.isArray(parsed.agendas) || parsed.agendas.length === 0) {
-                    const existingVotesByArticle = {};
+                    const existingVotesById = {};
                     if (Array.isArray(parsed.agendas)) {
                         parsed.agendas.forEach(function(ag) {
-                            const key = ag.targetArticle || ag.articleNo || ag.id;
-                            if (key && ag.memberVotes) {
-                                existingVotesByArticle[key] = ag.memberVotes;
+                            if (ag && ag.id && ag.memberVotes) {
+                                existingVotesById[ag.id] = ag.memberVotes;
                             }
                         });
                     }
                     appState.agendas = JSON.parse(JSON.stringify(INITIAL_AGENDAS));
                     appState.agendas.forEach(function(ag) {
-                        const key = ag.targetArticle || ag.articleNo || ag.id;
-                        if (existingVotesByArticle[key]) {
-                            ag.memberVotes = existingVotesByArticle[key];
+                        if (existingVotesById[ag.id]) {
+                            ag.memberVotes = existingVotesById[ag.id];
                         }
                     });
                     needsPersistMigration = true;

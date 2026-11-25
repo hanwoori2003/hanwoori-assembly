@@ -342,13 +342,13 @@
 
             // 안건 메타데이터 병합 (기존 또는 클라우드 캐시된 memberVotes 보존)
             var remoteAgendasMeta = Array.isArray(data.agendasMeta) ? data.agendasMeta : [];
-            var isRemoteAgendasStale = remoteAgendasMeta.length < (typeof INITIAL_AGENDAS !== "undefined" ? INITIAL_AGENDAS.length : 4) ||
+            var isRemoteAgendasStale = remoteAgendasMeta.length < (typeof INITIAL_AGENDAS !== "undefined" ? INITIAL_AGENDAS.length : 6) ||
                 remoteAgendasMeta.some(function(ag) {
                     return ag && ag.title && (
                         ag.title.indexOf("지휘자 임기") !== -1 ||
                         ag.title.indexOf("대외활동 수익") !== -1 ||
-                        ag.title.indexOf("연습 출석") !== -1 ||
-                        ag.title.indexOf("제3-1호") !== -1
+                        ag.title.indexOf("제3-1호") !== -1 ||
+                        ag.title.indexOf("보궐선출") !== -1
                     );
                 });
             if (isRemoteAgendasStale && typeof INITIAL_AGENDAS !== "undefined") {
