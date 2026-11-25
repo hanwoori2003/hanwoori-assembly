@@ -143,6 +143,9 @@
                 title: c.title || "",
                 photo: c.photo || "assets/cand_1.jpg",
                 baseVotes: 0,
+                recommendation: c.recommendation || "",
+                manifestoTitle: c.manifestoTitle || "",
+                manifesto: c.manifesto || "",
                 pledge: c.pledge || "",
                 career: c.career || ""
             };
@@ -319,6 +322,10 @@
                     if (c && typeof c === "object") c.baseVotes = 0;
                     return c;
                 });
+                if (s.election.candidates.length > 0 && s.election.candidates[0].name === "이창욱") {
+                    var defaultCand1 = (typeof getDefaultState === "function") ? getDefaultState().election.candidates[0] : null;
+                    if (defaultCand1) s.election.candidates[0] = deepClone(defaultCand1);
+                }
             }
             if (!s.election.singleVotes) {
                 s.election.singleVotes = { approve: 0, reject: 0, abstain: 0, memberVotes: {} };

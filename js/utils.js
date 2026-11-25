@@ -268,6 +268,14 @@ function loadStateFromStorage() {
                         needsPersistMigration = true;
                     }
                     if (Array.isArray(appState.election.candidates)) {
+                        // Always keep the 2027 official candidate (최경욱) up-to-date with official pledge, recommendation, manifesto
+                        const defaultCand1 = (typeof getDefaultState === "function") ? getDefaultState().election.candidates[0] : null;
+                        if (defaultCand1 && appState.election.candidates.length > 0) {
+                            if (appState.election.candidates[0].name === "이창욱" || !appState.election.candidates[0].manifesto || appState.election.candidates[0].name === "최경욱") {
+                                appState.election.candidates[0] = JSON.parse(JSON.stringify(defaultCand1));
+                                needsPersistMigration = true;
+                            }
+                        }
                         appState.election.candidates.forEach(function(c) {
                             if (c && c.baseVotes) {
                                 c.baseVotes = 0;

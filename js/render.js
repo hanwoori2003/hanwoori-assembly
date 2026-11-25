@@ -1254,6 +1254,29 @@ function renderElectionView() {
             const imgEl = document.getElementById("singleCandPhoto");
             if (imgEl && cand.photo) imgEl.src = cand.photo;
 
+            // Render Recommendation (추천인 추천사)
+            const recomEl = document.getElementById("singleCandRecommendation");
+            if (recomEl) {
+                const recomText = cand.recommendation || "타 합창단 단장을 역임하신 경험이 있으며, 본 합창단에서도 부단장으로 활동하시며 리더십과 운영 역량을 보여주셨습니다. 합창단에 대한 애정과 책임감이 크고, 풍부한 경험을 바탕으로 우리 합창단을 안정적으로 이끌어 가실 적임자라고 생각합니다.";
+                recomEl.textContent = "“" + recomText.replace(/^[“"\s]+|[”"\s]+$/g, "") + "”";
+            }
+
+            // Render Manifesto (단장 후보 출마사)
+            const mTitleEl = document.getElementById("singleCandManifestoTitle");
+            if (mTitleEl && cand.manifestoTitle) {
+                mTitleEl.innerHTML = '<span class="text-indigo-600">“</span>' + escapeHtml(cand.manifestoTitle) + '<span class="text-indigo-600">”</span>';
+            }
+            const mBodyEl = document.getElementById("singleCandManifestoBody");
+            if (mBodyEl && cand.manifesto) {
+                const paras = cand.manifesto.split(/\n\s*\n/).map(function(p) { return p.trim(); }).filter(Boolean);
+                mBodyEl.innerHTML = paras.map(function(p, idx) {
+                    const isLast = (idx === paras.length - 1);
+                    return '<p class="' + (isLast ? 'font-semibold text-slate-800 pt-1' : 'leading-relaxed') + '">' +
+                        escapeHtml(p).replace(/\n/g, '<br/>') +
+                    '</p>';
+                }).join('');
+            }
+
             // Render Pledges as cleanly separated cards
             const pledgeCont = document.getElementById("singleCandPledgeContainer");
             if (pledgeCont) {
@@ -1268,9 +1291,10 @@ function renderElectionView() {
                 }
                 if (pledgeItems.length === 0) {
                     pledgeItems = [
-                        "‘메리고잉 한우리’를 주제로 기수·파트·지역을 아우르는 열린 소통 및 소모임 활성화",
-                        "지휘자 박지훈 선생님과 함께하는 밀도 높은 정기연습 및 파트별 발성 클리닉 운영",
-                        "대외활동 수익의 투명한 재정 귀속(제26조·제27조)과 단원 복지·역량 강화 워크샵 확대"
+                        "1. '음악의 본질'에 충실한 한우리: 단원 개개인이 한 단계 도약하고 음악적으로 성장하는 튼튼한 토대 마련",
+                        "2. '우리는 왜 노래하는가': 정기연주회 커튼콜의 벅찬 감동과 진정한 성취감을 나누는 치열한 고민",
+                        "3. 무대와 교류의 확장: 단원들의 꿈과 끼를 펼칠 다양한 무대 및 대외 교류 추진으로 음악적 스펙트럼 확대",
+                        "4. 소통과 경청의 동행: 단원·운영진과 손잡고 따끔한 비판도 자양분 삼아 두 발로 정직하게 뛰는 리더십"
                     ];
                 }
                 pledgeCont.innerHTML = pledgeItems.map(function(item, idx) {
@@ -1294,10 +1318,11 @@ function renderElectionView() {
                 }
                 if (careerItems.length === 0) {
                     careerItems = [
-                        "삼성한우리합창단 17기 테너(T2) 입단 및 정단원 활동",
-                        "제18회 · 제19회 · 제20회(여의도 KBS홀 베토벤 합창교향곡) 정기연주회 연속 출연 (단칙 제11조 제3항 피선거권 충족)",
-                        "삼성한우리합창단 운영진 역임 및 파트 화합·연습 지원 주도",
-                        "2026 메리고잉 한우리 18인 운영진 조각 및 지휘자 박지훈 선생님 초빙 추진"
+                        "2018년 삼성한우리합창단 15기 베이스(B1) 입단 및 정단원 활동",
+                        "정기연주회 총 7회 출연 (단칙 제11조 제3항 피선거권 요건 충족)",
+                        "2020년 삼성한우리합창단 부단장 역임 (운영진 리더십 역량 검증)",
+                        "타 합창단 단장 역임 (풍부한 합창단 운영 및 통솔 경험 보유)",
+                        "2027년 삼성한우리합창단 신임 단장 단독 입후보"
                     ];
                 }
                 careerCont.innerHTML = careerItems.map(function(item) {
@@ -1475,7 +1500,7 @@ function renderWinnerView() {
     const nameEl = document.getElementById("winnerCandidateName");
     if (nameEl) nameEl.textContent = winner.name;
     const titleEl = document.getElementById("winnerCandidateTitle");
-    if (titleEl) titleEl.textContent = "2026 삼성한우리합창단 신임 단장 (" + winner.gen + " · " + winner.part + ")";
+    if (titleEl) titleEl.textContent = "2027 삼성한우리합창단 신임 단장 (" + winner.gen + " · " + winner.part + ")";
     const votesEl = document.getElementById("winnerVoteSummary");
     if (votesEl) {
         if (tallies.mode === "single") {
