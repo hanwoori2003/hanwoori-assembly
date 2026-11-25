@@ -354,8 +354,17 @@ function loadStateFromStorage() {
                 appState.winnerPagePublic = Boolean(parsed.winnerPagePublic);
                 const defaultSettle = (typeof getDefaultState === "function") ? getDefaultState().settlement : null;
                 if (parsed.settlement) {
-                    // Check if settlement has outdated 2025 legacy values (109,910,000 / 89,022,651 / 20,887,349)
-                    if (parsed.settlement.totalRevenue === 109910000 || parsed.settlement.balance === 20887349 || !parsed.settlement.concertExpense) {
+                    const isLegacySettlement = parsed.settlement.totalRevenue === 109910000 ||
+                        parsed.settlement.balance === 20887349 ||
+                        !parsed.settlement.concertExpense ||
+                        (Array.isArray(parsed.settlement.revenueItems) && parsed.settlement.revenueItems.some(function(it) {
+                            return it && String(it.name || "").indexOf("티켓 판매") !== -1;
+                        })) ||
+                        (Array.isArray(parsed.settlement.expenseItems) && parsed.settlement.expenseItems.some(function(it) {
+                            return it && (String(it.name || "").indexOf("사당홀") !== -1 || String(it.name || "").indexOf("제20회") !== -1);
+                        }));
+
+                    if (isLegacySettlement) {
                         if (defaultSettle) {
                             appState.settlement = JSON.parse(JSON.stringify(defaultSettle));
                             needsPersistMigration = true;
@@ -363,14 +372,6 @@ function loadStateFromStorage() {
                             appState.settlement = parsed.settlement;
                         }
                     } else {
-                        if (Array.isArray(parsed.settlement.revenueItems)) {
-                            parsed.settlement.revenueItems.forEach(function(ri) {
-                                if (ri && typeof ri.name === "string" && ri.name.indexOf("2025") !== -1) {
-                                    ri.name = ri.name.replace(/2025/g, "2026");
-                                    needsPersistMigration = true;
-                                }
-                            });
-                        }
                         appState.settlement = parsed.settlement;
                     }
                 } else if (defaultSettle) {

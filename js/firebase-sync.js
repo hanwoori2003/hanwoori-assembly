@@ -294,7 +294,20 @@
                 }
             }
             if (data.settlement && typeof data.settlement === "object") {
-                s.settlement = deepClone(data.settlement);
+                // If cloud data still has legacy 2025/mock values, enforce official 2026 audit data
+                if (data.settlement.totalRevenue === 109910000 || data.settlement.balance === 20887349 || !data.settlement.concertExpense) {
+                    if (typeof global.getDefaultState === "function") {
+                        s.settlement = deepClone(global.getDefaultState().settlement);
+                        // Trigger immediate cloud push to overwrite stale legacy config in Firestore
+                        setTimeout(function() {
+                            if (typeof global.manualPushConfigToCloud === "function") {
+                                global.manualPushConfigToCloud();
+                            }
+                        }, 500);
+                    }
+                } else {
+                    s.settlement = deepClone(data.settlement);
+                }
             }
             if (data.attendanceSurveyMeta && typeof data.attendanceSurveyMeta === "object") {
                 if (!s.attendanceSurvey) s.attendanceSurvey = { votes: {} };
