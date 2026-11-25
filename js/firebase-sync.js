@@ -288,6 +288,18 @@
                         return ev;
                     });
                 }
+                // Enforce 2026 concert venue and orchestra details
+                if (Array.isArray(s.events)) {
+                    s.events.forEach(function(ev) {
+                        if (ev && (ev.id === "ev-11" || String(ev.title || "").indexOf("정기연주회") !== -1)) {
+                            if (ev.place === "KBS홀" || String(ev.desc || "").indexOf("KBS홀") !== -1 || String(ev.desc || "").indexOf("솔리스트") !== -1) {
+                                ev.title = "2026년 정기연주회";
+                                ev.place = "인재개발원 콘서트홀";
+                                ev.desc = "인재개발원 콘서트홀 · 오케스트라(라퓨즈 플레이어즈) 협연";
+                            }
+                        }
+                    });
+                }
             } else if (!Array.isArray(s.events) || s.events.length < 10) {
                 if (typeof global.getDefaultState === "function") {
                     s.events = deepClone(global.getDefaultState().events);
