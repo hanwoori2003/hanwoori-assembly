@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2026.57" />
+    <link rel="stylesheet" href="css/styles.css?v=2026.58" />
 
     <!-- Anti-FOUC: 페이지 새로고침 시 로그인 게이트 깜빡임(FOUC) 방지 -->
     <!-- App Shell Layout: Always visible for seamless assembly data browsing -->
@@ -585,48 +585,44 @@
         <!-- TAB 3: 연주회 강평 및 설문 (#view-concert) -->
         <!-- ============================================================ -->
         <section id="view-concert" class="hidden space-y-6">
-            <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-amber-900/90 via-slate-900 to-amber-950 text-white shadow-md border border-amber-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-xl sm:text-2xl font-black">2026년 정기연주회 강평 및 2027년 기대 연주 활동 설문 결과</h2>
-                    <p class="text-xs sm:text-sm text-slate-300 mt-1">발표: 황태희 단원 · 설문 응답자 71인(연주회 참가 단원의 68.9%) 분석 보고</p>
+            <!-- Header Banner -->
+            <div class="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 text-white shadow-xl border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="space-y-1 relative z-10">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-400 text-slate-950 shadow-xs">2026 정기연주회 공식 강평</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/10 text-amber-200 border border-white/15">Google Forms 설문 종합</span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-black tracking-tight text-white pt-1">제21회 정기연주회 강평 및 단원 설문조사 결과</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">연주회 참여 단원 71인 응답 (총 7개 부문 70문항 심층 분석)</p>
                 </div>
-                <div id="concertAdminActions" class="shrink-0"></div>
+                <div class="flex items-center gap-2 relative z-10 shrink-0">
+                    <a href="https://docs.google.com/forms/d/1RQOp1dhHIzMCPEYinyBDUFghmM7-HyOflrox38HCHps/edit#responses" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center gap-1.5 cursor-pointer">
+                        <span>📋</span> 설문 원문 링크
+                    </a>
+                    <div id="concertAdminActions"></div>
+                </div>
             </div>
 
-            <!-- 4 Key Metrics -->
+            <!-- Top 4 Core KPI Metrics -->
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4" id="concertMetricsContainer"></div>
 
-            <!-- Favorite Songs & Expectations Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-                <!-- Favorite Songs Ranking -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-                    <h3 class="text-base font-extrabold text-slate-900">2026년 정기연주회 단원 최선호 연주곡 순위</h3>
-                    <div id="concertFavoriteSongsContainer" class="space-y-3 pt-2"></div>
-                </div>
-
-                <!-- 2027 Expectations -->
-                <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-4">
-                    <h3 class="text-base font-extrabold text-slate-900">2027년도 합창 활동 및 차기 공연 기대 설문</h3>
-                    <div class="space-y-3 text-xs">
-                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                            <span class="font-bold text-indigo-900">선호 연주 시기:</span>
-                            <p class="text-slate-700 mt-0.5">10월~11월 가을 시즌 주말 선호 (응답자의 82% 집중)</p>
-                        </div>
-                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                            <span class="font-bold text-indigo-900">희망 공연장:</span>
-                            <p class="text-slate-700 mt-0.5">여의도 KBS홀 (만족도 97.2%) / 롯데콘서트홀 / 예술의전당 콘서트홀</p>
-                        </div>
-                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                            <span class="font-bold text-indigo-900">희망 프로그램:</span>
-                            <p class="text-slate-700 mt-0.5">대중성과 예술성이 조화된 뮤지컬 메들리 및 서정적 한국 합창곡</p>
-                        </div>
-                        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
-                            <span class="font-bold text-indigo-900">단원 건의사항:</span>
-                            <p class="text-slate-700 mt-0.5">전문 발성 코칭 시간 확대 및 연주회 2부 의상 맞춤·착용 간소화 희망</p>
-                        </div>
-                    </div>
+            <!-- Section Navigation Pills (Mobile horizontal scrollable) -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-2 shadow-xs">
+                <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold" id="concertSectionFilterBar">
+                    <button type="button" onclick="filterConcertSection('all')" data-sec="all" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-amber-500 text-slate-950 font-black shadow-xs">전체 부문 (All)</button>
+                    <button type="button" onclick="filterConcertSection('sec-1')" data-sec="sec-1" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">1. 기본 정보</button>
+                    <button type="button" onclick="filterConcertSection('sec-2')" data-sec="sec-2" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">2. 모집·활동</button>
+                    <button type="button" onclick="filterConcertSection('sec-3')" data-sec="sec-3" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">3. 연습·캠프</button>
+                    <button type="button" onclick="filterConcertSection('sec-4')" data-sec="sec-4" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">4. 연주회 공연</button>
+                    <button type="button" onclick="filterConcertSection('sec-5')" data-sec="sec-5" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">5. 연주회 복장</button>
+                    <button type="button" onclick="filterConcertSection('sec-6')" data-sec="sec-6" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">6. 2027 기대 활동</button>
+                    <button type="button" onclick="filterConcertSection('sec-7')" data-sec="sec-7" class="concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700">7. 리더십 평가</button>
                 </div>
             </div>
+
+            <!-- Dynamic Survey Sections Container -->
+            <div id="concertSectionsContainer" class="space-y-6"></div>
         </section>
 
         <!-- ============================================================ -->
@@ -1496,7 +1492,7 @@
         <div class="bg-white rounded-3xl w-[calc(100%-1.5rem)] sm:w-full max-w-lg max-h-[90dvh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
             <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                 <div>
-                    <h3 class="text-base font-black text-slate-900">제20회 연주회 강평 및 설문 요약 수정</h3>
+                    <h3 class="text-base font-black text-slate-900">제21회 연주회 강평 및 설문 요약 수정</h3>
                     <p class="text-xs text-slate-500 mt-0.5">만족도 평가 수치, 응답자 수 및 선호곡 순위를 편집합니다.</p>
                 </div>
                 <button type="button" onclick="closeSurveyModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition">✕</button>
@@ -1629,13 +1625,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.57"></script>
-    <script src="js/data-config.js?v=2026.57"></script>
-    <script src="js/firebase-config.js?v=2026.57"></script>
-    <script src="js/firebase-sync.js?v=2026.57"></script>
-    <script src="js/utils.js?v=2026.57"></script>
-    <script src="js/render.js?v=2026.57"></script>
-    <script src="js/handlers.js?v=2026.57"></script>
-    <script src="js/app.js?v=2026.57"></script>
+    <script src="js/data-members.js?v=2026.58"></script>
+    <script src="js/data-config.js?v=2026.58"></script>
+    <script src="js/firebase-config.js?v=2026.58"></script>
+    <script src="js/firebase-sync.js?v=2026.58"></script>
+    <script src="js/utils.js?v=2026.58"></script>
+    <script src="js/render.js?v=2026.58"></script>
+    <script src="js/handlers.js?v=2026.58"></script>
+    <script src="js/app.js?v=2026.58"></script>
 </body>
 </html>

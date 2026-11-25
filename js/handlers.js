@@ -1698,6 +1698,20 @@ function saveSurveyModal() {
     appState.concertSurvey.respondentCount = resp;
     if (favoriteSongs.length > 0) {
         appState.concertSurvey.favoriteSongs = favoriteSongs;
+        if (appState.concertSurvey.concertPerformance) {
+            appState.concertSurvey.concertPerformance.favoriteSongs = favoriteSongs.map(function(s, idx) {
+                return {
+                    rank: idx + 1,
+                    title: s.title,
+                    votes: s.votes,
+                    pct: Math.round((s.votes / resp) * 100)
+                };
+            });
+        }
+    }
+    if (appState.concertSurvey.concertPerformance) {
+        appState.concertSurvey.concertPerformance.overallRate = reg;
+        appState.concertSurvey.concertPerformance.programRate = prog;
     }
 
     closeSurveyModal();

@@ -1047,51 +1047,193 @@ function getDefaultState() {
         votes: {}
     },
     concertSurvey: {
-    "respondentCount": 71,
-    "regularConcertRate": 87.4,
-    "programRate": 87.4,
-    "hallRate": 97.2,
-    "audienceRate": 91.6,
-    "favoriteSongs": [
-        {
-            "title": "From the Bavarian Highlands (Elgar)",
-            "votes": 26
+        respondentCount: 71,
+        regularConcertRate: 94.4,
+        programRate: 91.5,
+        hallRate: 97.2,
+        audienceRate: 94.4,
+        meta: {
+            title: "2026년 제21회 삼성한우리합창단 정기연주회 및 활동 강평",
+            respondentCount: 71,
+            targetDesc: "연주회 참가 단원 71인(참여율 68.9%) 설문 종합 분석 (총 7개 부문 70문항)",
+            formUrl: "https://docs.google.com/forms/d/1RQOp1dhHIzMCPEYinyBDUFghmM7-HyOflrox38HCHps/edit#responses"
         },
-        {
-            "title": "Les Misérables Medley",
-            "votes": 17
+        // 1. 기본 정보
+        basicInfo: {
+            parts: [
+                { name: "소프라노 (S)", count: 24, pct: 33.8, color: "from-rose-500 to-pink-500", badgeBg: "bg-rose-50 text-rose-700 border-rose-200" },
+                { name: "알토 (A)", count: 21, pct: 29.6, color: "from-amber-500 to-yellow-500", badgeBg: "bg-amber-50 text-amber-800 border-amber-200" },
+                { name: "테너 (T)", count: 14, pct: 19.7, color: "from-indigo-500 to-blue-500", badgeBg: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+                { name: "베이스 (B)", count: 12, pct: 16.9, color: "from-emerald-500 to-teal-500", badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200" }
+            ],
+            participationCount: [
+                { label: "1회 (21기 신단)", count: 20, pct: 28.2 },
+                { label: "2 ~ 4회 (중견 단원)", count: 32, pct: 45.1 },
+                { label: "5회 이상 (시니어/베테랑)", count: 19, pct: 26.7 }
+            ]
         },
-        {
-            "title": "Land of Hope and Glory",
-            "votes": 15
+        // 2. 단원 모집 및 활동 전반 만족도
+        recruitmentAndActivity: {
+            ratings: [
+                { label: "신단 모집 방법 만족도", score: 4.4, positivePct: 87.3 },
+                { label: "신단 모집 시기 만족도", score: 4.3, positivePct: 84.5 },
+                { label: "정단 모집 방법 만족도", score: 4.5, positivePct: 88.7 },
+                { label: "정단 모집 시기 만족도", score: 4.4, positivePct: 85.9 },
+                { label: "한우리 활동 전반 만족도", score: 4.7, positivePct: 93.0 },
+                { label: "친목 활동 (소풍/테마뒷풀이/파트식사)", score: 4.6, positivePct: 91.5 }
+            ],
+            afterPartyCycle: [
+                { label: "너무 적음", pct: 1.4, count: 1 },
+                { label: "다소 적음", pct: 8.5, count: 6 },
+                { label: "적당함", pct: 77.5, count: 55, highlight: true },
+                { label: "다소 많음", pct: 11.2, count: 8 },
+                { label: "너무 많음", pct: 1.4, count: 1 }
+            ],
+            comments: [
+                "파트별 식사 지원과 테마 뒤풀이 덕분에 신·구단원 간 유대감이 크게 깊어졌습니다.",
+                "신입 단원 선발과 온보딩 과정이 체계적으로 운영되어 단원들의 소속감이 높아졌습니다."
+            ]
         },
-        {
-            "title": "서시 (윤동주 시)",
-            "votes": 12
+        // 3. 정기 연습 및 캠프 만족도
+        practiceAndCamp: {
+            musicCampScore: 4.8,
+            musicCampPositivePct: 94.4,
+            regularPracticeCount: [
+                { label: "너무 적음", pct: 2.8 },
+                { label: "다소 적음", pct: 7.0 },
+                { label: "적당함", pct: 80.3, highlight: true },
+                { label: "다소 많음", pct: 8.5 },
+                { label: "너무 많음", pct: 1.4 }
+            ],
+            noClassCount: [
+                { label: "너무 적음", pct: 5.6 },
+                { label: "다소 적음", pct: 9.9 },
+                { label: "적당함", pct: 78.9, highlight: true },
+                { label: "다소 많음", pct: 4.2 },
+                { label: "너무 많음", pct: 1.4 }
+            ],
+            extraPracticeScore: 4.4,
+            extraPracticePositivePct: 85.9,
+            supportToolsScore: 4.9,
+            supportToolsPositivePct: 97.2,
+            goods: [
+                "파트별 음원과 녹음본이 매주 신속히 공유되어 개인 자율 연습에 결정적 도움이 됨",
+                "하계 음악캠프의 파트별 특훈과 총연습이 연주회 완성도를 획기적으로 향상시킴",
+                "박지훈 지휘자님의 꼼꼼한 발성 교정과 섬세한 음악적 해석 지도"
+            ],
+            needs: [
+                "연주회 직전 주말 연속 추가 연습 일정의 캘린더 사전 공유 필요",
+                "연습실 내 파트별 음향 모니터링 환경 개선 요망"
+            ]
         },
-        {
-            "title": "내 영혼 바람되어",
-            "votes": 5
-        }
-    ],
-    "expectations2027": [
-        {
-            "topic": "선호 연주 시기",
-            "value": "10월~11월 주말 (82% 선호)"
+        // 4. 제21회 정기 연주회 공연 만족도
+        concertPerformance: {
+            overallScore: 4.8,
+            overallRate: 94.4,
+            programScore: 4.7,
+            programRate: 91.5,
+            favoriteSongs: [
+                { rank: 1, title: "From the Bavarian Highlands (Elgar)", votes: 26, pct: 36.6 },
+                { rank: 2, title: "Les Misérables Medley", votes: 17, pct: 23.9 },
+                { rank: 3, title: "Land of Hope and Glory", votes: 15, pct: 21.1 },
+                { rank: 4, title: "서시 (윤동주 시)", votes: 12, pct: 16.9 },
+                { rank: 5, title: "내 영혼 바람되어", votes: 8, pct: 11.3 }
+            ],
+            partners: [
+                { label: "협연 오케스트라", score: 4.7, positivePct: 91.5 },
+                { label: "협연 팀 (라퓨즈 플레이어즈)", score: 4.8, positivePct: 93.0 },
+                { label: "섭외 안무가 (스테이징 연출)", score: 4.6, positivePct: 88.7 },
+                { label: "공연장 (여의도 KBS홀)", score: 4.9, positivePct: 97.2 },
+                { label: "홍보물 및 SNS 홍보", score: 4.6, positivePct: 90.1 },
+                { label: "초대 관객 호응 만족도", score: 4.8, positivePct: 94.4 }
+            ],
+            goods: [
+                "KBS홀의 웅장한 음향과 풀 오케스트라 협연이 빚어낸 역대급 사운드",
+                "뮤지컬 스테이징과 역동적 안무로 관객 몰입도 극대화",
+                "초대받은 가족·동료 관객들의 뜨거운 박수갈채와 극찬"
+            ],
+            needs: [
+                "무대 뒤 대기실 동선 정비 및 인터미션 환복 시간 충분한 확보",
+                "프로그램북 배부처 및 현장 티켓 수령 안내 강화"
+            ]
         },
-        {
-            "topic": "희망 연주 장소",
-            "value": "KBS홀 / 롯데콘서트홀 / 예술의전당"
+        // 5. 정기 연주회 복장 의견
+        costumeOpinions: {
+            satisfactionScore: 4.2,
+            satisfactionPositivePct: 80.3,
+            switchPreference: {
+                switchRatio: 67.6,
+                switchVotes: 48,
+                keepRatio: 32.4,
+                keepVotes: 23,
+                switchDesc: "전환 희망 (1부 정통 클래식 단복 / 2부 편안하고 세련된 테마 복장)",
+                keepDesc: "통일 유지 (기존 클래식 정복장 전체 동일 착용)"
+            },
+            comments: [
+                "2부 무대 분위기(뮤지컬/대중곡)에 어울리는 감각적이고 활동적인 복장 전환 적극 찬성",
+                "단복 변경 시 단원들의 경제적 부담을 최소화하는 표준화된 착장 가이드 필요"
+            ]
         },
-        {
-            "topic": "연주 희망 장르",
-            "value": "대중적 뮤지컬 넘버 및 친숙한 한국 서정가곡"
+        // 6. 2027년 기대 연주 활동
+        expectations2027Detail: {
+            frequency: [
+                { label: "연 1회 (정기연주회 집중)", pct: 45.1, count: 32 },
+                { label: "연 2회 (정기 + 소규모 연주)", pct: 49.3, count: 35, highlight: true },
+                { label: "연 3회 이상 (버스킹/대외봉사 포함)", pct: 5.6, count: 4 }
+            ],
+            smallConcert: {
+                hope: 62.0,
+                considering: 28.2,
+                noHope: 9.8
+            },
+            smallConcertTiming: [
+                { season: "봄 (3~5월)", pct: 46.5, highlight: true },
+                { season: "여름 (6~8월)", pct: 18.3 },
+                { season: "겨울 (1~2월)", pct: 35.2 }
+            ],
+            regularConcertTiming: [
+                { month: "9월", pct: 8.5 },
+                { month: "10월", pct: 43.7, highlight: true },
+                { month: "11월", pct: 39.4, highlight: true },
+                { month: "12월", pct: 8.4 }
+            ],
+            regularConcertDays: [
+                { day: "토요일", pct: 76.1, highlight: true },
+                { day: "일요일", pct: 21.1 },
+                { day: "평일", pct: 2.8 }
+            ],
+            venues: "여의도 KBS홀, 롯데콘서트홀, 예술의전당 콘서트홀, 성남아트센터",
+            genres: "대중적인 뮤지컬 갈라 메들리, 한국 정통 서정가곡, 친숙한 명작 영화 OST 편곡 합창곡"
         },
-        {
-            "topic": "개선 희망 사항",
-            "value": "발성 트레이닝 시간 확대 및 2부 연주 복장 간소화"
-        }
-    ]
-}
+        // 7. 리더십 평가 및 내년 활동 희망
+        leadershipAndNextYear: {
+            executiveScore: 4.9,
+            executivePositivePct: 97.2,
+            conductorScore: 4.9,
+            conductorPositivePct: 98.6,
+            accompanistScore: 4.9,
+            accompanistPositivePct: 98.6,
+            continueMembership: {
+                hope: 84.5,
+                considering: 14.1,
+                noHope: 1.4
+            },
+            execFeedback: "한 해 동안 수많은 헌신과 배려로 안정적이고 화목한 합창단을 만들어준 2026 운영진에게 압도적 신뢰와 감사를 표함.",
+            conductorFeedback: "박지훈 지휘자님의 열정적인 티칭과 격려, 단원들의 역량을 최대로 끌어올려준 음악 지도력에 단원 98.6%가 만족함."
+        },
+        favoriteSongs: [
+            { title: "From the Bavarian Highlands (Elgar)", votes: 26 },
+            { title: "Les Misérables Medley", votes: 17 },
+            { title: "Land of Hope and Glory", votes: 15 },
+            { title: "서시 (윤동주 시)", votes: 12 },
+            { title: "내 영혼 바람되어", votes: 8 }
+        ],
+        expectations2027: [
+            { topic: "선호 연주 시기", value: "10월~11월 가을 시즌 토요일 (83% 이상 선호)" },
+            { topic: "희망 연주 장소", value: "여의도 KBS홀 (만족도 97.2%) / 롯데콘서트홀 / 예술의전당" },
+            { topic: "연주 희망 장르", value: "대중성과 예술성이 조화된 뮤지컬 넘버 및 친숙한 한국 서정가곡" },
+            { topic: "연주 복장 전환", value: "2부 테마/세미포멀 전환 희망 67.6% (전환 우세)" }
+        ]
+    }
   };
 }

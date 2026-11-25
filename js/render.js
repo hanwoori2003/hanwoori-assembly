@@ -834,58 +834,471 @@ function renderConcertFeedbackView() {
     if (!survey) return;
     const isExec = isCurrentUserExecutive();
 
+    // 1. Admin Actions
     const concertAdminEl = document.getElementById("concertAdminActions");
     if (concertAdminEl) {
         if (isExec) {
-            concertAdminEl.innerHTML = '<button type="button" onclick="openSurveyModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-sm transition flex items-center gap-1 cursor-pointer"><span>✎</span> 설문 요약 수정</button>';
+            concertAdminEl.innerHTML = '<button type="button" onclick="openSurveyModal()" class="px-3.5 py-2 rounded-xl text-xs font-black bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-sm transition flex items-center gap-1.5 cursor-pointer"><span>✎</span> 설문 요약 수정</button>';
         } else {
             concertAdminEl.innerHTML = '';
         }
     }
 
+    // 2. Top 4 Core KPI Metrics
     const rateCont = document.getElementById("concertMetricsContainer");
     if (rateCont) {
+        const regRate = survey.regularConcertRate || 94.4;
+        const progRate = survey.programRate || 91.5;
+        const hallRate = survey.hallRate || 97.2;
+        const continuePct = (survey.leadershipAndNextYear && survey.leadershipAndNextYear.continueMembership && survey.leadershipAndNextYear.continueMembership.hope) || 84.5;
+
         rateCont.innerHTML = 
-            '<div class="p-4 rounded-xl bg-indigo-50/60 border border-indigo-100 text-center">' +
-                '<div class="text-xs text-indigo-700 font-bold">정기연주회 만족도</div>' +
-                '<div class="text-2xl font-black text-indigo-950 mt-1">' + survey.regularConcertRate + '%</div>' +
-                '<div class="text-[11px] text-indigo-500 mt-0.5">매우 만족 60.6%</div>' +
+            '<div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/80 to-indigo-100/40 border border-indigo-100 text-center shadow-xs">' +
+                '<div class="text-[11px] text-indigo-700 font-extrabold uppercase tracking-wide">공연 전반 만족도</div>' +
+                '<div class="text-2xl sm:text-3xl font-black text-indigo-950 mt-1">' + regRate + '%</div>' +
+                '<div class="text-[11px] text-indigo-600 font-semibold mt-0.5">매우 만족 76.1%</div>' +
             '</div>' +
-            '<div class="p-4 rounded-xl bg-purple-50/60 border border-purple-100 text-center">' +
-                '<div class="text-xs text-purple-700 font-bold">프로그램 만족도</div>' +
-                '<div class="text-2xl font-black text-purple-950 mt-1">' + survey.programRate + '%</div>' +
-                '<div class="text-[11px] text-purple-500 mt-0.5">매우 만족 59.2%</div>' +
+            '<div class="p-4 rounded-2xl bg-gradient-to-br from-purple-50/80 to-purple-100/40 border border-purple-100 text-center shadow-xs">' +
+                '<div class="text-[11px] text-purple-700 font-extrabold uppercase tracking-wide">프로그램 구성 만족도</div>' +
+                '<div class="text-2xl sm:text-3xl font-black text-purple-950 mt-1">' + progRate + '%</div>' +
+                '<div class="text-[11px] text-purple-600 font-semibold mt-0.5">긍정 평가 91.5%</div>' +
             '</div>' +
-            '<div class="p-4 rounded-xl bg-emerald-50/60 border border-emerald-100 text-center">' +
-                '<div class="text-xs text-emerald-700 font-bold">공연장(KBS홀) 만족도</div>' +
-                '<div class="text-2xl font-black text-emerald-950 mt-1">' + survey.hallRate + '%</div>' +
-                '<div class="text-[11px] text-emerald-500 mt-0.5">매우 만족 67.6%</div>' +
+            '<div class="p-4 rounded-2xl bg-gradient-to-br from-emerald-50/80 to-emerald-100/40 border border-emerald-100 text-center shadow-xs">' +
+                '<div class="text-[11px] text-emerald-700 font-extrabold uppercase tracking-wide">KBS홀 음향·무대</div>' +
+                '<div class="text-2xl sm:text-3xl font-black text-emerald-950 mt-1">' + hallRate + '%</div>' +
+                '<div class="text-[11px] text-emerald-600 font-semibold mt-0.5">최고 만족도 67.6%</div>' +
             '</div>' +
-            '<div class="p-4 rounded-xl bg-amber-50/60 border border-amber-100 text-center">' +
-                '<div class="text-xs text-amber-700 font-bold">관객 호응 만족도</div>' +
-                '<div class="text-2xl font-black text-amber-950 mt-1">' + survey.audienceRate + '%</div>' +
-                '<div class="text-[11px] text-amber-500 mt-0.5">매우 만족 70.4%</div>' +
+            '<div class="p-4 rounded-2xl bg-gradient-to-br from-amber-50/80 to-amber-100/40 border border-amber-100 text-center shadow-xs">' +
+                '<div class="text-[11px] text-amber-800 font-extrabold uppercase tracking-wide">2027 정단원 지속 희망</div>' +
+                '<div class="text-2xl sm:text-3xl font-black text-amber-950 mt-1">' + continuePct + '%</div>' +
+                '<div class="text-[11px] text-amber-700 font-semibold mt-0.5">재참여 의사 60명/71명</div>' +
             '</div>';
     }
 
-    const songCont = document.getElementById("concertFavoriteSongsContainer");
-    if (songCont) {
-        let sHtml = "";
-        (survey.favoriteSongs || []).forEach(function(s, i) {
-            const pct = Math.round((s.votes / 71) * 100);
-            sHtml += '<div class="space-y-1">' +
-                '<div class="flex justify-between items-baseline gap-2 text-xs font-bold text-slate-800">' +
-                    '<span class="min-w-0 break-keep">' + (i + 1) + '. ' + escapeHtml(s.title) + '</span>' +
-                    '<span class="text-indigo-600 shrink-0 whitespace-nowrap">' + s.votes + '명 (' + pct + '%)</span>' +
+    // 3. Render All 7 Comprehensive Survey Sections
+    const secCont = document.getElementById("concertSectionsContainer");
+    if (!secCont) return;
+
+    const bInfo = survey.basicInfo || {};
+    const rAct = survey.recruitmentAndActivity || {};
+    const pCamp = survey.practiceAndCamp || {};
+    const cPerf = survey.concertPerformance || {};
+    const cCost = survey.costumeOpinions || {};
+    const exp27 = survey.expectations2027Detail || {};
+    const ldr27 = survey.leadershipAndNextYear || {};
+
+    let html = "";
+
+    // ==========================================
+    // SECTION 1: 기본 정보 (응답자 프로필)
+    // ==========================================
+    html += '<div id="sec-1" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
+        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2.5">' +
+                '<span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 font-black text-xs flex items-center justify-center">1</span>' +
+                '<h3 class="text-base font-black text-slate-900">기본 정보 (응답자 파트 및 연주회 참여 이력)</h3>' +
+            '</div>' +
+            '<span class="text-xs font-bold text-slate-400">총 71명 참여</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
+            '<!-- 파트별 분포 -->' +
+            '<div class="space-y-3">' +
+                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between">' +
+                    '<span>파트별 응답자 분포</span>' +
+                    '<span class="text-[11px] text-slate-400">소프라노 최다 (33.8%)</span>' +
+                '</h4>' +
+                '<div class="space-y-2.5">';
+    (bInfo.parts || []).forEach(function(p) {
+        html += '<div class="space-y-1">' +
+            '<div class="flex justify-between items-center text-xs">' +
+                '<span class="font-bold text-slate-800">' + escapeHtml(p.name) + '</span>' +
+                '<span class="font-extrabold text-slate-900">' + p.count + '명 <span class="text-slate-400 font-normal">(' + p.pct + '%)</span></span>' +
+            '</div>' +
+            '<div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">' +
+                '<div class="h-full rounded-full bg-gradient-to-r ' + p.color + '" style="width: ' + p.pct + '%"></div>' +
+            '</div>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+            '<!-- 정기연주회 참여 횟수 -->' +
+            '<div class="space-y-3">' +
+                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between">' +
+                    '<span>정기 연주회 참여 횟수</span>' +
+                    '<span class="text-[11px] text-slate-400">2~4회 경험 단원 45.1%</span>' +
+                '</h4>' +
+                '<div class="grid grid-cols-3 gap-2.5 pt-1">';
+    (bInfo.participationCount || []).forEach(function(pc) {
+        html += '<div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 text-center flex flex-col justify-center">' +
+            '<div class="text-[11px] font-bold text-slate-500 leading-tight">' + escapeHtml(pc.label) + '</div>' +
+            '<div class="text-xl font-black text-slate-900 mt-1.5">' + pc.count + '<span class="text-xs font-bold text-slate-400 ml-0.5">명</span></div>' +
+            '<div class="text-[11px] font-extrabold text-indigo-600 mt-0.5">' + pc.pct + '%</div>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+                '<p class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100">💡 21기 신입단원(1회)과 2회 이상 기존 단원이 조화롭게 참여하여 연주회 피드백의 대표성과 객관성을 확보하였습니다.</p>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    // ==========================================
+    // SECTION 2: 단원 모집 및 활동 전반 만족도
+    // ==========================================
+    html += '<div id="sec-2" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
+        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2.5">' +
+                '<span class="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 font-black text-xs flex items-center justify-center">2</span>' +
+                '<h3 class="text-base font-black text-slate-900">단원 모집 및 활동 전반 만족도</h3>' +
+            '</div>' +
+            '<span class="text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md">활동 만족도 4.7점 / 5.0</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
+            '<!-- 6대 세부 평가 점수 -->' +
+            '<div class="space-y-3">' +
+                '<h4 class="text-xs font-extrabold text-slate-700">모집 및 친목 세부 만족도 (5점 척도)</h4>' +
+                '<div class="space-y-2.5">';
+    (rAct.ratings || []).forEach(function(r) {
+        const barWidth = Math.round((r.score / 5) * 100);
+        html += '<div class="space-y-1">' +
+            '<div class="flex justify-between items-center text-xs">' +
+                '<span class="font-bold text-slate-800">' + escapeHtml(r.label) + '</span>' +
+                '<span class="font-extrabold text-indigo-700">' + r.score + ' <span class="text-slate-400 font-normal">/ 5.0 (긍정 ' + r.positivePct + '%)</span></span>' +
+            '</div>' +
+            '<div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">' +
+                '<div class="h-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600" style="width: ' + barWidth + '%"></div>' +
+            '</div>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+            '<!-- 뒤풀이 주기 및 단원 의견 -->' +
+            '<div class="space-y-3">' +
+                '<h4 class="text-xs font-extrabold text-slate-700">정기 뒤풀이 주기 체감</h4>' +
+                '<div class="grid grid-cols-5 gap-1.5">';
+    (rAct.afterPartyCycle || []).forEach(function(ap) {
+        const isHl = ap.highlight;
+        html += '<div class="p-2.5 rounded-xl text-center ' + (isHl ? 'bg-purple-600 text-white font-extrabold shadow-xs' : 'bg-slate-50 text-slate-700 border border-slate-100') + '">' +
+            '<div class="text-[10px] leading-tight">' + escapeHtml(ap.label) + '</div>' +
+            '<div class="text-sm font-black mt-1">' + ap.pct + '%</div>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+                '<div class="space-y-2 pt-2">' +
+                    '<h4 class="text-xs font-extrabold text-slate-700">단원 코멘트</h4>';
+    (rAct.comments || []).forEach(function(c) {
+        html += '<div class="p-3 rounded-xl bg-purple-50/50 border border-purple-100 text-xs text-slate-700 flex gap-2">' +
+            '<span class="text-purple-600 font-bold shrink-0">💬</span>' +
+            '<span class="break-keep">' + escapeHtml(c) + '</span>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    // ==========================================
+    // SECTION 3: 정기 연습 및 캠프 만족도
+    // ==========================================
+    html += '<div id="sec-3" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
+        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2.5">' +
+                '<span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 font-black text-xs flex items-center justify-center">3</span>' +
+                '<h3 class="text-base font-black text-slate-900">정기 연습 및 하계 음악캠프 만족도</h3>' +
+            '</div>' +
+            '<span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">연습 도구 만족도 4.9점 / 5.0</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">' +
+            '<div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-center">' +
+                '<div class="text-xs font-bold text-emerald-800">하계 음악캠프 만족도</div>' +
+                '<div class="text-2xl font-black text-emerald-950 mt-1">' + (pCamp.musicCampScore || 4.8) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
+                '<div class="text-[11px] text-emerald-600 font-semibold mt-0.5">만족·매우만족 ' + (pCamp.musicCampPositivePct || 94.4) + '%</div>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-teal-50/60 border border-teal-100 text-center">' +
+                '<div class="text-xs font-bold text-teal-800">연습 보조도구 (음악노트·영상·녹음)</div>' +
+                '<div class="text-2xl font-black text-teal-950 mt-1">' + (pCamp.supportToolsScore || 4.9) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
+                '<div class="text-[11px] text-teal-600 font-semibold mt-0.5">압도적 호평 ' + (pCamp.supportToolsPositivePct || 97.2) + '%</div>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">' +
+                '<div class="text-xs font-bold text-slate-700">추가 연습 만족도</div>' +
+                '<div class="text-2xl font-black text-slate-900 mt-1">' + (pCamp.extraPracticeScore || 4.4) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
+                '<div class="text-[11px] text-slate-500 font-semibold mt-0.5">긍정 비율 ' + (pCamp.extraPracticePositivePct || 85.9) + '%</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">' +
+                '<div class="text-xs font-extrabold text-emerald-800 flex items-center gap-1.5"><span>👍</span> 좋았던 점 (단원 주요 의견)</div>' +
+                '<ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">';
+    (pCamp.goods || []).forEach(function(g) {
+        html += '<li class="break-keep">' + escapeHtml(g) + '</li>';
+    });
+    html +=     '</ul>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">' +
+                '<div class="text-xs font-extrabold text-amber-800 flex items-center gap-1.5"><span>💡</span> 아쉬운 점 및 향후 건의사항</div>' +
+                '<ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">';
+    (pCamp.needs || []).forEach(function(n) {
+        html += '<li class="break-keep">' + escapeHtml(n) + '</li>';
+    });
+    html +=     '</ul>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    // ==========================================
+    // SECTION 4: 제21회 정기 연주회 공연 만족도
+    // ==========================================
+    html += '<div id="sec-4" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
+        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2.5">' +
+                '<span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 font-black text-xs flex items-center justify-center">4</span>' +
+                '<h3 class="text-base font-black text-slate-900">제21회 정기 연주회 공연 및 협연 평가</h3>' +
+            '</div>' +
+            '<span class="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md">공연 종합 94.4% 만족</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
+            '<!-- 최선호 연주곡 랭킹 Top 5 -->' +
+            '<div class="space-y-3">' +
+                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between">' +
+                    '<span>단원 최선호 연주곡 랭킹 Top 5</span>' +
+                    '<span class="text-[11px] text-amber-600 font-bold">Elgar 바바리안 1위 (36.6%)</span>' +
+                '</h4>' +
+                '<div class="space-y-3 pt-1">';
+    (cPerf.favoriteSongs || []).forEach(function(song, i) {
+        const pct = song.pct || Math.round((song.votes / 71) * 100);
+        const rankColors = ['bg-amber-400 text-slate-950 font-black', 'bg-slate-300 text-slate-900 font-bold', 'bg-amber-700/60 text-white font-bold', 'bg-slate-100 text-slate-700', 'bg-slate-100 text-slate-700'];
+        html += '<div class="space-y-1">' +
+            '<div class="flex justify-between items-center text-xs">' +
+                '<span class="font-bold text-slate-800 flex items-center gap-2">' +
+                    '<span class="w-5 h-5 rounded-full text-[10px] flex items-center justify-center ' + (rankColors[i] || 'bg-slate-100 text-slate-700') + '">' + (i + 1) + '</span>' +
+                    '<span class="break-keep">' + escapeHtml(song.title) + '</span>' +
+                '</span>' +
+                '<span class="font-extrabold text-amber-800 shrink-0">' + song.votes + '명 <span class="text-slate-400 font-normal">(' + pct + '%)</span></span>' +
+            '</div>' +
+            '<div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">' +
+                '<div class="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-600" style="width: ' + pct + '%"></div>' +
+            '</div>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+            '<!-- 협연 및 제반 지표 6선 -->' +
+            '<div class="space-y-3">' +
+                '<h4 class="text-xs font-extrabold text-slate-700">협연·공연장·홍보·관객 평가 (5점 만점)</h4>' +
+                '<div class="space-y-2.5">';
+    (cPerf.partners || []).forEach(function(pt) {
+        const barW = Math.round((pt.score / 5) * 100);
+        html += '<div class="space-y-1">' +
+            '<div class="flex justify-between items-center text-xs">' +
+                '<span class="font-bold text-slate-800">' + escapeHtml(pt.label) + '</span>' +
+                '<span class="font-extrabold text-slate-900">' + pt.score + ' <span class="text-slate-400 font-normal">/ 5.0 (긍정 ' + pt.positivePct + '%)</span></span>' +
+            '</div>' +
+            '<div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">' +
+                '<div class="h-full rounded-full bg-gradient-to-r from-amber-500 to-indigo-600" style="width: ' + barW + '%"></div>' +
+            '</div>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    // ==========================================
+    // SECTION 5: 정기 연주회 복장 의견 (Hot Topic)
+    // ==========================================
+    const swPref = cCost.switchPreference || {};
+    html += '<div id="sec-5" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
+        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2.5">' +
+                '<span class="w-7 h-7 rounded-lg bg-rose-100 text-rose-700 font-black text-xs flex items-center justify-center">5</span>' +
+                '<h3 class="text-base font-black text-slate-900">정기 연주회 복장 의견 및 전환 희망 투표 결과</h3>' +
+            '</div>' +
+            '<span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md">복장 만족도 4.2점 / 5.0</span>' +
+        '</div>' +
+        '<!-- 복장 전환 투표 결과 VS 카드 -->' +
+        '<div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white space-y-4">' +
+            '<div class="flex items-center justify-between">' +
+                '<div class="text-xs font-extrabold text-amber-300">🔥 [설문 핵심 안건] 연주회 복장 전환 희망 여부 투표</div>' +
+                '<div class="text-[11px] text-slate-300">응답자 71인 전원 투표</div>' +
+            '</div>' +
+            '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
+                '<div class="p-4 rounded-xl bg-white/10 border border-white/15 space-y-1.5">' +
+                    '<div class="flex items-center justify-between">' +
+                        '<span class="text-xs font-bold text-emerald-300">✓ 전환 희망 (우세)</span>' +
+                        '<span class="text-lg font-black text-white">' + (swPref.switchRatio || 67.6) + '%</span>' +
+                    '</div>' +
+                    '<div class="text-2xl font-black text-emerald-400">' + (swPref.switchVotes || 48) + '<span class="text-xs font-bold text-slate-300 ml-1">명</span></div>' +
+                    '<p class="text-[11px] text-slate-300 leading-relaxed">' + escapeHtml(swPref.switchDesc || '1부 클래식 정복장 / 2부 편안하고 세련된 테마 복장 전환') + '</p>' +
                 '</div>' +
-                '<div class="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">' +
-                    '<div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-600" style="width: ' + pct + '%"></div>' +
+                '<div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1.5">' +
+                    '<div class="flex items-center justify-between">' +
+                        '<span class="text-xs font-bold text-slate-300">통일 유지</span>' +
+                        '<span class="text-lg font-black text-slate-300">' + (swPref.keepRatio || 32.4) + '%</span>' +
+                    '</div>' +
+                    '<div class="text-2xl font-black text-slate-200">' + (swPref.keepVotes || 23) + '<span class="text-xs font-bold text-slate-400 ml-1">명</span></div>' +
+                    '<p class="text-[11px] text-slate-400 leading-relaxed">' + escapeHtml(swPref.keepDesc || '기존 클래식 정복장 전체 동일 착용 유지') + '</p>' +
                 '</div>' +
-            '</div>';
-        });
-        songCont.innerHTML = sHtml;
-    }
+            '</div>' +
+            '<!-- Dual Progress Bar -->' +
+            '<div class="w-full h-3 rounded-full bg-white/10 overflow-hidden flex">' +
+                '<div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400" style="width: ' + (swPref.switchRatio || 67.6) + '%"></div>' +
+                '<div class="h-full bg-slate-600" style="width: ' + (swPref.keepRatio || 32.4) + '%"></div>' +
+            '</div>' +
+            '<div class="flex justify-between text-[11px] font-bold text-slate-300">' +
+                '<span>전환 희망 67.6% (48명)</span>' +
+                '<span>통일 유지 32.4% (23명)</span>' +
+            '</div>' +
+        '</div>' +
+        '<div class="space-y-2">' +
+            '<h4 class="text-xs font-extrabold text-slate-700">복장 관련 단원 자유 의견 요약</h4>';
+    (cCost.comments || []).forEach(function(cm) {
+        html += '<div class="p-3 rounded-xl bg-rose-50/50 border border-rose-100 text-xs text-slate-700 flex gap-2">' +
+            '<span class="text-rose-600 font-bold shrink-0">👔</span>' +
+            '<span class="break-keep">' + escapeHtml(cm) + '</span>' +
+        '</div>';
+    });
+    html += '</div></div>';
+
+    // ==========================================
+    // SECTION 6: 2027년 기대 연주 활동
+    // ==========================================
+    html += '<div id="sec-6" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
+        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2.5">' +
+                '<span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 font-black text-xs flex items-center justify-center">6</span>' +
+                '<h3 class="text-base font-black text-slate-900">2027년 기대 연주 활동 및 선호도 조사</h3>' +
+            '</div>' +
+            '<span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">차기 연주회 기획 기초자료</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-3 gap-4">' +
+            '<!-- 연주 희망 횟수 -->' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2.5">' +
+                '<div class="text-xs font-extrabold text-slate-800">연간 연주 희망 횟수</div>' +
+                '<div class="space-y-2">';
+    (exp27.frequency || []).forEach(function(f) {
+        html += '<div class="flex justify-between items-center text-xs">' +
+            '<span class="' + (f.highlight ? 'font-black text-indigo-700' : 'font-medium text-slate-700') + '">' + escapeHtml(f.label) + '</span>' +
+            '<span class="font-extrabold text-slate-900">' + f.pct + '%</span>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+            '<!-- 정기 연주 선호 시기 -->' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2.5">' +
+                '<div class="text-xs font-extrabold text-slate-800">정기 연주회 선호 시기</div>' +
+                '<div class="grid grid-cols-2 gap-2 text-center text-xs">';
+    (exp27.regularConcertTiming || []).forEach(function(t) {
+        html += '<div class="p-2 rounded-xl ' + (t.highlight ? 'bg-indigo-600 text-white font-extrabold shadow-xs' : 'bg-white border border-slate-200 text-slate-700') + '">' +
+            '<div>' + escapeHtml(t.month) + '</div>' +
+            '<div class="text-sm font-black mt-0.5">' + t.pct + '%</div>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+            '<!-- 가능 요일 -->' +
+            '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2.5">' +
+                '<div class="text-xs font-extrabold text-slate-800">연주 가능 요일</div>' +
+                '<div class="space-y-2">';
+    (exp27.regularConcertDays || []).forEach(function(d) {
+        html += '<div class="flex justify-between items-center text-xs">' +
+            '<span class="' + (d.highlight ? 'font-black text-indigo-700' : 'font-medium text-slate-700') + '">' + escapeHtml(d.day) + '</span>' +
+            '<span class="font-extrabold text-slate-900">' + d.pct + '%</span>' +
+        '</div>';
+    });
+    html +=     '</div>' +
+            '</div>' +
+        '</div>' +
+        '<!-- 선호 장소 및 장르 -->' +
+        '<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 text-xs">' +
+            '<div class="p-3.5 rounded-xl bg-blue-50/50 border border-blue-100">' +
+                '<span class="font-extrabold text-blue-900">선호 연주 장소:</span>' +
+                '<p class="text-slate-700 mt-1 leading-relaxed">' + escapeHtml(exp27.venues || '여의도 KBS홀, 롯데콘서트홀, 예술의전당 콘서트홀, 성남아트센터') + '</p>' +
+            '</div>' +
+            '<div class="p-3.5 rounded-xl bg-indigo-50/50 border border-indigo-100">' +
+                '<span class="font-extrabold text-indigo-900">선호 연주곡 및 희망 장르:</span>' +
+                '<p class="text-slate-700 mt-1 leading-relaxed">' + escapeHtml(exp27.genres || '대중적 뮤지컬 갈라 메들리, 한국 정통 서정가곡, 영화 OST 편곡 합창곡') + '</p>' +
+            '</div>' +
+        '</div>' +
+    '</div>';
+
+    // ==========================================
+    // SECTION 7: 리더십 평가 및 2027년 활동 희망
+    // ==========================================
+    const cm = ldr27.continueMembership || {};
+    html += '<div id="sec-7" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
+        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2.5">' +
+                '<span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 font-black text-xs flex items-center justify-center">7</span>' +
+                '<h3 class="text-base font-black text-slate-900">리더십 평가 및 2027년 정단원 활동 희망</h3>' +
+            '</div>' +
+            '<span class="text-xs font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md">운영진·지휘자·반주자 4.9점 / 5.0</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">' +
+            '<div class="p-4 rounded-2xl bg-teal-50/60 border border-teal-100 text-center">' +
+                '<div class="text-xs font-bold text-teal-900">2026 운영진 만족도</div>' +
+                '<div class="text-2xl font-black text-teal-950 mt-1">' + (ldr27.executiveScore || 4.9) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
+                '<div class="text-[11px] text-teal-700 font-semibold mt-0.5">긍정 비율 ' + (ldr27.executivePositivePct || 97.2) + '%</div>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 text-center">' +
+                '<div class="text-xs font-bold text-indigo-900">지휘자 선생님 만족도</div>' +
+                '<div class="text-2xl font-black text-indigo-950 mt-1">' + (ldr27.conductorScore || 4.9) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
+                '<div class="text-[11px] text-indigo-700 font-semibold mt-0.5">긍정 비율 ' + (ldr27.conductorPositivePct || 98.6) + '%</div>' +
+            '</div>' +
+            '<div class="p-4 rounded-2xl bg-purple-50/60 border border-purple-100 text-center">' +
+                '<div class="text-xs font-bold text-purple-900">반주자 선생님 만족도</div>' +
+                '<div class="text-2xl font-black text-purple-950 mt-1">' + (ldr27.accompanistScore || 4.9) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
+                '<div class="text-[11px] text-purple-700 font-semibold mt-0.5">긍정 비율 ' + (ldr27.accompanistPositivePct || 98.6) + '%</div>' +
+            '</div>' +
+        '</div>' +
+        '<!-- 2027 정단원 등록 의향 -->' +
+        '<div class="p-5 rounded-2xl bg-slate-900 text-white space-y-3">' +
+            '<div class="flex items-center justify-between">' +
+                '<span class="text-xs font-extrabold text-teal-300">2027년 정단원 지속 활동 희망 여부</span>' +
+                '<span class="text-xs font-bold text-teal-400">지속 희망 ' + (cm.hope || 84.5) + '%</span>' +
+            '</div>' +
+            '<div class="grid grid-cols-3 gap-2.5 text-center">' +
+                '<div class="p-3 rounded-xl bg-teal-500/20 border border-teal-500/30">' +
+                    '<div class="text-[11px] font-bold text-teal-200">희망 (참여)</div>' +
+                    '<div class="text-xl font-black text-teal-300 mt-1">' + (cm.hope || 84.5) + '%</div>' +
+                '</div>' +
+                '<div class="p-3 rounded-xl bg-white/5 border border-white/10">' +
+                    '<div class="text-[11px] font-bold text-slate-300">고민 중</div>' +
+                    '<div class="text-xl font-black text-slate-300 mt-1">' + (cm.considering || 14.1) + '%</div>' +
+                '</div>' +
+                '<div class="p-3 rounded-xl bg-white/5 border border-white/10">' +
+                    '<div class="text-[11px] font-bold text-slate-400">비희망</div>' +
+                    '<div class="text-xl font-black text-slate-400 mt-1">' + (cm.noHope || 1.4) + '%</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>' +
+        '<div class="p-4 rounded-2xl bg-teal-50/50 border border-teal-100 text-xs text-slate-700 leading-relaxed">' +
+            '❤️ <span class="font-bold text-teal-900">단원 총평 감사 메시지:</span> ' +
+            escapeHtml(ldr27.execFeedback || '한 해 동안 따뜻한 봉사로 합창단을 이끌어준 운영진과 최고의 음악을 지도해주신 지휘자·반주자 선생님께 깊은 감사를 드립니다.') +
+        '</div>' +
+    '</div>';
+
+    secCont.innerHTML = html;
 }
+
+// Category filter handler for survey sections
+window.filterConcertSection = function(secId) {
+    const btns = document.querySelectorAll('.concert-sec-btn');
+    btns.forEach(function(btn) {
+        if (btn.getAttribute('data-sec') === secId) {
+            btn.className = 'concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-amber-500 text-slate-950 font-black shadow-xs';
+        } else {
+            btn.className = 'concert-sec-btn px-3 py-1.5 rounded-xl transition cursor-pointer whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700';
+        }
+    });
+
+    const cards = document.querySelectorAll('.concert-sec-card');
+    cards.forEach(function(card) {
+        if (secId === 'all' || card.id === secId) {
+            card.classList.remove('hidden');
+        } else {
+            card.classList.add('hidden');
+        }
+    });
+};
 
 function renderSettlementView() {
     const s = appState.settlement;
