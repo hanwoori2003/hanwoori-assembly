@@ -1332,6 +1332,96 @@ function renderSettlementView() {
         });
         expCont.innerHTML = html;
     }
+
+    // Render Concert Expense Sub-tables (음악 / 운영)
+    const ce = s.concertExpense;
+    const musicTbody = document.getElementById("concertMusicTableBody");
+    if (musicTbody && ce && Array.isArray(ce.musicSection)) {
+        let html = "";
+        ce.musicSection.forEach(function(item) {
+            html += '<tr>' +
+                '<td class="py-2 px-3 font-semibold text-slate-900">' + escapeHtml(item.item) + '</td>' +
+                '<td class="py-2 px-3 text-slate-600">' + escapeHtml(item.detail) + '</td>' +
+                '<td class="py-2 px-3 text-right font-bold text-indigo-700 whitespace-nowrap">' + Number(item.amount).toLocaleString() + '</td>' +
+            '</tr>';
+        });
+        musicTbody.innerHTML = html;
+    }
+
+    const operTbody = document.getElementById("concertOperationTableBody");
+    if (operTbody && ce && Array.isArray(ce.operationSection)) {
+        let html = "";
+        ce.operationSection.forEach(function(item) {
+            html += '<tr>' +
+                '<td class="py-2 px-3 font-semibold text-slate-900">' + escapeHtml(item.item) + '</td>' +
+                '<td class="py-2 px-3 text-slate-600">' + escapeHtml(item.detail) + '</td>' +
+                '<td class="py-2 px-3 text-right font-bold text-emerald-700 whitespace-nowrap">' + Number(item.amount).toLocaleString() + '</td>' +
+            '</tr>';
+        });
+        operTbody.innerHTML = html;
+    }
+
+    // Render Event Support Table (행사 지원 내역)
+    const eventTbody = document.getElementById("eventSupportTableBody");
+    if (eventTbody && Array.isArray(s.eventSupport)) {
+        let html = "";
+        s.eventSupport.forEach(function(row) {
+            const incomeText = row.income > 0 ? (Number(row.income).toLocaleString() + (row.incomeNote ? ' (' + escapeHtml(row.incomeNote) + ')' : '')) : '-';
+            html += '<tr>' +
+                '<td class="py-2.5 px-3 font-bold text-slate-900">' + escapeHtml(row.event) + '</td>' +
+                '<td class="py-2.5 px-3 text-slate-600">' + escapeHtml(row.detail) + '</td>' +
+                '<td class="py-2.5 px-3 text-right font-bold text-rose-700 whitespace-nowrap">' + Number(row.expense).toLocaleString() + '</td>' +
+                '<td class="py-2.5 px-3 text-right font-bold text-indigo-700 whitespace-nowrap">' + incomeText + '</td>' +
+            '</tr>';
+        });
+        eventTbody.innerHTML = html;
+    }
+
+    // Render Yearly Comparison Tables
+    const yc = s.yearlyComparison;
+    const revYcTbody = document.getElementById("yearlyRevenueComparisonTableBody");
+    if (revYcTbody && yc && Array.isArray(yc.revenue)) {
+        let html = "";
+        yc.revenue.forEach(function(row) {
+            const fmt = function(v) {
+                if (typeof v === "number") {
+                    return v > 0 ? Number(v).toLocaleString() : "-";
+                }
+                return escapeHtml(v || "-");
+            };
+            html += '<tr>' +
+                '<td class="py-2 px-3 font-bold text-slate-900">' + escapeHtml(row.item) + '</td>' +
+                '<td class="py-2 px-3 text-right bg-indigo-50/50 font-black text-indigo-900 whitespace-nowrap">' + fmt(row.y2026) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2025) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2024) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2023) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2022) + '</td>' +
+            '</tr>';
+        });
+        revYcTbody.innerHTML = html;
+    }
+
+    const expYcTbody = document.getElementById("yearlyExpenseComparisonTableBody");
+    if (expYcTbody && yc && Array.isArray(yc.expense)) {
+        let html = "";
+        yc.expense.forEach(function(row) {
+            const fmt = function(v) {
+                if (typeof v === "number") {
+                    return v > 0 ? Number(v).toLocaleString() : "-";
+                }
+                return escapeHtml(v || "-");
+            };
+            html += '<tr>' +
+                '<td class="py-2 px-3 font-bold text-slate-900">' + escapeHtml(row.item) + '</td>' +
+                '<td class="py-2 px-3 text-right bg-rose-50/50 font-black text-rose-900 whitespace-nowrap">' + fmt(row.y2026) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2025) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2024) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2023) + '</td>' +
+                '<td class="py-2 px-3 text-right text-slate-600 whitespace-nowrap">' + fmt(row.y2022) + '</td>' +
+            '</tr>';
+        });
+        expYcTbody.innerHTML = html;
+    }
 }
 
 function renderAgendaStepper() {

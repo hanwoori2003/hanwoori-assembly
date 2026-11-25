@@ -138,7 +138,7 @@ function loadStateFromStorage() {
         const canonicalRoster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : [];
         const canonicalTotal = canonicalRoster.length || 131;
         const isCurrentKey = Boolean(localStorage.getItem(STORAGE_KEY));
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v15") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v17") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v15") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.bylaws)) {
@@ -352,16 +352,30 @@ function loadStateFromStorage() {
                     }
                 }
                 appState.winnerPagePublic = Boolean(parsed.winnerPagePublic);
+                const defaultSettle = (typeof getDefaultState === "function") ? getDefaultState().settlement : null;
                 if (parsed.settlement) {
-                    if (Array.isArray(parsed.settlement.revenueItems)) {
-                        parsed.settlement.revenueItems.forEach(function(ri) {
-                            if (ri && typeof ri.name === "string" && ri.name.indexOf("2025") !== -1) {
-                                ri.name = ri.name.replace(/2025/g, "2026");
-                                needsPersistMigration = true;
-                            }
-                        });
+                    // Check if settlement has outdated 2025 legacy values (109,910,000 / 89,022,651 / 20,887,349)
+                    if (parsed.settlement.totalRevenue === 109910000 || parsed.settlement.balance === 20887349 || !parsed.settlement.concertExpense) {
+                        if (defaultSettle) {
+                            appState.settlement = JSON.parse(JSON.stringify(defaultSettle));
+                            needsPersistMigration = true;
+                        } else {
+                            appState.settlement = parsed.settlement;
+                        }
+                    } else {
+                        if (Array.isArray(parsed.settlement.revenueItems)) {
+                            parsed.settlement.revenueItems.forEach(function(ri) {
+                                if (ri && typeof ri.name === "string" && ri.name.indexOf("2025") !== -1) {
+                                    ri.name = ri.name.replace(/2025/g, "2026");
+                                    needsPersistMigration = true;
+                                }
+                            });
+                        }
+                        appState.settlement = parsed.settlement;
                     }
-                    appState.settlement = parsed.settlement;
+                } else if (defaultSettle) {
+                    appState.settlement = JSON.parse(JSON.stringify(defaultSettle));
+                    needsPersistMigration = true;
                 }
                 if (needsPersistMigration) {
                     try {
