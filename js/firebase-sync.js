@@ -253,8 +253,8 @@
                             item.desc = "재적 정단원 " + officialCount + "명 기준 성원 확인 (개회·의결정족수 2/3 기준 " + quorumTwoThirds + "명/" + quorumTwoThirds + "표↑, 현장+위임)";
                             scheduleNeedsSyncPush = true;
                         }
-                        if (item.id === "sch-5" && (item.desc.indexOf("12개") !== -1 || item.desc.indexOf("지휘자 임기") !== -1 || item.desc.indexOf("대외수익") !== -1)) {
-                            item.desc = "운영진 회비 감면(제13조 5항), 연습 출석 인정(제22조 2항), 정단원 자격 및 기수(제4조 1항), 단장 피선거권 명칭(제11조 3항), 환불 규정 준단원(제28조 3항) 등 단칙 개정안 총 6개 안건 전자투표 및 의결";
+                        if (item.id === "sch-5" && (item.desc.indexOf("6개") !== -1 || item.desc.indexOf("12개") !== -1 || item.desc.indexOf("지휘자 임기") !== -1 || item.desc.indexOf("대외수익") !== -1)) {
+                            item.desc = "정단원 자격·기수(제4조 ①항), 단장 피선거권 명칭(제11조 ③항), 운영진 회비 감면(제13조 ⑤항), 연습 출석 기준(제22조 ②항), 환불 규정 준단원(제28조 ③항) 등 단칙 개정안 총 5개 안건 전자투표 및 의결";
                             scheduleNeedsSyncPush = true;
                         }
                     }
@@ -354,7 +354,7 @@
 
             // 안건 메타데이터 병합 (기존 또는 클라우드 캐시된 memberVotes 보존)
             var remoteAgendasMeta = Array.isArray(data.agendasMeta) ? data.agendasMeta : [];
-            var isRemoteAgendasStale = remoteAgendasMeta.length !== (typeof INITIAL_AGENDAS !== "undefined" ? INITIAL_AGENDAS.length : 6) ||
+            var isRemoteAgendasStale = remoteAgendasMeta.length !== (typeof INITIAL_AGENDAS !== "undefined" ? INITIAL_AGENDAS.length : 5) ||
                 remoteAgendasMeta.some(function(ag) {
                     return ag && ag.title && (
                         ag.title.indexOf("지휘자 임기") !== -1 ||
@@ -362,13 +362,15 @@
                         ag.title.indexOf("제3-1호") !== -1 ||
                         ag.title.indexOf("보궐선출") !== -1 ||
                         ag.title.indexOf("대외수익") !== -1 ||
-                        ag.title.indexOf("12개") !== -1
+                        ag.title.indexOf("12개") !== -1 ||
+                        ag.title.indexOf("6개") !== -1
                     );
                 }) ||
-                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-3" || ag.no === 3) && String(ag.targetArticle || ag.title || "").indexOf("4조") !== -1; }) ||
-                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-4" || ag.no === 4) && String(ag.targetArticle || ag.title || "").indexOf("11조") !== -1; }) ||
-                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-5" || ag.no === 5) && String(ag.targetArticle || ag.title || "").indexOf("13조") !== -1; }) ||
-                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-6" || ag.no === 6) && String(ag.targetArticle || ag.title || "").indexOf("28조") !== -1; });
+                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-1" || ag.no === 1) && String(ag.targetArticle || ag.title || "").indexOf("4조") !== -1; }) ||
+                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-2" || ag.no === 2) && String(ag.targetArticle || ag.title || "").indexOf("11조") !== -1; }) ||
+                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-3" || ag.no === 3) && String(ag.targetArticle || ag.title || "").indexOf("13조") !== -1; }) ||
+                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-4" || ag.no === 4) && String(ag.targetArticle || ag.title || "").indexOf("22조") !== -1; }) ||
+                !remoteAgendasMeta.some(function(ag) { return ag && (ag.id === "ag-5" || ag.no === 5) && String(ag.targetArticle || ag.title || "").indexOf("28조") !== -1; });
             if (isRemoteAgendasStale && typeof INITIAL_AGENDAS !== "undefined") {
                 remoteAgendasMeta = INITIAL_AGENDAS;
                 if (typeof global.saveStateToStorage === "function") {
