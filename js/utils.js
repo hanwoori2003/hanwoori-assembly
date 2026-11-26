@@ -63,8 +63,8 @@ function migrateAssemblyScheduleItems(scheduleList) {
         "sch-2": "정단원 135명 현황(기존 115명·신단 20명), 주요 변화 사항, 활동 회상 영상 및 3대 특별 T/F 실적 보고",
         "sch-3": "제21회 정기연주회(인재개발원) 설문 71인 전수 분석, 연주 만족도(88.7%) 및 단복 복장 전환 투표 결과 보고",
         "sch-4": "총수입 7,846만원(이월금 포함) / 총지출 5,495만원 / 잔금 2,351만원(전년比 +205만원 흑자) 결산 및 감사 승인",
-        "sch-5": "단원 자격(4조), 단장 자격(11조), 운영진 감면(13조), 출석 인정(22조), 환불 정비(28조) 총 5개 안건 심의·의결",
-        "sch-6": "2027년도 한우리 신임 단장 후보(15기 베이스 최경욱) 단독 출마 찬반 투표 및 차기 집행부 출범 의결"
+        "sch-5": "현장 출석 단원 기준 2/3 찬성 시 가결 (단원 자격·단장 자격·운영진 감면·출석 인정·환불 정비 총 5개 안건 전자투표)",
+        "sch-6": "현장 출석 단원 기준 2/3 찬성 시 당선 (2027년도 신임 단장 후보 15기 베이스 최경욱 찬반 투표 및 차기 집행부 출범)"
     };
 
     const OFFICIAL_SCHEDULE_BUTTONS = {
@@ -122,6 +122,7 @@ function saveStateToStorage(options) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
             totalAttendees: appState.totalAttendees,
+            onsiteAttendees: appState.onsiteAttendees || 45,
             activeTab: appState.activeTab || "events",
             activeAgendaId: appState.activeAgendaId,
             adminPreviewAsMember: appState.adminPreviewAsMember,
@@ -174,6 +175,9 @@ function loadStateFromStorage() {
                 appState.totalAttendees = (!isCurrentKey && (parsed.totalAttendees === 127 || parsed.totalAttendees === 113 || parsed.totalAttendees === 136 || parsed.totalAttendees === 134 || parsed.totalAttendees === 131))
                     ? canonicalTotal
                     : (parsed.totalAttendees || canonicalTotal);
+                appState.onsiteAttendees = (typeof parsed.onsiteAttendees === "number" && parsed.onsiteAttendees > 0)
+                    ? parsed.onsiteAttendees
+                    : 45;
                 appState.activeTab = normalizeScheduleTargetTab(parsed.activeTab) || "events";
                 appState.activeAgendaId = parsed.activeAgendaId || "ag-1";
                 appState.adminPreviewAsMember = Boolean(parsed.adminPreviewAsMember);
@@ -741,12 +745,12 @@ function getAgendaTallies(agenda) {
         else if (choice === "abstain") abstain += 1;
     });
     const totalVoted = approve + reject + abstain;
-    const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
-        ? FULL_MEMBER_ROSTER.length
-        : 135;
-    const baseTotal = (typeof appState !== "undefined" && appState && typeof appState.totalAttendees === "number" && appState.totalAttendees > 0)
-        ? appState.totalAttendees
-        : fallbackTotal;
+    const onsiteTotal = (typeof appState !== "undefined" && appState && typeof appState.onsiteAttendees === "number" && appState.onsiteAttendees > 0)
+        ? appState.onsiteAttendees
+        : 45;
+    const baseTotal = (typeof agenda.voterTotal === "number" && agenda.voterTotal > 0)
+        ? agenda.voterTotal
+        : onsiteTotal;
     const totalAttendees = Math.max(baseTotal, totalVoted);
     const majorityThreshold = getMajorityThreshold(totalAttendees);
     const isAdopted = approve >= majorityThreshold;
@@ -926,12 +930,12 @@ function getActiveCandidates() {
 
 function getElectionTallies() {
     const elec = appState.election || {};
-    const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
-        ? FULL_MEMBER_ROSTER.length
-        : 135;
+    const onsiteTotal = (typeof appState !== "undefined" && appState && typeof appState.onsiteAttendees === "number" && appState.onsiteAttendees > 0)
+        ? appState.onsiteAttendees
+        : 45;
     const basePool = (elec.totalVoters && elec.totalVoters > 0)
         ? elec.totalVoters
-        : ((typeof appState !== "undefined" && appState && appState.totalAttendees > 0) ? appState.totalAttendees : fallbackTotal);
+        : onsiteTotal;
     if (elec.mode === "single") {
         const sv = elec.singleVotes || { approve: 0, reject: 0, abstain: 0, memberVotes: {} };
         let approve = Number(sv.approve) || 0;

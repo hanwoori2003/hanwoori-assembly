@@ -151,11 +151,11 @@
                         </div>
                     </div>
                     <!-- Quorum Badge (visible on md+ to prevent mobile crowding) -->
-                    <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300 shrink-0">
+                    <div class="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300 shrink-0">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span id="headerQuorumBadgeText">성원 <strong id="headerTotalAttendees" class="text-white font-bold">135명</strong></span>
+                        <span id="headerQuorumBadgeText">현장 출석 <strong id="headerTotalAttendees" class="text-white font-bold">45명</strong></span>
                         <span class="text-slate-500">|</span>
-                        <span class="text-slate-400">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">90표↑</strong></span>
+                        <span class="text-slate-400">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">30표↑</strong></span>
                     </div>
                 </div>
 
@@ -928,8 +928,8 @@
                         </div>
                     </div>
                     <div class="text-left sm:text-right text-xs text-slate-400 space-y-0.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-800">
-                        <div>현재 투표 참여: <strong id="activeAgendaTotalVoted" class="text-white">0</strong>명</div>
-                        <div>가결 정족수(2/3): <strong id="activeAgendaPassThreshold" class="text-emerald-400">90</strong>표 이상 찬성 필요</div>
+                        <div>현장 출석 인원: <strong id="activeAgendaOnsiteCount" class="text-indigo-300">45</strong>명 | 투표 참여: <strong id="activeAgendaTotalVoted" class="text-white">0</strong>명</div>
+                        <div>가결 정족수(2/3): <strong id="activeAgendaPassThreshold" class="text-emerald-400">30</strong>표 이상 찬성 필요</div>
                     </div>
                 </div>
 
@@ -1053,6 +1053,12 @@
                         <span class="text-xs font-bold text-slate-700">기권</span>
                         <div id="singleCandAbstainCount" class="text-2xl font-black text-slate-700 mt-1">0</div>
                     </div>
+                </div>
+
+                <!-- Quorum & Pass Threshold Summary -->
+                <div class="p-3.5 rounded-xl bg-slate-900 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                    <div>현장 출석 인원: <strong id="electionOnsiteCount" class="text-indigo-300">45</strong>명 | 투표 참여: <strong id="singleCandTotalVotedCount" class="text-white">0</strong>명</div>
+                    <div>당선 정족수(2/3): <strong id="singleCandPassThreshold" class="text-emerald-400">30</strong>표 이상 찬성 필요</div>
                 </div>
 
                 <!-- Single Vote Buttons -->
@@ -1225,12 +1231,17 @@
                     </h3>
                     <div class="space-y-3 text-xs">
                         <div>
-                            <label class="block font-bold text-slate-700 mb-1">총회 참석 총원 설정 (재적 정단원 <span id="adminOfficialMemberCountSpan">135</span>명 · 현재: <span id="adminCurrentAttendeesSpan">135</span>명)</label>
+                            <label class="block font-bold text-slate-700 mb-1">
+                                현장 출석 인원 설정 (의결 정족수 모수) · 현재: <span id="adminCurrentOnsiteAttendeesSpan" class="text-indigo-600 font-extrabold">45</span>명 (가결 기준: <span id="adminCurrentPassThresholdSpan" class="text-emerald-600 font-extrabold">30</span>표↑)
+                            </label>
                             <div class="flex items-center gap-2">
-                                <input type="number" id="adminInputTotalAttendees" value="135" class="w-32 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold" />
-                                <button type="button" onclick="appState.totalAttendees=parseInt(document.getElementById('adminInputTotalAttendees').value)||(typeof FULL_MEMBER_ROSTER!=='undefined'?FULL_MEMBER_ROSTER.length:135); saveStateToStorage(); renderAll(); showToast('성원 총원이 변경되었습니다.');" class="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer">
-                                    반영
+                                <input type="number" id="adminInputOnsiteAttendees" value="45" min="1" max="135" class="w-32 px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold" />
+                                <button type="button" onclick="updateOnsiteAttendeesFromInput()" class="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer shadow-xs">
+                                    현장 인원 반영
                                 </button>
+                            </div>
+                            <div class="text-[11px] text-slate-500 mt-1">
+                                * 단칙 개정안 및 단장 선거 투표는 쉐도우보팅(위임)을 제외한 현장 출석 인원의 2/3 찬성으로 가결됩니다. (재적 정단원: <span id="adminOfficialMemberCountSpan">135</span>명, 개회 정족수: 90명 성립 완료)
                             </div>
                         </div>
                         <div class="pt-2 border-t border-slate-100">
@@ -1729,14 +1740,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.101"></script>
-    <script src="js/data-config.js?v=2026.101"></script>
-    <script src="js/data-survey-comments.js?v=2026.101"></script>
-    <script src="js/firebase-config.js?v=2026.101"></script>
-    <script src="js/firebase-sync.js?v=2026.101"></script>
-    <script src="js/utils.js?v=2026.101"></script>
-    <script src="js/render.js?v=2026.101"></script>
-    <script src="js/handlers.js?v=2026.101"></script>
-    <script src="js/app.js?v=2026.101"></script>
+    <script src="js/data-members.js?v=2026.102"></script>
+    <script src="js/data-config.js?v=2026.102"></script>
+    <script src="js/data-survey-comments.js?v=2026.102"></script>
+    <script src="js/firebase-config.js?v=2026.102"></script>
+    <script src="js/firebase-sync.js?v=2026.102"></script>
+    <script src="js/utils.js?v=2026.102"></script>
+    <script src="js/render.js?v=2026.102"></script>
+    <script src="js/handlers.js?v=2026.102"></script>
+    <script src="js/app.js?v=2026.102"></script>
 </body>
 </html>

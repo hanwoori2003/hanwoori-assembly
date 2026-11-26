@@ -213,4 +213,95 @@ window.addEventListener("DOMContentLoaded", function() {
             activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         } catch (e) {}
     }
+
+    // Initialize session inactivity timeout (20 minutes)
+    initSessionTimeoutMonitor();
 });
+
+// ============================================================
+// 세션 미활동 타임아웃 감지 및 자동 로그아웃 (20분 유휴 시 자동 종료)
+// ============================================================
+const SESSION_INACTIVITY_TIMEOUT_MS = 20 * 60 * 1000; // 20분
+let lastUserActivityTime = Date.now();
+
+function recordUserActivity() {
+    lastUserActivityTime = Date.now();
+    try {
+        if (typeof sessionStorage !== "undefined") {
+            sessionStorage.setItem("hanwoori_last_activity", String(lastUserActivityTime));
+        }
+    } catch (e) {}
+}
+window.recordUserActivity = recordUserActivity;
+
+function initSessionTimeoutMonitor() {
+    const activityEvents = ["mousedown", "mousemove", "keydown", "touchstart", "scroll", "click"];
+    let activityThrottleTimer = null;
+    activityEvents.forEach(function(evtName) {
+        window.addEventListener(evtName, function() {
+            if (!activityThrottleTimer) {
+                recordUserActivity();
+                activityThrottleTimer = setTimeout(function() {
+                    activityThrottleTimer = null;
+                }, 1000);
+            }
+        }, { passive: true });
+    });
+
+    setInterval(function() {
+        const isLoggedIn = Boolean(appState && (appState.hasExplicitLogin || appState.currentVoterId));
+        if (!isLoggedIn) return;
+
+        let lastActive = lastUserActivityTime;
+        try {
+            if (typeof sessionStorage !== "undefined") {
+                const stored = Number(sessionStorage.getItem("hanwoori_last_activity"));
+                if (stored && stored > lastActive) {
+                    lastActive = stored;
+                    lastUserActivityTime = stored;
+                }
+            }
+        } catch (e) {}
+
+        const elapsed = Date.now() - lastActive;
+        if (elapsed > SESSION_INACTIVITY_TIMEOUT_MS) {
+            handleSessionInactivityTimeout();
+        }
+    }, 10000);
+}
+
+function handleSessionInactivityTimeout() {
+    if (!appState || (!appState.hasExplicitLogin && !appState.currentVoterId)) return;
+
+    appState.currentVoterId = null;
+    appState.currentVoterName = "";
+    appState.hasExplicitLogin = false;
+    appState.isAdminAuthenticated = false;
+    appState.adminPreviewAsMember = false;
+
+    try {
+        if (typeof sessionStorage !== "undefined") {
+            sessionStorage.removeItem("hanwoori_last_activity");
+        }
+    } catch (e) {}
+
+    saveStateToStorage({ skipCloudConfigPush: true });
+
+    const gate = document.getElementById("loginGateScreen");
+    const shell = document.getElementById("appShell");
+    if (gate) {
+        gate.style.setProperty("display", "flex", "important");
+        gate.classList.remove("hidden");
+    }
+    if (shell) {
+        shell.style.setProperty("display", "none", "important");
+        shell.classList.add("hidden");
+    }
+    if (typeof document !== "undefined" && document.documentElement) {
+        document.documentElement.classList.remove("is-authenticated");
+    }
+
+    renderAll();
+    showToast("⏱️ 20분 동안 활동이 없어 안전을 위해 자동 로그아웃되었습니다.");
+}
+window.handleSessionInactivityTimeout = handleSessionInactivityTimeout;

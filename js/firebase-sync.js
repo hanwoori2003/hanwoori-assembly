@@ -125,7 +125,7 @@
                 baseReject: 0,
                 baseAbstain: 0,
                 voterTotal: 0,
-                passThreshold: Math.ceil(((typeof s.totalAttendees === "number" && s.totalAttendees > 0 ? s.totalAttendees : 135) * 2) / 3),
+                passThreshold: Math.ceil(((typeof s.onsiteAttendees === "number" && s.onsiteAttendees > 0 ? s.onsiteAttendees : 45) * 2) / 3),
                 isLocked: locked,
                 locked: locked,
                 status: locked ? "closed" : "voting"
@@ -160,6 +160,7 @@
                 totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 135)
             },
             totalAttendees: typeof s.totalAttendees === "number" ? s.totalAttendees : ((typeof global.FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(global.FULL_MEMBER_ROSTER)) ? global.FULL_MEMBER_ROSTER.length : 135),
+            onsiteAttendees: typeof s.onsiteAttendees === "number" ? s.onsiteAttendees : 45,
             winnerPagePublic: Boolean(s.winnerPagePublic),
             uploadedFileName: s.uploadedFileName || "",
             assemblySchedule: deepClone(Array.isArray(s.assemblySchedule) ? s.assemblySchedule : []),
@@ -224,6 +225,9 @@
                 s.totalAttendees = data.totalAttendees;
             } else if (data.quorum && typeof data.quorum.totalAttendees === "number") {
                 s.totalAttendees = data.quorum.totalAttendees;
+            }
+            if (typeof data.onsiteAttendees === "number" && data.onsiteAttendees > 0) {
+                s.onsiteAttendees = data.onsiteAttendees;
             }
             if (typeof data.winnerPagePublic === "boolean") {
                 s.winnerPagePublic = data.winnerPagePublic;

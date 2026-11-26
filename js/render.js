@@ -80,9 +80,10 @@ function populateLoginMemberSelect() {
 }
 
 function renderHeaderStatus() {
-    const majority = getMajorityThreshold(appState.totalAttendees);
+    const onsite = (typeof appState.onsiteAttendees === "number" && appState.onsiteAttendees > 0) ? appState.onsiteAttendees : 45;
+    const majority = getMajorityThreshold(onsite);
     const totalEl = document.getElementById("headerTotalAttendees");
-    if (totalEl) totalEl.textContent = appState.totalAttendees + "명";
+    if (totalEl) totalEl.textContent = onsite + "명";
     const majEl = document.getElementById("headerMajorityThreshold");
     if (majEl) majEl.textContent = majority + "표↑";
 
@@ -1511,6 +1512,8 @@ function renderActiveVotingView() {
                             '<span class="text-xs text-slate-300">총 ' + totalAg + '개 안건 중 <strong class="text-amber-300">' + lockedAg + '개 확정(마감)</strong> / <strong class="text-emerald-400">' + votingAg + '개 표결 중</strong></span>' +
                         '</div>' +
                         '<div class="flex items-center gap-2 flex-wrap">' +
+                            '<span class="px-2.5 py-1 rounded-lg bg-indigo-900/60 border border-indigo-400/30 text-xs font-bold text-indigo-200">현장 출석: <strong class="text-white">' + (appState.onsiteAttendees || 45) + '명</strong> (가결 2/3: <strong class="text-emerald-300">' + tallies.majorityThreshold + '표↑</strong>)</span>' +
+                            '<button type="button" onclick="promptUpdateOnsiteAttendees()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition cursor-pointer">✏️ 현장 인원 수정</button>' +
                             '<button type="button" onclick="toggleAllAgendasLock(' + (lockedAg < totalAg) + ')" class="px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer ' +
                                 (lockedAg < totalAg ? 'bg-rose-600 hover:bg-rose-500 text-white' : 'bg-emerald-600 hover:bg-emerald-500 text-white') + '">' +
                                 (lockedAg < totalAg ? '🔒 전체 안건 일괄 마감(잠금)' : '🔓 전체 안건 일괄 재개') +
@@ -1584,6 +1587,8 @@ function renderActiveVotingView() {
     if (totalVotedEl) totalVotedEl.textContent = tallies.totalVoted;
     const passThreshEl = document.getElementById("activeAgendaPassThreshold");
     if (passThreshEl) passThreshEl.textContent = tallies.majorityThreshold;
+    const onsiteEl = document.getElementById("activeAgendaOnsiteCount");
+    if (onsiteEl) onsiteEl.textContent = (appState.onsiteAttendees || 45);
 
     // Vote result status badge
     const statusEl = document.getElementById("activeAgendaResultStatus");
@@ -1595,10 +1600,10 @@ function renderActiveVotingView() {
             statusEl.textContent = "🔒 의결 확정 (" + (tallies.isAdopted ? "가결 확정" : "부결 확정") + " · 투표 마감)";
         } else if (tallies.isAdopted) {
             statusEl.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1";
-            statusEl.textContent = "가결 요건 충족 (2/3 정족수 충족)";
+            statusEl.textContent = "가결 요건 충족 (현장 " + (appState.onsiteAttendees || 45) + "명 중 2/3 충족)";
         } else {
             statusEl.className = "px-2.5 py-1 rounded-lg text-xs font-extrabold bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1";
-            statusEl.textContent = "표결 진행 중 (가결 기준: " + tallies.majorityThreshold + "표↑)";
+            statusEl.textContent = "표결 진행 중 (가결 기준: " + tallies.majorityThreshold + "표↑ / 현장 " + (appState.onsiteAttendees || 45) + "명)";
         }
     }
 
@@ -1720,6 +1725,8 @@ function renderElectionView() {
                             '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400 text-slate-950">운영진 모드</span>' +
                         '</div>' +
                         '<div class="flex items-center gap-2 flex-wrap">' +
+                            '<span class="px-2.5 py-1 rounded-lg bg-indigo-900/60 border border-indigo-400/30 text-xs font-bold text-indigo-200">현장 출석: <strong class="text-white">' + (appState.onsiteAttendees || 45) + '명</strong> (당선 2/3: <strong class="text-emerald-300">' + tallies.passThreshold + '표↑</strong>)</span>' +
+                            '<button type="button" onclick="promptUpdateOnsiteAttendees()" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-400 text-slate-950 hover:bg-amber-300 transition cursor-pointer">✏️ 현장 인원 수정</button>' +
                             '<button type="button" onclick="openCandidateModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-500 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-white shadow-sm transition flex items-center gap-1.5 cursor-pointer">' +
                                 '<span>+</span> 단장 후보자 등록' +
                             '</button>' +
@@ -1886,6 +1893,12 @@ function renderElectionView() {
         if (rejEl) rejEl.textContent = tallies.reject;
         const absEl = document.getElementById("singleCandAbstainCount");
         if (absEl) absEl.textContent = tallies.abstain;
+        const elecOnsiteEl = document.getElementById("electionOnsiteCount");
+        if (elecOnsiteEl) elecOnsiteEl.textContent = (appState.onsiteAttendees || 45);
+        const elecVotedEl = document.getElementById("singleCandTotalVotedCount");
+        if (elecVotedEl) elecVotedEl.textContent = tallies.totalVoted;
+        const elecPassEl = document.getElementById("singleCandPassThreshold");
+        if (elecPassEl) elecPassEl.textContent = tallies.passThreshold;
 
         const myVote = appState.currentVoterId ? (elec.singleVotes.memberVotes || {})[appState.currentVoterId] : null;
         const statusEl = document.getElementById("myElectionVoteStatus");
@@ -2261,7 +2274,14 @@ function renderAdminView() {
     const curAttSpan = document.getElementById("adminCurrentAttendeesSpan");
     if (curAttSpan) curAttSpan.textContent = appState.totalAttendees;
     const officialCountSpan = document.getElementById("adminOfficialMemberCountSpan");
-    if (officialCountSpan) officialCountSpan.textContent = (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134);
+    if (officialCountSpan) officialCountSpan.textContent = (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 135);
+
+    const onsiteInp = document.getElementById("adminInputOnsiteAttendees");
+    if (onsiteInp) onsiteInp.value = appState.onsiteAttendees || 45;
+    const curOnsiteSpan = document.getElementById("adminCurrentOnsiteAttendeesSpan");
+    if (curOnsiteSpan) curOnsiteSpan.textContent = appState.onsiteAttendees || 45;
+    const curPassSpan = document.getElementById("adminCurrentPassThresholdSpan");
+    if (curPassSpan) curPassSpan.textContent = getMajorityThreshold(appState.onsiteAttendees || 45);
 
     const winnerToggle = document.getElementById("adminWinnerPublicToggle");
     if (winnerToggle) winnerToggle.checked = Boolean(appState.winnerPagePublic);

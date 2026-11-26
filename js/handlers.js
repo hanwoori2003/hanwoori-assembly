@@ -1588,7 +1588,7 @@ function saveAgendaModal() {
             disagree: 0,
             abstain: 0,
             voterTotal: 0,
-            passThreshold: getMajorityThreshold(appState.totalAttendees || (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134)),
+            passThreshold: getMajorityThreshold(appState.onsiteAttendees || 45),
             isLocked: false,
             status: "voting",
             memberVotes: {}
@@ -1821,7 +1821,8 @@ function deleteEvent(id) { deleteEventItem(id); }
 
 function exportAssemblyReportHtml() {
     try {
-        const maj = getMajorityThreshold(appState.totalAttendees);
+        const onsite = (typeof appState.onsiteAttendees === "number" && appState.onsiteAttendees > 0) ? appState.onsiteAttendees : 45;
+        const maj = getMajorityThreshold(onsite);
         let html = '<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><title>2026 삼성한우리합창단 정기총회 의결 보고서</title>' +
             '<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:30px;line-height:1.6;color:#1e293b;max-width:900px;margin:0 auto;}' +
             'h1{border-bottom:2px solid #4f46e5;padding-bottom:10px;color:#1e1b4b;}' +
@@ -1832,13 +1833,13 @@ function exportAssemblyReportHtml() {
             '.badge-fail{color:#b91c1c;font-weight:bold;}' +
             '</style></head><body>' +
             '<h1>2026 삼성한우리합창단 정기총회 공식 의결 보고서</h1>' +
-            '<p><strong>기준 성원:</strong> 재적 정단원 ' + (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 134) + '명 중 참석 총원 ' + appState.totalAttendees + '명 | <strong>의결 정족수(2/3):</strong> ' + maj + '표 이상</p>' +
+            '<p><strong>기준 성원:</strong> 재적 정단원 135명 (개회 성원 90명 이상 위임 포함 성립) | <strong>현장 출석 인원:</strong> ' + onsite + '명 | <strong>의결 정족수(현장 2/3):</strong> ' + maj + '표 이상 찬성 필요</p>' +
             '<h2>1. 정기총회 공식 식순 진행 현황</h2><ul>' +
             (appState.assemblySchedule || []).map(function(s) {
                 return '<li><strong>' + escapeHtml(s.title) + '</strong> [' + escapeHtml(s.status) + ']: ' + escapeHtml(s.desc) + '</li>';
             }).join('') +
             '</ul>' +
-            '<h2>2. 단칙 개정안(12건) 찬반투표 집계 결과</h2>' +
+            '<h2>2. 단칙 개정안 찬반투표 집계 결과 (현장 출석 ' + onsite + '명 기준 2/3 가결)</h2>' +
             '<table><thead><tr><th>No</th><th>안건명</th><th>구분</th><th>찬성</th><th>반대</th><th>기권</th><th>투표율</th><th>결과</th></tr></thead><tbody>' +
             (appState.agendas || []).map(function(ag) {
                 const t = getAgendaTallies(ag);
@@ -1873,8 +1874,9 @@ function exportAssemblyReportHtml() {
 
 function exportVotesCsv() {
     try {
-        const maj = getMajorityThreshold(appState.totalAttendees);
-        let csv = "\uFEFF안건번호,안건명,구분,찬성표,반대표,기권표,총투표수,의결정족수기준,의결결과\n";
+        const onsite = (typeof appState.onsiteAttendees === "number" && appState.onsiteAttendees > 0) ? appState.onsiteAttendees : 45;
+        const maj = getMajorityThreshold(onsite);
+        let csv = "\uFEFF안건번호,안건명,구분,찬성표,반대표,기권표,총투표수,현장출석인원,의결정족수기준(2/3),의결결과\n";
         (appState.agendas || []).forEach(function(ag) {
             const t = getAgendaTallies(ag);
             const isPass = t.approve >= maj;
@@ -2241,3 +2243,39 @@ function openMemberLoginModal() {
         openVoterLoginModal();
     }
 }
+
+// ============================================================
+// 현장 참석 인원 (의결 정족수 모수) 관리 핸들러
+// ============================================================
+
+function updateOnsiteAttendees(newCount) {
+    const parsed = parseInt(newCount, 10);
+    if (!parsed || parsed <= 0 || parsed > 135) {
+        showToast("⚠️ 올바른 현장 출석 인원 수(1~135명)를 입력해 주세요.");
+        return false;
+    }
+    appState.onsiteAttendees = parsed;
+    saveStateToStorage({ skipCloudConfigPush: false });
+    renderAll();
+    const threshold = getMajorityThreshold(parsed);
+    showToast("✅ 현장 출석 인원이 " + parsed + "명 (2/3 가결 기준: " + threshold + "표↑)으로 반영되었습니다.");
+    return true;
+}
+window.updateOnsiteAttendees = updateOnsiteAttendees;
+
+function updateOnsiteAttendeesFromInput() {
+    const input = document.getElementById("adminInputOnsiteAttendees");
+    if (input) {
+        updateOnsiteAttendees(input.value);
+    }
+}
+window.updateOnsiteAttendeesFromInput = updateOnsiteAttendeesFromInput;
+
+function promptUpdateOnsiteAttendees() {
+    const current = appState.onsiteAttendees || 45;
+    const input = prompt("현장에 실제로 출석한 단원 수를 입력해 주세요 (재적: 135명, 현장 2/3 찬성 시 가결):", String(current));
+    if (input !== null && input.trim() !== "") {
+        updateOnsiteAttendees(input.trim());
+    }
+}
+window.promptUpdateOnsiteAttendees = promptUpdateOnsiteAttendees;
