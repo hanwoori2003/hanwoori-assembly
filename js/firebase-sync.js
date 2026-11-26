@@ -212,6 +212,9 @@
                     s.isAdminAuthenticated = false;
                     s.adminPreviewAsMember = false;
                 }
+                if (s.currentVoterId === "mem-80" || s.currentVoterName === "윤지헌") {
+                    s.currentVoterName = "윤지현";
+                }
             }
 
             if (typeof data.sessionTitle === "string" && data.sessionTitle) {

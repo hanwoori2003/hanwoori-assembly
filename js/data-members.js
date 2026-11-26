@@ -89,7 +89,7 @@ const EXECUTIVE_ROSTER = [
   },
   {
     "id": "mem-80",
-    "name": "윤지헌",
+    "name": "윤지현",
     "gen": "17",
     "part": "테너",
     "basePart": "테너",
@@ -101,7 +101,7 @@ const EXECUTIVE_ROSTER = [
     "subRole": "-",
     "email": "mem-80@samsung-hanwoori.org",
     "code": "8532",
-    "key": "윤지헌-테너"
+    "key": "윤지현-테너"
   },
   {
     "id": "mem-37",
@@ -1580,7 +1580,7 @@ const FULL_MEMBER_ROSTER = [
     },
     {
         "id":  "mem-80",
-        "name":  "윤지헌",
+        "name":  "윤지현",
         "gen":  "17",
         "part":  "테너",
         "basePart":  "테너",
@@ -1592,7 +1592,7 @@ const FULL_MEMBER_ROSTER = [
         "subRole":  "-",
         "email":  "mem-80@samsung-hanwoori.org",
         "code":  "8532",
-        "key":  "윤지헌-테너"
+        "key":  "윤지현-테너"
     },
     {
         "id":  "mem-81",

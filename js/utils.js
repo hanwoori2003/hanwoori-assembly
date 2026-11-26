@@ -205,6 +205,14 @@ function loadStateFromStorage() {
                         appState.isAdminAuthenticated = false;
                         appState.adminPreviewAsMember = false;
                     }
+                    if (appState.currentVoterId === "mem-80" || appState.currentVoterName === "윤지헌") {
+                        appState.currentVoterName = "윤지현";
+                        needsPersistMigration = true;
+                    }
+                }
+                if (appState.currentVoterId === "mem-80" || appState.currentVoterName === "윤지헌") {
+                    appState.currentVoterName = "윤지현";
+                    needsPersistMigration = true;
                 }
                 appState.bylaws = parsed.bylaws;
                 
