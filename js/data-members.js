@@ -1,4 +1,4 @@
-// 1. 운영진(18명) 및 공식 정단원 명부(131명) 데이터 (js/data-members.js)
+// 1. 운영진(18명) 및 공식 정단원 명부(135명) 데이터 (js/data-members.js)
 const STORAGE_KEY = "hanwoori_choir_assembly_2026_state_v18";
 let cloudSyncUrl = "";
 let cloudSyncTimer = null;
@@ -297,7 +297,7 @@ const EXECUTIVE_ROSTER = [
   }
 ];
 
-// 2026 공식 정단원 명부 (131명, 21기 예비신단 중 무대 완주 15명 인정 / 미참여 5명 제외)
+// 2026 공식 정단원 명부 (135명 기준, 21기 신단 무대 완주 15명 + 무대 미참여 5명 포함)
 const FULL_MEMBER_ROSTER = [
     {
         "id":  "mem-1",

@@ -19,7 +19,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 88,
+        "passThreshold": 90,
         "memberVotes": {},
         "agendaNo": 1,
         "number": 1,
@@ -48,7 +48,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 88,
+        "passThreshold": 90,
         "memberVotes": {},
         "agendaNo": 2,
         "number": 2,
@@ -77,7 +77,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 88,
+        "passThreshold": 90,
         "memberVotes": {},
         "agendaNo": 3,
         "number": 3,
@@ -106,7 +106,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 88,
+        "passThreshold": 90,
         "memberVotes": {},
         "agendaNo": 4,
         "number": 4,
@@ -135,7 +135,7 @@ const INITIAL_AGENDAS = [
         "disagree": 0,
         "abstain": 0,
         "voterTotal": 0,
-        "passThreshold": 88,
+        "passThreshold": 90,
         "memberVotes": {},
         "agendaNo": 5,
         "number": 5,
@@ -368,7 +368,7 @@ const INITIAL_ANNUAL_EVENTS = [
 function getDefaultState() {
   return {
     sessionTitle: "2026 삼성한우리합창단 정기총회",
-    totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 131),
+    totalAttendees: (typeof FULL_MEMBER_ROSTER !== "undefined" ? FULL_MEMBER_ROSTER.length : 135),
     activeTab: "events",
     activeAgendaId: "ag-1",
     adminPreviewAsMember: false,
@@ -382,7 +382,7 @@ function getDefaultState() {
       {
         id: "sch-1",
         title: "1. 개회 및 성원 보고",
-        desc: "재적 정단원 131명 기준 성원 확인 (개회·의결정족수 2/3 기준 88명/88표↑, 현장+위임)",
+        desc: "재적 정단원 135명 기준 성원 확인 (개회·의결정족수 2/3 기준 90명/90표↑, 현장+위임)",
         status: "진행중",
         targetTab: "events",
         btnLabel: ""
@@ -1161,8 +1161,8 @@ function getDefaultState() {
 },
     attendanceSurvey: {
         deadline: "2026년 12월 12일 23:59",
-        targetTotal: 131,
-        quorumThreshold: 88,
+        targetTotal: 135,
+        quorumThreshold: 90,
         votes: {}
     },
     concertSurvey: {

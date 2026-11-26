@@ -489,7 +489,7 @@ function renderActivityView() {
     // ------------------------------------------------------------------
     const statsCont = document.getElementById("activityMemberStatsContainer");
     if (statsCont && report) {
-        const ms = report.memberSummary || { total: 131, existing: 116, newcomers: 15, note: "정단원 131명 기준" };
+        const ms = report.memberSummary || { total: 135, existing: 115, newcomers: 20, note: "정단원 135명 기준" };
         const partColors = {
             rose: { bg: "bg-rose-50", border: "border-rose-200", text: "text-rose-700", bar: "from-rose-500 to-pink-500", pill: "bg-white text-rose-700 border-rose-200" },
             amber: { bg: "bg-amber-50", border: "border-amber-200", text: "text-amber-700", bar: "from-amber-500 to-orange-500", pill: "bg-white text-amber-800 border-amber-200" },
@@ -639,7 +639,7 @@ function renderActivityView() {
             '<div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">' +
                 '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">' +
                     '<div class="flex items-center justify-between sm:justify-start gap-2">' +
-                        '<h4 class="text-sm font-black text-slate-900 break-keep">📸 파트별 정단원 사진 명부 <span class="text-xs font-bold text-slate-500">(8개 파트 · 131명)</span></h4>' +
+                        '<h4 class="text-sm font-black text-slate-900 break-keep">📸 파트별 정단원 사진 명부 <span class="text-xs font-bold text-slate-500">(8개 파트 · 135명)</span></h4>' +
                         '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 whitespace-nowrap shrink-0">클릭 시 확대</span>' +
                     '</div>' +
                     '<span class="text-[11px] text-slate-400">각 파트 카드를 클릭하면 상세 사진 명부가 크게 열립니다</span>' +
@@ -2385,7 +2385,7 @@ function renderAttendanceView() {
     const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER))
         ? FULL_MEMBER_ROSTER
         : (appState.members || []);
-    const totalMembers = roster.length || 131;
+    const totalMembers = (typeof appState !== "undefined" && appState.totalAttendees) ? appState.totalAttendees : 135;
     const quorumGoal = Math.ceil((totalMembers * 2) / 3);
 
     if (!appState.attendanceSurvey) {
@@ -2500,7 +2500,7 @@ function renderAttendanceView() {
     // 5. Update Navbar Tab Badge
     const navBadge = document.getElementById("navBadgeAttendanceCount");
     if (navBadge) {
-        navBadge.textContent = quorumCount + "/" + (survey.quorumThreshold || 88);
+        navBadge.textContent = quorumCount + "/" + (survey.quorumThreshold || 90);
         if (quorumMet) {
             navBadge.className = "px-1.5 py-0.2 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-bold";
         } else {

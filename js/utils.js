@@ -74,8 +74,8 @@ function migrateAssemblyScheduleItems(scheduleList) {
             copy.targetTab = nextTarget;
             changed = true;
         }
-        if (copy.id === "sch-1" && (String(copy.desc || "").indexOf("136명") !== -1 || String(copy.desc || "").indexOf("164명") !== -1)) {
-            copy.desc = "재적 정단원 131명 기준 성원 확인 (개회·의결정족수 2/3 기준 88명/88표↑, 현장+위임)";
+        if (copy.id === "sch-1" && (String(copy.desc || "").indexOf("136명") !== -1 || String(copy.desc || "").indexOf("164명") !== -1 || String(copy.desc || "").indexOf("131명") !== -1)) {
+            copy.desc = "재적 정단원 135명 기준 성원 확인 (개회·의결정족수 2/3 기준 90명/90표↑, 현장+위임)";
             changed = true;
         }
         if (copy.id === "sch-5" && (String(copy.desc || "").indexOf("6개") !== -1 || String(copy.desc || "").indexOf("12개") !== -1 || String(copy.desc || "").indexOf("지휘자 임기") !== -1 || String(copy.desc || "").indexOf("대외수익") !== -1)) {
@@ -136,13 +136,13 @@ function saveStateToStorage(options) {
 function loadStateFromStorage() {
     try {
         const canonicalRoster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : [];
-        const canonicalTotal = canonicalRoster.length || 131;
+        const canonicalTotal = (typeof appState !== "undefined" && appState && appState.totalAttendees) ? appState.totalAttendees : 135;
         const isCurrentKey = Boolean(localStorage.getItem(STORAGE_KEY));
         const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("hanwoori_choir_assembly_2026_state_v17") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v15") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v12") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v11") || localStorage.getItem("hanwoori_choir_assembly_2026_state_v10") || localStorage.getItem("hanuri_choir_assembly_2026_state_v8");
         if (raw) {
             const parsed = JSON.parse(raw);
             if (parsed && Array.isArray(parsed.bylaws)) {
-                appState.totalAttendees = (!isCurrentKey && (parsed.totalAttendees === 127 || parsed.totalAttendees === 113 || parsed.totalAttendees === 136 || parsed.totalAttendees === 134))
+                appState.totalAttendees = (!isCurrentKey && (parsed.totalAttendees === 127 || parsed.totalAttendees === 113 || parsed.totalAttendees === 136 || parsed.totalAttendees === 134 || parsed.totalAttendees === 131))
                     ? canonicalTotal
                     : (parsed.totalAttendees || canonicalTotal);
                 appState.activeTab = normalizeScheduleTargetTab(parsed.activeTab) || "events";
@@ -415,8 +415,8 @@ function loadStateFromStorage() {
                 } else if (typeof getDefaultState === 'function') {
                     appState.attendanceSurvey = (getDefaultState().attendanceSurvey) || {
                         deadline: '2026년 12월 12일 23:59',
-                        targetTotal: 131,
-                        quorumThreshold: 88,
+                        targetTotal: 135,
+                        quorumThreshold: 90,
                         votes: {}
                     };
                 }
@@ -692,7 +692,7 @@ function getAgendaTallies(agenda) {
     const totalVoted = approve + reject + abstain;
     const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER.length
-        : 131;
+        : 135;
     const baseTotal = (typeof appState !== "undefined" && appState && typeof appState.totalAttendees === "number" && appState.totalAttendees > 0)
         ? appState.totalAttendees
         : fallbackTotal;
@@ -877,7 +877,7 @@ function getElectionTallies() {
     const elec = appState.election || {};
     const fallbackTotal = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER) && FULL_MEMBER_ROSTER.length > 0)
         ? FULL_MEMBER_ROSTER.length
-        : 131;
+        : 135;
     const basePool = (elec.totalVoters && elec.totalVoters > 0)
         ? elec.totalVoters
         : ((typeof appState !== "undefined" && appState && appState.totalAttendees > 0) ? appState.totalAttendees : fallbackTotal);
