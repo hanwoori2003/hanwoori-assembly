@@ -450,27 +450,37 @@ function renderEventsView() {
                   '</div>'
                 : '';
 
-            const jumpBtn = (safeTargetTab && safeTargetTab !== "events" && item.id !== "sch-1")
-                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center whitespace-nowrap shadow-2xs">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
+            const hasJumpBtn = Boolean(safeTargetTab && safeTargetTab !== "events" && item.id !== "sch-1");
+            const jumpBtnLabel = escapeHtml(item.btnLabel || "이동 →");
+
+            // Desktop jump button (compact pill aligned on top right)
+            const jumpBtnDesktop = hasJumpBtn
+                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center whitespace-nowrap shadow-2xs">' + jumpBtnLabel + '</button>'
                 : '';
 
-            let actionsHtml = "";
-            if (jumpBtn || execControls) {
-                actionsHtml = '<div class="flex items-center justify-end gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100 min-w-0">' +
-                    jumpBtn +
-                    (execControls || '') +
-                '</div>';
-            }
+            // Mobile jump button (full width, clean touch target)
+            const jumpBtnMobile = hasJumpBtn
+                ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="w-full px-4 py-2 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center flex items-center justify-center gap-1 shadow-2xs">' + jumpBtnLabel + '</button>'
+                : '';
 
-            html += '<div class="p-4 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 min-w-0 max-w-full overflow-hidden">' +
-                '<div class="flex items-start gap-3 min-w-0 flex-1">' +
-                    statusBadge +
-                    '<div class="min-w-0 flex-1">' +
-                        '<h4 class="text-sm font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">' + escapeHtml(item.title) + '</h4>' +
-                        '<p class="text-xs text-slate-600 mt-0.5 break-keep leading-relaxed">' + escapeHtml(item.desc) + '</p>' +
+            const hasMobileActions = Boolean(jumpBtnMobile || execControls);
+
+            html += '<div class="p-3.5 sm:p-4 rounded-xl border border-slate-200/90 bg-white hover:border-indigo-300 transition shadow-xs flex flex-col gap-2 min-w-0 max-w-full overflow-hidden">' +
+                // 1. Title Row: Badge + Title (+ Desktop Actions)
+                '<div class="flex items-center justify-between gap-2 min-w-0">' +
+                    '<div class="flex items-center gap-2 min-w-0 flex-1">' +
+                        statusBadge +
+                        '<h4 class="text-sm font-extrabold text-slate-900 truncate tracking-tight">' + escapeHtml(item.title) + '</h4>' +
                     '</div>' +
+                    (hasJumpBtn || isExec ? '<div class="hidden sm:flex items-center gap-2 shrink-0">' + jumpBtnDesktop + execControls + '</div>' : '') +
                 '</div>' +
-                actionsHtml +
+                // 2. Summary Row: Full width, zero indentation under badge, uniform left alignment
+                '<p class="text-xs text-slate-600 leading-relaxed break-keep text-left m-0">' + escapeHtml(item.desc) + '</p>' +
+                // 3. Mobile Actions Row (Only when actions exist)
+                (hasMobileActions ? '<div class="sm:hidden pt-2 border-t border-slate-100 flex flex-col gap-2">' +
+                    (jumpBtnMobile || '') +
+                    (execControls ? '<div class="flex items-center justify-end gap-1.5">' + execControls + '</div>' : '') +
+                '</div>' : '') +
             '</div>';
         });
         container.innerHTML = html || '<div class="text-center py-6 text-slate-400 text-xs">등록된 식순이 없습니다.</div>';
@@ -2279,18 +2289,24 @@ function renderAdminView() {
                 ? '<span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-indigo-50 text-indigo-700 shrink-0">연결: ' + escapeHtml(safeAdminTargetTab) + ' (' + escapeHtml(item.btnLabel || "이동") + ')</span>'
                 : '<span class="text-[11px] text-slate-400 shrink-0">(연결 없음)</span>';
 
-            schHtml += '<div class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">' +
-                '<div class="flex items-start gap-3 min-w-0">' +
-                    statusBadge +
-                    '<div class="min-w-0">' +
+            schHtml += '<div class="p-3.5 rounded-xl border border-slate-200 bg-white hover:border-indigo-300 transition flex flex-col gap-2 shadow-xs">' +
+                '<div class="flex items-center justify-between gap-2 min-w-0">' +
+                    '<div class="flex items-center gap-2 min-w-0 flex-1">' +
+                        statusBadge +
                         '<div class="text-xs font-black text-slate-900 truncate">' + escapeHtml(item.title) + '</div>' +
-                        '<div class="text-[11px] text-slate-500 mt-0.5 break-keep">' + escapeHtml(item.desc) + '</div>' +
-                        '<div class="mt-1">' + tabBadge + '</div>' +
+                    '</div>' +
+                    '<div class="hidden sm:flex items-center gap-1.5 shrink-0">' +
+                        '<button type="button" onclick="openScheduleModal(\'' + item.id + '\')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 hover:bg-indigo-50 text-indigo-700 border border-slate-200 hover:border-indigo-300 transition cursor-pointer">✎ 수정</button>' +
+                        '<button type="button" onclick="deleteScheduleItem(\'' + item.id + '\')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer">🗑️ 삭제</button>' +
                     '</div>' +
                 '</div>' +
-                '<div class="flex items-center gap-1.5 shrink-0 self-end sm:self-center">' +
-                    '<button type="button" onclick="openScheduleModal(\'' + item.id + '\')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 hover:bg-indigo-50 text-indigo-700 border border-slate-200 hover:border-indigo-300 transition cursor-pointer">✎ 수정</button>' +
-                    '<button type="button" onclick="deleteScheduleItem(\'' + item.id + '\')" class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer">🗑️ 삭제</button>' +
+                '<p class="text-xs text-slate-500 leading-relaxed break-keep text-left m-0">' + escapeHtml(item.desc) + '</p>' +
+                '<div class="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-100">' +
+                    tabBadge +
+                    '<div class="flex sm:hidden items-center gap-1.5 shrink-0">' +
+                        '<button type="button" onclick="openScheduleModal(\'' + item.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 hover:bg-indigo-50 text-indigo-700 border border-slate-200 hover:border-indigo-300 transition cursor-pointer">✎ 수정</button>' +
+                        '<button type="button" onclick="deleteScheduleItem(\'' + item.id + '\')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer">🗑️ 삭제</button>' +
+                    '</div>' +
                 '</div>' +
             '</div>';
         });

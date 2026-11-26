@@ -384,52 +384,52 @@ function getDefaultState() {
       {
         id: "sch-1",
         title: "1. 개회 및 성원 보고",
-        desc: "재적 정단원 135명 기준 성원 확인 (개회·의결정족수 2/3 기준 90명/90표↑, 현장+위임)",
+        desc: "재적 정단원 135명 기준 성원 확인 (개회 정족수 2/3 이상 90명 출석, 현장 참석 및 쉐도우보팅 위임 합산)",
         status: "진행중",
         targetTab: "",
         btnLabel: ""
       },
-    {
-        "id": "sch-2",
-        "title": "2. 2026년 활동보고",
-        "desc": "2026년도 정기연습, 대외활동 및 연간 주요 합창단 활동 실적 보고",
-        "status": "완료",
-        "targetTab": "activity",
-        "btnLabel": "활동보고 보기 →"
-    },
-    {
-        "id": "sch-3",
-        "title": "3. 2026년 정기연주회 강평",
-        "desc": "2026년 정기연주회(140명 출연) 단원 설문 분석 및 2027년 기대 활동 발표",
-        "status": "완료",
-        "targetTab": "concert",
-        "btnLabel": "강평 보기 →"
-    },
-    {
-        "id": "sch-4",
-        "title": "4. 2026년 회계",
-        "desc": "2026년 총수입 7,846만원(이월금 포함) / 총지출 5,495만원 / '26년 잔금 23,512,366원(전년比 +2,052,666원) 결산 보고 및 승인",
-        "status": "진행중",
-        "targetTab": "settlement",
-        "btnLabel": "회계 보기 →"
-    },
-    {
-        "id": "sch-5",
-        "title": "5. 단칙 개정안 찬반투표",
-        "desc": "정단원 자격·기수(제4조 ①항), 단장 피선거권 명칭(제11조 ③항), 운영진 회비 감면(제13조 ⑤항), 연습 출석 기준(제22조 ②항), 환불 규정 준단원(제28조 ③항) 등 단칙 개정안 총 5개 안건 전자투표 및 의결",
-        "status": "안건상정",
-        "targetTab": "voting",
-        "btnLabel": "투표 이동 →"
-    },
-    {
-        "id": "sch-6",
-        "title": "6. 단장 선거 투표",
-        "desc": "신임 단장 선출 찬반투표 및 차기 18인 운영진 출범 공표",
-        "status": "안건상정",
-        "targetTab": "election",
-        "btnLabel": "선거 이동 →"
-    }
-],
+      {
+        id: "sch-2",
+        title: "2. 2026년 활동보고",
+        desc: "정단원 135명 현황(기존 115명·신단 20명), 주요 변화 사항, 활동 회상 영상 및 3대 특별 T/F 실적 보고",
+        status: "완료",
+        targetTab: "activity",
+        btnLabel: "활동보고 보기 →"
+      },
+      {
+        id: "sch-3",
+        title: "3. 2026년 정기연주회 강평",
+        desc: "제21회 정기연주회(인재개발원) 설문 71인 전수 분석, 연주 만족도(88.7%) 및 단복 복장 전환 투표 결과 보고",
+        status: "완료",
+        targetTab: "concert",
+        btnLabel: "강평 보기 →"
+      },
+      {
+        id: "sch-4",
+        title: "4. 2026년도 회계 결산 보고",
+        desc: "총수입 7,846만원 / 총지출 5,495만원 / 잔금 2,351만원(전년比 +205만원 흑자) 연간 수지 결산 및 감사 승인",
+        status: "진행중",
+        targetTab: "settlement",
+        btnLabel: "회계 보기 →"
+      },
+      {
+        id: "sch-5",
+        title: "5. 단칙 개정안 찬반투표",
+        desc: "단원 자격(4조), 단장 자격(11조), 운영진 감면(13조), 출석 인정(22조), 환불 정비(28조) 총 5개 안건 심의·의결",
+        status: "안건상정",
+        targetTab: "voting",
+        btnLabel: "투표 이동 →"
+      },
+      {
+        id: "sch-6",
+        title: "6. 단장 선거 투표",
+        desc: "2027년도 한우리 신임 단장 후보(15기 베이스 최경욱) 단독 출마 찬반 투표 및 차기 집행부 출범 의결",
+        status: "안건상정",
+        targetTab: "election",
+        btnLabel: "선거 이동 →"
+      }
+    ],
     rosterPartFilter: "all",
     rosterSearchQuery: "",
     authModalFilter: "all",

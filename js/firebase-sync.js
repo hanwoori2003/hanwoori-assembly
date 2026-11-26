@@ -233,7 +233,7 @@
                 var scheduleHasLegacy = clonedSchedule.some(function(item) {
                     if (!item || typeof item !== "object") return true;
                     var fullText = String(item.title || "") + " " + String(item.desc || "") + " " + String(item.targetTab || "");
-                    return /(164명|136명|91명|12개|지휘자\s*임기|대외수익|sectionConcertReview)/.test(fullText);
+                    return /(164명|136명|131명|88명|140명|91명|12개|6개|지휘자\s*임기|대외수익|sectionConcertReview)/.test(fullText);
                 });
                 if (scheduleHasLegacy && typeof global.getDefaultState === "function") {
                     s.assemblySchedule = deepClone(global.getDefaultState().assemblySchedule);
@@ -245,24 +245,13 @@
             }
             if (Array.isArray(s.assemblySchedule)) {
                 var scheduleNeedsSyncPush = false;
-                s.assemblySchedule.forEach(function(item) {
-                    if (item && typeof item.desc === "string") {
-                        if (item.id === "sch-1") {
-                            item.targetTab = "";
-                            item.btnLabel = "";
-                        }
-                        if (item.desc.indexOf("164명") !== -1 || item.desc.indexOf("136명") !== -1 || item.desc.indexOf("131명") !== -1) {
-                            var officialCount = (typeof s.totalAttendees === "number" && s.totalAttendees > 0) ? s.totalAttendees : 135;
-                            var quorumTwoThirds = Math.ceil((officialCount * 2) / 3);
-                            item.desc = "재적 정단원 " + officialCount + "명 기준 성원 확인 (개회·의결정족수 2/3 기준 " + quorumTwoThirds + "명/" + quorumTwoThirds + "표↑, 현장+위임)";
-                            scheduleNeedsSyncPush = true;
-                        }
-                        if (item.id === "sch-5" && (item.desc.indexOf("6개") !== -1 || item.desc.indexOf("12개") !== -1 || item.desc.indexOf("지휘자 임기") !== -1 || item.desc.indexOf("대외수익") !== -1)) {
-                            item.desc = "정단원 자격·기수(제4조 ①항), 단장 피선거권 명칭(제11조 ③항), 운영진 회비 감면(제13조 ⑤항), 연습 출석 기준(제22조 ②항), 환불 규정 준단원(제28조 ③항) 등 단칙 개정안 총 5개 안건 전자투표 및 의결";
-                            scheduleNeedsSyncPush = true;
-                        }
+                if (typeof global.migrateAssemblyScheduleItems === "function") {
+                    var syncMigRes = global.migrateAssemblyScheduleItems(s.assemblySchedule);
+                    s.assemblySchedule = syncMigRes.items;
+                    if (syncMigRes.changed) {
+                        scheduleNeedsSyncPush = true;
                     }
-                });
+                }
                 if (scheduleNeedsSyncPush && typeof global.saveStateToStorage === "function") {
                     setTimeout(function() {
                         global.saveStateToStorage({ skipCloudPush: false });

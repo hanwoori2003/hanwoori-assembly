@@ -58,6 +58,24 @@ function backfillAnnualEventPhotos(eventsList) {
 
 function migrateAssemblyScheduleItems(scheduleList) {
     let changed = false;
+    const OFFICIAL_SCHEDULE_DESCS = {
+        "sch-1": "재적 정단원 135명 기준 성원 확인 (개회 정족수 2/3 이상 90명 출석, 현장 참석 및 쉐도우보팅 위임 합산)",
+        "sch-2": "정단원 135명 현황(기존 115명·신단 20명), 주요 변화 사항, 활동 회상 영상 및 3대 특별 T/F 실적 보고",
+        "sch-3": "제21회 정기연주회(인재개발원) 설문 71인 전수 분석, 연주 만족도(88.7%) 및 단복 복장 전환 투표 결과 보고",
+        "sch-4": "총수입 7,846만원 / 총지출 5,495만원 / 잔금 2,351만원(전년比 +205만원 흑자) 연간 수지 결산 및 감사 승인",
+        "sch-5": "단원 자격(4조), 단장 자격(11조), 운영진 감면(13조), 출석 인정(22조), 환불 정비(28조) 총 5개 안건 심의·의결",
+        "sch-6": "2027년도 한우리 신임 단장 후보(15기 베이스 최경욱) 단독 출마 찬반 투표 및 차기 집행부 출범 의결"
+    };
+
+    const OFFICIAL_SCHEDULE_BUTTONS = {
+        "sch-1": { targetTab: "", btnLabel: "" },
+        "sch-2": { targetTab: "activity", btnLabel: "활동보고 보기 →" },
+        "sch-3": { targetTab: "concert", btnLabel: "강평 보기 →" },
+        "sch-4": { targetTab: "settlement", btnLabel: "회계 보기 →" },
+        "sch-5": { targetTab: "voting", btnLabel: "투표 이동 →" },
+        "sch-6": { targetTab: "election", btnLabel: "선거 이동 →" }
+    };
+
     const migrated = (Array.isArray(scheduleList) ? scheduleList : []).map(function(item) {
         if (!item || typeof item !== "object") return item;
         const copy = Object.assign({}, item);
@@ -74,18 +92,25 @@ function migrateAssemblyScheduleItems(scheduleList) {
             copy.targetTab = nextTarget;
             changed = true;
         }
-        if (copy.id === "sch-1") {
-            copy.targetTab = "";
-            copy.btnLabel = "";
-            if (String(copy.desc || "").indexOf("136명") !== -1 || String(copy.desc || "").indexOf("164명") !== -1 || String(copy.desc || "").indexOf("131명") !== -1) {
-                copy.desc = "재적 정단원 135명 기준 성원 확인 (개회·의결정족수 2/3 기준 90명/90표↑, 현장+위임)";
+
+        if (OFFICIAL_SCHEDULE_DESCS[copy.id]) {
+            const currentDesc = String(copy.desc || "");
+            const hasLegacyDesc = /(164명|136명|131명|88명|140명|91명|12개|6개|지휘자\s*임기|대외수익)/.test(currentDesc);
+            if (hasLegacyDesc || currentDesc !== OFFICIAL_SCHEDULE_DESCS[copy.id]) {
+                copy.desc = OFFICIAL_SCHEDULE_DESCS[copy.id];
+                changed = true;
             }
-            changed = true;
         }
-        if (copy.id === "sch-5" && (String(copy.desc || "").indexOf("6개") !== -1 || String(copy.desc || "").indexOf("12개") !== -1 || String(copy.desc || "").indexOf("지휘자 임기") !== -1 || String(copy.desc || "").indexOf("대외수익") !== -1)) {
-            copy.desc = "정단원 자격·기수(제4조 ①항), 단장 피선거권 명칭(제11조 ③항), 운영진 회비 감면(제13조 ⑤항), 연습 출석 기준(제22조 ②항), 환불 규정 준단원(제28조 ③항) 등 단칙 개정안 총 5개 안건 전자투표 및 의결";
-            changed = true;
+
+        if (OFFICIAL_SCHEDULE_BUTTONS[copy.id]) {
+            const expected = OFFICIAL_SCHEDULE_BUTTONS[copy.id];
+            if (copy.targetTab !== expected.targetTab || copy.btnLabel !== expected.btnLabel) {
+                copy.targetTab = expected.targetTab;
+                copy.btnLabel = expected.btnLabel;
+                changed = true;
+            }
         }
+
         return copy;
     });
     return { items: migrated, changed: changed };
