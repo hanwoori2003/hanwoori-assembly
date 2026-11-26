@@ -92,13 +92,16 @@ function renderHeaderStatus() {
     const isRealExec = isLoggedIn && ((typeof isRealExecutiveAuthenticated === "function") ? isRealExecutiveAuthenticated() : isExec);
 
     let voterBadgeStr = "";
+    let voterShortStr = "";
     if (isLoggedIn) {
         const voterPartStr = voter.detailPart ? (voter.part + " · " + voter.detailPart) : (voter.part || "");
         if (voter.isExecutive && isRealExec) {
             const roleLabel = (voter.role && voter.role !== "-") ? voter.role : voterPartStr;
             voterBadgeStr = "👑 " + voter.name + " (" + roleLabel + ")";
+            voterShortStr = "👑 " + voter.name;
         } else {
             voterBadgeStr = voter.name + " (" + voterPartStr + ")";
+            voterShortStr = voter.name;
         }
     }
 
@@ -135,7 +138,9 @@ function renderHeaderStatus() {
             logoutBtn.classList.remove("hidden");
             logoutBtn.classList.add("inline-flex");
         }
-        if (badgeEl) badgeEl.textContent = voterBadgeStr;
+        if (badgeEl) {
+            badgeEl.innerHTML = '<span class="sm:hidden">' + escapeHtml(voterShortStr) + '</span><span class="hidden sm:inline">' + escapeHtml(voterBadgeStr) + '</span>';
+        }
     } else {
         if (loginBtn) {
             loginBtn.classList.remove("hidden");
@@ -149,7 +154,7 @@ function renderHeaderStatus() {
             logoutBtn.classList.add("hidden");
             logoutBtn.classList.remove("inline-flex");
         }
-        if (badgeEl) badgeEl.textContent = "";
+        if (badgeEl) badgeEl.innerHTML = "";
     }
 
     // 하위 호환성 ID 업데이트 (오류 방지)
@@ -170,16 +175,16 @@ function renderHeaderStatus() {
                     '<span class="hidden lg:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-xs animate-pulse whitespace-nowrap">' +
                         '<span>👑</span> <span>운영진 모드 ON</span>' +
                     '</span>' +
-                    '<button type="button" onclick="toggleAdminPreviewMode()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600 text-[11px] sm:text-xs font-bold transition flex items-center gap-1 cursor-pointer whitespace-nowrap">' +
-                        '<span>👁️</span> <span class="hidden sm:inline">일반 단원</span> <span>미리보기</span>' +
+                    '<button type="button" onclick="toggleAdminPreviewMode()" class="px-1.5 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white border border-slate-600 text-[10px] sm:text-xs font-bold transition flex items-center gap-1 cursor-pointer whitespace-nowrap" title="단원 시점 미리보기">' +
+                        '<span>👁️</span> <span class="hidden sm:inline">미리보기</span>' +
                     '</button>';
             } else {
                 headerAdminBadgeContainer.innerHTML = 
                     '<span class="hidden lg:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 font-bold text-xs whitespace-nowrap">' +
                         '<span>👁️</span> <span>단원 화면 미리보기 중</span>' +
                     '</span>' +
-                    '<button type="button" onclick="toggleAdminPreviewMode()" class="px-2 sm:px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[11px] sm:text-xs transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap">' +
-                        '<span>👑</span> <span class="hidden sm:inline">운영진 모드로</span> <span>복귀</span>' +
+                    '<button type="button" onclick="toggleAdminPreviewMode()" class="px-1.5 sm:px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-[10px] sm:text-xs transition shadow-sm flex items-center gap-1 cursor-pointer whitespace-nowrap" title="운영진 모드로 복귀">' +
+                        '<span>👑</span> <span class="hidden sm:inline">운영진 복귀</span>' +
                     '</button>';
             }
         } else {

@@ -123,40 +123,39 @@
 
     <!-- SINGLE UNIFIED STICKY HEADER (Row 1: compact title & voter, Row 2: primary tabs + admin tabs) -->
     <header id="mainHeader" class="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-md">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6">
+        <div class="max-w-7xl mx-auto px-2.5 sm:px-6">
             <!-- Row 1: Responsive compact bar (fits 360px mobile & spacious PC) -->
-            <div class="flex items-center justify-between gap-x-2 gap-y-1.5 min-h-[44px] py-1.5 sm:py-0 sm:h-12 border-b border-slate-800/80 text-xs w-full">
-                <!-- Left: Brand Icon + Title + Quorum Badge -->
-                <div class="flex items-center gap-2 sm:gap-2.5 min-w-0 shrink">
-                    <div id="headerBrandHomeBtn" role="button" tabindex="0" onclick="switchMainTab('events')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); switchMainTab('events'); }" title="첫 페이지(2026 정기총회)로 이동" aria-label="2026 삼성한우리합창단 정기총회 첫 페이지로 이동" class="flex items-center gap-2 sm:gap-2.5 min-w-0 cursor-pointer hover:opacity-80 transition rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
-                        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
+            <div class="flex items-center justify-between gap-x-1.5 sm:gap-x-2 min-h-[44px] py-1.5 sm:py-0 sm:h-12 border-b border-slate-800/80 text-xs w-full">
+                <!-- Left: Brand Icon + Title + Quorum Badge (shrink-0 prevents mobile truncation) -->
+                <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+                    <div id="headerBrandHomeBtn" role="button" tabindex="0" onclick="switchMainTab('events')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); switchMainTab('events'); }" title="첫 페이지(2026 정기총회)로 이동" aria-label="2026 삼성한우리합창단 정기총회 첫 페이지로 이동" class="flex items-center gap-1.5 sm:gap-2.5 shrink-0 cursor-pointer hover:opacity-80 transition rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                        <div class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-black text-xs shadow-md shrink-0">
                             ♫
                         </div>
-                        <div class="flex items-center gap-2 min-w-0">
-                            <span class="font-extrabold text-[13px] sm:text-base text-white tracking-tight truncate sm:hidden">2026 삼성한우리 정기총회</span>
-                            <span class="font-extrabold text-sm sm:text-base text-white tracking-tight truncate hidden sm:inline">2026 삼성한우리합창단 정기총회</span>
+                        <div class="flex items-center shrink-0">
+                            <span class="font-black text-xs sm:text-base text-white tracking-tight whitespace-nowrap">2026 삼성한우리 정기총회</span>
                         </div>
                     </div>
-                    <!-- Quorum Badge (visible on md+ to prevent 360px crowding) -->
+                    <!-- Quorum Badge (visible on md+ to prevent mobile crowding) -->
                     <div class="hidden md:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-[11px] text-slate-300 shrink-0">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span id="headerQuorumBadgeText">성원 <strong id="headerTotalAttendees" class="text-white font-bold">131명</strong></span>
+                        <span id="headerQuorumBadgeText">성원 <strong id="headerTotalAttendees" class="text-white font-bold">135명</strong></span>
                         <span class="text-slate-500">|</span>
-                        <span class="text-slate-400">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">88표↑</strong></span>
+                        <span class="text-slate-400">2/3 의결 <strong id="headerMajorityThreshold" class="text-emerald-400 font-bold">90표↑</strong></span>
                     </div>
                 </div>
 
                 <!-- Right: Admin Preview + User Badge + Logout (Logout pinned to right edge) -->
-                <div class="flex items-center gap-1 sm:gap-2 shrink-0 justify-end ml-auto">
-                    <div id="headerAdminModeBadgeContainer" class="flex items-center gap-1 sm:gap-1.5"></div>
-                    <button id="btnHeaderLogin" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white transition text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap ml-auto sm:ml-0">
+                <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 justify-end ml-auto">
+                    <div id="headerAdminModeBadgeContainer" class="flex items-center gap-1"></div>
+                    <button id="btnHeaderLogin" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1 px-2 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white transition text-[11px] sm:text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap shrink-0">
                         <span>🔐 로그인</span>
                     </button>
-                    <button id="btnHeaderVoter" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition text-[11px] sm:text-xs font-medium cursor-pointer shadow-xs shrink-0" title="현재 로그인된 단원">
-                        <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 shrink-0"></span>
-                        <span id="headerVoterBadge" class="font-bold text-white truncate max-w-[85px] sm:max-w-none"></span>
+                    <button id="btnHeaderVoter" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1 px-1.5 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition text-[11px] sm:text-xs font-medium cursor-pointer shadow-xs shrink-0 max-w-[85px] sm:max-w-none" title="현재 로그인된 단원">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                        <span id="headerVoterBadge" class="font-bold text-white truncate"></span>
                     </button>
-                    <button id="btnHeaderLogout" type="button" onclick="logoutCurrentUser()" class="hidden items-center gap-1 px-2 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-600 border border-slate-700 hover:border-rose-500 text-slate-300 hover:text-white transition text-[11px] sm:text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap ml-auto shrink-0">
+                    <button id="btnHeaderLogout" type="button" onclick="logoutCurrentUser()" class="hidden items-center gap-1 px-1.5 sm:px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-rose-600 border border-slate-700 hover:border-rose-500 text-slate-300 hover:text-white transition text-[11px] sm:text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap shrink-0">
                         <span>로그아웃</span>
                     </button>
                 </div>
@@ -1731,14 +1730,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.88"></script>
-    <script src="js/data-config.js?v=2026.88"></script>
-    <script src="js/data-survey-comments.js?v=2026.88"></script>
-    <script src="js/firebase-config.js?v=2026.88"></script>
-    <script src="js/firebase-sync.js?v=2026.88"></script>
-    <script src="js/utils.js?v=2026.88"></script>
-    <script src="js/render.js?v=2026.88"></script>
-    <script src="js/handlers.js?v=2026.88"></script>
-    <script src="js/app.js?v=2026.88"></script>
+    <script src="js/data-members.js?v=2026.89"></script>
+    <script src="js/data-config.js?v=2026.89"></script>
+    <script src="js/data-survey-comments.js?v=2026.89"></script>
+    <script src="js/firebase-config.js?v=2026.89"></script>
+    <script src="js/firebase-sync.js?v=2026.89"></script>
+    <script src="js/utils.js?v=2026.89"></script>
+    <script src="js/render.js?v=2026.89"></script>
+    <script src="js/handlers.js?v=2026.89"></script>
+    <script src="js/app.js?v=2026.89"></script>
 </body>
 </html>
