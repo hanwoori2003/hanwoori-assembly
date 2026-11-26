@@ -196,7 +196,7 @@ const ACTIVITY_REPORT_DATA = {
             ]
         }
     ],
-    generationHighlightBadge: "16~20기 및 21기(신단): 83명 (63%)",
+    generationHighlightBadge: "16~20기 및 21기(신단): 88명 (65%)",
     generationStats: [
         { gen: 1, label: "1기", count: 5, highlight: false },
         { gen: 2, label: "2기", count: 3, highlight: false },
@@ -212,7 +212,7 @@ const ACTIVITY_REPORT_DATA = {
         { gen: 12, label: "12기", count: 2, highlight: false },
         { gen: 13, label: "13기", count: 3, highlight: false },
         { gen: 14, label: "14기", count: 5, highlight: false },
-        { gen: 15, label: "15기", count: 4, highlight: false },
+        { gen: 15, label: "15기", count: 3, highlight: false },
         { gen: 16, label: "16기", count: 14, highlight: true },
         { gen: 17, label: "17기", count: 7, highlight: true },
         { gen: 18, label: "18기", count: 14, highlight: true },
@@ -262,7 +262,9 @@ const ACTIVITY_REPORT_DATA = {
     ],
     specialThanksNote: "",
     specialThanks: [
-        { group: "송년회 T/F", members: "고태율, 노소정, 박은영, 손정아, 신가영, 박휘연, 송주아, 이경환, 정승원, 박소정, 엄효은, 김민아" }
+        { group: "소풍 T/F (7)", members: "김서영, 구영민, 김석준, 노소정, 박휘연, 신가영, 한석범" },
+        { group: "엠티 T/F (5)", members: "이경환, 사제환, 윤지현, 김민아, 명지승" },
+        { group: "송년회 T/F (12)", members: "고태율, 노소정, 박은영, 손정아, 신가영, 박휘연, 송주아, 이경환, 정승원, 박소정, 엄효은, 김민아" }
     ]
 };
 

@@ -601,10 +601,10 @@ function renderActivityView() {
                     '<div class="flex flex-wrap items-center justify-between gap-2">' +
                         '<div>' +
                             '<h4 class="text-sm font-extrabold text-slate-900">기수별 현황 (1기 ~ 20기 &amp; 21기 신단)</h4>' +
-                            '<p class="text-[11px] text-slate-500 mt-0.5">최근 기수(16~20기) 및 21기(신단 20명) 단원이 전체 135명의 64%를 차지합니다.</p>' +
+                            '<p class="text-[11px] text-slate-500 mt-0.5">최근 기수(16~20기) 및 21기(신단 20명) 단원이 전체 135명의 65%를 차지합니다.</p>' +
                         '</div>' +
                         '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-rose-500 text-white text-xs font-black shadow-xs whitespace-nowrap">' +
-                            escapeHtml(report.generationHighlightBadge || "16~20기 및 21기(신단): 87명 (64%)") +
+                            escapeHtml(report.generationHighlightBadge || "16~20기 및 21기(신단): 88명 (65%)") +
                         '</span>' +
                     '</div>' +
                     '<div class="w-full min-w-0 rounded-xl bg-white border border-slate-200/80 p-2.5 sm:p-3 shadow-2xs">' +
@@ -620,8 +620,8 @@ function renderActivityView() {
                         '</div>' +
                     '</div>' +
                     '<div class="flex items-center justify-end gap-3 text-xs text-slate-500 flex-wrap pt-1">' +
-                        '<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (48명 · 36%)</span>' +
-                        '<span class="inline-flex items-center gap-1.5 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 및 21기(신단) (87명 · 64%)</span>' +
+                        '<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (47명 · 35%)</span>' +
+                        '<span class="inline-flex items-center gap-1.5 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 및 21기(신단) (88명 · 65%)</span>' +
                     '</div>' +
                 '</div>' +
             '</div>';
