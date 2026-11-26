@@ -466,7 +466,7 @@ function renderEventsView() {
                 '<div class="flex items-start gap-3 min-w-0 flex-1">' +
                     statusBadge +
                     '<div class="min-w-0 flex-1">' +
-                        '<h4 class="text-sm font-extrabold text-slate-900 break-keep">' + escapeHtml(item.title) + '</h4>' +
+                        '<h4 class="text-sm font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">' + escapeHtml(item.title) + '</h4>' +
                         '<p class="text-xs text-slate-600 mt-0.5 break-keep leading-relaxed">' + escapeHtml(item.desc) + '</p>' +
                     '</div>' +
                 '</div>' +
@@ -769,14 +769,14 @@ function renderCommentAccordion(id, title, comments, icon, badgeColor, bgTint, b
     });
 
     const isExp = Boolean(defaultExpanded);
-    return '<div class="mt-3 rounded-2xl ' + bgTint + ' border ' + borderTint + ' p-3.5 sm:p-4 space-y-3">' +
-        '<div class="flex items-center justify-between cursor-pointer select-none" onclick="toggleConcertComments(\'' + id + '\')">' +
-            '<div class="flex items-center gap-2 flex-wrap">' +
-                '<span class="text-base shrink-0">' + icon + '</span>' +
-                '<h4 class="text-xs sm:text-sm font-extrabold text-slate-900">' + escapeHtml(title) + '</h4>' +
-                '<span class="px-2 py-0.5 rounded-full text-[10px] font-black ' + badgeColor + '">' + cleanList.length + '개 단원 의견</span>' +
+    return '<div class="mt-3 rounded-2xl ' + bgTint + ' border ' + borderTint + ' p-3 sm:p-4 space-y-2.5">' +
+        '<div class="flex items-center justify-between gap-2 cursor-pointer select-none" onclick="toggleConcertComments(\'' + id + '\')">' +
+            '<div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 overflow-hidden">' +
+                '<span class="text-sm sm:text-base shrink-0">' + icon + '</span>' +
+                '<h4 class="text-xs sm:text-sm font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">' + escapeHtml(title) + '</h4>' +
+                '<span class="px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black shrink-0 whitespace-nowrap ' + badgeColor + '">' + cleanList.length + '건</span>' +
             '</div>' +
-            '<button type="button" class="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1 cursor-pointer shrink-0">' +
+            '<button type="button" class="text-[11px] sm:text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-0.5 cursor-pointer shrink-0">' +
                 '<span id="toggle-text-' + id + '">' + (isExp ? '접기 ▲' : '펼쳐보기 ▼') + '</span>' +
             '</button>' +
         '</div>' +
@@ -852,20 +852,20 @@ function renderConcertFeedbackView() {
     // ==========================================
     // SECTION 1: 기본 정보 (응답자 프로필)
     // ==========================================
-    html += '<div id="sec-1" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
-        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
-            '<div class="flex items-center gap-2.5">' +
-                '<span class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 font-black text-xs flex items-center justify-center">1</span>' +
-                '<h3 class="text-base font-black text-slate-900">기본 정보 (응답자 파트 및 연주회 참여 이력)</h3>' +
+    html += '<div id="sec-1" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2 min-w-0 overflow-hidden">' +
+                '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-100 text-indigo-700 font-black text-xs flex items-center justify-center shrink-0">1</span>' +
+                '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">1. 기본 정보 (응답자 프로필 및 이력)</h3>' +
             '</div>' +
-            '<span class="text-xs font-bold text-slate-400">총 70명 참여</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-slate-400 self-start sm:self-auto shrink-0 whitespace-nowrap">총 71명 참여</span>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
             '<!-- 파트별 분포 -->' +
             '<div class="space-y-3">' +
-                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between">' +
-                    '<span>파트별 응답자 분포</span>' +
-                    '<span class="text-[11px] text-slate-400">소프라노 최다 (30.0%)</span>' +
+                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between gap-2">' +
+                    '<span class="whitespace-nowrap overflow-hidden text-ellipsis">파트별 응답자 분포</span>' +
+                    '<span class="text-[11px] text-slate-400 shrink-0 whitespace-nowrap">소프라노 최다 (29.6%)</span>' +
                 '</h4>' +
                 '<div class="space-y-2.5">';
     (bInfo.parts || []).forEach(function(p) {
@@ -883,9 +883,9 @@ function renderConcertFeedbackView() {
             '</div>' +
             '<!-- 정기연주회 참여 횟수 -->' +
             '<div class="space-y-3">' +
-                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between">' +
-                    '<span>정기 연주회 참여 횟수</span>' +
-                    '<span class="text-[11px] text-slate-400">2~4회 경험 단원 44.3%</span>' +
+                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between gap-2">' +
+                    '<span class="whitespace-nowrap overflow-hidden text-ellipsis">정기 연주회 참여 횟수</span>' +
+                    '<span class="text-[11px] text-slate-400 shrink-0 whitespace-nowrap">2~4회 경험 45.1%</span>' +
                 '</h4>' +
                 '<div class="grid grid-cols-3 gap-2.5 pt-1">';
     (bInfo.participationCount || []).forEach(function(pc) {
@@ -896,7 +896,7 @@ function renderConcertFeedbackView() {
         '</div>';
     });
     html +=     '</div>' +
-                '<p class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100">💡 2~4회 중견 단원(44.3%)과 5회 이상 시니어 단원(41.4%)이 중심이 되고 신단(14.3%)이 고루 참여하여 합창단 운영의 깊이 있는 의견이 수렴되었습니다.</p>' +
+                '<p class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100">💡 2~4회 중견 단원(45.1%)과 5회 이상 시니어 단원(40.8%)이 중심이 되고 신단(14.1%)이 고루 참여하여 합창단 운영의 깊이 있는 의견이 수렴되었습니다.</p>' +
             '</div>' +
         '</div>' +
     '</div>';
@@ -904,13 +904,13 @@ function renderConcertFeedbackView() {
     // ==========================================
     // SECTION 2: 단원 모집 및 활동 전반 만족도
     // ==========================================
-    html += '<div id="sec-2" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
-        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
-            '<div class="flex items-center gap-2.5">' +
-                '<span class="w-7 h-7 rounded-lg bg-purple-100 text-purple-700 font-black text-xs flex items-center justify-center">2</span>' +
-                '<h3 class="text-base font-black text-slate-900">단원 모집 및 활동 전반 만족도</h3>' +
+    html += '<div id="sec-2" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2 min-w-0 overflow-hidden">' +
+                '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-purple-100 text-purple-700 font-black text-xs flex items-center justify-center shrink-0">2</span>' +
+                '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">2. 단원 모집 및 활동 전반 만족도</h3>' +
             '</div>' +
-            '<span class="text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md">활동 만족도 4.51점 / 5.0 (긍정 85.7%)</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md self-start sm:self-auto shrink-0 whitespace-nowrap">활동 만족도 4.51점 / 5.0 (긍정 85.7%)</span>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
             '<!-- 6대 세부 평가 점수 -->' +
@@ -956,42 +956,42 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s2Comm = commentsData.recruitmentAndActivity || {};
-    html += renderCommentAccordion('comm-sec2-good', '합창단 활동 전반 - 좋았던 점', s2Comm.generalGood || [], '💚', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
-    html += renderCommentAccordion('comm-sec2-imp', '합창단 활동 전반 - 아쉬운 점 및 건의사항', s2Comm.generalImprovement || [], '💡', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
-    html += renderCommentAccordion('comm-sec2-social', '친목 활동(소풍/뒤풀이) 및 신단·정단 모집 단원 의견', s2Comm.socialAndRecruit || [], '👥', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', false);
+    html += renderCommentAccordion('comm-sec2-good', '활동 전반 - 좋았던 점', s2Comm.generalGood || [], '💚', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
+    html += renderCommentAccordion('comm-sec2-imp', '활동 전반 - 아쉬운 점 및 건의', s2Comm.generalImprovement || [], '💡', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += renderCommentAccordion('comm-sec2-social', '친목(소풍/뒤풀이) 및 단원 모집 의견', s2Comm.socialAndRecruit || [], '👥', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', false);
     html += '</div>';
 
     // ==========================================
     // SECTION 3: 정기 연습 및 캠프 만족도
     // ==========================================
-    html += '<div id="sec-3" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
-        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
-            '<div class="flex items-center gap-2.5">' +
-                '<span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 font-black text-xs flex items-center justify-center">3</span>' +
-                '<h3 class="text-base font-black text-slate-900">정기 연습 및 하계 음악캠프 만족도</h3>' +
+    html += '<div id="sec-3" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2 min-w-0 overflow-hidden">' +
+                '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-100 text-emerald-700 font-black text-xs flex items-center justify-center shrink-0">3</span>' +
+                '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">3. 정기 연습 및 하계 음악캠프 만족도</h3>' +
             '</div>' +
-            '<span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">음악캠프 4.51점 · 연습도구 4.29점</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md self-start sm:self-auto shrink-0 whitespace-nowrap">음악캠프 4.51점 · 연습도구 4.29점</span>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">' +
             '<div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-center">' +
-                '<div class="text-xs font-bold text-emerald-800">하계 음악캠프 만족도</div>' +
+                '<div class="text-xs font-bold text-emerald-800 whitespace-nowrap overflow-hidden text-ellipsis">하계 음악캠프 만족도</div>' +
                 '<div class="text-2xl font-black text-emerald-950 mt-1">' + (pCamp.musicCampScore || 4.51) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
                 '<div class="text-[11px] text-emerald-600 font-semibold mt-0.5">만족·매우만족 ' + (pCamp.musicCampPositivePct || 91.4) + '%</div>' +
             '</div>' +
             '<div class="p-4 rounded-2xl bg-teal-50/60 border border-teal-100 text-center">' +
-                '<div class="text-xs font-bold text-teal-800">연습 보조도구 (영상·음원·노트)</div>' +
+                '<div class="text-xs font-bold text-teal-800 whitespace-nowrap overflow-hidden text-ellipsis">연습 보조도구 (영상·음원·노트)</div>' +
                 '<div class="text-2xl font-black text-teal-950 mt-1">' + (pCamp.supportToolsScore || 4.29) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
                 '<div class="text-[11px] text-teal-600 font-semibold mt-0.5">긍정 평가 ' + (pCamp.supportToolsPositivePct || 80.0) + '%</div>' +
             '</div>' +
             '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center">' +
-                '<div class="text-xs font-bold text-slate-700">추가 연습 만족도</div>' +
+                '<div class="text-xs font-bold text-slate-700 whitespace-nowrap overflow-hidden text-ellipsis">추가 연습 만족도</div>' +
                 '<div class="text-2xl font-black text-slate-900 mt-1">' + (pCamp.extraPracticeScore || 4.07) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
                 '<div class="text-[11px] text-slate-500 font-semibold mt-0.5">긍정 비율 ' + (pCamp.extraPracticePositivePct || 74.3) + '%</div>' +
             '</div>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">' +
             '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">' +
-                '<div class="text-xs font-extrabold text-emerald-800 flex items-center gap-1.5"><span>👍</span> 좋았던 점 (단원 주요 의견)</div>' +
+                '<div class="text-xs font-extrabold text-emerald-800 flex items-center gap-1.5 whitespace-nowrap overflow-hidden text-ellipsis"><span>👍</span> 좋았던 점 (단원 주요 의견)</div>' +
                 '<ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">';
     (pCamp.goods || []).forEach(function(g) {
         html += '<li class="break-keep">' + escapeHtml(g) + '</li>';
@@ -999,7 +999,7 @@ function renderConcertFeedbackView() {
     html +=     '</ul>' +
             '</div>' +
             '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">' +
-                '<div class="text-xs font-extrabold text-amber-800 flex items-center gap-1.5"><span>💡</span> 아쉬운 점 및 향후 건의사항</div>' +
+                '<div class="text-xs font-extrabold text-amber-800 flex items-center gap-1.5 whitespace-nowrap overflow-hidden text-ellipsis"><span>💡</span> 아쉬운 점 및 향후 건의사항</div>' +
                 '<ul class="text-xs text-slate-700 space-y-1.5 list-disc list-inside">';
     (pCamp.needs || []).forEach(function(n) {
         html += '<li class="break-keep">' + escapeHtml(n) + '</li>';
@@ -1009,27 +1009,27 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s3Comm = commentsData.practiceAndCamp || {};
-    html += renderCommentAccordion('comm-sec3-camp', '하계 음악캠프 만족도 단원 의견', s3Comm.camp || [], '🏕️', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
-    html += renderCommentAccordion('comm-sec3-prac', '정기·추가 연습 및 보조도구(영상/음원/노트) 단원 의견', s3Comm.practice || [], '🎼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', false);
+    html += renderCommentAccordion('comm-sec3-camp', '하계 음악캠프 단원 의견', s3Comm.camp || [], '🏕️', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
+    html += renderCommentAccordion('comm-sec3-prac', '정기·추가 연습 및 보조도구 의견', s3Comm.practice || [], '🎼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', false);
     html += '</div>';
 
     // ==========================================
     // SECTION 4: 제21회 정기 연주회 공연 만족도
     // ==========================================
-    html += '<div id="sec-4" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
-        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
-            '<div class="flex items-center gap-2.5">' +
-                '<span class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 font-black text-xs flex items-center justify-center">4</span>' +
-                '<h3 class="text-base font-black text-slate-900">제21회 정기 연주회 공연 및 협연 평가</h3>' +
+    html += '<div id="sec-4" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2 min-w-0 overflow-hidden">' +
+                '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-amber-100 text-amber-800 font-black text-xs flex items-center justify-center shrink-0">4</span>' +
+                '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">4. 제21회 정기 연주회 공연 및 협연 평가</h3>' +
             '</div>' +
-            '<span class="text-xs font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md">공연 종합 88.6% 만족 (평점 4.51점)</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md self-start sm:self-auto shrink-0 whitespace-nowrap">공연 종합 88.7% 만족 (평점 4.51점)</span>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
             '<!-- 최선호 연주곡 랭킹 Top 5 -->' +
             '<div class="space-y-3">' +
-                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between">' +
-                    '<span>단원 최선호 연주곡 랭킹 Top 5</span>' +
-                    '<span class="text-[11px] text-amber-600 font-bold">내 가슴엔 바다가 있다 1위 (45.7%)</span>' +
+                '<h4 class="text-xs font-extrabold text-slate-700 flex items-center justify-between gap-2">' +
+                    '<span class="whitespace-nowrap overflow-hidden text-ellipsis">단원 최선호 연주곡 Top 5</span>' +
+                    '<span class="text-[11px] text-amber-600 font-bold shrink-0 whitespace-nowrap">내 가슴엔 바다가 있다 1위</span>' +
                 '</h4>' +
                 '<div class="space-y-3 pt-1">';
     (cPerf.favoriteSongs || []).forEach(function(song, i) {
@@ -1071,32 +1071,32 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s4Comm = commentsData.concertPerformance || {};
-    html += renderCommentAccordion('comm-sec4-good', '제21회 정기연주회 공연 - 좋았던 점', s4Comm.concertGood || [], '🎉', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
-    html += renderCommentAccordion('comm-sec4-imp', '제21회 정기연주회 공연 - 아쉬운 점 및 건의사항', s4Comm.concertImprovement || [], '💡', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
-    html += renderCommentAccordion('comm-sec4-prog', '연주 프로그램 및 선호 연주곡 단원 의견', s4Comm.programAndGeneral || [], '🎵', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', false);
-    html += renderCommentAccordion('comm-sec4-hall', '공연장(인재개발원 콘서트홀) 시설 및 무대 환경 의견', s4Comm.hall || [], '🏛️', 'bg-slate-200 text-slate-800', 'bg-slate-50', 'border-slate-200', false);
-    html += renderCommentAccordion('comm-sec4-choreo', '섭외 안무가 관련 단원 평가 의견', s4Comm.choreographer || [], '💃', 'bg-pink-100 text-pink-800', 'bg-pink-50/50', 'border-pink-200', false);
-    html += renderCommentAccordion('comm-sec4-orch', '협연 오케스트라 & 라퓨즈 플레이어즈 의견', s4Comm.orchestra || [], '🎻', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', false);
-    html += renderCommentAccordion('comm-sec4-aud', '초대 관객 호응 & 대외 홍보물 단원 의견', s4Comm.audienceAndPromo || [], '📣', 'bg-violet-100 text-violet-800', 'bg-violet-50/50', 'border-violet-200', false);
+    html += renderCommentAccordion('comm-sec4-good', '정기연주회 공연 - 좋았던 점', s4Comm.concertGood || [], '🎉', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += renderCommentAccordion('comm-sec4-imp', '정기연주회 공연 - 아쉬운 점 및 건의', s4Comm.concertImprovement || [], '💡', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
+    html += renderCommentAccordion('comm-sec4-prog', '연주 프로그램 및 선호곡 의견', s4Comm.programAndGeneral || [], '🎵', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', false);
+    html += renderCommentAccordion('comm-sec4-hall', '공연장(인재개발원) 시설·무대 의견', s4Comm.hall || [], '🏛️', 'bg-slate-200 text-slate-800', 'bg-slate-50', 'border-slate-200', false);
+    html += renderCommentAccordion('comm-sec4-choreo', '안무가 관련 단원 평가 의견', s4Comm.choreographer || [], '💃', 'bg-pink-100 text-pink-800', 'bg-pink-50/50', 'border-pink-200', false);
+    html += renderCommentAccordion('comm-sec4-orch', '협연 오케스트라 관련 의견', s4Comm.orchestra || [], '🎻', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', false);
+    html += renderCommentAccordion('comm-sec4-aud', '관객 호응 및 대외 홍보물 의견', s4Comm.audienceAndPromo || [], '📣', 'bg-violet-100 text-violet-800', 'bg-violet-50/50', 'border-violet-200', false);
     html += '</div>';
 
     // ==========================================
     // SECTION 5: 정기 연주회 복장 의견 (Hot Topic)
     // ==========================================
     const swPref = cCost.switchPreference || {};
-    html += '<div id="sec-5" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
-        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
-            '<div class="flex items-center gap-2.5">' +
-                '<span class="w-7 h-7 rounded-lg bg-rose-100 text-rose-700 font-black text-xs flex items-center justify-center">5</span>' +
-                '<h3 class="text-base font-black text-slate-900">정기 연주회 복장 의견 및 전환 희망 투표 결과</h3>' +
+    html += '<div id="sec-5" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2 min-w-0 overflow-hidden">' +
+                '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-100 text-rose-700 font-black text-xs flex items-center justify-center shrink-0">5</span>' +
+                '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">5. 연주회 복장 의견 및 전환 희망 투표</h3>' +
             '</div>' +
-            '<span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md">복장 만족도 4.37점 / 5.0 (긍정 87.1%)</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md self-start sm:self-auto shrink-0 whitespace-nowrap">복장 만족도 4.37점 / 5.0 (긍정 87.1%)</span>' +
         '</div>' +
         '<!-- 복장 전환 투표 결과 VS 카드 -->' +
-        '<div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white space-y-4">' +
-            '<div class="flex items-center justify-between">' +
-                '<div class="text-xs font-extrabold text-amber-300">🔥 [설문 핵심 안건] 연주회 복장 전환 희망 여부 투표</div>' +
-                '<div class="text-[11px] text-slate-300">응답자 70인 전원 투표</div>' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white space-y-4">' +
+            '<div class="flex items-center justify-between gap-2">' +
+                '<div class="text-xs font-extrabold text-amber-300 whitespace-nowrap overflow-hidden text-ellipsis">🔥 [설문 핵심] 연주회 복장 전환 희망 투표</div>' +
+                '<div class="text-[11px] text-slate-300 shrink-0 whitespace-nowrap">응답 71인 전원 투표</div>' +
             '</div>' +
             '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
                 '<div class="p-4 rounded-xl bg-white/10 border border-white/15 space-y-1.5">' +
@@ -1127,7 +1127,7 @@ function renderConcertFeedbackView() {
             '</div>' +
         '</div>' +
         '<div class="space-y-2">' +
-            '<h4 class="text-xs font-extrabold text-slate-700">복장 관련 단원 자유 의견 요약</h4>';
+            '<h4 class="text-xs font-extrabold text-slate-700 whitespace-nowrap overflow-hidden text-ellipsis">복장 관련 단원 자유 의견 요약</h4>';
     (cCost.comments || []).forEach(function(cm) {
         html += '<div class="p-3 rounded-xl bg-rose-50/50 border border-rose-100 text-xs text-slate-700 flex gap-2">' +
             '<span class="text-rose-600 font-bold shrink-0">👔</span>' +
@@ -1137,24 +1137,24 @@ function renderConcertFeedbackView() {
     html += '</div>';
 
     const s5Comm = commentsData.costumeOpinions || {};
-    html += renderCommentAccordion('comm-sec5-cost', '정기연주회 단복 및 복장 전환 관련 단원 의견 전수', s5Comm.costume || [], '👔', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
+    html += renderCommentAccordion('comm-sec5-cost', '연주회 단복 및 복장 전환 의견', s5Comm.costume || [], '👔', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
     html += '</div>';
 
     // ==========================================
     // SECTION 6: 2027년 기대 연주 활동
     // ==========================================
-    html += '<div id="sec-6" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
-        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
-            '<div class="flex items-center gap-2.5">' +
-                '<span class="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 font-black text-xs flex items-center justify-center">6</span>' +
-                '<h3 class="text-base font-black text-slate-900">2027년 기대 연주 활동 및 선호도 조사</h3>' +
+    html += '<div id="sec-6" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2 min-w-0 overflow-hidden">' +
+                '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-blue-100 text-blue-700 font-black text-xs flex items-center justify-center shrink-0">6</span>' +
+                '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">6. 2027년 기대 연주 활동 및 선호도 조사</h3>' +
             '</div>' +
-            '<span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md">정기연주 10월 토요일 선호 67.1% / 98.6%</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md self-start sm:self-auto shrink-0 whitespace-nowrap">정기연주 10월 토요일 선호 67.1% / 98.6%</span>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-3 gap-4">' +
             '<!-- 연주 희망 횟수 -->' +
             '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2.5">' +
-                '<div class="text-xs font-extrabold text-slate-800">연간 연주 희망 횟수</div>' +
+                '<div class="text-xs font-extrabold text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis">연간 연주 희망 횟수</div>' +
                 '<div class="space-y-2">';
     (exp27.frequency || []).forEach(function(f) {
         html += '<div class="flex justify-between items-center text-xs">' +
@@ -1166,7 +1166,7 @@ function renderConcertFeedbackView() {
             '</div>' +
             '<!-- 정기 연주 선호 시기 -->' +
             '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2.5">' +
-                '<div class="text-xs font-extrabold text-slate-800">정기 연주회 선호 시기</div>' +
+                '<div class="text-xs font-extrabold text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis">정기 연주회 선호 시기</div>' +
                 '<div class="grid grid-cols-2 gap-2 text-center text-xs">';
     (exp27.regularConcertTiming || []).forEach(function(t) {
         html += '<div class="p-2 rounded-xl ' + (t.highlight ? 'bg-indigo-600 text-white font-extrabold shadow-xs' : 'bg-white border border-slate-200 text-slate-700') + '">' +
@@ -1178,7 +1178,7 @@ function renderConcertFeedbackView() {
             '</div>' +
             '<!-- 가능 요일 -->' +
             '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2.5">' +
-                '<div class="text-xs font-extrabold text-slate-800">연주 가능 요일 (중복 응답)</div>' +
+                '<div class="text-xs font-extrabold text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis">연주 가능 요일 (중복 응답)</div>' +
                 '<div class="space-y-2">';
     (exp27.regularConcertDays || []).forEach(function(d) {
         html += '<div class="flex justify-between items-center text-xs">' +
@@ -1202,44 +1202,44 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s6Comm = commentsData.expectations2027Detail || {};
-    html += renderCommentAccordion('comm-sec6-venue', '2027 단원 선호 연주 장소 단원 의견 전수', s6Comm.venues || [], '🏛️', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', true);
-    html += renderCommentAccordion('comm-sec6-song', '2027 희망 연주곡 및 활동 제안 단원 의견 전수', s6Comm.songsAndActivities || [], '🎼', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
+    html += renderCommentAccordion('comm-sec6-venue', '2027 선호 연주 장소 단원 의견', s6Comm.venues || [], '🏛️', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', true);
+    html += renderCommentAccordion('comm-sec6-song', '2027 희망 연주곡 및 활동 제안', s6Comm.songsAndActivities || [], '🎼', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
     html += '</div>';
 
     // ==========================================
     // SECTION 7: 리더십 평가 및 2027년 활동 희망
     // ==========================================
     const cm = ldr27.continueMembership || {};
-    html += '<div id="sec-7" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-6 shadow-sm space-y-5">' +
-        '<div class="flex items-center justify-between border-b border-slate-100 pb-3">' +
-            '<div class="flex items-center gap-2.5">' +
-                '<span class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 font-black text-xs flex items-center justify-center">7</span>' +
-                '<h3 class="text-base font-black text-slate-900">리더십 평가 및 2027년 정단원 활동 희망</h3>' +
+    html += '<div id="sec-7" class="concert-sec-card bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-6 shadow-sm space-y-4 sm:space-y-5">' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-4 border-b border-slate-100 pb-3">' +
+            '<div class="flex items-center gap-2 min-w-0 overflow-hidden">' +
+                '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-teal-100 text-teal-700 font-black text-xs flex items-center justify-center shrink-0">7</span>' +
+                '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">7. 리더십 평가 및 2027년 활동 희망</h3>' +
             '</div>' +
-            '<span class="text-xs font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md">운영진 4.50점 · 지휘자 4.59점 · 반주자 4.56점</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded-md self-start sm:self-auto shrink-0 whitespace-nowrap">운영진 4.50점 · 지휘자 4.59점 · 반주자 4.56점</span>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">' +
             '<div class="p-4 rounded-2xl bg-teal-50/60 border border-teal-100 text-center">' +
-                '<div class="text-xs font-bold text-teal-900">2026 운영진 만족도</div>' +
+                '<div class="text-xs font-bold text-teal-900 whitespace-nowrap overflow-hidden text-ellipsis">2026 운영진 만족도</div>' +
                 '<div class="text-2xl font-black text-teal-950 mt-1">' + (ldr27.executiveScore || 4.50) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
                 '<div class="text-[11px] text-teal-700 font-semibold mt-0.5">긍정 비율 ' + (ldr27.executivePositivePct || 85.7) + '%</div>' +
             '</div>' +
             '<div class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 text-center">' +
-                '<div class="text-xs font-bold text-indigo-900">지휘자 선생님 만족도</div>' +
+                '<div class="text-xs font-bold text-indigo-900 whitespace-nowrap overflow-hidden text-ellipsis">지휘자 선생님 만족도</div>' +
                 '<div class="text-2xl font-black text-indigo-950 mt-1">' + (ldr27.conductorScore || 4.59) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
                 '<div class="text-[11px] text-indigo-700 font-semibold mt-0.5">긍정 비율 ' + (ldr27.conductorPositivePct || 90.0) + '%</div>' +
             '</div>' +
             '<div class="p-4 rounded-2xl bg-purple-50/60 border border-purple-100 text-center">' +
-                '<div class="text-xs font-bold text-purple-900">반주자 선생님 만족도</div>' +
+                '<div class="text-xs font-bold text-purple-900 whitespace-nowrap overflow-hidden text-ellipsis">반주자 선생님 만족도</div>' +
                 '<div class="text-2xl font-black text-purple-950 mt-1">' + (ldr27.accompanistScore || 4.56) + ' <span class="text-xs font-normal text-slate-500">/ 5.0</span></div>' +
                 '<div class="text-[11px] text-purple-700 font-semibold mt-0.5">긍정 비율 ' + (ldr27.accompanistPositivePct || 88.6) + '%</div>' +
             '</div>' +
         '</div>' +
         '<!-- 2027 정단원 등록 의향 -->' +
-        '<div class="p-5 rounded-2xl bg-slate-900 text-white space-y-3">' +
-            '<div class="flex items-center justify-between">' +
-                '<span class="text-xs font-extrabold text-teal-300">2027년 정단원 지속 활동 희망 여부</span>' +
-                '<span class="text-xs font-bold text-teal-400">지속 희망 ' + (cm.hope || 77.1) + '% (54명)</span>' +
+        '<div class="p-4 sm:p-5 rounded-2xl bg-slate-900 text-white space-y-3">' +
+            '<div class="flex items-center justify-between gap-2">' +
+                '<span class="text-xs font-extrabold text-teal-300 whitespace-nowrap overflow-hidden text-ellipsis">2027년 정단원 지속 활동 희망 여부</span>' +
+                '<span class="text-xs font-bold text-teal-400 shrink-0 whitespace-nowrap">지속 희망 ' + (cm.hope || 77.1) + '% (54명)</span>' +
             '</div>' +
             '<div class="grid grid-cols-3 gap-2.5 text-center">' +
                 '<div class="p-3 rounded-xl bg-teal-500/20 border border-teal-500/30">' +
@@ -1265,10 +1265,10 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s7Comm = commentsData.leadershipAndNextYear || {};
-    html += renderCommentAccordion('comm-sec7-cond', '지휘자 선생님께 드리는 감사와 제언', s7Comm.conductor || [], '🎶', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
-    html += renderCommentAccordion('comm-sec7-acc', '반주자 선생님께 드리는 감사와 제언', s7Comm.accompanist || [], '🎹', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', true);
-    html += renderCommentAccordion('comm-sec7-exec', '2026 운영진 평가 (잘한 점, 아쉬운 점, 감사 인사)', s7Comm.executive || [], '💼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', true);
-    html += renderCommentAccordion('comm-sec7-free', '최경욱 차기 예비단장님 응원 & 한우리 추가 자유 의견', s7Comm.freeAndCheer || [], '💌', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += renderCommentAccordion('comm-sec7-cond', '지휘자 선생님 감사 및 제언', s7Comm.conductor || [], '🎶', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
+    html += renderCommentAccordion('comm-sec7-acc', '반주자 선생님 감사 및 제언', s7Comm.accompanist || [], '🎹', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', true);
+    html += renderCommentAccordion('comm-sec7-exec', '2026 운영진 감사 및 평가 의견', s7Comm.executive || [], '💼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', true);
+    html += renderCommentAccordion('comm-sec7-free', '차기 단장 응원 & 추가 자유 의견', s7Comm.freeAndCheer || [], '💌', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
     html += '</div>';
 
     secCont.innerHTML = html;

@@ -33,6 +33,20 @@
         html.is-authenticated #appShell {
             display: flex !important;
         }
+
+        /* 모바일 화면 상단 배너 및 타이틀 1줄 강제 맞춤 */
+        .screen-hero-title {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            font-size: clamp(12px, 3.6vw, 1.5rem) !important;
+            line-height: 1.35 !important;
+        }
+        @media (max-width: 640px) {
+            .screen-hero-title {
+                font-size: clamp(11.5px, 3.5vw, 15px) !important;
+            }
+        }
     </style>
     <script>
         (function() {
@@ -243,16 +257,16 @@
                     <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-bold mb-2">
                         <span>●</span> 2026년도 정기총회 공식 의결 진행 중
                     </div>
-                    <h2 class="text-[13.5px] xs:text-[15px] sm:text-xl md:text-2xl font-black tracking-tight whitespace-nowrap">2026 삼성한우리합창단 정기총회 공식 식순 및 안건</h2>
-                    <p class="text-[11px] sm:text-sm text-slate-300 mt-1 whitespace-nowrap">지휘: 박지훈 선생님 · 반주: 김혜연 선생님 · 2026 운영진 18인</p>
+                    <h2 class="screen-hero-title font-black tracking-tight text-white">2026 삼성한우리합창단 정기총회 공식 식순 및 안건</h2>
+                    <p class="text-[11px] sm:text-sm text-slate-300 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">지휘: 박지훈 선생님 · 반주: 김혜연 선생님 · 2026 운영진 18인</p>
                 </div>
             </div>
 
             <!-- Official Assembly Schedule (식순 1~6번) -->
             <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">정기총회 공식 식순 및 안건 바로가기</h3>
+                    <div class="min-w-0">
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">정기총회 공식 식순 및 안건 바로가기</h3>
                         <p class="text-xs text-slate-500 mt-0.5">총회 공식 안건을 순서대로 확인하고 해당 탭으로 즉시 이동하실 수 있습니다.</p>
                     </div>
                     <!-- Dynamic admin header controls for schedule -->
@@ -265,7 +279,7 @@
             <!-- 2026 Steering Committee 18 Roster -->
             <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-b border-slate-100 pb-3">
-                    <h3 class="text-base font-extrabold text-slate-900">2026 운영진 명단 (18인)</h3>
+                    <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">2026 운영진 명단 (18인)</h3>
                 </div>
                 <div class="overflow-x-auto table-scroll-wrapper -mx-4 px-4 sm:mx-0 sm:px-0">
                     <table class="w-full min-w-[460px] text-left border-collapse">
@@ -300,8 +314,8 @@
                                 📅 조사 기한: 2026년 12월 12일 23:59까지
                             </span>
                         </div>
-                        <h2 class="text-[12.5px] xs:text-[14px] sm:text-xl md:text-2xl font-black tracking-tight whitespace-nowrap">
-                            2026 정기총회 참석 여부 및 의결권 위임(쉐도우보팅) 사전 조사
+                        <h2 class="screen-hero-title font-black tracking-tight text-white">
+                            2026 정기총회 참석 및 의결권 위임(쉐도우보팅) 사전 조사
                         </h2>
                         <p class="text-xs sm:text-sm text-slate-300 leading-relaxed break-keep">
                             단칙 제20조(정기총회) 제2항에 의거, 정기총회 개최를 위해서는 정단원 2/3 이상(<span class="text-emerald-300 font-bold">총 135명 중 90명 이상</span>)의 출석이 필수적입니다.
@@ -422,7 +436,7 @@
             <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
                     <span class="text-lg">📜</span>
-                    <h3 class="text-base font-extrabold text-slate-900">정기총회 단칙 규정 및 쉐도우보팅(의결권 위임) 안내</h3>
+                    <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">정기총회 단칙 규정 및 의결권 위임 안내</h3>
                 </div>
 
                 <div class="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -460,8 +474,8 @@
             <!-- Full Roster Attendance Status Table / Filter -->
             <div class="bg-white rounded-2xl border border-slate-200 p-5 sm:p-6 shadow-xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">전체 단원 135인 응답 현황</h3>
+                    <div class="min-w-0">
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">전체 단원 135인 응답 현황</h3>
                         <p class="text-xs text-slate-500 mt-0.5">파트별 전체 단원의 사전 참석 및 위임 여부를 실시간으로 확인하실 수 있습니다.</p>
                     </div>
                     <div id="attRosterFilterButtons" class="flex flex-wrap items-center gap-1.5">
@@ -487,11 +501,11 @@
         <section id="view-activity" class="hidden space-y-6 min-w-0 max-w-full overflow-x-hidden">
             <!-- Header Banner -->
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-sky-950 via-slate-900 to-indigo-950 text-white shadow-md border border-sky-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
+                <div class="min-w-0">
                     <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 text-xs font-bold mb-2">
                         <span>📋</span> 정기총회 공식 안건 제2호
                     </div>
-                    <h2 class="text-base sm:text-2xl font-black tracking-tight whitespace-nowrap">2026년도 활동보고</h2>
+                    <h2 class="screen-hero-title font-black tracking-tight text-white">2026년도 활동보고</h2>
                     <p class="text-xs sm:text-sm text-slate-300 mt-1 break-keep">단원 현황, 주요 변화, 2026 활동 영상, Special Thanks 보고입니다.</p>
                 </div>
             </div>
@@ -499,11 +513,11 @@
             <!-- Section 1: 단원 현황 (파트별 & 기수별 현황) -->
             <div id="activityMemberStatsSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-5">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">1. 단원 현황 (파트별 &amp; 기수별 현황)</h3>
+                    <div class="min-w-0">
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">1. 단원 현황 (파트별 &amp; 기수별 현황)</h3>
                         <p class="text-xs text-slate-500 mt-0.5">활동보고 집계 기준 정단원 구성 및 파트·기수별 분포입니다.</p>
                     </div>
-                    <span class="inline-flex items-center self-start sm:self-auto px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-extrabold">활동보고 집계 기준 135명</span>
+                    <span class="inline-flex items-center self-start sm:self-auto px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-extrabold shrink-0">활동보고 집계 기준 135명</span>
                 </div>
                 <div id="activityMemberStatsContainer" class="space-y-5"></div>
             </div>
@@ -511,8 +525,8 @@
             <!-- Section 2: 한우리 주요 변화 -->
             <div id="activityMajorChangesSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">2. 한우리 주요 변화</h3>
+                    <div class="min-w-0">
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">2. 한우리 주요 변화</h3>
                         <p class="text-xs text-slate-500 mt-0.5">운영 효율화 및 합창단 소통·출석 관리를 위해 도입된 주요 변화 사항입니다.</p>
                     </div>
                 </div>
@@ -522,8 +536,8 @@
             <!-- Section 3: 2026 활동 영상 ("올해를 회상하며...") -->
             <div id="activityTimelineSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">3. 2026 활동 영상 ("올해를 회상하며...")</h3>
+                    <div class="min-w-0">
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">3. 2026 활동 영상 ("올해를 회상하며...")</h3>
                         <p class="text-xs text-slate-500 mt-0.5">올해를 회상하며 — 2026년 정기연습, 연주회 및 주요 순간을 담은 활동 영상입니다.</p>
                     </div>
                 </div>
@@ -552,8 +566,8 @@
             <!-- Section 4: Special Thanks to... -->
             <div id="activitySpecialThanksSection" class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">4. Special Thanks to...</h3>
+                    <div class="min-w-0">
+                        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">4. Special Thanks to...</h3>
                         <p class="text-xs text-slate-500 mt-0.5">한우리 합창단의 특별한 행사를 위해 헌신해주신 분들께 감사드립니다.</p>
                     </div>
                 </div>
@@ -568,13 +582,13 @@
             <!-- Header Banner -->
             <div class="p-5 sm:p-6 rounded-3xl bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 text-white shadow-xl border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
                 <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="space-y-1 relative z-10">
+                <div class="space-y-1 relative z-10 min-w-0">
                     <div class="flex items-center gap-2 flex-wrap">
-                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-400 text-slate-950 shadow-xs">2026 정기연주회 공식 강평</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/10 text-amber-200 border border-white/15">Google Forms 설문 종합</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-amber-400 text-slate-950 shadow-xs shrink-0">2026 정기연주회 공식 강평</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/10 text-amber-200 border border-white/15 shrink-0">Google Forms 설문 종합</span>
                     </div>
-                    <h2 class="text-[13px] xs:text-[15px] sm:text-xl md:text-2xl font-black tracking-tight text-white pt-1 whitespace-nowrap">제21회 정기연주회 강평 및 단원 설문조사 결과</h2>
-                    <p class="text-xs sm:text-sm text-slate-300">구글 폼 공식 설문 응답자 70인 전수 분석 (총 7개 부문 70문항 심층 리포트)</p>
+                    <h2 class="screen-hero-title font-black tracking-tight text-white pt-1">제21회 정기연주회 강평 및 단원 설문조사 결과</h2>
+                    <p class="text-xs sm:text-sm text-slate-300">구글 폼 공식 설문 응답자 71인 전수 분석 (총 7개 부문 70문항 심층 리포트)</p>
                 </div>
                 <div class="flex items-center gap-2 relative z-10 shrink-0">
                     <a href="https://docs.google.com/forms/d/1RQOp1dhHIzMCPEYinyBDUFghmM7-HyOflrox38HCHps/edit#responses" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition flex items-center gap-1.5 cursor-pointer">
@@ -609,8 +623,8 @@
         <!-- ============================================================ -->
         <section id="view-settlement" class="hidden space-y-6">
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-950 text-white shadow-md border border-emerald-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-base sm:text-2xl font-black tracking-tight whitespace-nowrap">2026년도 회계 결산 보고서</h2>
+                <div class="min-w-0">
+                    <h2 class="screen-hero-title font-black tracking-tight text-white">2026년도 회계 결산 보고서</h2>
                     <p class="text-xs sm:text-sm text-slate-300 mt-1">보고: 회계 박다정 (2026.11.28) | 삼성 한우리 합창단 연간 수입 · 지출 결산</p>
                 </div>
                 <div id="settlementAdminActions" class="shrink-0"></div>
@@ -870,7 +884,7 @@
                             <span id="activeAgendaCategory" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-xs font-bold">카테고리</span>
                             <span id="activeAgendaResultStatus" class="px-2.5 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700">표결 진행 중</span>
                         </div>
-                        <h3 id="activeAgendaTitle" class="text-lg sm:text-xl font-black text-slate-900 mt-2">안건 제목</h3>
+                        <h3 id="activeAgendaTitle" class="text-sm sm:text-xl font-black text-slate-900 mt-2 whitespace-nowrap overflow-hidden text-ellipsis">안건 제목</h3>
                         <p id="activeAgendaSummary" class="text-xs sm:text-sm text-slate-600 mt-1">안건 요약 설명</p>
                     </div>
                     <div class="flex flex-col sm:items-end gap-2 shrink-0">
@@ -944,9 +958,9 @@
         <!-- TAB 5: 단장 선거 투표 (#view-election) -->
         <!-- ============================================================ -->
         <section id="view-election" class="hidden space-y-6">
-            <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white shadow-md border border-purple-800/40">
-                <h2 class="text-[14.5px] sm:text-2xl font-black tracking-tight whitespace-nowrap">2027년도 신임 단장 선출 찬반투표</h2>
-                <p class="text-xs sm:text-sm text-slate-300 mt-1">정기총회 공식 식순 제6호 · 2027 신임 단장 선출 찬반투표</p>
+            <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 text-white shadow-md border border-purple-800/40 min-w-0">
+                <h2 class="screen-hero-title font-black tracking-tight text-white">2027년도 신임 단장 선출 찬반투표</h2>
+                <p class="text-xs sm:text-sm text-slate-300 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">정기총회 공식 식순 제6호 · 2027 신임 단장 선출 찬반투표</p>
             </div>
 
             <!-- Dynamic Admin Election Control Bar -->
@@ -1069,9 +1083,9 @@
         <section id="view-bylaws" class="hidden space-y-6">
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-md border border-slate-800">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 class="text-[13px] xs:text-[15px] sm:text-2xl font-black tracking-tight whitespace-nowrap">삼성한우리합창단 공식 단칙 전문 (제1장 ~ 제9장)</h2>
-                        <p class="text-xs sm:text-sm text-slate-300 mt-1">기준: 2025.12.13 최신 개정본 전문 (총 32개 조항 수록)</p>
+                    <div class="min-w-0">
+                        <h2 class="screen-hero-title font-black tracking-tight text-white">삼성한우리합창단 공식 단칙 전문 (제1장 ~ 제9장)</h2>
+                        <p class="text-xs sm:text-sm text-slate-300 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">기준: 2025.12.13 최신 개정본 전문 (총 32개 조항 수록)</p>
                     </div>
                     <div id="bylawsAdminHeaderActions" class="flex items-center gap-2 shrink-0">
                         <div id="bylawsAdminHeaderControls" class="flex items-center gap-2"></div>
@@ -1129,11 +1143,11 @@
             <!-- Admin Center Banner -->
             <div class="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-rose-950 via-slate-900 to-rose-950 text-white shadow-md border border-rose-800/40">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold mb-2">
+                    <div class="min-w-0">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/30 text-xs font-bold mb-2 shrink-0">
                             <span>⚙</span> 2026 운영진 전용 통합 제어 센터
                         </div>
-                        <h2 class="text-[14.5px] sm:text-2xl font-black tracking-tight whitespace-nowrap">운영진 데이터 편집 & 제어 센터</h2>
+                        <h2 class="screen-hero-title font-black tracking-tight text-white">운영진 데이터 편집 & 제어 센터</h2>
                         <p class="text-xs sm:text-sm text-slate-300 mt-1">
                             정기총회 공식 식순, 연간 행사 로드맵, 단칙 원본 및 조문 편집, 총회 정족수·투표 시스템을 통합 관리합니다.
                         </p>
@@ -1715,14 +1729,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.96"></script>
-    <script src="js/data-config.js?v=2026.96"></script>
-    <script src="js/data-survey-comments.js?v=2026.96"></script>
-    <script src="js/firebase-config.js?v=2026.96"></script>
-    <script src="js/firebase-sync.js?v=2026.96"></script>
-    <script src="js/utils.js?v=2026.96"></script>
-    <script src="js/render.js?v=2026.96"></script>
-    <script src="js/handlers.js?v=2026.96"></script>
-    <script src="js/app.js?v=2026.96"></script>
+    <script src="js/data-members.js?v=2026.97"></script>
+    <script src="js/data-config.js?v=2026.97"></script>
+    <script src="js/data-survey-comments.js?v=2026.97"></script>
+    <script src="js/firebase-config.js?v=2026.97"></script>
+    <script src="js/firebase-sync.js?v=2026.97"></script>
+    <script src="js/utils.js?v=2026.97"></script>
+    <script src="js/render.js?v=2026.97"></script>
+    <script src="js/handlers.js?v=2026.97"></script>
+    <script src="js/app.js?v=2026.97"></script>
 </body>
 </html>
