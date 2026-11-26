@@ -74,8 +74,12 @@ function migrateAssemblyScheduleItems(scheduleList) {
             copy.targetTab = nextTarget;
             changed = true;
         }
-        if (copy.id === "sch-1" && (String(copy.desc || "").indexOf("136명") !== -1 || String(copy.desc || "").indexOf("164명") !== -1 || String(copy.desc || "").indexOf("131명") !== -1)) {
-            copy.desc = "재적 정단원 135명 기준 성원 확인 (개회·의결정족수 2/3 기준 90명/90표↑, 현장+위임)";
+        if (copy.id === "sch-1") {
+            copy.targetTab = "";
+            copy.btnLabel = "";
+            if (String(copy.desc || "").indexOf("136명") !== -1 || String(copy.desc || "").indexOf("164명") !== -1 || String(copy.desc || "").indexOf("131명") !== -1) {
+                copy.desc = "재적 정단원 135명 기준 성원 확인 (개회·의결정족수 2/3 기준 90명/90표↑, 현장+위임)";
+            }
             changed = true;
         }
         if (copy.id === "sch-5" && (String(copy.desc || "").indexOf("6개") !== -1 || String(copy.desc || "").indexOf("12개") !== -1 || String(copy.desc || "").indexOf("지휘자 임기") !== -1 || String(copy.desc || "").indexOf("대외수익") !== -1)) {

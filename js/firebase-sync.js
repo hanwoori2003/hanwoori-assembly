@@ -247,6 +247,10 @@
                 var scheduleNeedsSyncPush = false;
                 s.assemblySchedule.forEach(function(item) {
                     if (item && typeof item.desc === "string") {
+                        if (item.id === "sch-1") {
+                            item.targetTab = "";
+                            item.btnLabel = "";
+                        }
                         if (item.desc.indexOf("164명") !== -1 || item.desc.indexOf("136명") !== -1 || item.desc.indexOf("131명") !== -1) {
                             var officialCount = (typeof s.totalAttendees === "number" && s.totalAttendees > 0) ? s.totalAttendees : 135;
                             var quorumTwoThirds = Math.ceil((officialCount * 2) / 3);

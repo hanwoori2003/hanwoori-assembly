@@ -384,7 +384,7 @@ function getDefaultState() {
         title: "1. 개회 및 성원 보고",
         desc: "재적 정단원 135명 기준 성원 확인 (개회·의결정족수 2/3 기준 90명/90표↑, 현장+위임)",
         status: "진행중",
-        targetTab: "events",
+        targetTab: "",
         btnLabel: ""
       },
     {

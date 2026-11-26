@@ -450,7 +450,7 @@ function renderEventsView() {
                   '</div>'
                 : '';
 
-            const jumpBtn = safeTargetTab
+            const jumpBtn = (safeTargetTab && safeTargetTab !== "events" && item.id !== "sch-1")
                 ? '<button type="button" onclick="switchMainTab(\'' + escapeHtml(safeTargetTab) + '\')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 transition cursor-pointer text-center whitespace-nowrap shadow-2xs">' + escapeHtml(item.btnLabel || "이동 →") + '</button>'
                 : '';
 
