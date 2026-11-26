@@ -512,8 +512,8 @@ function renderActivityView() {
                 '<div class="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 shadow-2xs flex flex-col justify-between">' +
                     '<div>' +
                         '<span class="text-xs font-bold text-emerald-700 whitespace-nowrap">신입단원 · 21기(신단)</span>' +
-                        '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span></div>' +
-                        '<div class="text-[11px] text-emerald-600 mt-0.5">전체의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (무대 출연 정단원 15명)</div>' +
+                        '<div class="text-2xl sm:text-3xl font-black text-emerald-800 mt-1.5 tabular-nums">' + ms.newcomers + '<span class="text-sm font-bold text-emerald-600 ml-0.5">명</span> <span class="text-xs font-bold text-emerald-600">(무대미참여 ' + ms.excludedNewcomers + '명)</span></div>' +
+                        '<div class="text-[11px] text-emerald-600 mt-0.5">전체 135명의 ' + Math.round((ms.newcomers / ms.total) * 100) + '% (무대참여 15명 / 무대미참여 5명)</div>' +
                     '</div>' +
                 '</div>' +
             '</div>';
@@ -569,9 +569,12 @@ function renderActivityView() {
                 ? "flex flex-col items-center justify-end shrink-0 min-w-[58px] pt-2 pb-1 bg-indigo-50/90 rounded-lg px-1.5 mx-0.5"
                 : (g.highlight ? "flex flex-col items-center justify-end flex-1 min-w-[28px] pt-2 pb-1 bg-indigo-50/70 rounded-lg px-0.5" : "flex flex-col items-center justify-end flex-1 min-w-[26px] pt-2 pb-1");
             const genText = is21 ? "21기(신단)" : ((typeof g.gen === "number" || (!isNaN(Number(g.gen)) && g.gen !== "신입")) ? (g.gen + "기") : (g.label || g.gen));
+            const countBadge = is21 && g.unstageCount
+                ? '<span class="text-[10px] leading-none mb-1 tabular-nums ' + countClass + '">' + g.count + '<span class="text-[9px] font-normal text-rose-500">(-' + g.unstageCount + ')</span></span>'
+                : '<span class="text-[10px] leading-none mb-1 tabular-nums ' + countClass + '">' + g.count + '</span>';
             genBarsHtml +=
-                '<div class="' + wrapClass + '" title="' + escapeHtml(g.label) + ': ' + g.count + '명">' +
-                    '<span class="text-[10px] leading-none mb-1 tabular-nums ' + countClass + '">' + g.count + '</span>' +
+                '<div class="' + wrapClass + '" title="' + escapeHtml(g.label) + ': ' + g.count + '명' + (is21 ? ' (무대미참여 5명 포함)' : '') + '">' +
+                    countBadge +
                     '<div class="w-3.5 sm:w-4.5 rounded-t-md transition-all ' + barClass + '" style="height:' + heightPx + 'px"></div>' +
                     '<span class="text-[10px] mt-1.5 leading-tight text-center ' + (is21 ? 'tracking-tighter font-black whitespace-nowrap' : 'leading-none whitespace-nowrap') + ' ' + labelClass + '">' + genText + '</span>' +
                 '</div>';
@@ -590,10 +593,10 @@ function renderActivityView() {
                     '<div class="flex flex-wrap items-center justify-between gap-2">' +
                         '<div>' +
                             '<h4 class="text-sm font-extrabold text-slate-900">기수별 현황 (1기 ~ 20기 &amp; 21기 신단)</h4>' +
-                            '<p class="text-[11px] text-slate-500 mt-0.5">최근 기수(16~20기) 및 21기(신단) 단원이 전체의 63%를 차지합니다.</p>' +
+                            '<p class="text-[11px] text-slate-500 mt-0.5">최근 기수(16~20기) 및 21기(신단 20명) 단원이 전체 135명의 64%를 차지합니다.</p>' +
                         '</div>' +
                         '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r from-indigo-600 to-rose-500 text-white text-xs font-black shadow-xs whitespace-nowrap">' +
-                            escapeHtml(report.generationHighlightBadge || "16~20기 및 21기(신단): 83명 (63%)") +
+                            escapeHtml(report.generationHighlightBadge || "16~20기 및 21기(신단): 87명 (64%)") +
                         '</span>' +
                     '</div>' +
                     '<div class="w-full min-w-0 rounded-xl bg-white border border-slate-200/80 p-2.5 sm:p-3 shadow-2xs">' +
@@ -609,8 +612,8 @@ function renderActivityView() {
                         '</div>' +
                     '</div>' +
                     '<div class="flex items-center justify-end gap-3 text-xs text-slate-500 flex-wrap pt-1">' +
-                        '<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (48명 · 37%)</span>' +
-                        '<span class="inline-flex items-center gap-1.5 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 및 21기(신단) (83명 · 63%)</span>' +
+                        '<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-xs bg-slate-300 inline-block"></span>1~15기 (48명 · 36%)</span>' +
+                        '<span class="inline-flex items-center gap-1.5 font-bold text-indigo-700"><span class="w-2.5 h-2.5 rounded-xs bg-gradient-to-r from-indigo-600 to-rose-500 inline-block"></span>16~20기 및 21기(신단) (87명 · 64%)</span>' +
                     '</div>' +
                 '</div>' +
             '</div>';

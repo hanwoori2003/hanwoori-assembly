@@ -152,11 +152,11 @@ const INITIAL_AGENDAS = [
 // 2-B. 활동보고 데이터 (PDF Pages 5-34 기준)
 const ACTIVITY_REPORT_DATA = {
     memberSummary: {
-        total: 131,
-        existing: 116,
-        newcomers: 15,
+        total: 135,
+        existing: 115,
+        newcomers: 20,
         excludedNewcomers: 5,
-        note: "정단원 131명 (21기 무대연주 15명 진행) / 미참여 5명 제외"
+        note: "정단원 135명 (21기 총 20명 중 무대참여 15명 / 무대미참여 5명)"
     },
     partStats: [
         {
@@ -218,11 +218,11 @@ const ACTIVITY_REPORT_DATA = {
         { gen: 18, label: "18기", count: 14, highlight: true },
         { gen: 19, label: "19기", count: 14, highlight: true },
         { gen: 20, label: "20기", count: 19, highlight: true },
-        { gen: 21, label: "21기(신단)", count: 15, highlight: true }
+        { gen: 21, label: "21기(신단)", count: 20, stageCount: 15, unstageCount: 5, highlight: true }
     ],
     excludedMembersInfo: {
-        title: "21기 예비신단 중 정단원 미인정 인원 (5명)",
-        reason: "한우리 단칙 및 정단원 인준 요건: 정기연주회 무대 출연 필수 (무대 미참여로 예비신단 분류)",
+        title: "21기 신단 중 정기연주회 무대 미참여 인원 (5명)",
+        reason: "정기연주회 무대 미참여로 예비신단 구분 (총 20명 중 5명)",
         members: [
             { name: "권태희", part: "알토", detailPart: "A1", company: "삼성바이오로직스" },
             { name: "최서윤", part: "알토", detailPart: "A2", company: "삼성웰스토리" },
@@ -1166,29 +1166,29 @@ function getDefaultState() {
         votes: {}
     },
     concertSurvey: {
-        respondentCount: 70,
-        regularConcertRate: 88.6,
-        programRate: 78.6,
-        hallRate: 74.3,
-        audienceRate: 97.1,
+        respondentCount: 71,
+        regularConcertRate: 88.7,
+        programRate: 78.9,
+        hallRate: 73.2,
+        audienceRate: 97.2,
         meta: {
             title: "2026년 제21회 삼성한우리합창단 정기연주회 및 활동 강평",
-            respondentCount: 70,
-            targetDesc: "구글 폼 공식 설문 응답자 70인 실시간 전수 집계 분석 (총 7개 부문 70문항)",
+            respondentCount: 71,
+            targetDesc: "구글 폼 공식 설문 응답자 71인 실시간 전수 집계 분석 (총 7개 부문 70문항)",
             formUrl: "https://docs.google.com/forms/d/1RQOp1dhHIzMCPEYinyBDUFghmM7-HyOflrox38HCHps/edit#responses"
         },
         // 1. 기본 정보
         basicInfo: {
             parts: [
-                { name: "소프라노 (S)", count: 21, pct: 30.0, color: "from-rose-500 to-pink-500", badgeBg: "bg-rose-50 text-rose-700 border-rose-200" },
-                { name: "알토 (A)", count: 20, pct: 28.6, color: "from-amber-500 to-yellow-500", badgeBg: "bg-amber-50 text-amber-800 border-amber-200" },
-                { name: "베이스 (B)", count: 15, pct: 21.4, color: "from-emerald-500 to-teal-500", badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-                { name: "테너 (T)", count: 14, pct: 20.0, color: "from-indigo-500 to-blue-500", badgeBg: "bg-indigo-50 text-indigo-700 border-indigo-200" }
+                { name: "소프라노 (S)", count: 21, pct: 29.6, color: "from-rose-500 to-pink-500", badgeBg: "bg-rose-50 text-rose-700 border-rose-200" },
+                { name: "알토 (A)", count: 20, pct: 28.2, color: "from-amber-500 to-yellow-500", badgeBg: "bg-amber-50 text-amber-800 border-amber-200" },
+                { name: "베이스 (B)", count: 15, pct: 21.1, color: "from-emerald-500 to-teal-500", badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+                { name: "테너 (T)", count: 15, pct: 21.1, color: "from-indigo-500 to-blue-500", badgeBg: "bg-indigo-50 text-indigo-700 border-indigo-200" }
             ],
             participationCount: [
-                { label: "1회 (신입단원)", count: 10, pct: 14.3 },
-                { label: "2 ~ 4회 (중견 단원)", count: 31, pct: 44.3 },
-                { label: "5회 이상 (시니어/베테랑)", count: 29, pct: 41.4 }
+                { label: "1회 (신입단원)", count: 10, pct: 14.1 },
+                { label: "2 ~ 4회 (중견 단원)", count: 32, pct: 45.1 },
+                { label: "5회 이상 (시니어/베테랑)", count: 29, pct: 40.8 }
             ]
         },
         // 2. 단원 모집 및 활동 전반 만족도
@@ -1296,8 +1296,8 @@ function getDefaultState() {
         // 6. 2027년 기대 연주 활동
         expectations2027Detail: {
             frequency: [
-                { label: "연 2회 (정기 + 소규모 연주)", pct: 50.0, count: 35, highlight: true },
-                { label: "연 1회 (정기연주회 집중)", pct: 48.6, count: 34 },
+                { label: "연 2회 (정기 + 소규모 연주)", pct: 49.3, count: 35, highlight: true },
+                { label: "연 1회 (정기연주회 집중)", pct: 49.3, count: 35 },
                 { label: "연 3회 이상 (버스킹/대외봉사 포함)", pct: 1.4, count: 1 }
             ],
             smallConcert: {
