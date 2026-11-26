@@ -221,6 +221,9 @@ function renderHeaderStatus() {
                         '<button type="button" onclick="triggerBylawFileUpload()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-200 border border-emerald-400/30 text-xs font-bold transition flex items-center gap-1 cursor-pointer">' +
                             '<span>📂</span> <span>단칙 .docx 업로드</span>' +
                         '</button>' +
+                        '<button type="button" onclick="openCloudSyncModal()" class="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-300 border border-emerald-400/30 text-xs font-bold transition flex items-center gap-1 cursor-pointer" title="실시간 클라우드 동기화 및 백업">' +
+                            '<span>☁️</span> <span>실시간 동기화</span>' +
+                        '</button>' +
                         '<button type="button" onclick="switchMainTab(\'admin\')" class="px-2.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition flex items-center gap-1 cursor-pointer shadow-sm">' +
                             '<span>⚙</span> <span>전체 설정/명부</span>' +
                         '</button>' +
@@ -2195,34 +2198,37 @@ function renderCloudSyncModalStatusHtml() {
 function renderSyncStatusUI() {
     const st = getFirebaseSyncStatusSafe();
 
-    // 1. Always-visible live sync pill in #mainHeader
-    const headerBtn = document.getElementById("headerSyncBadge");
-    const headerDot = document.getElementById("headerSyncBadgeDot");
-    const headerText = document.getElementById("headerSyncBadgeText");
-    if (headerBtn && headerDot && headerText) {
-        const baseCls = "px-2.5 py-1 rounded-full border text-xs transition inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shadow-xs";
+    // 1. Sync button in Admin View / Quick Bar
+    const syncBadges = [
+        { btn: document.getElementById("adminHeaderSyncBadge"), dot: document.getElementById("adminHeaderSyncBadgeDot"), text: document.getElementById("adminHeaderSyncBadgeText") },
+        { btn: document.getElementById("headerSyncBadge"), dot: document.getElementById("headerSyncBadgeDot"), text: document.getElementById("headerSyncBadgeText") }
+    ];
+
+    syncBadges.forEach(function(b) {
+        if (!b.btn || !b.dot || !b.text) return;
+        const baseCls = "px-3.5 py-2 rounded-xl border text-xs font-bold transition inline-flex items-center gap-1.5 cursor-pointer shadow-xs";
         if (st.mode === "cloud" && st.connected) {
-            headerBtn.className = baseCls + " bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-400/40 text-emerald-200";
-            headerBtn.title = "Firebase 실시간 동기화 연결됨" + (st.projectId ? " (" + st.projectId + ")" : "");
-            headerDot.textContent = "🟢";
-            headerText.innerHTML = '실시간<span class="hidden sm:inline"> 동기화</span>';
+            b.btn.className = baseCls + " bg-emerald-500/20 hover:bg-emerald-500/30 border-emerald-400/40 text-emerald-200";
+            b.btn.title = "Firebase 실시간 동기화 연결됨" + (st.projectId ? " (" + st.projectId + ")" : "");
+            b.dot.textContent = "🟢";
+            b.text.innerHTML = '실시간 동기화 <span class="text-[11px] opacity-80">(정상)</span>';
         } else if (st.mode === "cloud" && !st.connected && st.error) {
-            headerBtn.className = baseCls + " bg-amber-500/20 hover:bg-amber-500/30 border-amber-400/50 text-amber-200";
-            headerBtn.title = "Firebase 연결 오류: " + st.error;
-            headerDot.textContent = "🟡";
-            headerText.textContent = "DB 확인필요";
+            b.btn.className = baseCls + " bg-amber-500/20 hover:bg-amber-500/30 border-amber-400/50 text-amber-200";
+            b.btn.title = "Firebase 연결 오류: " + st.error;
+            b.dot.textContent = "🟡";
+            b.text.textContent = "동기화 오류";
         } else if (st.mode === "cloud" && !st.connected) {
-            headerBtn.className = baseCls + " bg-amber-500/20 hover:bg-amber-500/30 border-amber-400/40 text-amber-200";
-            headerBtn.title = "Firebase 실시간 동기화 연결 중..." + (st.projectId ? " (" + st.projectId + ")" : "");
-            headerDot.textContent = "🟡";
-            headerText.textContent = "연결 중...";
+            b.btn.className = baseCls + " bg-amber-500/20 hover:bg-amber-500/30 border-amber-400/40 text-amber-200";
+            b.btn.title = "Firebase 실시간 동기화 연결 중..." + (st.projectId ? " (" + st.projectId + ")" : "");
+            b.dot.textContent = "🟡";
+            b.text.textContent = "동기화 연결 중";
         } else {
-            headerBtn.className = baseCls + " bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-white";
-            headerBtn.title = "로컬 저장 모드 (js/firebase-config.js 미설정)";
-            headerDot.textContent = "⚪";
-            headerText.textContent = "로컬";
+            b.btn.className = baseCls + " bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-white";
+            b.btn.title = "로컬 저장 모드 (js/firebase-config.js 미설정)";
+            b.dot.textContent = "⚪";
+            b.text.textContent = "로컬 동기화";
         }
-    }
+    });
 
     // 2. Admin view sync status bar
     const syncBarEl = document.getElementById("adminFirebaseSyncBar");

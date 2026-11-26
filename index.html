@@ -161,10 +161,10 @@
                 </div>
             </div>
 
-            <!-- Row 2: Tabs bar (6 primary tabs + Admin conditional tabs + Projector toggle) -->
-            <div class="flex items-center justify-between gap-2 py-1.5 text-xs sm:text-sm font-medium min-w-0">
+            <!-- Row 2: Tabs bar (6 primary tabs + Admin conditional tabs) - Full width maximum stretch -->
+            <div class="flex items-center w-full py-1.5 text-xs sm:text-sm font-medium min-w-0">
                 <!-- Tabs wrapper with Left/Right arrow buttons & gradient fade indicators for horizontal scroll -->
-                <div id="tabsWrapper" class="relative flex-1 min-w-0 flex items-center">
+                <div id="tabsWrapper" class="relative w-full flex-1 min-w-0 flex items-center">
                     <!-- Left Arrow Button (shown when overflowing & scrolled right) -->
                     <button id="btnTabScrollLeft" type="button" onclick="scrollTabsNav(-220)" aria-label="이전 탭 보기" title="이전 탭 보기" class="hidden absolute left-0 z-20 h-7 w-7 rounded-full bg-slate-800/90 hover:bg-indigo-600 text-white shadow-lg border border-slate-700/80 items-center justify-center transition-all cursor-pointer backdrop-blur-xs">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
@@ -174,7 +174,7 @@
                     <div id="tabsFadeLeft" class="pointer-events-none absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
 
                     <!-- Horizontal scrollable tabs container -->
-                    <nav id="mainTabsNav" class="tabs-scroll-container flex-1 min-w-0 flex flex-nowrap items-center gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap py-1 scroll-smooth cursor-grab select-none" aria-label="메인 탭 내비게이션">
+                    <nav id="mainTabsNav" class="tabs-scroll-container w-full flex-1 min-w-0 flex flex-nowrap items-center gap-1.5 sm:gap-2 overflow-x-auto whitespace-nowrap py-1 scroll-smooth cursor-grab select-none" aria-label="메인 탭 내비게이션">
                         <!-- Tab 1: 2026 정기총회 -->
                         <button id="tabBtn-events" type="button" onclick="switchMainTab('events', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap bg-indigo-600 text-white font-bold shadow-sm cursor-pointer">
                             <span>📅 2026 정기총회</span>
@@ -221,18 +221,6 @@
                     <!-- Right Arrow Button (shown when overflowing & more tabs available) -->
                     <button id="btnTabScrollRight" type="button" onclick="scrollTabsNav(220)" aria-label="다음 탭 보기" title="다음 탭 보기" class="hidden absolute right-0 z-20 h-7 w-7 rounded-full bg-slate-800/90 hover:bg-indigo-600 text-white shadow-lg border border-slate-700/80 items-center justify-center transition-all cursor-pointer backdrop-blur-xs">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
-                    </button>
-                </div>
-
-                <!-- Right controls: Projector Mode toggle & Cloud Sync -->
-                <div class="flex items-center gap-1.5 shrink-0 pl-1.5 border-l border-slate-800">
-                    <button id="btnToggleProjector" type="button" onclick="toggleProjectorMode()" title="프로젝터 대형화면 모드 토글" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs transition flex items-center gap-1 cursor-pointer">
-                        <span>📽</span>
-                        <span class="hidden lg:inline text-[11px]">프로젝터</span>
-                    </button>
-                    <button id="headerSyncBadge" type="button" onclick="openCloudSyncModal()" title="클라우드 실시간 동기화 상태 및 백업" class="px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-xs transition inline-flex items-center gap-1.5 cursor-pointer whitespace-nowrap shadow-xs">
-                        <span id="headerSyncBadgeDot" class="text-[11px] leading-none">⚪</span>
-                        <span id="headerSyncBadgeText" class="text-[11px] font-bold leading-none">로컬</span>
                     </button>
                 </div>
             </div>
@@ -1157,7 +1145,11 @@
                             정기총회 공식 식순, 연간 행사 로드맵, 단칙 원본 및 조문 편집, 총회 정족수·투표 시스템을 통합 관리합니다.
                         </p>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
+                    <div class="flex items-center gap-2 shrink-0 flex-wrap">
+                        <button id="adminHeaderSyncBadge" type="button" onclick="openCloudSyncModal()" title="클라우드 실시간 동기화 상태 및 백업 설정" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white text-xs font-bold transition inline-flex items-center gap-1.5 cursor-pointer shadow-xs">
+                            <span id="adminHeaderSyncBadgeDot" class="text-xs leading-none">⚪</span>
+                            <span id="adminHeaderSyncBadgeText" class="text-xs font-bold leading-none">실시간 동기화</span>
+                        </button>
                         <button type="button" onclick="exportJsonBackup()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-bold transition flex items-center gap-1 cursor-pointer">
                             <span>💾</span> 전체 JSON 백업
                         </button>
@@ -1730,14 +1722,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.90"></script>
-    <script src="js/data-config.js?v=2026.90"></script>
-    <script src="js/data-survey-comments.js?v=2026.90"></script>
-    <script src="js/firebase-config.js?v=2026.90"></script>
-    <script src="js/firebase-sync.js?v=2026.90"></script>
-    <script src="js/utils.js?v=2026.90"></script>
-    <script src="js/render.js?v=2026.90"></script>
-    <script src="js/handlers.js?v=2026.90"></script>
-    <script src="js/app.js?v=2026.90"></script>
+    <script src="js/data-members.js?v=2026.91"></script>
+    <script src="js/data-config.js?v=2026.91"></script>
+    <script src="js/data-survey-comments.js?v=2026.91"></script>
+    <script src="js/firebase-config.js?v=2026.91"></script>
+    <script src="js/firebase-sync.js?v=2026.91"></script>
+    <script src="js/utils.js?v=2026.91"></script>
+    <script src="js/render.js?v=2026.91"></script>
+    <script src="js/handlers.js?v=2026.91"></script>
+    <script src="js/app.js?v=2026.91"></script>
 </body>
 </html>
