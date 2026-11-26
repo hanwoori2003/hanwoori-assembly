@@ -210,13 +210,27 @@ function loadStateFromStorage() {
                         needsPersistMigration = true;
                     }
                 }
+                if (Array.isArray(appState.members)) {
+                    appState.members.forEach(function(m) {
+                        if (m && (m.id === "mem-127" || m.name === "박인화")) {
+                            m.company = "삼성물산";
+                            m.groupType = "samsung";
+                        }
+                        if (m && (m.id === "mem-80" || m.name === "윤지헌")) {
+                            m.name = "윤지현";
+                            m.key = "윤지현-테너";
+                        }
+                    });
+                }
                 if (appState.currentVoterId === "mem-80" || appState.currentVoterName === "윤지헌") {
                     appState.currentVoterName = "윤지현";
-                    needsPersistMigration = true;
                 }
                 appState.bylaws = parsed.bylaws;
                 
                 let needsPersistMigration = !isCurrentKey;
+                if (appState.currentVoterName === "윤지현" || (Array.isArray(appState.members) && appState.members.some(function(m) { return m && m.id === "mem-127" && m.company === "삼성물산"; }))) {
+                    needsPersistMigration = true;
+                }
                 const dynamicPassThreshold = getMajorityThreshold(appState.totalAttendees || canonicalTotal);
 
                 // Check if parsed agendas contains legacy mock agendas or needs migration to 5 official agendas
