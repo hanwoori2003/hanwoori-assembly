@@ -711,7 +711,7 @@
                 <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
                     <span class="text-xs font-bold text-emerald-600">'26년 잔금</span>
                     <div id="settlementBalanceDisplay" class="text-2xl font-black text-emerald-700 mt-1">24,894,366원</div>
-                    <span id="settlementBalanceDiffDisplay" class="text-[11px] text-emerald-600 font-semibold">전년比 +3,434,666원 (+343만)</span>
+                    <span id="settlementBalanceDiffDisplay" class="text-[11px] text-emerald-600 font-semibold">전년比 +3,434,666원</span>
                 </div>
             </div>
 
@@ -754,19 +754,6 @@
                 </div>
             </div>
 
-            <!-- Notes & Summary Banner -->
-            <div id="settlementNotesBanner" class="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-indigo-950 text-xs space-y-1.5">
-                <div class="font-extrabold flex items-center gap-1.5 text-indigo-900">
-                    <span>📌</span> 2026 회계 결산 주요 참고 사항
-                </div>
-                <ul id="settlementNotesList" class="list-disc list-inside space-y-0.5 text-slate-700 pl-1">
-                    <li>정단원 : '25년 164명 → '26년 135명</li>
-                    <li>후원금 / 찬조금 : 정기연주회 후원금 900만원 + 찬조 10만원</li>
-                    <li>행사 / 경조사 : 축가 30만원 (지출: 축가 반주 10만, 음악캠프 4만)</li>
-                    <li>이자 : 예금결산이자 + 정기예금 만기 이자 (797,431원)</li>
-                </ul>
-            </div>
-
             <!-- 2026년 정기연주회 주요 결산 상세 내역 (수입 900만 / 지출 3,709만) -->
             <div class="bg-white rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-xs space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
@@ -774,7 +761,6 @@
                         <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
                             <span>🎭</span> 2026년 정기연주회 수입 및 지출 결산
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">인재개발원 콘서트홀 · 후원 수입 9,000,000원 · 총 지출 37,088,398원 (음악 23,410,918원 + 운영·소품·기타 5,859,480원 + 홍보·기획 7,818,000원)</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold">
@@ -786,18 +772,49 @@
                     </div>
                 </div>
 
-                <!-- 정기공연 수입 하이라이트 배너 -->
-                <div class="p-3.5 sm:p-4 rounded-xl bg-indigo-50/70 border border-indigo-200/80 flex items-center justify-between gap-3 shadow-2xs">
-                    <div class="flex items-center gap-2.5">
-                        <span class="text-lg">💎</span>
-                        <div>
-                            <div class="text-xs font-black text-indigo-950">정기공연 수입 (후원금)</div>
-                            <div class="text-[11px] text-slate-600">삼성 계열사 정기공연 후원금 입금액</div>
+                <!-- 정기공연 수입 하이라이트 배너 및 계열사 명단 표 -->
+                <div class="p-3.5 sm:p-4 rounded-xl bg-indigo-50/70 border border-indigo-200/80 space-y-3 shadow-2xs">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="text-lg">💎</span>
+                            <div>
+                                <div class="text-xs font-black text-indigo-950">정기공연 수입 (후원금)</div>
+                                <div class="text-[11px] text-slate-600">삼성 계열사 정기공연 후원금 입금액</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm sm:text-base font-black text-indigo-700">9,000,000원</div>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <div class="text-sm sm:text-base font-black text-indigo-700">9,000,000원</div>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-200/70 text-indigo-900 font-bold">수입 반영</span>
+                    <div class="overflow-x-auto border border-indigo-100 rounded-xl bg-white shadow-2xs">
+                        <table class="w-full text-xs text-left">
+                            <thead class="bg-indigo-50/60 text-slate-600 font-bold border-b border-indigo-100">
+                                <tr>
+                                    <th class="py-2 px-3.5">후원 계열사</th>
+                                    <th class="py-2 px-3.5 text-right">후원 금액</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-slate-800">
+                                <tr class="hover:bg-indigo-50/30 transition-colors">
+                                    <td class="py-2 px-3.5 font-bold text-slate-900">삼성전자</td>
+                                    <td class="py-2 px-3.5 text-right font-extrabold text-indigo-700 whitespace-nowrap">3,000,000원</td>
+                                </tr>
+                                <tr class="hover:bg-indigo-50/30 transition-colors">
+                                    <td class="py-2 px-3.5 font-bold text-slate-900">삼성SDS</td>
+                                    <td class="py-2 px-3.5 text-right font-extrabold text-indigo-700 whitespace-nowrap">3,000,000원</td>
+                                </tr>
+                                <tr class="hover:bg-indigo-50/30 transition-colors">
+                                    <td class="py-2 px-3.5 font-bold text-slate-900">삼성바이오로직스</td>
+                                    <td class="py-2 px-3.5 text-right font-extrabold text-indigo-700 whitespace-nowrap">3,000,000원</td>
+                                </tr>
+                            </tbody>
+                            <tfoot class="bg-indigo-100/40 font-black text-indigo-950 border-t border-indigo-200">
+                                <tr>
+                                    <td class="py-2 px-3.5">합계</td>
+                                    <td class="py-2 px-3.5 text-right text-indigo-700 whitespace-nowrap">9,000,000원</td>
+                                </tr>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
 
@@ -1978,14 +1995,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.111"></script>
-    <script src="js/data-config.js?v=2026.111"></script>
-    <script src="js/data-survey-comments.js?v=2026.111"></script>
-    <script src="js/firebase-config.js?v=2026.111"></script>
-    <script src="js/firebase-sync.js?v=2026.111"></script>
-    <script src="js/utils.js?v=2026.111"></script>
-    <script src="js/render.js?v=2026.111"></script>
-    <script src="js/handlers.js?v=2026.111"></script>
-    <script src="js/app.js?v=2026.111"></script>
+    <script src="js/data-members.js?v=2026.112"></script>
+    <script src="js/data-config.js?v=2026.112"></script>
+    <script src="js/data-survey-comments.js?v=2026.112"></script>
+    <script src="js/firebase-config.js?v=2026.112"></script>
+    <script src="js/firebase-sync.js?v=2026.112"></script>
+    <script src="js/utils.js?v=2026.112"></script>
+    <script src="js/render.js?v=2026.112"></script>
+    <script src="js/handlers.js?v=2026.112"></script>
+    <script src="js/app.js?v=2026.112"></script>
 </body>
 </html>

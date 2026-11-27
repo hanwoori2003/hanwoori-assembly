@@ -1348,7 +1348,7 @@ function renderSettlementView() {
     const balEl = document.getElementById("settlementBalanceDisplay");
     if (balEl) balEl.textContent = Number(s.balance).toLocaleString() + "원";
     const balDiffEl = document.getElementById("settlementBalanceDiffDisplay");
-    if (balDiffEl) balDiffEl.textContent = "전년比 +" + Number(s.diffFromPrev || 3434666).toLocaleString() + "원 (+343만)";
+    if (balDiffEl) balDiffEl.textContent = "전년比 +" + Number(s.diffFromPrev || 3434666).toLocaleString() + "원";
 
     const revCont = document.getElementById("settlementRevenueTableBody");
     if (revCont) {
