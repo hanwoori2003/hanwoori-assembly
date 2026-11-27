@@ -242,7 +242,10 @@
                     var fullText = String(item.title || "") + " " + String(item.desc || "") + " " + String(item.targetTab || "");
                     return /(164명|136명|131명|88명|140명|91명|12개|6개|지휘자\s*임기|대외수익|sectionConcertReview)/.test(fullText);
                 });
-                if (scheduleHasLegacy && typeof global.getDefaultState === "function") {
+                var scheduleMissingVotes = clonedSchedule.length < 6 ||
+                    !clonedSchedule.some(function(it) { return it && it.id === "sch-5"; }) ||
+                    !clonedSchedule.some(function(it) { return it && it.id === "sch-6"; });
+                if ((scheduleHasLegacy || scheduleMissingVotes) && typeof global.getDefaultState === "function") {
                     s.assemblySchedule = deepClone(global.getDefaultState().assemblySchedule);
                 } else if (typeof global.migrateAssemblyScheduleItems === "function") {
                     s.assemblySchedule = global.migrateAssemblyScheduleItems(clonedSchedule).items;

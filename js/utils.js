@@ -62,7 +62,7 @@ function migrateAssemblyScheduleItems(scheduleList) {
         "sch-1": "재적 정단원 135명(기존 115명·신단 20명) 기준 단칙 제20조에 따른 개회 정족수(2/3 이상 90명)를 현장 참석 및 사전 쉐도우보팅(위임) 합산으로 충족하여 총회 개회를 선포하고, 현장 출석 단원 기준의 실시간 의결 정족수(2/3) 산정 원칙을 안내합니다.",
         "sch-2": "정단원 135명 파트·기수별 분포(1~18기 65% vs 19~21기 35%), 연습·소통 효율화를 위한 주요 운영 변화 보고, 한 해를 회상하는 활동 영상 상영 및 3대 특별 행사(소풍·엠티·송년회) T/F 단원들의 노고에 감사하는 Special Thanks를 보고합니다.",
         "sch-3": "인재개발원 콘서트홀에서 개최된 제21회 정기연주회 단원 설문(72인 전수 참여)을 바탕으로 높은 연주 만족도(88.9%), 스테이지별 곡 완성도, 무대 단복(복장) 개선 설문 결과, 지휘·반주자 감사 제언 및 2027년 희망 활동 분석 결과를 종합 보고합니다.",
-        "sch-4": "연간 총수입 8,746만원(이월 2,146만·연회비 5,356만·후원금 900만 등)과 총지출 6,307만원(정기공연 3,709만·지도사례비 2,094만 등) 집행 결과, 차기 이월 잔금 2,439만원(전년 대비 +293만원 흑자)을 기록한 2026년도 수지 결산 내역을 보고하고 감사를 승인합니다.",
+        "sch-4": "연간 총수입 87,461,241원(이월 2,146만·연회비 5,356만·후원금 900만 등)과 총지출 62,566,875원(정기연주회 3,709만·고정사례비 2,094만 등) 집행 결과, 차기 이월 잔금 24,894,366원(전년 대비 +3,434,666원 흑자)을 기록한 2026년도 수지 결산 내역을 보고하고 감사를 승인합니다.",
         "sch-5": "합창단 운영 체계 고도화를 위해 발의된 정단원 자격(제4조), 단장 피선거권 명칭(제11조), 운영진 회비 감면(제13조), 연습 출석 인정(제22조), 준단원 환불 규정(제28조) 등 총 5개 개정 안건에 대해 현장 출석 단원 기준 2/3 이상 찬성으로 전자투표 및 심의·의결합니다.",
         "sch-6": "2027년도 한우리 합창단을 이끌 신임 단장 후보(15기 베이스 최경욱)의 핵심 공약 및 출마 소견을 확인하고, 현장 출석 단원 기준 2/3 이상 찬성을 거쳐 차기 단장 선출을 확정하고 2027년 신임 집행부 출범을 공식 의결합니다."
     };
@@ -113,6 +113,28 @@ function migrateAssemblyScheduleItems(scheduleList) {
 
         return copy;
     });
+
+    // Ensure all 6 official schedule items (sch-1 through sch-6) are guaranteed to be included
+    const defaultSchedule = (typeof getDefaultState === "function") ? (getDefaultState().assemblySchedule || []) : [];
+    ["sch-1", "sch-2", "sch-3", "sch-4", "sch-5", "sch-6"].forEach(function(reqId) {
+        const found = migrated.some(function(item) { return item && item.id === reqId; });
+        if (!found) {
+            const defItem = defaultSchedule.find(function(d) { return d && d.id === reqId; });
+            if (defItem) {
+                migrated.push(JSON.parse(JSON.stringify(defItem)));
+                changed = true;
+            }
+        }
+    });
+
+    // Strict ordering of official schedule 1 ~ 6
+    migrated.sort(function(a, b) {
+        const orderMap = { "sch-1": 1, "sch-2": 2, "sch-3": 3, "sch-4": 4, "sch-5": 5, "sch-6": 6 };
+        const oa = orderMap[a ? a.id : ""] || 99;
+        const ob = orderMap[b ? b.id : ""] || 99;
+        return oa - ob;
+    });
+
     return { items: migrated, changed: changed };
 }
 
@@ -406,7 +428,10 @@ function loadStateFromStorage() {
                         if (!item || typeof item !== "object") return true;
                         return legacyPattern.test(String(item.title || "") + " " + String(item.desc || "") + " " + String(item.targetTab || ""));
                     });
-                    if (hasLegacySchedule) {
+                    const missingVotes = parsed.assemblySchedule.length < 6 ||
+                        !parsed.assemblySchedule.some(function(it) { return it && it.id === "sch-5"; }) ||
+                        !parsed.assemblySchedule.some(function(it) { return it && it.id === "sch-6"; });
+                    if (hasLegacySchedule || missingVotes) {
                         appState.assemblySchedule = getDefaultState().assemblySchedule;
                         needsPersistMigration = true;
                     } else {
@@ -416,6 +441,9 @@ function loadStateFromStorage() {
                             needsPersistMigration = true;
                         }
                     }
+                } else {
+                    appState.assemblySchedule = getDefaultState().assemblySchedule;
+                    needsPersistMigration = true;
                 }
                 appState.winnerPagePublic = Boolean(parsed.winnerPagePublic);
                 const defaultSettle = (typeof getDefaultState === "function") ? getDefaultState().settlement : null;

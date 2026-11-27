@@ -159,8 +159,17 @@
                     </div>
                 </div>
 
-                <!-- Right: Admin Preview + User Badge + Logout (Logout pinned to right edge) -->
+                <!-- Right: Quick Voting Action Buttons + Admin Preview + User Badge + Logout (Logout pinned to right edge) -->
                 <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 justify-end ml-auto">
+                    <!-- Quick Direct Voting Links (Always visible in Header Row 1 across all views) -->
+                    <button type="button" onclick="switchMainTab('voting')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white transition text-[11px] sm:text-xs font-black cursor-pointer shadow-xs whitespace-nowrap shrink-0 border border-indigo-400/60" title="제5호 단칙 개정안 찬반투표 바로가기">
+                        <span>☑</span>
+                        <span class="inline">단칙투표</span>
+                    </button>
+                    <button type="button" onclick="switchMainTab('election')" class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white transition text-[11px] sm:text-xs font-black cursor-pointer shadow-xs whitespace-nowrap shrink-0 border border-purple-400/60" title="제6호 신임 단장 선거 투표 바로가기">
+                        <span>👤</span>
+                        <span class="inline">단장선거</span>
+                    </button>
                     <div id="headerAdminModeBadgeContainer" class="flex items-center gap-1"></div>
                     <button id="btnHeaderLogin" type="button" onclick="openVoterLoginModal()" class="hidden items-center gap-1 px-2 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 border border-indigo-500 text-white transition text-[11px] sm:text-xs font-bold cursor-pointer shadow-xs whitespace-nowrap shrink-0">
                         <span>🔐 로그인</span>
@@ -206,12 +215,12 @@
                             <span>📑 2026 결산 보고</span>
                         </button>
                         <!-- Tab 4: 단칙 개정 찬반투표 -->
-                        <button id="tabBtn-voting" type="button" onclick="switchMainTab('voting', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                        <button id="tabBtn-voting" type="button" onclick="switchMainTab('voting', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer border border-indigo-500/30">
                             <span>☑ 단칙 개정 찬반투표</span>
-                            <span id="navBadgeAgendaProgress" class="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">1/6</span>
+                            <span id="navBadgeAgendaProgress" class="px-1.5 py-0.2 rounded text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold">1/5</span>
                         </button>
                         <!-- Tab 5: 단장 선거 투표 -->
-                        <button id="tabBtn-election" type="button" onclick="switchMainTab('election', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer">
+                        <button id="tabBtn-election" type="button" onclick="switchMainTab('election', this)" class="main-tab-btn shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800 cursor-pointer border border-purple-500/30">
                             <span>👤 단장 선거 투표</span>
                             <span id="navBadgeElectionMode" class="px-1.5 py-0.2 rounded text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 font-semibold">단독 찬반</span>
                         </button>
@@ -230,10 +239,11 @@
                     </nav>
 
                     <!-- Right fade hint (shown when more tabs can be scrolled) -->
-                    <div id="tabsFadeRight" class="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-slate-900 via-slate-900/80 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
+                    <div id="tabsFadeRight" class="pointer-events-none absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-slate-900 via-slate-900/90 to-transparent z-10 opacity-0 transition-opacity duration-200"></div>
 
                     <!-- Right Arrow Button (shown when overflowing & more tabs available) -->
-                    <button id="btnTabScrollRight" type="button" onclick="scrollTabsNav(220)" aria-label="다음 탭 보기" title="다음 탭 보기" class="hidden absolute right-0 z-20 h-7 w-7 rounded-full bg-slate-800/90 hover:bg-indigo-600 text-white shadow-lg border border-slate-700/80 items-center justify-center transition-all cursor-pointer backdrop-blur-xs">
+                    <button id="btnTabScrollRight" type="button" onclick="scrollTabsNav(240)" aria-label="다음 탭 보기" title="다음 탭 보기 (단칙 개정 찬반투표 / 단장 선거 투표)" class="hidden absolute right-0 z-20 h-7 px-2.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg border border-indigo-400 items-center gap-1 transition-all cursor-pointer backdrop-blur-xs text-[11px] font-black">
+                        <span>투표 탭</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
                     </button>
                 </div>
@@ -259,6 +269,62 @@
                     </div>
                     <h2 class="screen-hero-title font-black tracking-tight text-white">2026 삼성한우리합창단 정기총회 공식 식순 및 안건</h2>
                     <p class="text-[11px] sm:text-sm text-slate-300 mt-1 whitespace-nowrap overflow-hidden text-ellipsis">지휘: 박지훈 선생님 · 반주: 김혜연 선생님 · 2026 운영진 18인</p>
+                </div>
+            </div>
+
+            <!-- ============================================================ -->
+            <!-- ⚡ 2026 총회 핵심 투표 바로가기 (Direct Voting Quick Hub)      -->
+            <!-- ============================================================ -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-950 via-slate-900 to-purple-950 border-2 border-indigo-500/40 shadow-lg text-white space-y-3.5">
+                <div class="flex items-center justify-between gap-2 border-b border-indigo-800/60 pb-2.5">
+                    <div class="flex items-center gap-2">
+                        <span class="text-base sm:text-lg font-black text-amber-300">🗳️ 2026 총회 핵심 투표 바로가기</span>
+                        <span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">● 실시간 표결 진행 중</span>
+                    </div>
+                    <span class="text-[11px] text-slate-300 hidden sm:inline">현장 출석 기준 2/3 이상 찬성 의결</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <!-- Quick Card 1: 단칙 개정 찬반투표 -->
+                    <div role="button" tabindex="0" onclick="switchMainTab('voting')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchMainTab('voting');}" class="p-4 rounded-xl bg-slate-800/90 hover:bg-indigo-900/60 border border-indigo-500/40 hover:border-indigo-400 transition cursor-pointer flex flex-col justify-between gap-3 shadow-sm group">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded text-[10px] font-black bg-indigo-500/30 text-indigo-200 border border-indigo-400/40">식순 제5호 안건</span>
+                                <span class="text-[11px] text-indigo-300 font-bold">5개 개정안 순차 표결</span>
+                            </div>
+                            <h4 class="text-base sm:text-lg font-black text-white group-hover:text-indigo-200 transition flex items-center gap-2">
+                                <span>☑</span>
+                                <span>단칙 개정안 찬반투표</span>
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                정단원 자격, 단장 피선거권, 회비 감면, 출석 인정, 환불 규정 등 5개 안건 실시간 전자 표결
+                            </p>
+                        </div>
+                        <button type="button" onclick="event.stopPropagation(); switchMainTab('voting')" class="w-full py-2.5 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition cursor-pointer">
+                            <span>단칙 개정안 투표하러 가기</span>
+                            <span>→</span>
+                        </button>
+                    </div>
+
+                    <!-- Quick Card 2: 단장 선거 투표 -->
+                    <div role="button" tabindex="0" onclick="switchMainTab('election')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchMainTab('election');}" class="p-4 rounded-xl bg-slate-800/90 hover:bg-purple-900/60 border border-purple-500/40 hover:border-purple-400 transition cursor-pointer flex flex-col justify-between gap-3 shadow-sm group">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-0.5 rounded text-[10px] font-black bg-purple-500/30 text-purple-200 border border-purple-400/40">식순 제6호 안건</span>
+                                <span class="text-[11px] text-purple-300 font-bold">기호 1번 단독 찬반</span>
+                            </div>
+                            <h4 class="text-base sm:text-lg font-black text-white group-hover:text-purple-200 transition flex items-center gap-2">
+                                <span>👤</span>
+                                <span>2027 신임 단장 선거 투표</span>
+                            </h4>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                차기 단장 후보(최경욱 단원) 출마의 변, 추천사, 4대 공약 확인 및 신임 찬반 표결
+                            </p>
+                        </div>
+                        <button type="button" onclick="event.stopPropagation(); switchMainTab('election')" class="w-full py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white font-extrabold text-xs shadow-sm flex items-center justify-center gap-1.5 transition cursor-pointer">
+                            <span>단장 선거 투표하러 가기</span>
+                            <span>→</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -1915,14 +1981,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.109"></script>
-    <script src="js/data-config.js?v=2026.109"></script>
-    <script src="js/data-survey-comments.js?v=2026.109"></script>
-    <script src="js/firebase-config.js?v=2026.109"></script>
-    <script src="js/firebase-sync.js?v=2026.109"></script>
-    <script src="js/utils.js?v=2026.109"></script>
-    <script src="js/render.js?v=2026.109"></script>
-    <script src="js/handlers.js?v=2026.109"></script>
-    <script src="js/app.js?v=2026.109"></script>
+    <script src="js/data-members.js?v=2026.110"></script>
+    <script src="js/data-config.js?v=2026.110"></script>
+    <script src="js/data-survey-comments.js?v=2026.110"></script>
+    <script src="js/firebase-config.js?v=2026.110"></script>
+    <script src="js/firebase-sync.js?v=2026.110"></script>
+    <script src="js/utils.js?v=2026.110"></script>
+    <script src="js/render.js?v=2026.110"></script>
+    <script src="js/handlers.js?v=2026.110"></script>
+    <script src="js/app.js?v=2026.110"></script>
 </body>
 </html>

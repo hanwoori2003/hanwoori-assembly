@@ -143,7 +143,7 @@ function restoreInitialViewState() {
     let targetTab = "events";
     if (typeof window !== "undefined" && window.location && window.location.hash) {
         const hashVal = window.location.hash.replace("#", "").toLowerCase().trim();
-        const validTabs = ["attendance", "events", "reports", "settlement", "bylaws", "election", "charter", "admin", "winner"];
+        const validTabs = ["attendance", "events", "activity", "concert", "reports", "settlement", "voting", "election", "bylaws", "charter", "admin", "winner"];
         if (validTabs.indexOf(hashVal) !== -1) {
             targetTab = hashVal;
         }
