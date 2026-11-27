@@ -869,7 +869,7 @@ function renderConcertFeedbackView() {
                 '<span class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-indigo-100 text-indigo-700 font-black text-xs flex items-center justify-center shrink-0">1</span>' +
                 '<h3 class="text-sm sm:text-base font-black text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">1. 기본 정보 (응답자 프로필 및 이력)</h3>' +
             '</div>' +
-            '<span class="text-[11px] sm:text-xs font-bold text-slate-400 self-start sm:self-auto shrink-0 whitespace-nowrap">총 71명 참여</span>' +
+            '<span class="text-[11px] sm:text-xs font-bold text-slate-400 self-start sm:self-auto shrink-0 whitespace-nowrap">총 ' + (survey.respondentCount || 72) + '명 참여</span>' +
         '</div>' +
         '<div class="grid grid-cols-1 md:grid-cols-2 gap-5">' +
             '<!-- 파트별 분포 -->' +
@@ -1107,15 +1107,15 @@ function renderConcertFeedbackView() {
         '<div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 text-white space-y-4">' +
             '<div class="flex items-center justify-between gap-2">' +
                 '<div class="text-xs font-extrabold text-amber-300 whitespace-nowrap overflow-hidden text-ellipsis">🔥 [설문 핵심] 연주회 복장 전환 희망 투표</div>' +
-                '<div class="text-[11px] text-slate-300 shrink-0 whitespace-nowrap">응답 71인 전원 투표</div>' +
+                '<div class="text-[11px] text-slate-300 shrink-0 whitespace-nowrap">응답 ' + (survey.respondentCount || 72) + '인 전원 투표</div>' +
             '</div>' +
             '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">' +
                 '<div class="p-4 rounded-xl bg-white/10 border border-white/15 space-y-1.5">' +
                     '<div class="flex items-center justify-between">' +
                         '<span class="text-xs font-bold text-emerald-300">✓ 통일 유지 (압도적 다수)</span>' +
-                        '<span class="text-lg font-black text-white">' + (swPref.keepRatio || 75.7) + '%</span>' +
+                        '<span class="text-lg font-black text-white">' + (swPref.keepRatio || 76.4) + '%</span>' +
                     '</div>' +
-                    '<div class="text-2xl font-black text-emerald-400">' + (swPref.keepVotes || 53) + '<span class="text-xs font-bold text-slate-300 ml-1">명</span></div>' +
+                    '<div class="text-2xl font-black text-emerald-400">' + (swPref.keepVotes || 55) + '<span class="text-xs font-bold text-slate-300 ml-1">명</span></div>' +
                     '<p class="text-[11px] text-slate-300 leading-relaxed">' + escapeHtml(swPref.keepDesc || '기존 클래식 정복장 전체 동일 착용 유지') + '</p>' +
                 '</div>' +
                 '<div class="p-4 rounded-xl bg-white/5 border border-white/10 space-y-1.5">' +

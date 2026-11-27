@@ -329,8 +329,15 @@
                 if (!s.attendanceSurvey.votes) s.attendanceSurvey.votes = {};
             }
             if (data.concertSurvey && typeof data.concertSurvey === "object") {
-                if (data.concertSurvey.basicInfo && data.concertSurvey.recruitmentAndActivity) {
+                if (data.concertSurvey.basicInfo && data.concertSurvey.recruitmentAndActivity && (data.concertSurvey.respondentCount || 0) >= 72) {
                     s.concertSurvey = deepClone(data.concertSurvey);
+                } else if (typeof global.getDefaultState === "function") {
+                    s.concertSurvey = deepClone(global.getDefaultState().concertSurvey);
+                    setTimeout(function() {
+                        if (typeof global.manualPushConfigToCloud === "function") {
+                            global.manualPushConfigToCloud();
+                        }
+                    }, 500);
                 } else if (typeof initialAppState !== "undefined" && initialAppState.concertSurvey) {
                     s.concertSurvey = deepClone(initialAppState.concertSurvey);
                 }

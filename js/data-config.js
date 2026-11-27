@@ -401,7 +401,7 @@ function getDefaultState() {
       {
         id: "sch-3",
         title: "3. 2026년 정기연주회 강평",
-        desc: "인재개발원 콘서트홀에서 개최된 제21회 정기연주회 단원 설문(71인 전수 참여)을 바탕으로 높은 연주 만족도(88.7%), 스테이지별 곡 완성도, 무대 단복(복장) 개선 설문 결과, 지휘·반주자 감사 제언 및 2027년 희망 활동 분석 결과를 종합 보고합니다.",
+        desc: "인재개발원 콘서트홀에서 개최된 제21회 정기연주회 단원 설문(72인 전수 참여)을 바탕으로 높은 연주 만족도(88.9%), 스테이지별 곡 완성도, 무대 단복(복장) 개선 설문 결과, 지휘·반주자 감사 제언 및 2027년 희망 활동 분석 결과를 종합 보고합니다.",
         status: "완료",
         targetTab: "concert",
         btnLabel: "강평 보기 →"
@@ -1230,47 +1230,47 @@ function getDefaultState() {
         votes: {}
     },
     concertSurvey: {
-        respondentCount: 71,
-        regularConcertRate: 88.7,
-        programRate: 78.9,
-        hallRate: 73.2,
+        respondentCount: 72,
+        regularConcertRate: 88.9,
+        programRate: 79.2,
+        hallRate: 73.6,
         audienceRate: 97.2,
         meta: {
             title: "2026년 제21회 삼성한우리합창단 정기연주회 및 활동 강평",
-            respondentCount: 71,
-            targetDesc: "구글 폼 공식 설문 응답자 71인 실시간 전수 집계 분석 (총 7개 부문 70문항)",
+            respondentCount: 72,
+            targetDesc: "구글 폼 공식 설문 응답자 72인 실시간 전수 집계 분석 (총 7개 부문 70문항)",
             formUrl: "https://docs.google.com/forms/d/1RQOp1dhHIzMCPEYinyBDUFghmM7-HyOflrox38HCHps/edit#responses"
         },
         // 1. 기본 정보
         basicInfo: {
             parts: [
-                { name: "소프라노 (S)", count: 21, pct: 29.6, color: "from-rose-500 to-pink-500", badgeBg: "bg-rose-50 text-rose-700 border-rose-200" },
-                { name: "알토 (A)", count: 20, pct: 28.2, color: "from-amber-500 to-yellow-500", badgeBg: "bg-amber-50 text-amber-800 border-amber-200" },
-                { name: "베이스 (B)", count: 15, pct: 21.1, color: "from-emerald-500 to-teal-500", badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-                { name: "테너 (T)", count: 15, pct: 21.1, color: "from-indigo-500 to-blue-500", badgeBg: "bg-indigo-50 text-indigo-700 border-indigo-200" }
+                { name: "소프라노 (S)", count: 21, pct: 29.2, color: "from-rose-500 to-pink-500", badgeBg: "bg-rose-50 text-rose-700 border-rose-200" },
+                { name: "알토 (A)", count: 20, pct: 27.8, color: "from-amber-500 to-yellow-500", badgeBg: "bg-amber-50 text-amber-800 border-amber-200" },
+                { name: "베이스 (B)", count: 16, pct: 22.2, color: "from-emerald-500 to-teal-500", badgeBg: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+                { name: "테너 (T)", count: 15, pct: 20.8, color: "from-indigo-500 to-blue-500", badgeBg: "bg-indigo-50 text-indigo-700 border-indigo-200" }
             ],
             participationCount: [
-                { label: "1회 (신입단원)", count: 10, pct: 14.1 },
-                { label: "2 ~ 4회 (중견 단원)", count: 32, pct: 45.1 },
-                { label: "5회 이상 (시니어/베테랑)", count: 29, pct: 40.8 }
+                { label: "1회 (신입단원)", count: 10, pct: 13.9 },
+                { label: "2 ~ 4회 (중견 단원)", count: 32, pct: 44.4 },
+                { label: "5회 이상 (시니어/베테랑)", count: 30, pct: 41.7 }
             ]
         },
         // 2. 단원 모집 및 활동 전반 만족도
         recruitmentAndActivity: {
             ratings: [
-                { label: "신단 모집 방법 만족도", score: 4.34, positivePct: 80.0 },
-                { label: "신단 모집 시기 만족도", score: 4.59, positivePct: 91.4 },
-                { label: "정단 모집 방법 만족도", score: 4.54, positivePct: 90.0 },
-                { label: "정단 모집 시기 만족도", score: 4.59, positivePct: 91.4 },
-                { label: "한우리 활동 전반 만족도", score: 4.51, positivePct: 85.7 },
-                { label: "친목 활동 (소풍/테마뒷풀이/파트식사)", score: 4.34, positivePct: 81.4 }
+                { label: "신단 모집 방법 만족도", score: 4.35, positivePct: 80.6 },
+                { label: "신단 모집 시기 만족도", score: 4.57, positivePct: 90.3 },
+                { label: "정단 모집 방법 만족도", score: 4.54, positivePct: 90.3 },
+                { label: "정단 모집 시기 만족도", score: 4.57, positivePct: 90.3 },
+                { label: "한우리 활동 전반 만족도", score: 4.53, positivePct: 86.1 },
+                { label: "친목 활동 (소풍/테마뒷풀이/파트식사)", score: 4.35, positivePct: 81.9 }
             ],
             afterPartyCycle: [
-                { label: "너무 적음", pct: 1.4, count: 1 },
-                { label: "다소 적음", pct: 10.0, count: 7 },
-                { label: "적당함", pct: 82.9, count: 58, highlight: true },
-                { label: "다소 많음", pct: 4.3, count: 3 },
-                { label: "너무 많음", pct: 1.4, count: 1 }
+                { label: "너무 적음", pct: 0.0, count: 0 },
+                { label: "다소 적음", pct: 11.1, count: 8 },
+                { label: "적당함", pct: 81.9, count: 59, highlight: true },
+                { label: "다소 많음", pct: 4.2, count: 3 },
+                { label: "너무 많음", pct: 2.8, count: 2 }
             ],
             comments: [
                 "올해 새로 도입된 테마뒷풀이가 참신하고 술 위주가 아니라서 더 많은 단원이 어우러질 수 있었으며, 파트별 식사 지원도 훌륭했습니다.",
@@ -1279,26 +1279,26 @@ function getDefaultState() {
         },
         // 3. 정기 연습 및 캠프 만족도
         practiceAndCamp: {
-            musicCampScore: 4.51,
-            musicCampPositivePct: 91.4,
+            musicCampScore: 4.53,
+            musicCampPositivePct: 91.7,
             regularPracticeCount: [
                 { label: "너무 적음", pct: 0.0, count: 0 },
-                { label: "다소 적음", pct: 2.9, count: 2 },
-                { label: "적당함", pct: 91.4, count: 64, highlight: true },
-                { label: "다소 많음", pct: 5.7, count: 4 },
+                { label: "다소 적음", pct: 2.8, count: 2 },
+                { label: "적당함", pct: 91.7, count: 66, highlight: true },
+                { label: "다소 많음", pct: 5.6, count: 4 },
                 { label: "너무 많음", pct: 0.0, count: 0 }
             ],
             noClassCount: [
                 { label: "너무 적음", pct: 1.4, count: 1 },
-                { label: "다소 적음", pct: 5.7, count: 4 },
-                { label: "적당함", pct: 85.7, count: 60, highlight: true },
-                { label: "다소 많음", pct: 5.7, count: 4 },
+                { label: "다소 적음", pct: 5.6, count: 4 },
+                { label: "적당함", pct: 86.1, count: 62, highlight: true },
+                { label: "다소 많음", pct: 5.6, count: 4 },
                 { label: "너무 많음", pct: 1.4, count: 1 }
             ],
             extraPracticeScore: 4.07,
-            extraPracticePositivePct: 74.3,
+            extraPracticePositivePct: 73.6,
             supportToolsScore: 4.29,
-            supportToolsPositivePct: 80.0,
+            supportToolsPositivePct: 80.6,
             goods: [
                 "연습 영상과 음원이 제공되어 안무와 암보 복습에 결정적인 도움이 됨",
                 "하계 음악캠프가 연주회 전 적절한 시기에 진행되어 곡 완성도를 크게 견인함",
@@ -1312,9 +1312,9 @@ function getDefaultState() {
         // 4. 제21회 정기 연주회 공연 만족도
         concertPerformance: {
             overallScore: 4.51,
-            overallRate: 88.6,
+            overallRate: 88.9,
             programScore: 4.33,
-            programRate: 78.6,
+            programRate: 79.2,
             favoriteSongs: [
                 { rank: 1, title: "내 가슴엔 바다가 있다 (박지훈 작곡)", votes: 21, pct: 45.7 },
                 { rank: 2, title: "Kyrie (키리에)", votes: 6, pct: 13.0 },
@@ -1323,12 +1323,12 @@ function getDefaultState() {
                 { rank: 5, title: "Circle of Life / Lullaby", votes: 4, pct: 8.7 }
             ],
             partners: [
-                { label: "협연 오케스트라", score: 4.39, positivePct: 91.4 },
-                { label: "협연 팀 (라퓨즈 플레이어즈)", score: 4.33, positivePct: 88.6 },
-                { label: "섭외 안무가 (스테이징 연출)", score: 4.21, positivePct: 75.7 },
-                { label: "공연장 만족도", score: 3.97, positivePct: 74.3 },
-                { label: "홍보물 및 인스타그램 홍보", score: 4.67, positivePct: 94.3 },
-                { label: "초대 관객 호응 만족도", score: 4.66, positivePct: 97.1 }
+                { label: "협연 오케스트라", score: 4.40, positivePct: 91.7 },
+                { label: "협연 팀 (라퓨즈 플레이어즈)", score: 4.35, positivePct: 88.9 },
+                { label: "섭외 안무가 (스테이징 연출)", score: 4.24, positivePct: 76.4 },
+                { label: "공연장 만족도", score: 3.97, positivePct: 73.6 },
+                { label: "홍보물 및 인스타그램 홍보", score: 4.68, positivePct: 94.4 },
+                { label: "초대 관객 호응 만족도", score: 4.67, positivePct: 97.2 }
             ],
             goods: [
                 "지휘자님의 재치 있는 곡 해설과 만담 진행으로 관객 몰입도 극대화",
@@ -1342,48 +1342,48 @@ function getDefaultState() {
         },
         // 5. 정기 연주회 복장 의견
         costumeOpinions: {
-            satisfactionScore: 4.37,
-            satisfactionPositivePct: 87.1,
+            satisfactionScore: 4.39,
+            satisfactionPositivePct: 87.5,
             switchPreference: {
-                switchRatio: 24.3,
+                switchRatio: 23.6,
                 switchVotes: 17,
-                keepRatio: 75.7,
-                keepVotes: 53,
+                keepRatio: 76.4,
+                keepVotes: 55,
                 switchDesc: "전환 희망 (1부 정통 단복 / 2부 테마·세미포멀 전환)",
-                keepDesc: "통일 유지 (기존 클래식 정복장 전체 동일 착용 유지 - 압도적 다수)"
+                keepDesc: "통일 유지 (기존 클래식 정복장 전체 동일 착용 유지 - 압도적 다수 76.4%)"
             },
             comments: [
-                "기존 정통 클래식 단복을 통일하여 착용하는 것이 합창단의 품격과 안정감에 가장 부합함 (75.7% 유지 찬성)",
+                "기존 정통 클래식 단복을 통일하여 착용하는 것이 합창단의 품격과 안정감에 가장 부합함 (76.4% 유지 찬성)",
                 "중간 환복 시 분실 및 시간 부족 우려가 있어 통일 선호, 남성 단원 자켓 착용 유지 긍정 평가"
             ]
         },
         // 6. 2027년 기대 연주 활동
         expectations2027Detail: {
             frequency: [
-                { label: "연 2회 (정기 + 소규모 연주)", pct: 49.3, count: 35, highlight: true },
-                { label: "연 1회 (정기연주회 집중)", pct: 49.3, count: 35 },
+                { label: "연 2회 (정기 + 소규모 연주)", pct: 50.0, count: 36, highlight: true },
+                { label: "연 1회 (정기연주회 집중)", pct: 48.6, count: 35 },
                 { label: "연 3회 이상 (버스킹/대외봉사 포함)", pct: 1.4, count: 1 }
             ],
             smallConcert: {
-                hope: 57.1,
-                considering: 31.4,
-                noHope: 11.4
+                hope: 56.9,
+                considering: 30.6,
+                noHope: 12.5
             },
             smallConcertTiming: [
-                { season: "여름 (6~8월)", pct: 57.1, highlight: true },
-                { season: "봄 (3~5월)", pct: 28.6 },
-                { season: "겨울 (1~2월)", pct: 14.3 }
+                { season: "여름 (6~8월)", pct: 58.3, highlight: true },
+                { season: "봄 (3~5월)", pct: 27.8 },
+                { season: "겨울 (1~2월)", pct: 13.9 }
             ],
             regularConcertTiming: [
-                { month: "10월", pct: 67.1, highlight: true },
-                { month: "11월", pct: 22.9 },
-                { month: "9월", pct: 8.6 },
+                { month: "10월", pct: 68.1, highlight: true },
+                { month: "11월", pct: 22.2 },
+                { month: "9월", pct: 8.3 },
                 { month: "12월", pct: 1.4 }
             ],
             regularConcertDays: [
                 { day: "토요일", pct: 98.6, highlight: true },
-                { day: "일요일", pct: 34.3 },
-                { day: "평일", pct: 15.7 }
+                { day: "일요일", pct: 34.7 },
+                { day: "평일", pct: 16.7 }
             ],
             venues: "예술의전당, 롯데콘서트홀, KBS홀, 국립극장 등 서울 소재 전문 콘서트홀",
             genres: "한국 서정가곡, 리드미컬한 합창곡, 정통 클래식 마스터피스, 영화 OST 및 대중가요 편곡"
@@ -1391,15 +1391,15 @@ function getDefaultState() {
         // 7. 리더십 평가 및 내년 활동 희망
         leadershipAndNextYear: {
             executiveScore: 4.50,
-            executivePositivePct: 85.7,
-            conductorScore: 4.59,
-            conductorPositivePct: 90.0,
-            accompanistScore: 4.56,
-            accompanistPositivePct: 88.6,
+            executivePositivePct: 86.1,
+            conductorScore: 4.60,
+            conductorPositivePct: 90.3,
+            accompanistScore: 4.57,
+            accompanistPositivePct: 88.9,
             continueMembership: {
-                hope: 77.1, // 54명
-                considering: 20.0, // 14명
-                noHope: 2.9 // 2명
+                hope: 76.4, // 55명
+                considering: 20.8, // 15명
+                noHope: 2.8 // 2명
             },
             execFeedback: "한 해 동안 헌신적으로 봉사해준 이창욱 단장님과 운영진, 파트장님들의 노고에 깊이 감사드립니다. 차기 최경욱 예비단장님께도 큰 기대를 보냅니다.",
             conductorFeedback: "박지훈 지휘자님의 열정적이고 위트 있는 지도와 양혜연 반주자님의 따뜻한 동행 덕분에 합창단 분위기가 한층 밝아지고 음악적으로 성장했습니다."
@@ -1412,10 +1412,10 @@ function getDefaultState() {
             { title: "Circle of Life / Lullaby", votes: 4 }
         ],
         expectations2027: [
-            { topic: "선호 연주 시기", value: "10월 가을 시즌 토요일 (67.1% 선호, 토요일 98.6% 가능)" },
+            { topic: "선호 연주 시기", value: "10월 가을 시즌 토요일 (68.1% 선호, 토요일 98.6% 가능)" },
             { topic: "희망 연주 장소", value: "예술의전당 / 롯데콘서트홀 / 서울 소재 전문 콘서트홀" },
             { topic: "연주 희망 장르", value: "한국 서정가곡, 리드미컬한 합창곡, 친숙한 OST 편곡" },
-            { topic: "연주 복장 의견", value: "기존 클래식 정복장 통일 유지 75.7% (압도적 우세)" }
+            { topic: "연주 복장 의견", value: "기존 클래식 정복장 통일 유지 76.4% (압도적 우세)" }
         ]
     }
   };
