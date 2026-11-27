@@ -306,8 +306,8 @@
                 }
             }
             if (data.settlement && typeof data.settlement === "object") {
-                // If cloud data still has legacy 2025/mock values, enforce official 2026 audit data
-                if (data.settlement.totalRevenue === 109910000 || data.settlement.balance === 20887349 || !data.settlement.concertExpense) {
+                // If cloud data still has legacy 2025/mock values or prior 1st draft settlement without concert additions, enforce updated audit data
+                if (data.settlement.totalRevenue === 109910000 || data.settlement.balance === 20887349 || !data.settlement.concertExpense || !data.settlement.concertExpense.additionalSection || data.settlement.totalRevenue === 78460000) {
                     if (typeof global.getDefaultState === "function") {
                         s.settlement = deepClone(global.getDefaultState().settlement);
                         // Trigger immediate cloud push to overwrite stale legacy config in Firestore

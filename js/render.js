@@ -1355,7 +1355,17 @@ function renderSettlementView() {
         expCont.innerHTML = html;
     }
 
-    // Render Concert Expense Sub-tables (음악 / 운영)
+    // Render Notes Banner
+    const notesEl = document.getElementById("settlementNotesList");
+    if (notesEl && Array.isArray(s.notes)) {
+        let html = "";
+        s.notes.forEach(function(note) {
+            html += '<li>' + escapeHtml(note) + '</li>';
+        });
+        notesEl.innerHTML = html;
+    }
+
+    // Render Concert Expense Sub-tables (음악 / 운영 / 기획·홍보 추가)
     const ce = s.concertExpense;
     const musicTbody = document.getElementById("concertMusicTableBody");
     if (musicTbody && ce && Array.isArray(ce.musicSection)) {
@@ -1374,13 +1384,34 @@ function renderSettlementView() {
     if (operTbody && ce && Array.isArray(ce.operationSection)) {
         let html = "";
         ce.operationSection.forEach(function(item) {
+            let detailHtml = escapeHtml(item.detail);
+            if (item.breakdown && Array.isArray(item.breakdown)) {
+                detailHtml += '<div class="mt-1 text-[11px] text-slate-500 space-y-0.5 border-t border-slate-100 pt-1">';
+                item.breakdown.forEach(function(b) {
+                    detailHtml += '<div>• ' + escapeHtml(b.item) + ': <strong class="text-slate-700">' + Number(b.amount).toLocaleString() + '원</strong></div>';
+                });
+                detailHtml += '</div>';
+            }
             html += '<tr>' +
-                '<td class="py-2 px-3 font-semibold text-slate-900">' + escapeHtml(item.item) + '</td>' +
-                '<td class="py-2 px-3 text-slate-600">' + escapeHtml(item.detail) + '</td>' +
-                '<td class="py-2 px-3 text-right font-bold text-emerald-700 whitespace-nowrap">' + Number(item.amount).toLocaleString() + '</td>' +
+                '<td class="py-2 px-3 font-semibold text-slate-900 align-top">' + escapeHtml(item.item) + '</td>' +
+                '<td class="py-2 px-3 text-slate-600 align-top">' + detailHtml + '</td>' +
+                '<td class="py-2 px-3 text-right font-bold text-emerald-700 whitespace-nowrap align-top">' + Number(item.amount).toLocaleString() + '</td>' +
             '</tr>';
         });
         operTbody.innerHTML = html;
+    }
+
+    const addTbody = document.getElementById("concertAdditionalTableBody");
+    if (addTbody && ce && Array.isArray(ce.additionalSection)) {
+        let html = "";
+        ce.additionalSection.forEach(function(item) {
+            html += '<tr>' +
+                '<td class="py-2 px-3 font-semibold text-slate-900">' + escapeHtml(item.item) + '</td>' +
+                '<td class="py-2 px-3 text-slate-600">' + escapeHtml(item.detail) + '</td>' +
+                '<td class="py-2 px-3 text-right font-bold text-purple-700 whitespace-nowrap">' + Number(item.amount).toLocaleString() + '</td>' +
+            '</tr>';
+        });
+        addTbody.innerHTML = html;
     }
 
     // Render Event Support Table (행사 지원 내역)
