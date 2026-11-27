@@ -453,21 +453,16 @@ function renderEventsView() {
 
             const hasJumpBtn = Boolean(safeTargetTab && safeTargetTab !== "events" && item.id !== "sch-1");
             const jumpBtnLabel = escapeHtml(item.btnLabel || "이동 →");
-            const isVoteItem = item.id === "sch-5";
-            const isElecItem = item.id === "sch-6";
 
-            let btnClassDesktop = "px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer text-center whitespace-nowrap shadow-2xs ";
-            let btnClassMobile = "w-full px-4 py-2.5 rounded-xl text-xs font-bold transition cursor-pointer text-center flex items-center justify-center gap-1 shadow-2xs ";
+            let btnClassDesktop = "px-3.5 py-1.5 rounded-xl text-xs transition cursor-pointer text-center whitespace-nowrap shadow-2xs ";
+            let btnClassMobile = "w-full px-4 py-2.5 rounded-xl text-xs transition cursor-pointer text-center flex items-center justify-center gap-1 shadow-2xs ";
 
-            if (isVoteItem) {
-                btnClassDesktop += "bg-indigo-600 hover:bg-indigo-500 text-white font-black shadow-xs";
+            if (isIng) {
+                btnClassDesktop += "bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-black shadow-xs";
                 btnClassMobile += "bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-black shadow-xs";
-            } else if (isElecItem) {
-                btnClassDesktop += "bg-purple-600 hover:bg-purple-500 text-white font-black shadow-xs";
-                btnClassMobile += "bg-purple-600 hover:bg-purple-500 active:bg-purple-700 text-white font-black shadow-xs";
             } else {
-                btnClassDesktop += "bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700";
-                btnClassMobile += "bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700";
+                btnClassDesktop += "bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 font-bold";
+                btnClassMobile += "bg-indigo-50 hover:bg-indigo-100 active:bg-indigo-200 text-indigo-700 font-bold";
             }
 
             // Desktop jump button (compact pill aligned on top right)
@@ -481,11 +476,9 @@ function renderEventsView() {
                 : '';
 
             const hasMobileActions = Boolean(jumpBtnMobile || execControls);
-            const cardHighlight = isVoteItem
-                ? 'border-indigo-300 bg-indigo-50/20 shadow-xs'
-                : (isElecItem
-                    ? 'border-purple-300 bg-purple-50/20 shadow-xs'
-                    : 'border-slate-200/90 bg-white hover:border-indigo-300 shadow-xs');
+            const cardHighlight = isIng
+                ? 'border-indigo-400 bg-indigo-50/30 shadow-xs'
+                : 'border-slate-200/90 bg-white hover:border-indigo-300 shadow-xs';
 
             html += '<div class="p-3.5 sm:p-4 rounded-xl border ' + cardHighlight + ' transition flex flex-col gap-2 min-w-0 max-w-full overflow-hidden">' +
                 // 1. Title Row: Badge + Title (+ Desktop Actions)
