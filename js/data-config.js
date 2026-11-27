@@ -409,7 +409,7 @@ function getDefaultState() {
       {
         id: "sch-4",
         title: "4. 2026년도 회계 결산 보고",
-        desc: "연간 총수입 8,746만원(이월 2,146만·연회비 5,356만·후원금 900만 등)과 총지출 6,257만원(정기연주회 3,709만·고정사례비 2,094만 등) 집행 결과, 차기 이월 잔금 2,489만원(24,894,366원, 전년 대비 +343만원 / +3,434,666원 흑자)을 기록한 2026년도 수지 결산 내역을 보고하고 감사를 승인합니다.",
+        desc: "연간 총수입 87,461,241원(이월 2,146만·연회비 5,356만·후원금 900만 등)과 총지출 62,566,875원(정기연주회 3,709만·고정사례비 2,094만 등) 집행 결과, 차기 이월 잔금 24,894,366원(전년 대비 +3,434,666원 흑자)을 기록한 2026년도 수지 결산 내역을 보고하고 감사를 승인합니다.",
         status: "진행중",
         targetTab: "settlement",
         btnLabel: "회계 보기 →"
@@ -978,8 +978,8 @@ function getDefaultState() {
 },
     events: JSON.parse(JSON.stringify(INITIAL_ANNUAL_EVENTS)),
     settlement: {
-    "totalRevenue": 87460000,
-    "totalExpense": 62570000,
+    "totalRevenue": 87461241,
+    "totalExpense": 62566875,
     "balance": 24894366,
     "prevCarryover": 21459700,
     "diffFromPrev": 3434666,
@@ -988,16 +988,14 @@ function getDefaultState() {
     "notes": [
         "정단원 : '25년 164명 → '26년 135명",
         "후원금 / 찬조금 : 정기연주회 후원금 900만원 + 찬조 10만원",
-        "고정사례비 : 11월분 171만원 포함 (지휘자 120만 + 반주자 51만)",
         "행사 / 경조사 : 축가 30만원 (지출: 축가 반주 10만, 음악캠프 4만)",
-        "이자 : 예금결산이자 + 정기예금 만기 이자",
-        "기타 : 소풍 잉여금",
-        "※ 만원 미만 반올림으로 항목 합과 합계가 다를 수 있음"
+        "이자 : 예금결산이자 + 정기예금 만기 이자 (797,431원)",
+        "기타 : 소풍 잉여금 16,610원"
     ],
     "revenueItems": [
         {
             "name": "전년도 이월금",
-            "amount": 21460000,
+            "amount": 21459700,
             "exactAmount": 21459700,
             "note": "2025년 차기 이월 잔금 ('25년 2,219만원)"
         },
@@ -1009,7 +1007,7 @@ function getDefaultState() {
         },
         {
             "name": "악보비",
-            "amount": 2230000,
+            "amount": 2227500,
             "exactAmount": 2227500,
             "note": "소곡집 및 연주곡 악보 구입비 ('25년 496만원)"
         },
@@ -1027,13 +1025,13 @@ function getDefaultState() {
         },
         {
             "name": "이자",
-            "amount": 800000,
-            "exactAmount": 800000,
+            "amount": 797431,
+            "exactAmount": 797431,
             "note": "예금결산이자 + 정기예금 만기 이자 ('25년 73만원)"
         },
         {
-            "name": "기타",
-            "amount": 20000,
+            "name": "기타 (소풍 잉여금)",
+            "amount": 16610,
             "exactAmount": 16610,
             "note": "소풍 잉여금 16,610원"
         }
@@ -1041,13 +1039,13 @@ function getDefaultState() {
     "expenseItems": [
         {
             "name": "정기연주회",
-            "amount": 37090000,
+            "amount": 37088398,
             "exactAmount": 37088398,
             "note": "인재개발원 콘서트홀 ('25년 5,400만원)"
         },
         {
             "name": "시네마콘",
-            "amount": 100000,
+            "amount": 104440,
             "exactAmount": 104440,
             "note": "간식 / 돗자리 등 ('25년 -)"
         },
@@ -1055,17 +1053,17 @@ function getDefaultState() {
             "name": "고정사례비",
             "amount": 20940000,
             "exactAmount": 20940000,
-            "note": "11월분 171만 포함 (지휘자 120만 + 반주자 51만)"
+            "note": "지휘자 및 반주자 연간 고정 지도 사례비"
         },
         {
             "name": "MT 지원",
-            "amount": 50000,
+            "amount": 45610,
             "exactAmount": 45610,
             "note": "합창단 MT 활동 지원금 ('25년 100만원)"
         },
         {
             "name": "소풍 / 체육대회 지원",
-            "amount": 210000,
+            "amount": 212500,
             "exactAmount": 212500,
             "note": "굿즈 제작 / 지휘자 참가비 ('25년 95만원)"
         },
@@ -1077,13 +1075,13 @@ function getDefaultState() {
         },
         {
             "name": "행사 / 경조사",
-            "amount": 140000,
+            "amount": 140100,
             "exactAmount": 140100,
             "note": "축가 반주 10만, 음악캠프 4만 ('25년 253만원)"
         },
         {
             "name": "기타",
-            "amount": 2440000,
+            "amount": 2435827,
             "exactAmount": 2435827,
             "note": "조율(65만), 연습실(60만), 음료(56.5만), 회의비(21.6만), 스승의날(18.9만) 등"
         }
@@ -1127,26 +1125,15 @@ function getDefaultState() {
             { "category": "운영", "item": "진행인력", "detail": "어셔 12 명", "amount": 1140000 },
             { "category": "운영", "item": "진행인력", "detail": "무대 크루 6 명", "amount": 1320000 },
             { "category": "운영", "item": "진행인력", "detail": "무대진행 · 전환 인력", "amount": 300000 },
-            {
-                "category": "운영",
-                "item": "진행인력",
-                "detail": "스탭 비용 * (기부부스 소모품 6.8만, 간식 3.0만, 식사 39.9만, 문자 1만)",
-                "amount": 506730,
-                "breakdown": [
-                    { "item": "기부 부스 소모품비", "amount": 68050 },
-                    { "item": "리틀 한우리 간식비", "amount": 29580 },
-                    { "item": "스탭 식사", "amount": 399100 },
-                    { "item": "문자 발송", "amount": 10000 }
-                ]
-            },
             { "category": "운영", "item": "셔틀버스", "detail": "양재 · 영통 셔틀", "amount": 750000 },
             { "category": "운영", "item": "구급차", "detail": "공연 당일 대기", "amount": 360000 },
             { "category": "운영", "item": "피아노 조율", "detail": "인재개발원", "amount": 250000 },
             { "category": "운영", "item": "단원 소품", "detail": "여성 블라우스 ( 단비 지원분 )", "amount": 157864 },
             { "category": "운영", "item": "단원 소품", "detail": "여성 스카프", "amount": 172651 },
             { "category": "운영", "item": "단원 소품", "detail": "남성 넥타이 · 보타이", "amount": 340200 },
-            { "category": "운영", "item": "기타", "detail": "리틀 한우리 간식 · 굿즈", "amount": 485935 },
-            { "category": "운영", "item": "스탭", "detail": "스탭 킥오프 미팅 석식", "amount": 76100 }
+            { "category": "운영", "item": "기타", "detail": "리틀 한우리 간식 · 굿즈 (간식비 포함)", "amount": 515515 },
+            { "category": "운영", "item": "스탭", "detail": "스탭 식사 (킥오프 석식 포함)", "amount": 475200 },
+            { "category": "운영", "item": "운영 소품", "detail": "기부 부스 운영 소모품 (문자 발송 포함)", "amount": 78050 }
         ],
         "operationSubtotal": 5859480,
         "additionalSection": [
@@ -1158,16 +1145,6 @@ function getDefaultState() {
             { "category": "기타", "item": "후원금 수수료", "detail": "후원금 수수료 (후원금 900만원의 8%)", "amount": 720000 }
         ],
         "additionalSubtotal": 7818000,
-        "staffCostBreakdown": {
-            "title": "스탭비용 세부내역 (합계 506,730원)",
-            "total": 506730,
-            "items": [
-                { "item": "기부 부스 소모품비", "amount": 68050, "note": "기부 부스 소모품비" },
-                { "item": "리틀 한우리 간식비", "amount": 29580, "note": "리틀 한우리 간식비" },
-                { "item": "스탭 식사", "amount": 399100, "note": "공연 당일 스탭 식사비" },
-                { "item": "문자 발송", "amount": 10000, "note": "문자 발송비" }
-            ]
-        },
         "total": 37088398
     },
     "eventSupport": [

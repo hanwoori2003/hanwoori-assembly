@@ -1735,8 +1735,8 @@ function openSettlementModal() {
     const revItemsInp = document.getElementById("inputSettleRevenueItems");
     const expItemsInp = document.getElementById("inputSettleExpenseItems");
 
-    if (revInp) revInp.value = s.totalRevenue || 87460000;
-    if (expInp) expInp.value = s.totalExpense || 62570000;
+    if (revInp) revInp.value = s.totalRevenue || 87461241;
+    if (expInp) expInp.value = s.totalExpense || 62566875;
     if (balInp) balInp.value = s.balance || 24894366;
 
     if (revItemsInp) {
