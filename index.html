@@ -635,17 +635,17 @@
                 <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
                     <span class="text-xs font-bold text-indigo-600">총 수입 (이월금·후원금 포함)</span>
                     <div id="settlementTotalRevenueDisplay" class="text-2xl font-black text-slate-900 mt-1">87,460,000원</div>
-                    <span class="text-[11px] text-slate-500">전년이월(2,146만) + 연회비(5,356만) + 후원금(900만)</span>
+                    <span class="text-[11px] text-slate-500">전년이월(2,146만) + 연회비(5,356만) + 후원·찬조(910만) 등</span>
                 </div>
                 <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
                     <span class="text-xs font-bold text-rose-600">총 지출 (공연추가 포함)</span>
-                    <div id="settlementTotalExpenseDisplay" class="text-2xl font-black text-slate-900 mt-1">63,068,250원</div>
+                    <div id="settlementTotalExpenseDisplay" class="text-2xl font-black text-slate-900 mt-1">62,570,000원</div>
                     <span class="text-[11px] text-slate-500">정기연주회(3,709만) + 고정사례비(2,094만) 등</span>
                 </div>
                 <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
                     <span class="text-xs font-bold text-emerald-600">'26년 잔금</span>
-                    <div id="settlementBalanceDisplay" class="text-2xl font-black text-emerald-700 mt-1">24,394,116원</div>
-                    <span class="text-[11px] text-emerald-600 font-semibold">전년比 +2,934,416원 흑자</span>
+                    <div id="settlementBalanceDisplay" class="text-2xl font-black text-emerald-700 mt-1">24,894,366원</div>
+                    <span id="settlementBalanceDiffDisplay" class="text-[11px] text-emerald-600 font-semibold">전년比 +3,434,666원 (+343만)</span>
                 </div>
             </div>
 
@@ -709,14 +709,14 @@
                         <h3 class="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2">
                             <span>🎭</span> 2026년 정기연주회 수입 및 지출 결산
                         </h3>
-                        <p class="text-xs text-slate-500 mt-0.5">인재개발원 콘서트홀 · 수입 9,000,000원 · 총 지출 37,088,648원 (기본 28,970,398원 + 추가 8,118,250원)</p>
+                        <p class="text-xs text-slate-500 mt-0.5">인재개발원 콘서트홀 · 후원 수입 9,000,000원 · 총 지출 37,088,398원 (음악 23,410,918원 + 운영·소품·기타 5,859,480원 + 홍보·기획 7,818,000원)</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
                         <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold">
                             공연 수입 9,000,000원
                         </span>
-                        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold">
-                            공연 총지출 37,088,648원
+                        <span id="concertTotalExpenseBadge" class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold">
+                            공연 총지출 37,088,398원
                         </span>
                     </div>
                 </div>
@@ -775,7 +775,7 @@
                             <span class="text-xs font-extrabold text-indigo-700 flex items-center gap-1">
                                 <span>🎼</span> 음악 부문
                             </span>
-                            <span class="text-xs font-black text-indigo-900">소계 23,410,918원</span>
+                            <span id="concertMusicSubtotalDisplay" class="text-xs font-black text-indigo-900">소계 23,410,918원</span>
                         </div>
                         <div class="overflow-x-auto border border-slate-100 rounded-xl bg-white shadow-2xs">
                             <table class="w-full text-xs text-left">
@@ -791,13 +791,13 @@
                         </div>
                     </div>
 
-                    <!-- 운영 및 진행 부문 -->
+                    <!-- 운영 · 소품 · 기타 부문 -->
                     <div class="space-y-2">
                         <div class="flex items-center justify-between px-1">
                             <span class="text-xs font-extrabold text-emerald-700 flex items-center gap-1">
-                                <span>🏛️</span> 운영 및 진행 부문
+                                <span>🏛️</span> 운영 · 소품 · 기타 부문
                             </span>
-                            <span class="text-xs font-black text-emerald-900">소계 5,559,480원</span>
+                            <span id="concertOperationSubtotalDisplay" class="text-xs font-black text-emerald-900">소계 5,859,480원</span>
                         </div>
                         <div class="overflow-x-auto border border-slate-100 rounded-xl bg-white shadow-2xs">
                             <table class="w-full text-xs text-left">
@@ -813,13 +813,13 @@
                         </div>
                     </div>
 
-                    <!-- 기획·홍보·제작 추가 부문 -->
+                    <!-- 홍보 · 기획 부문 -->
                     <div class="space-y-2">
                         <div class="flex items-center justify-between px-1">
                             <span class="text-xs font-extrabold text-purple-700 flex items-center gap-1">
-                                <span>📣</span> 기획·홍보·제작 추가 부문
+                                <span>📣</span> 홍보 · 기획 부문
                             </span>
-                            <span class="text-xs font-black text-purple-900">소계 8,118,250원</span>
+                            <span id="concertAdditionalSubtotalDisplay" class="text-xs font-black text-purple-900">소계 7,818,000원</span>
                         </div>
                         <div class="overflow-x-auto border border-purple-100 rounded-xl bg-white shadow-2xs">
                             <table class="w-full text-xs text-left">
@@ -868,35 +868,41 @@
                                         <tr>
                                             <th class="py-2.5 px-3.5">구분</th>
                                             <th class="py-2.5 px-3.5 text-right">금액 (원)</th>
+                                            <th class="py-2.5 px-3.5 text-right">비중</th>
                                             <th class="py-2.5 px-3.5">비고</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-slate-100 text-slate-800">
                                         <tr class="hover:bg-rose-50/30 transition-colors">
-                                            <td class="py-2.5 px-3.5 font-bold text-slate-900">단원</td>
-                                            <td class="py-2.5 px-3.5 text-right font-extrabold text-slate-900 whitespace-nowrap">3,350,000</td>
-                                            <td class="py-2.5 px-3.5 text-slate-500">한우리 정단원 자선 모금</td>
-                                        </tr>
-                                        <tr class="hover:bg-rose-50/30 transition-colors">
                                             <td class="py-2.5 px-3.5 font-bold text-slate-900">관객</td>
                                             <td class="py-2.5 px-3.5 text-right font-extrabold text-slate-900 whitespace-nowrap">6,310,000</td>
+                                            <td class="py-2.5 px-3.5 text-right font-bold text-slate-600">46.2%</td>
                                             <td class="py-2.5 px-3.5 text-slate-500">연주회 현장 및 계좌 모금</td>
-                                        </tr>
-                                        <tr class="hover:bg-rose-50/30 transition-colors">
-                                            <td class="py-2.5 px-3.5 font-bold text-slate-900">병원장</td>
-                                            <td class="py-2.5 px-3.5 text-right font-extrabold text-slate-900 whitespace-nowrap">500,000</td>
-                                            <td class="py-2.5 px-3.5 text-slate-500">삼성서울병원장 특별 후원</td>
                                         </tr>
                                         <tr class="hover:bg-rose-50/30 transition-colors bg-rose-50/20">
                                             <td class="py-2.5 px-3.5 font-black text-rose-700">법인</td>
                                             <td class="py-2.5 px-3.5 text-right font-black text-rose-700 whitespace-nowrap">3,500,000</td>
+                                            <td class="py-2.5 px-3.5 text-right font-black text-rose-700">25.6%</td>
                                             <td class="py-2.5 px-3.5 text-rose-600 font-semibold">삼성 5개 관계사 (우측 세부)</td>
+                                        </tr>
+                                        <tr class="hover:bg-rose-50/30 transition-colors">
+                                            <td class="py-2.5 px-3.5 font-bold text-slate-900">단원</td>
+                                            <td class="py-2.5 px-3.5 text-right font-extrabold text-slate-900 whitespace-nowrap">3,350,000</td>
+                                            <td class="py-2.5 px-3.5 text-right font-bold text-slate-600">24.5%</td>
+                                            <td class="py-2.5 px-3.5 text-slate-500">한우리 정단원 자선 모금</td>
+                                        </tr>
+                                        <tr class="hover:bg-rose-50/30 transition-colors">
+                                            <td class="py-2.5 px-3.5 font-bold text-slate-900">병원장</td>
+                                            <td class="py-2.5 px-3.5 text-right font-extrabold text-slate-900 whitespace-nowrap">500,000</td>
+                                            <td class="py-2.5 px-3.5 text-right font-bold text-slate-600">3.7%</td>
+                                            <td class="py-2.5 px-3.5 text-slate-500">삼성서울병원장 특별 후원</td>
                                         </tr>
                                     </tbody>
                                     <tfoot class="bg-rose-100/40 font-black text-rose-950 border-t border-rose-200">
                                         <tr>
                                             <td class="py-2.5 px-3.5">전체 합계</td>
                                             <td class="py-2.5 px-3.5 text-right text-rose-700 whitespace-nowrap font-black">13,660,000</td>
+                                            <td class="py-2.5 px-3.5 text-right text-rose-700 font-black">100%</td>
                                             <td class="py-2.5 px-3.5 text-rose-600 font-semibold">전액 병원 기탁 완료</td>
                                         </tr>
                                     </tfoot>
@@ -958,6 +964,14 @@
                                 </table>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- 기부금 참고 사항 주석 -->
+                    <div class="mt-3 pt-3 border-t border-rose-100 text-[11px] text-slate-500 space-y-0.5">
+                        <p>• 공연 기부금은 삼성서울병원 전달분으로 합창단 수입 · 지출에 포함하지 않음</p>
+                        <p>• 합창단 계좌 경유 13,160,000 원 ( 11/23 전달 ) + 삼성글로벌리서치 500,000 원 병원 직접 입금</p>
+                        <p>• 합창단 정기연주회 후원금 ( 9,000,000 원 ) 과는 별도</p>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -1933,14 +1947,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- MODULAR JAVASCRIPT DEPENDENCIES -->
-    <script src="js/data-members.js?v=2026.107"></script>
-    <script src="js/data-config.js?v=2026.107"></script>
-    <script src="js/data-survey-comments.js?v=2026.107"></script>
-    <script src="js/firebase-config.js?v=2026.107"></script>
-    <script src="js/firebase-sync.js?v=2026.107"></script>
-    <script src="js/utils.js?v=2026.107"></script>
-    <script src="js/render.js?v=2026.107"></script>
-    <script src="js/handlers.js?v=2026.107"></script>
-    <script src="js/app.js?v=2026.107"></script>
+    <script src="js/data-members.js?v=2026.108"></script>
+    <script src="js/data-config.js?v=2026.108"></script>
+    <script src="js/data-survey-comments.js?v=2026.108"></script>
+    <script src="js/firebase-config.js?v=2026.108"></script>
+    <script src="js/firebase-sync.js?v=2026.108"></script>
+    <script src="js/utils.js?v=2026.108"></script>
+    <script src="js/render.js?v=2026.108"></script>
+    <script src="js/handlers.js?v=2026.108"></script>
+    <script src="js/app.js?v=2026.108"></script>
 </body>
 </html>

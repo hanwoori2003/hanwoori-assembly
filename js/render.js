@@ -1326,6 +1326,8 @@ function renderSettlementView() {
     if (totExpEl) totExpEl.textContent = Number(s.totalExpense).toLocaleString() + "원";
     const balEl = document.getElementById("settlementBalanceDisplay");
     if (balEl) balEl.textContent = Number(s.balance).toLocaleString() + "원";
+    const balDiffEl = document.getElementById("settlementBalanceDiffDisplay");
+    if (balDiffEl) balDiffEl.textContent = "전년比 +" + Number(s.diffFromPrev || 3434666).toLocaleString() + "원 (+343만)";
 
     const revCont = document.getElementById("settlementRevenueTableBody");
     if (revCont) {
@@ -1412,6 +1414,17 @@ function renderSettlementView() {
             '</tr>';
         });
         addTbody.innerHTML = html;
+    }
+
+    if (ce) {
+        const musicSubEl = document.getElementById("concertMusicSubtotalDisplay");
+        if (musicSubEl) musicSubEl.textContent = "소계 " + Number(ce.musicSubtotal || 23410918).toLocaleString() + "원";
+        const operSubEl = document.getElementById("concertOperationSubtotalDisplay");
+        if (operSubEl) operSubEl.textContent = "소계 " + Number(ce.operationSubtotal || 5859480).toLocaleString() + "원";
+        const addSubEl = document.getElementById("concertAdditionalSubtotalDisplay");
+        if (addSubEl) addSubEl.textContent = "소계 " + Number(ce.additionalSubtotal || 7818000).toLocaleString() + "원";
+        const totBadge = document.getElementById("concertTotalExpenseBadge");
+        if (totBadge) totBadge.textContent = "공연 총지출 " + Number(ce.total || 37088398).toLocaleString() + "원";
     }
 
     // Render Event Support Table (행사 지원 내역)
