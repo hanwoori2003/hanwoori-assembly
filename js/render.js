@@ -1430,7 +1430,6 @@ function renderSettlementView() {
         ce.additionalSection.forEach(function(item) {
             html += '<tr>' +
                 '<td class="py-2 px-3 font-semibold text-slate-900">' + escapeHtml(item.item) + '</td>' +
-                '<td class="py-2 px-3 text-slate-600">' + escapeHtml(item.detail) + '</td>' +
                 '<td class="py-2 px-3 text-right font-bold text-purple-700 whitespace-nowrap">' + Number(item.amount).toLocaleString() + '</td>' +
             '</tr>';
         });

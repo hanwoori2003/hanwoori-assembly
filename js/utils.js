@@ -452,10 +452,13 @@ function loadStateFromStorage() {
                         parsed.settlement.balance === 20887349 ||
                         !parsed.settlement.concertExpense ||
                         (Array.isArray(parsed.settlement.revenueItems) && parsed.settlement.revenueItems.some(function(it) {
-                            return it && String(it.name || "").indexOf("티켓 판매") !== -1;
+                            return it && (String(it.name || "").indexOf("티켓 판매") !== -1 || String(it.name || "").indexOf("소풍 잉여금") !== -1 || String(it.note || "").indexOf("'25년") !== -1);
                         })) ||
                         (Array.isArray(parsed.settlement.expenseItems) && parsed.settlement.expenseItems.some(function(it) {
-                            return it && (String(it.name || "").indexOf("사당홀") !== -1 || String(it.name || "").indexOf("제20회") !== -1);
+                            return it && (String(it.name || "").indexOf("사당홀") !== -1 || String(it.name || "").indexOf("제20회") !== -1 || String(it.note || "").indexOf("'25년") !== -1);
+                        })) ||
+                        (parsed.settlement.yearlyComparison && Array.isArray(parsed.settlement.yearlyComparison.expense) && parsed.settlement.yearlyComparison.expense.some(function(it) {
+                            return it && (it.item === "합창대제전" || it.item === "기획사 계약금" || String(it.item || "").indexOf("음료") !== -1);
                         }));
 
                     if (isLegacySettlement) {

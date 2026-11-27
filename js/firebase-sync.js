@@ -315,7 +315,13 @@
                     data.settlement.balance !== 24894366 || 
                     !data.settlement.concertExpense || 
                     !data.settlement.concertExpense.additionalSection || 
-                    data.settlement.concertExpense.total !== 37088398) {
+                    data.settlement.concertExpense.total !== 37088398 ||
+                    (Array.isArray(data.settlement.revenueItems) && data.settlement.revenueItems.some(function(it) {
+                        return it && (String(it.name || "").indexOf("소풍 잉여금") !== -1 || String(it.note || "").indexOf("'25년") !== -1);
+                    })) ||
+                    (data.settlement.yearlyComparison && Array.isArray(data.settlement.yearlyComparison.expense) && data.settlement.yearlyComparison.expense.some(function(it) {
+                        return it && (it.item === "합창대제전" || it.item === "기획사 계약금" || String(it.item || "").indexOf("음료") !== -1);
+                    }))) {
                     if (typeof global.getDefaultState === "function") {
                         s.settlement = deepClone(global.getDefaultState().settlement);
                         // Trigger immediate cloud push to overwrite stale legacy config in Firestore
