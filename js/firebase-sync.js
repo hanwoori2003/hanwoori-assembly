@@ -13,7 +13,9 @@
 
     var CONFIG_COLLECTION = "hanwoori_2026";
     var CONFIG_DOC_ID = "config";
+    var BLOCKED_DOC_ID = "blocked_members";
     var VOTES_COLLECTION = "hanwoori_2026_votes";
+    var SESSIONS_COLLECTION = "hanwoori_2026_sessions";
 
     var db = null;
     var status = {
@@ -26,6 +28,8 @@
 
     var unsubConfig = null;
     var unsubVotes = null;
+    var unsubSessions = null;
+    var unsubBlocked = null;
     var isApplyingRemoteUpdate = false;
     var pushDebounceTimer = null;
 
@@ -655,6 +659,12 @@
             if (typeof unsubVotes === "function") {
                 try { unsubVotes(); } catch (e) {}
             }
+            if (typeof unsubSessions === "function") {
+                try { unsubSessions(); } catch (e) {}
+            }
+            if (typeof unsubBlocked === "function") {
+                try { unsubBlocked(); } catch (e) {}
+            }
 
             // 1) 공유 설정 문서 실시간 구독 (없으면 최초 1회 자동 시드)
             var configRef = db.collection(CONFIG_COLLECTION).doc(CONFIG_DOC_ID);
@@ -696,6 +706,63 @@
                 status.connected = false;
                 status.error = formatFirebaseError(err);
                 notifyUiRefresh();
+            });
+
+            // 3) 실시간 로그인 세션 컬렉션 구독 (접속자 명단 & 강제 로그아웃 감지)
+            var sessionsRef = db.collection(SESSIONS_COLLECTION);
+            unsubSessions = sessionsRef.onSnapshot(function(snapshot) {
+                var s = getAppStateRef();
+                if (!s) return;
+                var nextSessions = {};
+                var myId = s.currentVoterId;
+                var myToken = s.currentSessionToken;
+                var shouldKickMe = false;
+
+                if (snapshot && typeof snapshot.forEach === "function") {
+                    snapshot.forEach(function(doc) {
+                        var d = doc && typeof doc.data === "function" ? doc.data() : null;
+                        if (!d || !d.memberId) return;
+                        if (d.active === false) {
+                            if (myId && d.memberId === myId && s.hasExplicitLogin) {
+                                if (!d.kickedToken || !myToken || d.kickedToken === myToken) {
+                                    shouldKickMe = true;
+                                }
+                            }
+                            return;
+                        }
+                        nextSessions[d.memberId] = d;
+                    });
+                }
+                s.activeSessions = nextSessions;
+                if (shouldKickMe && typeof global.forceLocalLogoutByAdmin === "function") {
+                    global.forceLocalLogoutByAdmin("운영진에 의해 로그아웃되었습니다. (현장 참석 확인 후 다시 로그인해 주세요.)");
+                    return;
+                }
+                notifyUiRefresh();
+            }, function(err) {
+                console.warn("Sessions snapshot warning:", err);
+            });
+
+            // 4) 로그인 차단 명단 문서 실시간 구독
+            var blockedRef = db.collection(CONFIG_COLLECTION).doc(BLOCKED_DOC_ID);
+            unsubBlocked = blockedRef.onSnapshot(function(doc) {
+                var s = getAppStateRef();
+                if (!s) return;
+                var data = (doc && doc.exists && typeof doc.data === "function") ? doc.data() : null;
+                s.blockedMembers = (data && data.members && typeof data.members === "object") ? deepClone(data.members) : {};
+                persistLocalWithoutCloudEcho();
+
+                if (s.currentVoterId && s.hasExplicitLogin && typeof global.isMemberLoginBlocked === "function") {
+                    if (global.isMemberLoginBlocked(s.currentVoterId, s.currentVoterName)) {
+                        if (typeof global.forceLocalLogoutByAdmin === "function") {
+                            global.forceLocalLogoutByAdmin("현장 미참석 확인 등 운영진 조치에 의해 로그아웃 및 재로그인이 제한되었습니다.");
+                            return;
+                        }
+                    }
+                }
+                notifyUiRefresh();
+            }, function(err) {
+                console.warn("Blocked members snapshot warning:", err);
             });
         } catch (err) {
             db = null;
@@ -1056,7 +1123,7 @@
         return isApplyingRemoteUpdate;
     }
 
-        function pushAttendanceVoteToCloud(memberKey, choice) {
+    function pushAttendanceVoteToCloud(memberKey, choice) {
         if (!db || status.mode !== "cloud") {
             return Promise.resolve({ skipped: true, reason: "local_mode" });
         }
@@ -1072,6 +1139,81 @@
     }
     global.pushAttendanceVoteToCloud = pushAttendanceVoteToCloud;
 
+    function registerSessionInCloud(member, sessionToken) {
+        if (!member || !member.id) return Promise.resolve({ skipped: true });
+        var s = getAppStateRef();
+        var payload = {
+            memberId: String(member.id),
+            name: String(member.name || ""),
+            part: String(member.part || member.basePart || ""),
+            gen: String(member.gen || ""),
+            isExecutive: Boolean(member.isExecutive),
+            sessionToken: String(sessionToken || ""),
+            active: true,
+            kickedToken: "",
+            loggedInAt: new Date().toISOString(),
+            lastSeenAt: new Date().toISOString()
+        };
+        if (s) {
+            if (!s.activeSessions || typeof s.activeSessions !== "object") s.activeSessions = {};
+            s.activeSessions[member.id] = payload;
+        }
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        var docId = sanitizeKey(member.id);
+        return db.collection(SESSIONS_COLLECTION).doc(docId).set(payload).catch(function(err) {
+            console.warn("registerSessionInCloud warning:", err);
+        });
+    }
+
+    function removeSessionFromCloud(memberId) {
+        if (!memberId) return Promise.resolve({ skipped: true });
+        var s = getAppStateRef();
+        if (s && s.activeSessions && s.activeSessions[memberId]) {
+            delete s.activeSessions[memberId];
+        }
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        var docId = sanitizeKey(memberId);
+        return db.collection(SESSIONS_COLLECTION).doc(docId).delete().catch(function(err) {
+            console.warn("removeSessionFromCloud warning:", err);
+        });
+    }
+
+    function kickSessionInCloud(memberId, sessionToken) {
+        if (!memberId) return Promise.resolve({ skipped: true });
+        var s = getAppStateRef();
+        if (s && s.activeSessions && s.activeSessions[memberId]) {
+            delete s.activeSessions[memberId];
+        }
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        var docId = sanitizeKey(memberId);
+        return db.collection(SESSIONS_COLLECTION).doc(docId).set({
+            memberId: String(memberId),
+            active: false,
+            kickedToken: String(sessionToken || ""),
+            kickedAt: new Date().toISOString()
+        }, { merge: true }).catch(function(err) {
+            console.warn("kickSessionInCloud warning:", err);
+        });
+    }
+
+    function pushBlockedMembersToCloud(blockedMap) {
+        if (!db || status.mode !== "cloud") {
+            return Promise.resolve({ skipped: true, reason: "local_mode" });
+        }
+        return db.collection(CONFIG_COLLECTION).doc(BLOCKED_DOC_ID).set({
+            members: deepClone(blockedMap || {}),
+            updatedAt: new Date().toISOString()
+        }).catch(function(err) {
+            console.warn("pushBlockedMembersToCloud warning:", err);
+        });
+    }
+
     global.FirebaseSync = {
         init: init,
         pushConfigToCloud: pushConfigToCloud,
@@ -1083,6 +1225,10 @@
         resetSingleAgendaVotesInCloud: resetSingleAgendaVotesInCloud,
         resetElectionVotesInCloud: resetElectionVotesInCloud,
         resetVotesInCloud: resetVotesInCloud,
+        registerSessionInCloud: registerSessionInCloud,
+        removeSessionFromCloud: removeSessionFromCloud,
+        kickSessionInCloud: kickSessionInCloud,
+        pushBlockedMembersToCloud: pushBlockedMembersToCloud,
         getStatus: getStatus,
         isApplyingRemote: isApplyingRemote
     };

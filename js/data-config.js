@@ -381,6 +381,9 @@ function getDefaultState() {
     bylawViewerChapter: "all",
     bylawSearchQuery: "",
     winnerPagePublic: false,
+    blockedMembers: {},
+    activeSessions: {},
+    currentSessionToken: "",
     assemblySchedule: [
       {
         id: "sch-1",

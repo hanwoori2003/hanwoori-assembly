@@ -400,6 +400,12 @@ function handleSimpleLoginSubmit(evt) {
         };
     }
 
+    // 7. Blocked member check (현장 미참석 확인 등 운영진 로그인 차단 검사)
+    if (typeof isMemberLoginBlocked === "function" && isMemberLoginBlocked(matched.id, matched.name)) {
+        showLoginError("현장 미참석 확인 등 운영진 조치로 로그인이 제한된 단원입니다. 운영진에게 문의해 주세요.");
+        return false;
+    }
+
     if (!Array.isArray(appState.members)) appState.members = [];
     if (!appState.members.some(function(m) { return m && m.id === matched.id; })) {
         appState.members.push(matched);
@@ -412,8 +418,10 @@ function handleSimpleLoginSubmit(evt) {
             matched.code = enteredCode;
         }
 
+        const sessionToken = "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
         appState.currentVoterId = matched.id;
         appState.currentVoterName = matched.name;
+        appState.currentSessionToken = sessionToken;
         appState.hasExplicitLogin = true;
         appState.guestBrowsing = false;
         appState.isAdminAuthenticated = Boolean(matched.isExecutive);
@@ -421,6 +429,11 @@ function handleSimpleLoginSubmit(evt) {
         pendingExecMemberId = null;
 
         saveStateToStorage({ skipCloudConfigPush: true });
+        if (typeof window !== "undefined" &&
+            window.FirebaseSync &&
+            typeof window.FirebaseSync.registerSessionInCloud === "function") {
+            window.FirebaseSync.registerSessionInCloud(matched, sessionToken);
+        }
 
         // Direct DOM switch with !important to eliminate any specificity barrier
         const gate = document.getElementById("loginGateScreen");
@@ -460,9 +473,12 @@ function handleSimpleLoginSubmit(evt) {
     return false;
 }
 
-function logoutCurrentUser() {
+function logoutCurrentUser(options) {
+    const opts = options || {};
+    const prevVoterId = appState.currentVoterId;
     appState.currentVoterId = null;
     appState.currentVoterName = "";
+    appState.currentSessionToken = "";
     appState.hasExplicitLogin = false;
     appState.guestBrowsing = false;
     appState.isAdminAuthenticated = false;
@@ -470,14 +486,26 @@ function logoutCurrentUser() {
     pendingExecMemberId = null;
     appState.activeTab = "events";
 
+    if (!opts.skipCloudSessionDelete && prevVoterId &&
+        typeof window !== "undefined" &&
+        window.FirebaseSync &&
+        typeof window.FirebaseSync.removeSessionFromCloud === "function") {
+        window.FirebaseSync.removeSessionFromCloud(prevVoterId);
+    }
+
     const nameInp = document.getElementById("loginNameInput");
     const codeInp = document.getElementById("loginCodeInput");
     const errEl = document.getElementById("loginErrorMsg");
     if (nameInp) nameInp.value = "";
     if (codeInp) codeInp.value = "";
     if (errEl) {
-        errEl.textContent = "";
-        errEl.classList.add("hidden");
+        if (opts.logoutReasonMsg) {
+            errEl.textContent = opts.logoutReasonMsg;
+            errEl.classList.remove("hidden");
+        } else {
+            errEl.textContent = "";
+            errEl.classList.add("hidden");
+        }
     }
 
     saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
@@ -496,7 +524,135 @@ function logoutCurrentUser() {
     if (typeof window !== "undefined" && typeof window.scrollTo === "function") {
         window.scrollTo(0, 0);
     }
-    showToast("로그아웃되었습니다.");
+    if (!opts.silentToast) {
+        showToast(opts.logoutReasonMsg || "로그아웃되었습니다.");
+    }
+}
+
+function forceLocalLogoutByAdmin(reasonMsg) {
+    if (!appState.currentVoterId && !appState.hasExplicitLogin) return;
+    const msg = reasonMsg || "운영진에 의해 로그아웃되었습니다.";
+    logoutCurrentUser({
+        skipCloudSessionDelete: true,
+        logoutReasonMsg: msg,
+        silentToast: false
+    });
+}
+
+function adminForceLogoutMember(memberId, shouldBlock) {
+    if (!isCurrentUserExecutive()) {
+        showToast("운영진 권한이 필요합니다.");
+        return;
+    }
+    if (!memberId) return;
+    if (memberId === appState.currentVoterId) {
+        showToast("현재 로그인한 본인 계정은 강제 로그아웃할 수 없습니다.");
+        return;
+    }
+
+    const sess = (appState.activeSessions && appState.activeSessions[memberId]) ? appState.activeSessions[memberId] : null;
+    const targetMember = (appState.members || []).find(function(m) { return m && m.id === memberId; });
+    const name = (sess && sess.name) || (targetMember && targetMember.name) || memberId;
+    const part = (sess && sess.part) || (targetMember && (targetMember.part || targetMember.basePart)) || "";
+    const gen = (sess && sess.gen) || (targetMember && targetMember.gen) || "";
+    const sessionToken = sess ? sess.sessionToken : "";
+
+    if (shouldBlock) {
+        if (!appState.blockedMembers || typeof appState.blockedMembers !== "object") {
+            appState.blockedMembers = {};
+        }
+        appState.blockedMembers[memberId] = {
+            memberId: memberId,
+            name: name,
+            part: part,
+            gen: gen,
+            blockedAt: new Date().toISOString(),
+            blockedBy: appState.currentVoterName || "운영진"
+        };
+        saveStateToStorage({ skipCloudConfigPush: true });
+        if (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.pushBlockedMembersToCloud === "function") {
+            window.FirebaseSync.pushBlockedMembersToCloud(appState.blockedMembers);
+        }
+    }
+
+    if (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.kickSessionInCloud === "function") {
+        window.FirebaseSync.kickSessionInCloud(memberId, sessionToken);
+    } else if (appState.activeSessions && appState.activeSessions[memberId]) {
+        delete appState.activeSessions[memberId];
+    }
+
+    renderAdminView();
+    showToast(shouldBlock
+        ? (name + " 님을 강제 로그아웃 및 재로그인 차단했습니다.")
+        : (name + " 님을 강제 로그아웃시켰습니다."));
+}
+
+function adminUnblockMember(memberId) {
+    if (!isCurrentUserExecutive()) {
+        showToast("운영진 권한이 필요합니다.");
+        return;
+    }
+    if (!memberId || !appState.blockedMembers || !appState.blockedMembers[memberId]) return;
+    const name = appState.blockedMembers[memberId].name || memberId;
+    delete appState.blockedMembers[memberId];
+    saveStateToStorage({ skipCloudConfigPush: true });
+    if (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.pushBlockedMembersToCloud === "function") {
+        window.FirebaseSync.pushBlockedMembersToCloud(appState.blockedMembers);
+    }
+    renderAdminView();
+    showToast("🔓 " + name + " 님의 로그인 차단을 해제했습니다.");
+}
+
+function adminBlockMemberByName() {
+    if (!isCurrentUserExecutive()) {
+        showToast("운영진 권한이 필요합니다.");
+        return;
+    }
+    const inp = document.getElementById("adminManualBlockNameInput");
+    const rawName = inp ? inp.value.trim() : "";
+    if (!rawName) {
+        showToast("차단할 단원 이름을 입력해 주세요.");
+        if (inp) inp.focus();
+        return;
+    }
+    const clean = rawName.replace(/\s+/g, "");
+    const roster = (typeof FULL_MEMBER_ROSTER !== "undefined" && Array.isArray(FULL_MEMBER_ROSTER)) ? FULL_MEMBER_ROSTER : (appState.members || []);
+    const matched = roster.find(function(m) {
+        return m && m.name && String(m.name).replace(/\s+/g, "") === clean;
+    });
+    const targetId = matched ? matched.id : ("manual-block-" + Date.now());
+    if (targetId === appState.currentVoterId) {
+        showToast("본인 계정은 차단할 수 없습니다.");
+        return;
+    }
+    const targetName = matched ? matched.name : rawName;
+    const targetPart = matched ? (matched.part || matched.basePart || "") : "";
+    const targetGen = matched ? (matched.gen || "") : "";
+
+    if (!appState.blockedMembers || typeof appState.blockedMembers !== "object") {
+        appState.blockedMembers = {};
+    }
+    appState.blockedMembers[targetId] = {
+        memberId: targetId,
+        name: targetName,
+        part: targetPart,
+        gen: targetGen,
+        blockedAt: new Date().toISOString(),
+        blockedBy: appState.currentVoterName || "운영진"
+    };
+    saveStateToStorage({ skipCloudConfigPush: true });
+    if (typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.pushBlockedMembersToCloud === "function") {
+        window.FirebaseSync.pushBlockedMembersToCloud(appState.blockedMembers);
+    }
+    if (matched && typeof window !== "undefined" && window.FirebaseSync && typeof window.FirebaseSync.kickSessionInCloud === "function") {
+        const sess = appState.activeSessions ? appState.activeSessions[matched.id] : null;
+        if (sess) {
+            window.FirebaseSync.kickSessionInCloud(matched.id, sess.sessionToken || "");
+        }
+    }
+    if (inp) inp.value = "";
+    renderAdminView();
+    showToast("🚫 " + targetName + " 님의 로그인을 차단했습니다.");
 }
 
 function toggleProjectorMode() {

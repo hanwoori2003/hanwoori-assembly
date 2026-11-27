@@ -179,6 +179,14 @@ window.addEventListener("DOMContentLoaded", function() {
         window.FirebaseSync &&
         typeof window.FirebaseSync.init === "function") {
         window.FirebaseSync.init();
+        const curVoter = (typeof getCurrentVoter === "function") ? getCurrentVoter() : null;
+        if (curVoter && appState.hasExplicitLogin && typeof window.FirebaseSync.registerSessionInCloud === "function") {
+            if (!appState.currentSessionToken) {
+                appState.currentSessionToken = "sess_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
+                saveStateToStorage({ skipCloudConfigPush: true, skipCloudPush: true });
+            }
+            window.FirebaseSync.registerSessionInCloud(curVoter, appState.currentSessionToken);
+        }
     }
     updateHeaderScrollShadow();
 

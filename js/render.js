@@ -2346,6 +2346,73 @@ function renderAdminView() {
     const modeSel = document.getElementById("adminElectionModeSelect");
     if (modeSel) modeSel.value = appState.election.mode;
 
+    // 0. 실시간 로그인 접속자 및 차단 관리
+    const activeCont = document.getElementById("adminActiveSessionsList");
+    const activeCountEl = document.getElementById("adminActiveSessionsCount");
+    const blockedCont = document.getElementById("adminBlockedMembersList");
+    const blockedCountEl = document.getElementById("adminBlockedMembersCount");
+
+    const sessionsObj = (appState.activeSessions && typeof appState.activeSessions === "object") ? appState.activeSessions : {};
+    const activeList = Object.keys(sessionsObj).map(function(k) { return sessionsObj[k]; }).filter(function(s) {
+        return s && s.memberId && s.active !== false;
+    }).sort(function(a, b) {
+        return String(b.loggedInAt || "").localeCompare(String(a.loggedInAt || ""));
+    });
+
+    if (activeCountEl) activeCountEl.textContent = activeList.length;
+    if (activeCont) {
+        if (activeList.length === 0) {
+            activeCont.innerHTML = '<div class="text-center py-6 text-slate-400 text-xs">현재 실시간 접속 중인 단원이 없습니다.</div>';
+        } else {
+            activeCont.innerHTML = activeList.map(function(sess) {
+                const isSelf = sess.memberId === appState.currentVoterId;
+                const timeStr = sess.loggedInAt ? new Date(sess.loggedInAt).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" }) : "";
+                const meta = [sess.gen, sess.part].filter(Boolean).join(" · ");
+                const safeId = escapeHtml(sess.memberId).replace(/'/g, "\\'");
+                return '<div class="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-2 shadow-2xs">' +
+                    '<div class="min-w-0">' +
+                        '<div class="flex items-center gap-1.5">' +
+                            '<span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>' +
+                            '<span class="text-xs font-extrabold text-slate-900 truncate">' + escapeHtml(sess.name || sess.memberId) + '</span>' +
+                            (sess.isExecutive ? '<span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-amber-100 text-amber-800">운영진</span>' : '') +
+                            (isSelf ? '<span class="px-1.5 py-0.2 rounded text-[10px] font-bold bg-indigo-100 text-indigo-700">본인</span>' : '') +
+                        '</div>' +
+                        '<div class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(meta || "정단원") + (timeStr ? ' · ' + escapeHtml(timeStr) + ' 접속' : '') + '</div>' +
+                    '</div>' +
+                    (isSelf ? '' :
+                        '<div class="flex items-center gap-1 shrink-0">' +
+                            '<button type="button" onclick="adminForceLogoutMember(\'' + safeId + '\', false)" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition cursor-pointer whitespace-nowrap">로그아웃</button>' +
+                            '<button type="button" onclick="adminForceLogoutMember(\'' + safeId + '\', true)" class="px-2 py-1 rounded-lg text-[11px] font-bold bg-rose-600 hover:bg-rose-500 text-white transition cursor-pointer whitespace-nowrap">로그아웃+차단</button>' +
+                        '</div>') +
+                '</div>';
+            }).join("");
+        }
+    }
+
+    const blockedObj = (appState.blockedMembers && typeof appState.blockedMembers === "object") ? appState.blockedMembers : {};
+    const blockedList = Object.keys(blockedObj).map(function(k) { return blockedObj[k]; }).filter(Boolean).sort(function(a, b) {
+        return String(b.blockedAt || "").localeCompare(String(a.blockedAt || ""));
+    });
+
+    if (blockedCountEl) blockedCountEl.textContent = blockedList.length;
+    if (blockedCont) {
+        if (blockedList.length === 0) {
+            blockedCont.innerHTML = '<div class="text-center py-6 text-rose-400/80 text-xs">현재 로그인 차단된 단원이 없습니다.</div>';
+        } else {
+            blockedCont.innerHTML = blockedList.map(function(b) {
+                const meta = [b.gen, b.part].filter(Boolean).join(" · ");
+                const safeId = escapeHtml(b.memberId).replace(/'/g, "\\'");
+                return '<div class="p-2.5 rounded-xl bg-white border border-rose-200 flex items-center justify-between gap-2 shadow-2xs">' +
+                    '<div class="min-w-0">' +
+                        '<div class="text-xs font-extrabold text-rose-950 truncate">🚫 ' + escapeHtml(b.name || b.memberId) + '</div>' +
+                        '<div class="text-[11px] text-slate-500 mt-0.5">' + escapeHtml(meta || "정단원") + '</div>' +
+                    '</div>' +
+                    '<button type="button" onclick="adminUnblockMember(\'' + safeId + '\')" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-emerald-600 hover:bg-emerald-500 text-white transition cursor-pointer shrink-0 whitespace-nowrap">🔓 차단 해제</button>' +
+                '</div>';
+            }).join("");
+        }
+    }
+
     // 1. 식순 관리 리스트 (#adminScheduleListContainer)
     const schCont = document.getElementById("adminScheduleListContainer");
     if (schCont) {

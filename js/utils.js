@@ -151,8 +151,10 @@ function saveStateToStorage(options) {
             uploadedFileName: appState.uploadedFileName,
             currentVoterId: appState.currentVoterId,
             currentVoterName: appState.currentVoterName || "",
+            currentSessionToken: appState.currentSessionToken || "",
             hasExplicitLogin: Boolean(appState.hasExplicitLogin),
             isAdminAuthenticated: appState.isAdminAuthenticated,
+            blockedMembers: appState.blockedMembers || {},
             members: appState.members,
             bylaws: appState.bylaws,
             agendas: appState.agendas,
@@ -446,6 +448,11 @@ function loadStateFromStorage() {
                     needsPersistMigration = true;
                 }
                 appState.winnerPagePublic = Boolean(parsed.winnerPagePublic);
+                appState.currentSessionToken = typeof parsed.currentSessionToken === "string" ? parsed.currentSessionToken : "";
+                appState.blockedMembers = (parsed.blockedMembers && typeof parsed.blockedMembers === "object") ? parsed.blockedMembers : {};
+                if (!appState.activeSessions || typeof appState.activeSessions !== "object") {
+                    appState.activeSessions = {};
+                }
                 const defaultSettle = (typeof getDefaultState === "function") ? getDefaultState().settlement : null;
                 if (parsed.settlement) {
                     const isLegacySettlement = parsed.settlement.totalRevenue === 109910000 ||
@@ -1036,4 +1043,27 @@ function normalizeFirebaseEndpoint(rawUrl) {
         u = u + "/hanwoori_assembly_2026.json";
     }
     return u;
+}
+
+/**
+ * 단원이 로그인 차단(현장 미참석 제한 등) 목록에 포함되어 있는지 확인
+ */
+function isMemberLoginBlocked(memberId, memberName) {
+    const blocked = (typeof appState !== "undefined" && appState && appState.blockedMembers) ? appState.blockedMembers : {};
+    if (!blocked || typeof blocked !== "object") return null;
+    if (memberId && blocked[memberId]) {
+        return blocked[memberId];
+    }
+    const cleanTarget = String(memberName || "").replace(/\s+/g, "").trim();
+    if (!cleanTarget) return null;
+    const keys = Object.keys(blocked);
+    for (let i = 0; i < keys.length; i++) {
+        const entry = blocked[keys[i]];
+        if (!entry) continue;
+        const entryName = String(entry.name || "").replace(/\s+/g, "").trim();
+        if (entryName && entryName === cleanTarget) {
+            return entry;
+        }
+    }
+    return null;
 }
