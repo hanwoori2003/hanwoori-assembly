@@ -779,7 +779,7 @@ function renderCommentAccordion(id, title, comments, icon, badgeColor, bgTint, b
             '</div>';
     });
 
-    const isExp = Boolean(defaultExpanded);
+    const isExp = false;
     return '<div class="mt-3 rounded-2xl ' + bgTint + ' border ' + borderTint + ' p-3 sm:p-4 space-y-2.5">' +
         '<div class="flex items-center justify-between gap-2 cursor-pointer select-none" onclick="toggleConcertComments(\'' + id + '\')">' +
             '<div class="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 overflow-hidden">' +
@@ -967,8 +967,8 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s2Comm = commentsData.recruitmentAndActivity || {};
-    html += renderCommentAccordion('comm-sec2-good', '활동 전반 - 좋았던 점', s2Comm.generalGood || [], '💚', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
-    html += renderCommentAccordion('comm-sec2-imp', '활동 전반 - 아쉬운 점 및 건의', s2Comm.generalImprovement || [], '💡', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += renderCommentAccordion('comm-sec2-good', '활동 전반 - 좋았던 점', s2Comm.generalGood || [], '💚', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', false);
+    html += renderCommentAccordion('comm-sec2-imp', '활동 전반 - 아쉬운 점 및 건의', s2Comm.generalImprovement || [], '💡', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', false);
     html += renderCommentAccordion('comm-sec2-social', '친목(소풍/뒤풀이) 및 단원 모집 의견', s2Comm.socialAndRecruit || [], '👥', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', false);
     html += '</div>';
 
@@ -1020,7 +1020,7 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s3Comm = commentsData.practiceAndCamp || {};
-    html += renderCommentAccordion('comm-sec3-camp', '하계 음악캠프 단원 의견', s3Comm.camp || [], '🏕️', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', true);
+    html += renderCommentAccordion('comm-sec3-camp', '하계 음악캠프 단원 의견', s3Comm.camp || [], '🏕️', 'bg-emerald-100 text-emerald-800', 'bg-emerald-50/50', 'border-emerald-200', false);
     html += renderCommentAccordion('comm-sec3-prac', '정기·추가 연습 및 보조도구 의견', s3Comm.practice || [], '🎼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', false);
     html += '</div>';
 
@@ -1082,8 +1082,8 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s4Comm = commentsData.concertPerformance || {};
-    html += renderCommentAccordion('comm-sec4-good', '정기연주회 공연 - 좋았던 점', s4Comm.concertGood || [], '🎉', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
-    html += renderCommentAccordion('comm-sec4-imp', '정기연주회 공연 - 아쉬운 점 및 건의', s4Comm.concertImprovement || [], '💡', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
+    html += renderCommentAccordion('comm-sec4-good', '정기연주회 공연 - 좋았던 점', s4Comm.concertGood || [], '🎉', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', false);
+    html += renderCommentAccordion('comm-sec4-imp', '정기연주회 공연 - 아쉬운 점 및 건의', s4Comm.concertImprovement || [], '💡', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', false);
     html += renderCommentAccordion('comm-sec4-prog', '연주 프로그램 및 선호곡 의견', s4Comm.programAndGeneral || [], '🎵', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', false);
     html += renderCommentAccordion('comm-sec4-hall', '공연장(인재개발원) 시설·무대 의견', s4Comm.hall || [], '🏛️', 'bg-slate-200 text-slate-800', 'bg-slate-50', 'border-slate-200', false);
     html += renderCommentAccordion('comm-sec4-choreo', '안무가 관련 단원 평가 의견', s4Comm.choreographer || [], '💃', 'bg-pink-100 text-pink-800', 'bg-pink-50/50', 'border-pink-200', false);
@@ -1148,7 +1148,7 @@ function renderConcertFeedbackView() {
     html += '</div>';
 
     const s5Comm = commentsData.costumeOpinions || {};
-    html += renderCommentAccordion('comm-sec5-cost', '연주회 단복 및 복장 전환 의견', s5Comm.costume || [], '👔', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', true);
+    html += renderCommentAccordion('comm-sec5-cost', '연주회 단복 및 복장 전환 의견', s5Comm.costume || [], '👔', 'bg-rose-100 text-rose-800', 'bg-rose-50/50', 'border-rose-200', false);
     html += '</div>';
 
     // ==========================================
@@ -1213,8 +1213,8 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s6Comm = commentsData.expectations2027Detail || {};
-    html += renderCommentAccordion('comm-sec6-venue', '2027 선호 연주 장소 단원 의견', s6Comm.venues || [], '🏛️', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', true);
-    html += renderCommentAccordion('comm-sec6-song', '2027 희망 연주곡 및 활동 제안', s6Comm.songsAndActivities || [], '🎼', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
+    html += renderCommentAccordion('comm-sec6-venue', '2027 선호 연주 장소 단원 의견', s6Comm.venues || [], '🏛️', 'bg-blue-100 text-blue-800', 'bg-blue-50/50', 'border-blue-200', false);
+    html += renderCommentAccordion('comm-sec6-song', '2027 희망 연주곡 및 활동 제안', s6Comm.songsAndActivities || [], '🎼', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', false);
     html += '</div>';
 
     // ==========================================
@@ -1276,10 +1276,10 @@ function renderConcertFeedbackView() {
         '</div>';
 
     const s7Comm = commentsData.leadershipAndNextYear || {};
-    html += renderCommentAccordion('comm-sec7-cond', '지휘자 선생님 감사 및 제언', s7Comm.conductor || [], '🎶', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', true);
-    html += renderCommentAccordion('comm-sec7-acc', '반주자 선생님 감사 및 제언', s7Comm.accompanist || [], '🎹', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', true);
-    html += renderCommentAccordion('comm-sec7-exec', '2026 운영진 감사 및 평가 의견', s7Comm.executive || [], '💼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', true);
-    html += renderCommentAccordion('comm-sec7-free', '차기 단장 응원 & 추가 자유 의견', s7Comm.freeAndCheer || [], '💌', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', true);
+    html += renderCommentAccordion('comm-sec7-cond', '지휘자 선생님 감사 및 제언', s7Comm.conductor || [], '🎶', 'bg-indigo-100 text-indigo-800', 'bg-indigo-50/50', 'border-indigo-200', false);
+    html += renderCommentAccordion('comm-sec7-acc', '반주자 선생님 감사 및 제언', s7Comm.accompanist || [], '🎹', 'bg-purple-100 text-purple-800', 'bg-purple-50/50', 'border-purple-200', false);
+    html += renderCommentAccordion('comm-sec7-exec', '2026 운영진 감사 및 평가 의견', s7Comm.executive || [], '💼', 'bg-teal-100 text-teal-800', 'bg-teal-50/50', 'border-teal-200', false);
+    html += renderCommentAccordion('comm-sec7-free', '차기 단장 응원 & 추가 자유 의견', s7Comm.freeAndCheer || [], '💌', 'bg-amber-100 text-amber-800', 'bg-amber-50/50', 'border-amber-200', false);
     html += '</div>';
 
     secCont.innerHTML = html;
